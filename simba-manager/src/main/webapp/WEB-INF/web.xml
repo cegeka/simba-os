@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+ ~ Copyright 2013 Simba Open Source
+ ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~ you may not use this file except in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~   http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing, software
+ ~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~ See the License for the specific language governing permissions and
+ ~ limitations under the License.
+ -->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+  id="Simba-Manager"
+  version="2.5"
+  metadata-complete="true">
+  <display-name>simba-manager</display-name>
+
+  <filter>
+    <display-name>SIMBA Filter</display-name>
+    <filter-name>SimbaFilter</filter-name>
+    <filter-class>org.simbasecurity.client.filter.SimbaFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>SimbaFilter</filter-name>
+    <url-pattern>*</url-pattern>
+  </filter-mapping>
+
+    <!-- Service for getting the Simba url -->
+    <servlet>
+        <servlet-name>simbaLocator</servlet-name>
+        <servlet-class>org.simbasecurity.manager.service.manager.SimbaLocationManagerService</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>simbaLocator</servlet-name>
+        <url-pattern>/simba-locator/*</url-pattern>
+    </servlet-mapping>
+
+</web-app>

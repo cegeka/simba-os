@@ -1,0 +1,128 @@
+/* 
+    Document   : general
+    Created on : 7-okt-2013, 11:39:26
+    Author     : mikeds
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+.icon {
+    width: 16px;
+    min-width: 16px;
+}
+
+.container {
+    padding-top: 10px;
+}
+
+/*
+*   Table styling
+*/
+
+table {
+    border-collapse:collapse;
+    width: 100%;
+}
+
+tr:nth-child(odd){ 
+    background-color:#eee;
+}
+
+tr:nth-child(even){ 
+    background-color:#fff;
+}
+
+th, td {
+    padding: 5px;
+}
+
+table, th, td {
+    border: 1px solid #aaa;
+    text-align: left;
+}
+
+th span, td span {
+    padding: 5px;
+}
+
+.mainTableCell {
+    vertical-align:top;
+}
+
+.largeTable {
+    max-height:500px; overflow:auto;
+}
+
+.smallTable {
+    height:250px; overflow:auto;
+}
+
+/*
+*   Input styling
+*/
+
+/* TODO Add styling for searchBox -> binoculars icon */
+
+.control-label {
+    display: inline-block;
+    min-width: 150px;
+    cursor: auto;
+}
+
+.control {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.control .control-group {
+    margin-left: 160px;
+}
+
+.searchBox {
+    background: white url(../resources/img/binoculars.png) right no-repeat;
+    padding-right: 19px !important;
+}
+
+/*
+*   Modal styling
+*/
+
+.modal-header {
+    padding-bottom: 0;
+}
+
+.modal-body {
+    max-height: 500px;
+}
+
+/*
+*   Error styling
+*/
+
+.errorCloseButton {
+    float: right;
+    color: rgb(202, 78, 78);
+    font-size: 1.5em;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.error {
+    background: rgb(255, 171, 171);
+    border: 1px solid rgb(202, 78, 78);
+    margin: 5px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.selected {
+    background-color:#666666;
+}

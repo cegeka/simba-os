@@ -1,0 +1,14 @@
+<div ng-init="init()">
+    <div class="modal-header">
+        {{ title }}
+    </div>
+    <div class="modal-body">
+        <select multiple ng-multiple="true" ng-model="selectedItems" ng-options="i.name for i in items" ng-change="selectionChanged(selectedItems)">
+
+        </select>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="save()"><span translate="textboxpopup.add"></span></button>
+        <button class="btn btn-warning" ng-click="cancel()"><span translate="textboxpopup.cancel"></span></button>
+    </div>
+</div>

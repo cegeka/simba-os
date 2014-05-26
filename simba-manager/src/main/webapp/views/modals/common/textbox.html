@@ -1,0 +1,13 @@
+<div ng-init="init()">
+    <div class="modal-header">
+        {{title}}
+    </div>
+    <div class="modal-body">
+        <span translate="textboxpopup.name"></span>:
+        <input type="text" ng-model="input.text" />
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="save()"><span translate="textboxpopup.add"></span></button>
+        <button class="btn btn-warning" ng-click="cancel()"><span translate="textboxpopup.cancel"></span></button>
+    </div>
+</div>

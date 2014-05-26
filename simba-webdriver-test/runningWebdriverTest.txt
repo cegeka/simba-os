@@ -1,0 +1,13 @@
+=============================================
+Running the Webdriver tests
+=============================================
+
+See that the RI is running and the zoo, then launch the tests.
+
+1. C:\simba_os\simba-ri>mvn jetty:run
+2. C:\simba_os\simba-zoo>mvn jetty:run
+
+3. Use the profile: C:\{simba_dir}>mvn verify -PwebDriverTests
+	
+
+Optional: to put your jetty in debug add MAVEN_OPTS="-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=n"

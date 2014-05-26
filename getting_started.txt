@@ -1,0 +1,86 @@
+
+Building Simba
+=-=-=-=-=-=-=-=
+
+Prerequisites for Simba:
+* SVN
+* Java 6
+
+Simba Manager technology stack:
+* AngularJS
+* NodeJS
+* Grunt
+* Bower
+
+1. Simba has a dependency on the thrift compiler (v0.9.1). The windows thrift compiler is provided via SVN, but to
+build Simba on another OS, you will need to provide the compiler. Check the Apache Thrift website (http://thrift.apache.org/)
+how to get a compiler for your system.
+
+After that you can add a profile for you OS in the parent pom.xml providing the location of the thrift compiler.
+
+2. You need to add C:\<simba_dir>\simba-api\target\generated-sources\thrift\java to your classpath
+
+3. Add following lines to your maven settings file:
+
+  <servers>
+    <server>
+      <id>nexus</id>
+      <username>simba</username>
+      <password>simba</password>
+    </server>
+    <server>
+      <id>simba-snapshots</id>
+      <username>simba</username>
+      <password>simba</password>
+    </server>
+    <server>
+      <id>simba-releases</id>
+      <username>simba</username>
+      <password>simba</password>
+    </server>
+  </servers>
+
+  <mirrors>
+    <mirror>
+      <id>nexus</id>
+      <mirrorOf>*</mirrorOf>
+      <url>http://nexus.cegeka.be/nexus/content/groups/public</url>
+    </mirror>
+  </mirrors>
+  
+  <profiles>
+    <profile>
+      <id>nexus</id>
+      <repositories>
+        <repository>
+          <id>nexus</id>
+          <url>http://nexus</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>nexus</id>
+          <url>http://nexus</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+
+  <activeProfiles>
+    <activeProfile>nexus</activeProfile>
+  </activeProfiles>
+
+
+

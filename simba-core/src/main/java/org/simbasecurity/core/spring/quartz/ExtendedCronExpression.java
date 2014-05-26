@@ -1,0 +1,104 @@
+/*
+ * Copyright 2011 Simba Open Source
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ *
+ */
+package org.simbasecurity.core.spring.quartz;
+
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+
+import org.quartz.CronExpression;
+
+public class ExtendedCronExpression extends CronExpression {
+
+    private static final long serialVersionUID = 4400034885809646850L;
+
+    public ExtendedCronExpression(String cronExpression)
+            throws ParseException {
+        super(cronExpression);
+    }
+
+    @Override
+    public Date getTimeAfter(Date afterTime) {
+        return super.getTimeAfter(afterTime);
+    }
+
+    @Override
+    public Date getTimeBefore(Date beforeTime) {
+        Calendar cl = Calendar.getInstance(getTimeZone());
+
+        // to match this
+        Date nextFireTime = getTimeAfter(beforeTime);
+        cl.setTime(nextFireTime);
+        cl.add(Calendar.SECOND, -1);
+
+        String[] expression = getCronExpression().split(" ");
+        int increment = findIncrement(expression);
+
+        switch (increment) {
+            case -1:
+                break;
+            case MINUTE:
+                cl.add(Calendar.MINUTE, -1);
+                break;
+            case HOUR:
+                cl.add(Calendar.HOUR_OF_DAY, -1);
+                break;
+            case DAY_OF_MONTH:
+            case DAY_OF_WEEK:
+                cl.add(Calendar.DAY_OF_YEAR, -1);
+                break;
+            case MONTH:
+                cl.add(Calendar.MONTH, -1);
+                break;
+            case YEAR:
+            default:
+                cl.add(Calendar.YEAR, -1);
+                break;
+
+        }
+        Date output = getTimeAfter(cl.getTime());
+        Date tmp;
+        boolean searching = true;
+
+        while (searching) {
+            tmp = getTimeAfter(output);
+            if (tmp.equals(nextFireTime)) {
+                searching = false;
+            } else {
+                output = getTimeAfter(output);
+            }
+        }
+        return output;
+
+    }
+
+    private int findIncrement(String[] expression) {
+        // * * * * * * *
+        // [0]SEC [1]MIN [2]HOUR [3]DAYOFMONTH [4]MONTH [5]DAYOFWEEK [6]YEAR
+        for (int i = 0; i < expression.length; i++) {
+            if (expression[i].equals("*")) {
+                return i;
+            }
+        }
+
+        return YEAR;
+    }
+
+}

@@ -1,0 +1,13 @@
+simbaJAAS {
+    org.simbasecurity.core.jaas.loginmodule.ActiveDirectoryLoginModule SUFFICIENT
+    primaryServer="cegekanv.corp.local:389"
+    secondaryServer="cegekanv.corp.local:389"
+    baseDN="dc=cegekanv,dc=corp,dc=local"
+    filter="(&(objectClass=person)(sAMAccountName=%USERNAME%))"
+    searchScope="subtree"
+    authDomain="cegekanv.corp.local"
+    authAttr="sAMAccountName"
+    securityLevel="simple"
+    debug=true;
+    org.simbasecurity.core.jaas.loginmodule.DatabaseLoginModule REQUIRED debug=true;
+};

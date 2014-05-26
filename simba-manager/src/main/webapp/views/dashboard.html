@@ -1,0 +1,9 @@
+<div ng-controller="DashboardCtrl" class="hero-unit" ng-init="init()">
+  <tabset>
+    <tab ng-repeat="tab in tabs"  heading="{{tab.title|translate}}" active="tab.active" disabled="tab.disabled">
+      <div id="tabContent"  ng-include="tab.url">
+      
+      </div>
+    </tab>
+  </tabset>
+</div>

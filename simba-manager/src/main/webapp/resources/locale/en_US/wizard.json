@@ -1,0 +1,14 @@
+{
+"window.maximizeButton.tooltip.label ":" Maximize",
+"window.minimizeButton.tooltip.label ":" Minimize",
+"window.closeButton.tooltip.label ":" Close",
+
+"errorWindow.defualt.errorTitle.label ":" Notice",
+"errorWindow.defualt.errorInfo.label ":" No information is available.",
+
+"wizard.buttons.next.label":"Next",
+"wizard.buttons.previous.label":"Previous",
+"wizard.buttons.cancel.label":"Cancel",
+"wizard.buttons.finish.label":"Finish",
+"wizard.step.summary.description":"Summary"
+}

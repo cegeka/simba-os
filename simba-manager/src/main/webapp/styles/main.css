@@ -1,0 +1,65 @@
+body {
+    background: #fafafa;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #333;
+}
+
+#mainTabSet .nav {
+    margin-bottom: 0;
+}
+
+.hero-unit {
+    font-size: 18px;
+    font-weight: 200;
+    line-height: 30px;
+    background-color: #eee;
+    padding: 10px;
+
+    /* Override bootstrap.css styling */
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+
+    -webkit-border-bottom-right-radius: 6px;
+    -webkit-border-bottom-left-radius: 6px;
+    -moz-border-radius-bottomright: 6px;
+    -moz-border-radius-bottomleft: 6px;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.hero-unit #tabContent {
+    padding: 10px 10px 10px 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+}
+
+.hero-unit h1 {
+    font-size: 60px;
+    line-height: 1;
+    letter-spacing: -1px;
+}
+
+#languageSelector, #logout {
+    float: right;
+    margin: 0;
+}
+#logout {
+    margin-left:5px;
+    margin-top:5px;
+}
+#logout img {
+    height:20px;
+}
+/*
+*   Tab Styling
+*/
+
+#mainTabSet > .nav-tabs > .active > a, #mainTabSet > .nav-tabs > .active > a:hover {
+    background-color: #eee;
+    border: 1px solid #ddd;
+    border-bottom-color: #eee;
+}
+
+

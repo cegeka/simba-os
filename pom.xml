@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright 2013 Simba Open Source
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.simbasecurity</groupId>
+    <artifactId>simba</artifactId>
+    <version>2.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <url>http://www.simbasecurity.org</url>
+
+    <properties>
+        <!-- standard properties -->
+
+        <!-- version settings -->
+        <org.springframework.version>3.2.4.RELEASE</org.springframework.version>
+        <org.hibernate.version>4.2.8.Final</org.hibernate.version>
+        <junit.version>4.11</junit.version>
+        <mockito.version>1.9.5</mockito.version>
+        <thrift.version>0.9.1</thrift.version>
+    </properties>
+
+    <name>Simba</name>
+    <description>Parent pom for the Simba Project</description>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <inceptionYear>2011</inceptionYear>
+    <organization>
+        <name>Cegeka</name>
+        <url>http://www.cegeka.be</url>
+    </organization>
+
+    <modules>
+        <module>simba-api</module>
+        <module>simba-client</module>
+        <module>simba-core</module>
+        <module>simba-ri</module>
+        <!--<module>simba-manager-api</module>-->
+        <module>simba-manager</module>
+        <!--<module>simba-dist</module>-->
+        <module>simba-zoo</module>
+        <module>simba-webdriver-test</module>
+	</modules>
+
+    <scm>
+        <connection>scm:svn:http://svn.org.simbasecurity.org/simba/trunk</connection>
+        <developerConnection>scm:svn:http://svn.org.simbasecurity.org/simba/trunk</developerConnection>
+        <url>http://svn.org.simbasecurity.org/simba/trunk</url>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>simba-snapshots</id>
+            <url>http://nexus.cegeka.be:8080/nexus/content/repositories/simba-snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>simba-releases</id>
+            <url>http://nexus.cegeka.be:8080/nexus/content/repositories/simba-releases</url>
+        </repository>
+    </distributionManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.15</version>
+				<configuration>
+					<excludes>
+						<exclude>**/webdriver/**</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+			  <groupId>org.codehaus.mojo</groupId>
+			  <artifactId>versions-maven-plugin</artifactId>
+			  <version>2.1</version>
+			</plugin>
+		</plugins>
+	</build>
+			
+    <repositories>
+        <repository>
+            <id>nexus</id>
+            <url>http://nexus.cegeka.be/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>nexus</id>
+            <url>http://nexus.cegeka.be/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <profiles>
+		<!-- THRIFT -->
+        <profile>
+            <id>windows</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <thrift.executable>${project.parent.basedir}/thrift/thrift-${thrift.version}.exe</thrift.executable>
+            </properties>
+        </profile>
+        <!-- Add os specific profiles to locate thrift compiler for your system -->
+		<!-- WebDriver tests -->
+		<profile>
+			<id>webDriverTests</id>
+			<activation>
+				<property>
+					<name>webDriverTests</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>surefire-it</id>
+								<phase>integration-test</phase>
+								<goals>
+									<goal>test</goal>
+								</goals>
+								<configuration>
+									<excludes>
+										<exclude>none</exclude>
+									</excludes>
+									<includes>
+										<include>**/*WebdriverTest.java</include>
+									</includes>
+									<!--<systemProperties>
+										<property>
+											<name>simba.web.url</name>
+											<value>fillInHere</value>
+										</property>
+										<property>
+											<name>simba.url</name>
+											<value>fillInHere</value>
+										</property>
+									</systemProperties>-->
+									<argLine>-Xms512m -Xmx1500m -XX:MaxPermSize=512m</argLine>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>		
+    </profiles>
+</project>

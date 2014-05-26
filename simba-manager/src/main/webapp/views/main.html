@@ -1,0 +1,17 @@
+<div ng-controller="MainCtrl" ng-init="init()">
+
+    <div class="error" ng-show="error.visible">
+        <span translate="{{error.message}}"></span>
+        <a href="javascript:;" class="errorCloseButton" ng-click="hideErrorMessage()">x</a>
+    </div>
+    <a href="?SimbaAction=SimbaLogoutAction" title="logout" id="logout"><img src="resources/img/logout.png" /></a>
+    <select ng-model="selectedLanguage" ng-change="changeLanguage(selectedLanguage)" ng-options="l.value for l in languages" id="languageSelector">
+    </select>
+    <tabset id="mainTabSet">
+    <tab ng-repeat="tab in tabs" heading="{{tab.title|translate}}" active="tab.active" disabled="tab.disabled">
+      <div id="tabContent" ng-include="tab.url">
+
+      </div>
+    </tab>
+    </tabset>
+</div>

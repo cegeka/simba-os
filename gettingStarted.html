@@ -36,27 +36,108 @@
 
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h3>
-		<a name="getting-started-page" class="anchor" href="#getting-started-page"><span class="octicon octicon-link"></span></a>Getting started.</h3>
+        <h3><a id="getting-started-page" ></a>Getting started</h3>
 
 		<!-- MAIN CONTENT start -->
-		<p>This page shows you how to set up Simba for your project.</p>
-		
-		<h3>
-		<a name="you-are-here" class="anchor" href="#you-are-here"><span class="octicon octicon-link"></span></a>You are here</h3>
-		<p>As the picture shows ....</p>
-		
-		<h3>
-		<a name="change-it" class="anchor" href="#change-it"><span class="octicon octicon-link"></span></a>This you need to configure</h3>
-		<p>Look at the reference implementation and find the config file. In there you need to adapt following properties:</p>
-		
-		<pre><code>
-		simba.url=http://localhost:xxx/the-location-of-xxx
-		simba.web.url=http://localhost:xxx/the-location-of-xxx
-		</code></pre>
-		
-		<p> After this you can configure your own chain with the commands. See the more details page for a list of all the commands. <p>
-		
+          <p>By going through this page you should be able to understand how you can use Simba in your own application.
+             In this tutorial you will be using a pre-configured Simba with a default data set.</p>
+
+          <h4><a id="download"></a>Download</h4>
+
+          <p>First of all, make sure you have Java JDK 1.6+ and Maven 3.2+ installed.
+          After that you can download and unpack the zip- or tarball,
+          or clone the github repository to your computer.</p>
+
+          <h4><a id="compile"></a>Compile</h4>
+          <p>Open a shell/command prompt in the Simba root directory and run:</p>
+          <pre><code>mvn install -DskipTests</code></pre>
+          <h4><a id="run"></a>Run</h4>
+
+          <p>Open a shell/command prompt in the Simba root directory, enter the simba-ri directory:</p>
+          <pre><code>&gt; cd simba-ri</code></pre>
+
+          <p>and run the Simba Reference Implementation</p>
+          <pre><code>&gt; mvn jetty-run</code></pre>
+
+          <p>In this sample Simba is run on a Jetty container, but as Simba is basically packaged as a WAR, it can
+             easily be run on any Java Web Container.</p>
+          <p>Also take note that Simba will occupy port 8080 on your machine. If your application happens to run on the
+             same port, you can alter the Simba port in the POM file</p>
+
+          <h4><a id="your-application"></a>Securing your application</h4>
+          <p>To start using Simba in your application you will need to create a dependency on the simba-client.</p>
+          <p>For maven you can simply add following dependency:</p>
+          <pre><code>&lt;dependency&gt;
+  &lt;groupId&gt;org.simbasecurity&lt;/groupId&gt;
+  &lt;artifactId&gt;simba-client&lt;/artifactId&gt;
+  &lt;version&gt;2.1-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+
+          <p>Below is the full dependency list for the simba-client if you're not using maven to build your project:</p>
+          <pre><code>org.simbasecurity:simba-client:jar:2.0
+org.simbasecurity:simba-api:jar:2.0
+org.apache.thrift:libthrift:jar:0.9.1
+org.apache.commons:commons-lang3:jar:3.1
+org.apache.httpcomponents:httpclient:jar:4.2.5
+commons-logging:commons-logging:jar:1.1.1
+commons-codec:commons-codec:jar:1.6
+org.apache.httpcomponents:httpcore:jar:4.2.4
+org.slf4j:slf4j-api:jar:1.7.5</code></pre>
+
+          <p>Once the dependencies are there, you can add the following lines to the
+             <span style="font-family:'Lucida Console', monospace">web.xml</span> of your application.</p>
+          <pre><code>&lt;filter&gt;
+  &lt;display-name&gt;SIMBA Filter&lt;/display-name&gt;
+  &lt;filter-name&gt;SimbaFilter&lt;/filter-name&gt;
+  &lt;filter-class&gt;org.simbasecurity.client.filter.SimbaFilter&lt;/filter-class&gt;
+  &lt;init-param&gt;
+      &lt;param-name&gt;simba.url&lt;/param-name&gt;
+      &lt;param-value&gt;http://localhost:8080/simba&lt;/param-value&gt;
+  &lt;/init-param&gt;
+  &lt;init-param&gt;
+      &lt;param-name&gt;simba.secure.cookies.enabled&lt;/param-name&gt;
+      &lt;param-value&gt;false&lt;/param-value&gt;
+  &lt;/init-param&gt;
+  &lt;init-param&gt;
+      &lt;param-name&gt;simba.authentication.chain.name&lt;/param-name&gt;
+      &lt;param-value&gt;authenticationChain&lt;/param-value&gt;
+  &lt;/init-param&gt;
+&lt;/filter&gt;
+&lt;filter-mapping&gt;
+  &lt;filter-name&gt;SimbaFilter&lt;/filter-name&gt;
+  &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;</code></pre>
+
+          <p>If you have changed the port for Simba before running the reference implementation, make sure to
+             reflect that change in your web.xml as well.</p>
+          <p><img src="images/login-screen.png" alt="login-screen" width="360px" style="float:right;margin-left: 20px;" />
+             Now you can rebuild and redeploy your application and browse to the starting page. Instead of your own
+             application, you should now see the default simba login page.</p>
+		  <p>You can log into your application using <b>admin</b>/<b>Simba3D</b> as credentials.</p>
+          <br/><br/><br/>
+
+          <h4><a id="manager"></a>Simba Manager</h4>
+
+          <p>Simba comes with a management console, allowing you to maintain your users, roles and policies. The manager
+             is simply a separate WAR you can deploy together with Simba or on a different container.</p>
+
+          <p>To run the manager for this tutorial, open a shell/command prompt in the Simba root directory and enter
+             the simba-manager directory:</p>
+          <pre><code>&gt; cd simba-manager</code></pre>
+
+          <p>and run it</p>
+          <pre><code>&gt; mvn jetty-run</code></pre>
+
+          <p>By default the manager will run on <a href="http://localhost:8090/simba-manager">localhost port 8090</a>.
+             This can of course be changed in the pom. You can use the same credentials as above to get access to
+             the manager.</p>
+
+          <h4><a id="and-now"></a>And now?</h4>
+
+          <p>Congratulations! You just secured your application using Simba. Of course there is much more to learn and
+             configure before you can use Simba in a production environment, but I hope this basic tutorial did show
+             you how simple it is to plug Simba into your application.</p>
+
 		<!-- MAIN CONTENT end -->
       </section>
     </div>

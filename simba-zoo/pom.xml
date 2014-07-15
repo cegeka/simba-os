@@ -70,12 +70,12 @@
                     <stopPort>8086</stopPort>
                     <stopKey>jetty-stop</stopKey>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
-			        <systemProperties>
-			            <systemProperty>
-			              <name>simba.properties.file</name>
-			              <value>${basedir}/src/main/resources/simba.properties</value>
-			            </systemProperty>
-		        	</systemProperties>                    
+			        <!--<systemProperties>-->
+			            <!--<systemProperty>-->
+			              <!--<name>simba.properties.file</name>-->
+			              <!--<value>${basedir}/src/main/resources/simba.properties</value>-->
+			            <!--</systemProperty>-->
+		        	<!--</systemProperties>                    -->
                 </configuration>
             </plugin>
             <plugin>

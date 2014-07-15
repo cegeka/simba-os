@@ -145,14 +145,14 @@ AuthorizationService_isResourceRuleAllowed_result.prototype.write = function(out
 
 AuthorizationService_isURLRuleAllowed_args = function(args) {
   this.username = null;
-  this.resourceName = null;
+  this.url = null;
   this.method = null;
   if (args) {
     if (args.username !== undefined) {
       this.username = args.username;
     }
-    if (args.resourceName !== undefined) {
-      this.resourceName = args.resourceName;
+    if (args.url !== undefined) {
+      this.url = args.url;
     }
     if (args.method !== undefined) {
       this.method = args.method;
@@ -182,7 +182,7 @@ AuthorizationService_isURLRuleAllowed_args.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.resourceName = input.readString().value;
+        this.url = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -210,9 +210,9 @@ AuthorizationService_isURLRuleAllowed_args.prototype.write = function(output) {
     output.writeString(this.username);
     output.writeFieldEnd();
   }
-  if (this.resourceName !== null && this.resourceName !== undefined) {
-    output.writeFieldBegin('resourceName', Thrift.Type.STRING, 2);
-    output.writeString(this.resourceName);
+  if (this.url !== null && this.url !== undefined) {
+    output.writeFieldBegin('url', Thrift.Type.STRING, 2);
+    output.writeString(this.url);
     output.writeFieldEnd();
   }
   if (this.method !== null && this.method !== undefined) {
@@ -441,16 +441,16 @@ AuthorizationServiceClient.prototype.recv_isResourceRuleAllowed = function() {
   }
   throw 'isResourceRuleAllowed failed: unknown result';
 };
-AuthorizationServiceClient.prototype.isURLRuleAllowed = function(username, resourceName, method) {
-  this.send_isURLRuleAllowed(username, resourceName, method);
+AuthorizationServiceClient.prototype.isURLRuleAllowed = function(username, url, method) {
+  this.send_isURLRuleAllowed(username, url, method);
   return this.recv_isURLRuleAllowed();
 };
 
-AuthorizationServiceClient.prototype.send_isURLRuleAllowed = function(username, resourceName, method) {
+AuthorizationServiceClient.prototype.send_isURLRuleAllowed = function(username, url, method) {
   this.output.writeMessageBegin('isURLRuleAllowed', Thrift.MessageType.CALL, this.seqid);
   var args = new AuthorizationService_isURLRuleAllowed_args();
   args.username = username;
-  args.resourceName = resourceName;
+  args.url = url;
   args.method = method;
   args.write(this.output);
   this.output.writeMessageEnd();

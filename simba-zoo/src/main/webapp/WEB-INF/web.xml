@@ -18,6 +18,18 @@
 		<display-name>SIMBA Filter</display-name>
 		<filter-name>SimbaFilter</filter-name>
 		<filter-class>org.simbasecurity.client.filter.SimbaFilter</filter-class>
+        <init-param>
+            <param-name>simba.url</param-name>
+            <param-value>http://localhost:8080/simba</param-value>
+        </init-param>
+        <init-param>
+            <param-name>simba.secure.cookies.enabled</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>simba.authentication.chain.name</param-name>
+            <param-value>authenticationChain</param-value>
+        </init-param>
 	</filter>
 	<filter-mapping>
 		<filter-name>SimbaFilter</filter-name>

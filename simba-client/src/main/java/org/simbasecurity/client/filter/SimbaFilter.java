@@ -15,17 +15,6 @@
  */
 package org.simbasecurity.client.filter;
 
-import java.net.MalformedURLException;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.thrift.protocol.TJSONProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.THttpClient;
@@ -37,10 +26,16 @@ import org.simbasecurity.common.config.SystemConfiguration;
 import org.simbasecurity.common.filter.action.MakeCookieAction;
 import org.simbasecurity.common.request.RequestUtil;
 
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.net.MalformedURLException;
+
 public final class SimbaFilter implements Filter {
 
 	private String simbaURL;
 	private String simbaWebURL;
+    private String authenticationChainName;
 
 	@Override
 	public void init(final FilterConfig filterConfig) throws ServletException {
@@ -56,6 +51,11 @@ public final class SimbaFilter implements Filter {
 					+ SystemConfiguration.SYS_PROP_SIMBA_WEB_URL + "]");
 		}
 
+        authenticationChainName = SystemConfiguration.getAuthenticationChainName(filterConfig);
+        if (authenticationChainName == null) {
+            throw new ServletException("Simba authentication chain name has not been set. Check org.simbasecurity.client.filter params or system property ["
+                                       + SystemConfiguration.SYS_PROP_SIMBA_AUTHENTICATION_CHAIN_NAME + "]");
+        }
 		MakeCookieAction.setSecureCookiesEnabled(SystemConfiguration.getSecureCookiesEnabled(filterConfig));
 	}
 
@@ -79,7 +79,7 @@ public final class SimbaFilter implements Filter {
 
 			AuthenticationFilterService.Client authenticationClient = new AuthenticationFilterService.Client(tProtocol);
 
-			ActionDescriptor actionDescriptor = authenticationClient.processRequest(requestData, SystemConfiguration.getAuthenticationChainName());
+			ActionDescriptor actionDescriptor = authenticationClient.processRequest(requestData, authenticationChainName);
 			actionFactory.execute(actionDescriptor);
 		} catch (Exception e) {
 			throw new ServletException(e);

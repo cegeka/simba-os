@@ -54,8 +54,11 @@ public final class SystemConfiguration {
 
     public static final String SYS_PROP_SIMBA_SECURE_COOKIES_ENABLED = "simba.secure.cookies.enabled";
 
+    public static final String SYS_PROP_SIMBA_AUTHENTICATION_CHAIN_NAME = "simba.authentication.chain.name";
+
     private static final Logger LOG = LoggerFactory.getLogger(SystemConfiguration.class);
     private static final Properties simbaProperties = new Properties();
+    public static final String SYS_PROP_SIMBA_MANAGER_AUTHENTICATION_CHAIN_NAME = "simba.manager.authentication.chain.name";
     private static boolean propertiesLoaded = false;
 
     private SystemConfiguration() {
@@ -135,6 +138,14 @@ public final class SystemConfiguration {
         return getSimbaWebURL(Collections.<String, String>emptyMap());
     }
 
+    public static String getAuthenticationChainName(final FilterConfig filterConfig) {
+        return getAuthenticationChainName(getDefaultsMap(filterConfig));
+    }
+
+    public static String getAuthenticationChainName(final ServletContext servletContext) {
+        return getAuthenticationChainName(getDefaultsMap(servletContext));
+    }
+
     private static String getSimbaServiceURL(final Map<String, String> defaults) {
         final String url = resolveConfigurationParameter(SYS_PROP_SIMBA_INTERNAL_SERVICE_URL, defaults);
 
@@ -155,11 +166,11 @@ public final class SystemConfiguration {
     }
 
     public static String getManagerAuthenticationChainName() {
-        return resolveConfigurationParameter("simba.manager.authentication.chain.name", new HashMap<String, String>());
+        return resolveConfigurationParameter(SYS_PROP_SIMBA_MANAGER_AUTHENTICATION_CHAIN_NAME, new HashMap<String, String>());
     }
 
-    public static String getAuthenticationChainName() {
-        return resolveConfigurationParameter("simba.authentication.chain.name", new HashMap<String, String>());
+    public static String getAuthenticationChainName(final Map<String, String> defaults) {
+        return resolveConfigurationParameter(SYS_PROP_SIMBA_AUTHENTICATION_CHAIN_NAME, defaults);
     }
 
     private static String resolveConfigurationParameter(final String parameterName, final Map<String, String> defaults) {

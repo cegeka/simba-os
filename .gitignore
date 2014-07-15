@@ -1,0 +1,12 @@
+# Maven Files and Directories
+dependency-reduced-pom.xml
+target/
+
+# IntelliJ Files and Directories
+.idea/
+*.iml
+
+# Eclipse Files and Directories
+.classpath
+.project
+.settings/

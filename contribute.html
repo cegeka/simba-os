@@ -48,20 +48,20 @@
 		<p>
 			<img alt="project structure" src="images/simba-project-structure.png">
 		</p>
-		<p>
-			Here's is the what-is-what of our multi-module maven project:
-			<ul>
-				<li>simba: the parent pom</li>
-				<li>simba-api: the gateway between Simba and the client application. Contains the thrift services.</li>
-				<li>simba-client: contains the <a href="moreDetails.html#agent-model">agent filter</a>. Depends on api to talk to Simba.</li>
-				<li>simba-ri: the reference implementation. An example of how to use Simba (the core and all it's features) that can serve as a starting point to <a href="ri.html">tweak your own Simba</a></li>
-				<li>simba-core: the heart of Simba: the chains, <a href="moreDetails.html#command-library">the commands</a>, authentication, authorization, ...</li>
-				<li>simba-manager: the AngularJS gui to mananage users & roles.</li>
-				<li>simba-zoo: an example application already wired with the simba-client for you to play around with.</li>
-				<li>simba-webdriver-test: webdriver/selenium tests to detect regression.</li>
-			</ul>
-		</p>
-		<p>The simba-ri and simba-zoo projects are most likely the places to start from.</p>
+		<table>
+			<thead>Here's is the what-is-what of our multi-module maven project:</thead>
+			<tbody>
+				<tr><th>simba</th><td>the parent pom</td></tr>
+				<tr><th>api</th><td>the gateway between Simba and the client application. Contains the thrift services.</td></tr>
+				<tr><th>client</th><td>contains the <a href="moreDetails.html#agent-model">agent filter</a>. Depends on api to talk to Simba.</td></tr>
+				<tr><th>ri</th><td>the reference implementation. An example of how to use Simba (the core and all it's features) that serves as a starting point to <a href="ri.html">tweak your own Simba</a>.</td></tr>
+				<tr><th>core</th><td>the heart of Simba: the chains, <a href="moreDetails.html#command-library">the commands</a>, authentication, authorization, ...</td></tr>
+				<tr><th>manager</th><td>the AngularJS gui to mananage users & roles.</td></tr>
+				<tr><th>zoo</th><td>an application already wired with the simba-client for you to play around with.</td></tr>
+				<tr><th>webdriver-test</th><td>webdriver/selenium tests to detect regression.</td></tr>
+			</tbody>
+		</table>
+		<p>The simba-ri and simba-zoo projects are most likely your places to start from.</p>
 		
 		<!-- MAIN CONTENT end -->
       </section>
@@ -71,7 +71,7 @@
     <div id="footer_wrap" class="outer">
       <footer class="inner">
         <p class="copyright">Simba-os is maintained by <a href="https://github.com/cegeka">cegeka</a>.
-		Can't find what you need? Contact us via <a href="mailto:security-competence-center@cegeka.be">security-competence-center@cegeka.be</a></p>
+		Can't find what you need? Contact us at <a href="mailto:security-competence-center@cegeka.be">security-competence-center@cegeka.be</a></p>
       </footer>
     </div>
 

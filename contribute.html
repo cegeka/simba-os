@@ -41,15 +41,17 @@
         <h3>Want to contribute?</h3>
 
 		<!-- MAIN CONTENT start -->
-		<p>If you decide you want to add features to Simba or improve something feel free to do so. Just get the source from github and start changing!
+		<p>If you decide you want to add features to Simba or improve something feel free to do so. Just fork github repo and start changing. We look forward to your pull requests.
 		Following steps will show you where you can adapt what:</p>
 		
 		<h3>Project structure</h3>
 		<p>
+			Here's is the explanation of our multi-module maven project. The simba-ri and simba-zoo projects are most likely your places to start from.
+		</p>
+		<p>
 			<img alt="project structure" src="images/simba-project-structure.png">
 		</p>
 		<table>
-			<thead>Here's is the what-is-what of our multi-module maven project:</thead>
 			<tbody>
 				<tr><th>simba</th><td>the parent pom</td></tr>
 				<tr><th>api</th><td>the gateway between Simba and the client application. Contains the thrift services.</td></tr>
@@ -61,7 +63,6 @@
 				<tr><th>webdriver-test</th><td>webdriver/selenium tests to detect regression.</td></tr>
 			</tbody>
 		</table>
-		<p>The simba-ri and simba-zoo projects are most likely your places to start from.</p>
 		
 		<!-- MAIN CONTENT end -->
       </section>

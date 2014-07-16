@@ -33,7 +33,7 @@
             <ul id="nav">
                 <li><a href="index.html#">Home</a></li>
                 <li><a href="gettingStarted.html">Getting started</a></li>
-                <li><a href="ri.html">Tweak your Simba</a></li>                
+                <li><a href="ri.html">Tweak your simba</a></li>
                 <li><a href="moreDetails.html">More details</a></li>
                 <li><a class="selected" href="#">API</a></li>
                 <li><a href="contribute.html">Contribute</a></li>
@@ -72,136 +72,107 @@
                 </div>
             </div>
             <div id="tabs-2">
-                Phasellus mattis tincidunt nibh. Cras orci urna, blandit id, pretium vel, aliquet ornare,
-                felis. Maecenas scelerisque sem non nisl. Fusce sed lorem in enim dictum bibendum.
-                <div id="c-tabs">
-                    <ul>
-                        <li><a href="#c-tabs-1">Chain</a></li>
-                        <li><a href="#c-tabs-2">DecisionCommand</a></li>
-                    </ul>
-                    <div id="c-tabs-1">
-                        Chain description
-                    </div>
-                    <div id="c-tabs-2">
-                        DecissionCommand description
-                    </div>
-                </div>
+                Simba uses a chain of commands to process a request and decide the needed actions.
+                <h4>CommandChain API</h4>
+                New commands can easily be written to serve your custom needs. Simply extend the Command
+                class and plug it into your chain in the correct place.
+
+                <h5>Chain</h5>
+                <p>A Chain represents a configured list of Commands that will be executed in order to perform processing
+                   on a specified for a specific request.</p>
+                <p>Each included Command will be executed in turn, until either one of them returns a 'FINISHED' state,
+                   an exception is thrown or the end of the chain has been reached.</p>
+                <p><b>Note</b> that Chain itself is a Command. This allows for chains to be easily combined and processed
+                    in a hierarchical manner.</p>
+
+                <h5>Command</h5>
+                <p>A Command encapsulates a unit of processing work to be performed, whose purpose is to examine and/or
+                   modify the state of a request/response.</p>
+
+                <h5>Decision</h5>
+                <p>Check for certain conditions to be met.</p>
+
+                <h5>DecisionCommand</h5>
+                <p>The DecisionCommand is a Command implementation allowing to execute one of two Commands depending on
+                   a Decision.
+
+                <img src="images/simba-command-diagram.png"/>
+
+                <h4>Provided commands</h4>
+                <h5>Authentication</h5>
+                <h6>CheckAccountBlockedCommand</h6>
+                <p>Check if a user account is blocked. A redirect action containing a blocked message is created if
+                   it is blocked. This command should be positioned in the chain somewhere after the password check
+                   to not provide to much info to possible hackers.</p>
+
+                <h6>CheckHttpRequestMethodCommand</h6>
+                <h6>CheckPasswordExpiredCommand</h6>
+                <p>Check if the user's password is expired. If this is the case, an action is created to redirect the
+                   user to a change password page.</p>
+
+                <h6>CheckUserActiveCommand</h6>
+                <p>Check if the user exists in the datastore and if the user is not declared inactive. Creates a
+                   redirect action with credential errors if the user isn't active.</p>
+
+                <h6>ExcludeResourceCommand</h6>
+                <p>Allows specific resources to be excluded from authentication. This can be used to distinguish
+                   between public and private pages in your application. This command should be one of the first in
+                   the chain.</p>
+
+                <h6>JaasLoginCommand</h6>
+                <p>Performs the actual credential check. The command uses a configured JAAS flow to do this check. If
+                   the JAAS login fails, a redirect action containing a credential error is created.</p>
+
+                <h6>ValidateRequestParametersCommand</h6>
+                <p>Check if the request contains the correct attributes to perform a login. A redirect action containing
+                   credential errors is created if this is not the case.</p>
+
+                <h5>Authorization</h5>
+                <h6>URLRuleCheckCommand</h6>
+                <p>Check if the user is allowed to access the specific request URL. If this is not the case, a
+                   redirect action to an access denied page is created.</p>
+
+                <h5>Session</h5>
+                <h6>ChangePasswordCommand</h6>
+                <p>Detect request to change a user password. It will try to perform the password change and then
+                   create an action to redirect the user to a result page.</p>
+
+                <h6>CheckClientIPCommand</h6>
+                <p>Check if the current request for the user origins from the same IP-address as the on that
+                   created the session. If this is not the case, a redirect action for the login page is
+                   created.</p>
+
+                <h6>CheckSessionCommand</h6>
+                <p>Check if the user has a valid session. If there is no session, or if the session is expired,
+                    a redirect action for the login page is created.</p>
+
+                <h6>CheckShowChangePasswordCommand</h6>
+                <p>Creates an action to redirect the user to a change password page if the request is a request to
+                   display this page.</p>
+
+                <h6>CreateCookieForNewSSOTokenCommand</h6>
+                <p>In cases where a valid SSO token is provided, but there was not valid cookie sent by the
+                   user, this command creates the action to make the cookie.</p>
+
+                <h6>CreateSessionCommand</h6>
+                <p>Creates a session for a user if there is none available. It will create an action to create
+                    the SSO cookie and an action to redirect the user to the correct URL.</p>
+
+                <h6>LogoutCommand</h6>
+                <p>Handles a specific logout request. The command will destroy the user's session and create
+                   actions to delete the SSO cookie and redirect the user to the logout page.</p>
+
+                <h6>EnterApplicationCommand</h6>
+                <p>This command is normally the last in the chain. If a request gets through all other commands, then
+                   this command will simply create the action to allow entering the application.</p>
+
             </div>
             <div id="tabs-3">
                 We've kept the domain model for Simba as simple as possible. Everything in the domain is targetted to
                 Users, Roles and Policies.
                 <img src="images/simba-class-diagram.png"/>
-
-                <div id="d-tabs">
-                    <ul>
-                        <li><a href="#d-tabs-1">User</a></li>
-                        <li><a href="#d-tabs-2">Role</a></li>
-                        <li><a href="#d-tabs-3">Policy</a></li>
-                        <li><a href="#d-tabs-4">Rule</a></li>
-                        <li><a href="#d-tabs-5">URLRule</a></li>
-                        <li><a href="#d-tabs-6">ResourceRule</a></li>
-                        <li><a href="#d-tabs-7">Condition</a></li>
-                        <li><a href="#d-tabs-8">Session</a></li>
-                    </ul>
-                    <div id="d-tabs-1">
-                        <p>The User entity is the representation of a principal in Simba.</p>
-
-                        Set
-                        <Role> roles = new HashSet
-                            <Role>()
-                                Set
-                                <Session> sessions = new HashSet
-                                    <Session>();
-
-                        <table>
-                            <tr>
-                                <td>userName</td>
-                                <td>The unique user name for the user</td>
-                            </tr>
-                            <tr>
-                                <td>password</td>
-                                <td>The password for the user. Passwords in Simba are salted and hashed before storing
-                                    them.</td>
-                            </tr>
-                            <tr>
-                                <td>name</td>
-                                <td>The real surname for the user.</td>
-                            </tr>
-                            <tr>
-                                <td>firstName</td>
-                                <td>The real first name for the user.</td>
-                            </tr>
-                            <tr>
-                                <td>status</td>
-                                <td>The current status of the user. The status can be <strong>active</strong>, <strong>inactive</strong> or
-                                    <strong>blocked</strong>.</td>
-                            </tr>
-                            <tr>
-                                <td>inactiveDate</td>
-                                <td>The date at which the user has become inactive.</td>
-                            </tr>
-                            <tr>
-                                <td>successURL</td>
-                                <td>The URL to redirect the user to on successful log on. Simba will only use this
-                                    URL if the user did not try to access a secured application before bying directed
-                                    to the login page.</td>
-                            </tr>
-                            <tr>
-                                <td>changePasswordOnNextLogon</td>
-                                <td>Is the user required to change his password at next login. A user is required
-                                    to change his password if the password has been used for longer then a
-                                    certain amount of days, or if an administrator explicitly flags the user as
-                                    required to change his password.</td>
-                            </tr>
-                            <tr>
-                                <td>passwordChangeRequired</td>
-                                <td>Is the user ever required to change his password. Certain system accounts can
-                                    be excluded from the need to change the password.</td>
-                            </tr>
-                            <tr>
-                                <td>databaseLoginBlocked</td>
-                                <td>Is the user allowed to login using the credentials stored in the Simba database.
-                                    This can be used if there is another way of authentication in place
-                                    (eg. Active Directory, ...) and we don't want the user to have multiple credentials
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>dateOfLastPasswordChange</td>
-                                <td>The date when the user last changed his password. This is used to determine when
-                                    the user should be forced change his password again.</td>
-                            </tr>
-                            <tr>
-                                <td>invalidLoginCount</td>
-                                <td>The number of successive invalid logins made by the user. This will be used to
-                                    block out a user, making brute-force attacks impossible.</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div id="d-tabs-2">
-                        Role description
-                    </div>
-                    <div id="d-tabs-3">
-                        Policy description
-                    </div>
-                    <div id="d-tabs-4">
-                        Rule description
-                    </div>
-                    <div id="d-tabs-5">
-                        URLRule description
-                    </div>
-                    <div id="d-tabs-6">
-                        ResourceRule description
-                    </div>
-                    <div id="d-tabs-7">
-                        Condition description
-                    </div>
-                    <div id="d-tabs-8">
-                        Session description
-                    </div>
-                </div>
             </div>
         </div>
-        <!-- MAIN CONTENT end -->
     </section>
 </div>
 
@@ -215,15 +186,6 @@
 
 <script>
     $("#tabs").tabs();
-    $("#s-tabs").tabs();
-    $("#c-tabs").tabs();
-    $("#d-tabs").tabs();
-//    $("#s-tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
-//    $("#s-tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
-//    $("#c-tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
-//    $("#c-tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
-//    $("#d-tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
-//    $("#d-tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
 
     // Hover states on the static widgets
     $("#dialog-link, #icons li").hover(

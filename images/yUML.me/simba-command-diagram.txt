@@ -1,0 +1,12 @@
+# Diagram can be generated on http://yuml.me/diagram/scruffy/class/draw
+[Chain]
+[Command]
+[Decision]
+[...]-.-^[Command]
+[aCommand]-.-^[Command]
+[DecisionCommand]-.-^[Command]
+
+[Chain]<>1-0..*>[Command]
+[DecisionCommand]++-2>[Command]
+[Chain]-^[Command]
+[DecisionCommand]++-1>[Decision]

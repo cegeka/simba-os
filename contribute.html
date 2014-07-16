@@ -4,9 +4,9 @@
   <head>
     <meta charset='utf-8' />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Simba-os : UAM, IAM, security, access management, owasp, cegeka" />
+    <meta name="description" content="Simba-os : Simba, UAM, IAM, security, access management, owasp, cegeka" />
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-    <title>Simba-os - home</title>
+    <title>Simba-os - contribute</title>
   </head>
 
   <body>
@@ -27,6 +27,7 @@
                 <ul id="nav">
                     <li><a href="index.html">Home</a></li>
                     <li><a href="gettingStarted.html">Getting started</a></li>
+                    <li><a href="ri.html">Tweak your simba</a></li>
                     <li><a href="moreDetails.html">More details</a></li>
                     <li><a href="api.html">API</a></li>
                     <li><a class="selected" href="#">Contribute</a></li>
@@ -37,10 +38,27 @@
 
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h3>TITLE HERE</h3>
+        <h3>Want to contribute?</h3>
 
 		<!-- MAIN CONTENT start -->
-
+		<p>If you decide you want to add features to Simba or improve something feel free to do so. Just get the source from github and start changing!
+		Following steps will show you where you can adapt vital parts.</p>
+		
+		<h3>Project structure</h3>
+		<img alt="project structure" src="images/simba-project-structure.png">
+		
+		Here's is the what-is-what of our multi-module maven project:
+		<ul>
+			<li>simba: the parent pom</li>
+			<li></li>
+			<li>simba-ri: the reference implementation</li>
+			<li></li>
+			<li>simba-manager: the AngularJS gui to mananage users & roles.</li>
+			<li>simba-webdriver-test: webdriver/selenium tests to detect regression.</li>
+		</ul>
+		
+		<p>The projects of most importance to you would be simba-ri and simba-zoo to start with.</p>
+		
 		<!-- MAIN CONTENT end -->
       </section>
     </div>

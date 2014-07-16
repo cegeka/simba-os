@@ -63,12 +63,6 @@
         <module>simba-webdriver-test</module>
 	</modules>
 
-    <scm>
-        <connection>scm:svn:http://svn.org.simbasecurity.org/simba/trunk</connection>
-        <developerConnection>scm:svn:http://svn.org.simbasecurity.org/simba/trunk</developerConnection>
-        <url>http://svn.org.simbasecurity.org/simba/trunk</url>
-    </scm>
-
     <distributionManagement>
         <snapshotRepository>
             <id>simba-snapshots</id>

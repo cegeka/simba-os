@@ -92,7 +92,7 @@
     </init-param>
     <init-param>
       <param-name>cors.allowOrigin</param-name>
-      <param-value>*</param-value>
+      <param-value>*</param-value><!-- insert the domain of your manager here! -->
     </init-param>
     <init-param>
       <param-name>cors.allowSubdomains</param-name>

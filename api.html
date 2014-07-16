@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'/>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1"/>
+    <meta name="description" content="Simba-os : UAM, IAM, security, access management, owasp, cegeka"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/jquery-ui.min.css">
+    <script src="javascripts/jquery.js"></script>
+    <script src="javascripts/jquery-ui.min.js"></script>
+    <title>Simba-os - API</title>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="inner">
+        <a id="forkme_banner" href="https://github.com/cegeka/simba-os">View on GitHub</a>
+
+        <h1 id="project_title">Simba-os</h1>
+
+        <h2 id="project_tagline"></h2>
+
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/cegeka/simba-os/zipball/master">Download this project
+                as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/cegeka/simba-os/tarball/master">Download this project
+                as a tar.gz file</a>
+        </section>
+        <section id="links">
+            <ul id="nav">
+                <li><a href="index.html#">Home</a></li>
+                <li><a href="gettingStarted.html">Getting started</a></li>
+                <li><a href="moreDetails.html">More details</a></li>
+                <li><a class="selected" href="#">API</a></li>
+                <li><a href="contribute.html">Contribute</a></li>
+            </ul>
+        </section>
+    </header>
+</div>
+
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h3>Welcome to the Simba open source project.</h3>
+
+        <!-- MAIN CONTENT start -->
+        <div id="tabs">
+            <ul>
+                <li><a href="#tabs-1">Services</a></li>
+                <li><a href="#tabs-2">Command Chain</a></li>
+                <li><a href="#tabs-3">Domain</a></li>
+            </ul>
+            <div id="tabs-1">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
+                ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
+                <div id="s-tabs">
+                    <ul>
+                        <li><a href="#s-tabs-1">Authentication</a></li>
+                        <li><a href="#s-tabs-2">Authorization</a></li>
+                    </ul>
+                    <div id="s-tabs-1">
+                        Authentication description
+                    </div>
+                    <div id="s-tabs-2">
+                        Authorization description
+                    </div>
+                </div>
+            </div>
+            <div id="tabs-2">
+                Phasellus mattis tincidunt nibh. Cras orci urna, blandit id, pretium vel, aliquet ornare,
+                felis. Maecenas scelerisque sem non nisl. Fusce sed lorem in enim dictum bibendum.
+                <div id="c-tabs">
+                    <ul>
+                        <li><a href="#c-tabs-1">Chain</a></li>
+                        <li><a href="#c-tabs-2">DecissionCommand</a></li>
+                    </ul>
+                    <div id="c-tabs-1">
+                        Chain description
+                    </div>
+                    <div id="c-tabs-2">
+                        DecissionCommand description
+                    </div>
+                </div>
+            </div>
+            <div id="tabs-3">
+                Nam dui erat, auctor a, dignissim quis, sollicitudin eu, felis. Pellentesque nisi urna,
+                interdum eget, sagittis et, consequat vestibulum, lacus. Mauris porttitor ullamcorper augue.
+                <div id="d-tabs">
+                    <ul>
+                        <li><a href="#d-tabs-1">User</a></li>
+                        <li><a href="#d-tabs-2">Session</a></li>
+                    </ul>
+                    <div id="d-tabs-1">
+                        User description
+                    </div>
+                    <div id="d-tabs-2">
+                        Session description
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- MAIN CONTENT end -->
+    </section>
+</div>
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="inner">
+        <p class="copyright">Simba-os maintained by <a href="https://github.com/cegeka">cegeka</a></p>
+
+        <p>Can't find what you need? Contact us via <a href="mailto:security-competence-center@cegeka.be">security-competence-center@cegeka.be</a>
+        </p>
+    </footer>
+</div>
+
+<script>
+    $("#tabs").tabs();
+    $("#s-tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+    $("#s-tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
+    $("#c-tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+    $("#c-tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
+    $("#d-tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+    $("#d-tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
+
+    // Hover states on the static widgets
+    $("#dialog-link, #icons li").hover(
+            function () {
+                $(this).addClass("ui-state-hover");
+            },
+            function () {
+                $(this).removeClass("ui-state-hover");
+            }
+    );
+
+</script>
+</body>
+</html>

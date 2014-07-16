@@ -369,21 +369,18 @@ Full-Width Styles
 /* Begin Navigation Bar Styling */
 #nav {
     position: absolute;
-    top: 132px;
+    top: 134px;
     width: 100%;
     float: left;
     margin: 0 0 3em 0;
     padding: 0;
     list-style: none;
-    background-color: #f2f2f2;
-    border-left: 1px solid #ccc;
-    border-top: 1px solid #ccc;
 }
 
 #nav li {
     float: left;
     text-align: center;
-    width: 33.333333333333333333333333333333%;
+    background-color: #f2f2f2;
 }
 
 #nav li a {
@@ -407,8 +404,37 @@ Full-Width Styles
     border-bottom: 0;
 }
 
-/* End navigation bar styling. */
-
+/* Tabbed pane styling */
+.tab {
+    font-family: verdana,sans-serif;
+    font-size: 14px;
+    width: 100px;
+    white-space: nowrap;
+    text-align: center;
+    border: 1px solid black;
+    border-bottom-width: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    cursor: pointer;
+}
+.tabhold {
+    background-color: white;
+    color: black;
+}
+.tabfocus {
+    background-color: black;
+    color: white;
+}
+.tabcontent {
+    font-family: sans-serif;
+    font-size: 14px;
+    width: 400px;
+    height: 275px;
+    border: 1px solid black;
+    padding-top: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
 
 /*******************************************************************************
 Small Device Styles

@@ -368,6 +368,8 @@ Full-Width Styles
 
 /* Begin Navigation Bar Styling */
 #nav {
+    position: absolute;
+    top: 132px;
     width: 100%;
     float: left;
     margin: 0 0 3em 0;
@@ -380,6 +382,8 @@ Full-Width Styles
 
 #nav li {
     float: left;
+    text-align: center;
+    width: 33.333333333333333333333333333333%;
 }
 
 #nav li a {

@@ -54,6 +54,7 @@
                 <li><a href="#tabs-3">Domain</a></li>
             </ul>
             <div id="tabs-1">
+
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
                 ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
                 nisi ut aliquip ex ea commodo consequat.
@@ -76,7 +77,7 @@
                 <div id="c-tabs">
                     <ul>
                         <li><a href="#c-tabs-1">Chain</a></li>
-                        <li><a href="#c-tabs-2">DecissionCommand</a></li>
+                        <li><a href="#c-tabs-2">DecisionCommand</a></li>
                     </ul>
                     <div id="c-tabs-1">
                         Chain description
@@ -87,17 +88,114 @@
                 </div>
             </div>
             <div id="tabs-3">
-                Nam dui erat, auctor a, dignissim quis, sollicitudin eu, felis. Pellentesque nisi urna,
-                interdum eget, sagittis et, consequat vestibulum, lacus. Mauris porttitor ullamcorper augue.
+                We've kept the domain model for Simba as simple as possible. Everything in the domain is targetted to
+                Users, Roles and Policies.
+                <img src="images/simba-class-diagram.png"/>
+
                 <div id="d-tabs">
                     <ul>
                         <li><a href="#d-tabs-1">User</a></li>
-                        <li><a href="#d-tabs-2">Session</a></li>
+                        <li><a href="#d-tabs-2">Role</a></li>
+                        <li><a href="#d-tabs-3">Policy</a></li>
+                        <li><a href="#d-tabs-4">Rule</a></li>
+                        <li><a href="#d-tabs-5">URLRule</a></li>
+                        <li><a href="#d-tabs-6">ResourceRule</a></li>
+                        <li><a href="#d-tabs-7">Condition</a></li>
+                        <li><a href="#d-tabs-8">Session</a></li>
                     </ul>
                     <div id="d-tabs-1">
-                        User description
+                        <p>The User entity is the representation of a principal in Simba.</p>
+
+                        Set
+                        <Role> roles = new HashSet
+                            <Role>()
+                                Set
+                                <Session> sessions = new HashSet
+                                    <Session>();
+
+                        <table>
+                            <tr>
+                                <td>userName</td>
+                                <td>The unique user name for the user</td>
+                            </tr>
+                            <tr>
+                                <td>password</td>
+                                <td>The password for the user. Passwords in Simba are salted and hashed before storing
+                                    them.</td>
+                            </tr>
+                            <tr>
+                                <td>name</td>
+                                <td>The real surname for the user.</td>
+                            </tr>
+                            <tr>
+                                <td>firstName</td>
+                                <td>The real first name for the user.</td>
+                            </tr>
+                            <tr>
+                                <td>status</td>
+                                <td>The current status of the user. The status can be <b>active</b>, <b>inactive</b> or
+                                    <b>blocked</b>.</td>
+                            </tr>
+                            <tr>
+                                <td>inactiveDate</td>
+                                <td>The date at which the user has become inactive.</td>
+                            </tr>
+                            <tr>
+                                <td>successURL</td>
+                                <td>The URL to redirect the user to on successful log on. Simba will only use this
+                                    URL if the user did not try to access a secured application before bying directed
+                                    to the login page.</td>
+                            </tr>
+                            <tr>
+                                <td>changePasswordOnNextLogon</td>
+                                <td>Is the user required to change his password at next login. A user is required
+                                    to change his password if the password has been used for longer then a
+                                    certain amount of days, or if an administrator explicitly flags the user as
+                                    required to change his password.</td>
+                            </tr>
+                            <tr>
+                                <td>passwordChangeRequired</td>
+                                <td>Is the user ever required to change his password. Certain system accounts can
+                                    be excluded from the need to change the password.</td>
+                            </tr>
+                            <tr>
+                                <td>databaseLoginBlocked</td>
+                                <td>Is the user allowed to login using the credentials stored in the Simba database.
+                                    This can be used if there is another way of authentication in place
+                                    (eg. Active Directory, ...) and we don't want the user to have multiple credentials
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>dateOfLastPasswordChange</td>
+                                <td>The date when the user last changed his password. This is used to determine when
+                                    the user should be forced change his password again.</td>
+                            </tr>
+                            <tr>
+                                <td>invalidLoginCount</td>
+                                <td>The number of successive invalid logins made by the user. This will be used to
+                                    block out a user, making brute-force attacks impossible.</td>
+                            </tr>
+                        </table>
                     </div>
                     <div id="d-tabs-2">
+                        Role description
+                    </div>
+                    <div id="d-tabs-3">
+                        Policy description
+                    </div>
+                    <div id="d-tabs-4">
+                        Rule description
+                    </div>
+                    <div id="d-tabs-5">
+                        URLRule description
+                    </div>
+                    <div id="d-tabs-6">
+                        ResourceRule description
+                    </div>
+                    <div id="d-tabs-7">
+                        Condition description
+                    </div>
+                    <div id="d-tabs-8">
                         Session description
                     </div>
                 </div>
@@ -117,12 +215,15 @@
 
 <script>
     $("#tabs").tabs();
-    $("#s-tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
-    $("#s-tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
-    $("#c-tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
-    $("#c-tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
-    $("#d-tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
-    $("#d-tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
+    $("#s-tabs").tabs();
+    $("#c-tabs").tabs();
+    $("#d-tabs").tabs();
+//    $("#s-tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+//    $("#s-tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
+//    $("#c-tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+//    $("#c-tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
+//    $("#d-tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+//    $("#d-tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
 
     // Hover states on the static widgets
     $("#dialog-link, #icons li").hover(
@@ -133,7 +234,6 @@
                 $(this).removeClass("ui-state-hover");
             }
     );
-
 </script>
 </body>
 </html>

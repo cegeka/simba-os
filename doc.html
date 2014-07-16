@@ -55,22 +55,51 @@
                 <li><a href="#tabs-4">Agent model</a></li>
             </ul>
             <div id="tabs-1">
+                <p>Simba exposes two services for applications to use for authentication and authorization. These
+                services are exposed using <a href="http://thrift.apache.org/">Apache Thrift&trade;</a>.</p>
+                <p>By using Thrift we can implement clients in different languages (.NET, php, ...) in an easy way.
+                   At this moment only the Java client is ready though.</p>
+                <p>Following code can be used to create a Thrift proxy:
+                <pre><code>THttpClient tHttpClient = new THttpClient(serviceURL);
+TProtocol tProtocol = new TJSONProtocol(tHttpClient);</code></pre></p>
 
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
-                ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-                <div id="s-tabs">
-                    <ul>
-                        <li><a href="#s-tabs-1">Authentication</a></li>
-                        <li><a href="#s-tabs-2">Authorization</a></li>
-                    </ul>
-                    <div id="s-tabs-1">
-                        Authentication description
-                    </div>
-                    <div id="s-tabs-2">
-                        Authorization description
-                    </div>
-                </div>
+                <h4>Authentication</h4>
+                <p>The Authentication service is responsible for checking a request for valid authentication data. The
+                   URL for this service is "/authenticationService"</p>
+
+                <p>Following snippet shows how the authentication service can be called using Java:</p>
+                <pre><code>AuthenticationFilterService.Client authenticationClient =
+    new AuthenticationFilterService.Client(tProtocol);
+
+ActionDescriptor actionDescriptor =
+    authenticationClient.processRequest(requestData, "chain-name");</code></pre>
+
+                <p>The authentication service just contains this single method to process a request, returning
+                   an ActionDescriptor.</p>
+
+                <h4>Authorization</h4>
+                <p>The authorization service is responsible for checking if a user is authorized to access a specific
+                   resource. The URL for this service is "/authorizationService"</p>
+
+                <p>Following snippet shows how the authorization service can be called using Java:</p>
+                <pre><code>AuthorizationService.Client authorizationClient =
+    new AuthorizationService.Client(tProtocol);
+PolicyDecision decision =
+    authorizationClient.isResourceRuleAllowed(userName, resource, action);
+if (!decision.isAllowed()) {
+    throw new SecurityException("You are not allowed here !");
+}</code></pre>
+                <p>The authorization service contains three methods:</p>
+                <dl>
+                    <dt>PolicyDecision isResourceRuleAllowed(username, resourceName, operation)</dt>
+                    <dd>Check if a user is allowed to perform a specified action on the given resource.</dd>
+                    <dt>PolicyDecision isURLRuleAllowed(username, url, method)</dt>
+                    <dd>Check if a user is allowed to perform a specified action on the given URL.</dd>
+                    <dt>PolicyDecision isUserInRole(username, roleName)</dt>
+                    <dd>Check if a user is included in the specified role.</dd>
+                </dl>
+                <p>The returned PolicyDecision contains a boolean value for the decision and a timestamp noting how
+                long the decision is valid.</p>
             </div>
             <div id="tabs-2">
                 Simba uses a chain of commands to process a request and decide the needed actions.

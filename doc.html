@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/jquery-ui.min.css">
     <script src="javascripts/jquery.js"></script>
     <script src="javascripts/jquery-ui.min.js"></script>
-    <title>Simba-os - API</title>
+    <title>Simba-os - Documentation</title>
 </head>
 
 <body>
@@ -32,9 +32,8 @@
             <ul id="nav">
                 <li><a href="index.html#">Home</a></li>
                 <li><a href="gettingStarted.html">Getting started</a></li>
-                <li><a href="ri.html">Tweak your simba</a></li>
-                <li><a href="moreDetails.html">More details</a></li>
-                <li><a class="selected" href="#">API</a></li>
+                <li><a href="ri.html">Tweak your Simba</a></li>
+                <li><a class="selected" href="#">Documentation</a></li>
                 <li><a href="contribute.html">Contribute</a></li>
             </ul>
         </section>
@@ -43,12 +42,16 @@
 
 <div id="main_content_wrap" class="outer">
     <section id="main_content" class="inner">
+        <h3>Reference documentation</h3>
+
         <!-- MAIN CONTENT start -->
+        
         <div id="tabs">
             <ul>
                 <li><a href="#tabs-1">Services</a></li>
                 <li><a href="#tabs-2">Command Chain</a></li>
                 <li><a href="#tabs-3">Domain</a></li>
+                <li><a href="#tabs-4">Agent model</a></li>
             </ul>
             <div id="tabs-1">
                 <p>Simba exposes two services for applications to use for authentication and authorization. These
@@ -196,9 +199,12 @@ if (!decision.isAllowed()) {
                 <img src="images/configured-chain.png" width="100%"/>
             </div>
             <div id="tabs-3">
-                We've kept the domain model for Simba as simple as possible. Everything in the domain is targetted to
+                We've kept the domain model for Simba as simple as possible. Everything in the domain is targeted to
                 Users, Roles and Policies.
                 <img src="images/simba-class-diagram.png" />
+            </div>
+            <div id="tabs-4">
+				<p><img alt="simba agent model" src="images/agent-model.JPG"></p>
             </div>
         </div>
     </section>

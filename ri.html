@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <meta name="description" content="Simba-os : Simba, UAM, IAM, security, access management, owasp, cegeka" />
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-    <title>Simba-os - RI</title>
+    <title>Simba-os - Adapt</title>
   </head>
 
   <body>
@@ -53,6 +53,14 @@
 				 </li>
 			</ol>
 		</p>
+		<p>
+			Once you've done this you should insert the values your project needs in the "insert_parameters.sql" in the correct folder (hsqldb, mysql, oracle, ...). 
+			There are a big number of settings you can tweak to determine success and failure urls, password complexity (regex), session time-outs, ... and much more :
+		</p>
+		<p>
+			<img alt="choose dependency" src="images/simba-configurable-db-params.png">
+		</p>
+		
 		<h3>JAAS</h3>
 		<p>You can choose your preferred JAAS login module by specifying the correct login module in the login.conf file:</p>
 		<p><img alt="DB login" src="images/jaasDB.png"></p>		

@@ -323,7 +323,7 @@ Full-Width Styles
   position: absolute;
   width: 210px;
   z-index: 10;
-  bottom: 50px;
+  bottom: 85px;
   right: 0;
   height: 70px;
   background: url('../images/icon_download.png') no-repeat 0% 90%;
@@ -375,7 +375,7 @@ Full-Width Styles
 /* Begin Navigation Bar Styling */
 #nav {
     position: absolute;
-    top: 134px;
+    top: 170px;
     width: 100%;
     float: left;
     margin: 0 0 3em 0;

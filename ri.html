@@ -50,6 +50,7 @@
  		<p>
 			<img alt="Command example" src="images/simba-command.png">
 			<img alt="Chain example" src="images/simba-chaincontext.png">
+			See the reference doc for a complete overview of the main <a href="doc.html#tabs-2">Commands</a>.
  		</p>
  		
  		<h3>Database</h3>
@@ -79,6 +80,18 @@
 		<h3>CORS</h3>
 		<p>The web.xml contains a piece of <a href="http://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a> configuration. Please don't forget to specify your manager domains here:</p>
 		<p><img alt="ri web.xml specify CORS domain" src="images/corsFilter.png"></p>		
+		
+		<h3>Webservices</h3>
+		<p>In addition to an exampel of a servlet filter (check the web.xml) we have also provided an example of a (JAXWS) webservice filter
+		which can serve as an example on how to authenticate a webservice call:</p>
+		<p><img alt="WS Handler" src="images/simba-ws-handler.png"></p>
+		
+		<h3>REST</h3>
+		<p>Since there are various ways to communicate credentials to Simba, you just need to get the user and password from whatever your context is, we have also provided a <strong>weak</strong> example of a 
+		Rest authentication filter (Jersey). It's weak since it just uses base64 encoding and decoding meaning this should not be used in an unsafe context such as outside the corporate trust boundary
+		or over plain HTTP! Implement your own version with stronger encryption if you want to use this in an unsafe context!
+		</p>
+		<p><img alt="Jersey filter" src="images/simba-jersey-filter.png"></p>		
 		
 		<!-- MAIN CONTENT end -->
       </section>

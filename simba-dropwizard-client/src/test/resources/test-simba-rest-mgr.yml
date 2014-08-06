@@ -1,0 +1,10 @@
+simbaURL: http://localhost:8087/simba/manager
+simbaWebURL: http://localhost:8087/simba
+appUserRole: simba-manager
+appUser: appUser
+appPassword: appUser
+cookiesEnabled: true
+gzipEnabled: false
+gzipEnabledForRequests: false
+timeout: 5000 ms
+connectionTimeout: 5000 ms

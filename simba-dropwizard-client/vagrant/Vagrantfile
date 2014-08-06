@@ -1,0 +1,41 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.define :precise64_virtualbox do |precise64_virtualbox|
+    # Box definition
+    precise64_virtualbox.vm.box = "precise64"
+    precise64_virtualbox.vm.box_url = "http://files.vagrantup.com/precise64.box"
+
+    # Memory setting
+    precise64_virtualbox.vm.provider :virtualbox
+    precise64_virtualbox.vm.provider :virtualbox do |v|
+      v.memory = 2048
+    end
+    
+    # Port-forwarding
+    # MySQL
+    precise64_virtualbox.vm.network :forwarded_port, guest: 3306, host: 3306
+    # Simba
+    precise64_virtualbox.vm.network :forwarded_port, guest: 8087, host: 8087
+    # Simba Debug Port
+    precise64_virtualbox.vm.network :forwarded_port, guest: 8000, host: 8000
+    # Https
+    # precise64_virtualbox.vm.network :forwarded_port, guest: 8443, host: 8443
+    
+    # Folder mounting
+    precise64_virtualbox.vm.synced_folder "../db", "/db"
+    precise64_virtualbox.vm.synced_folder "../conf", "/conf"
+    # Mount your simba implementation's folder to /simba. This mounted folder should be used in simba.sh, instead of the /conf folder
+    # precise64_virtualbox.vm.synced_folder "../simba-ri", "/simba"
+
+    # shell execution
+    precise64_virtualbox.vm.provision :shell, :path => "mysql.sh"
+    precise64_virtualbox.vm.provision :shell, :path => "init_simba.sh"
+    precise64_virtualbox.vm.provision :shell, :privileged => true, :path => "simba.sh"
+  end
+end

@@ -85,13 +85,13 @@ Note that the manager's chain is configured through Simba itself via the simba.p
 
 #### Guava
 
-[http://code.google.com/p/guava-libraries/](Guava) adds a little bit of a functional programming flavor to your code. Mainly used for the `Collections` and `Optional` utilities.
+[Guava](http://code.google.com/p/guava-libraries/) adds a little bit of a functional programming flavor to your code. Mainly used for the `Collections` and `Optional` utilities.
 
 
 #### Guice
 
-[http://code.google.com/p/google-guice/](Guice) provides light-weight Dependency Injection, and integrates nicely with Dropwizard.
+[Guice](http://code.google.com/p/google-guice/) provides light-weight Dependency Injection, and integrates nicely with Dropwizard.
 
 #### AssertJ
 
-[http://joel-costigliola.github.io/assertj/](AssertJ) is a follow up of the discontinued Fest Assert project. Makes our test assertions more readible thanks to its *Fluent Api* and has excellent helper methods for more easily asserting collections.
+[AssertJ](http://joel-costigliola.github.io/assertj/) is a follow up of the discontinued Fest Assert project. Makes our test assertions more readible thanks to its *Fluent Api* and has excellent helper methods for more easily asserting collections.

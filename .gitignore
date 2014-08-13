@@ -10,3 +10,6 @@ target/
 .classpath
 .project
 .settings/
+
+# Vagrant runtime directory
+.vagrant/

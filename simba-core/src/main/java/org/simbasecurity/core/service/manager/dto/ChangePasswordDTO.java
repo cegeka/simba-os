@@ -7,6 +7,11 @@ public class ChangePasswordDTO extends AbstractVersionedDTO {
 	private String newPassword;
 	private String newPasswordConfirmation;
 
+	// filled if the user changes his own password
+	private String oldPassword;
+	// filled if the admin changes the password
+	private String ssoToken;
+
 	public void setUserName(final String userName) {
 		this.userName = userName;
 	}
@@ -29,6 +34,22 @@ public class ChangePasswordDTO extends AbstractVersionedDTO {
 
 	public void setNewPasswordConfirmation(final String newPasswordConfirmation) {
 		this.newPasswordConfirmation = newPasswordConfirmation;
+	}
+
+	public String getOldPassword() {
+		return oldPassword;
+	}
+
+	public void setOldPassword(final String oldPassword) {
+		this.oldPassword = oldPassword;
+	}
+
+	public String getSsoToken() {
+		return ssoToken;
+	}
+
+	public void setSsoToken(final String ssoToken) {
+		this.ssoToken = ssoToken;
 	}
 
 	@Override

@@ -26,12 +26,15 @@ import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
 
 import org.simbasecurity.api.service.thrift.AuthorizationService;
+import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.Role;
+import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.repository.GroupRepository;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
+import org.simbasecurity.core.domain.repository.SessionRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.manager.assembler.GroupDTOAssembler;
@@ -72,6 +75,9 @@ public class UserManagerService {
 
 	@Autowired
 	private GroupRepository groupRepository;
+
+	@Autowired
+	private SessionRepository sessionRepository;
 
 	@Autowired
 	private ConfigurationService configurationService;
@@ -136,32 +142,87 @@ public class UserManagerService {
 		try {
 			attachedUser.resetPassword();
 		} catch (SimbaException ex) {
-			try {
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
-			} catch (IOException e) {
-				throw new RuntimeException(e.getCause());
-			}
+			sendError(response, ex.getMessage());
 		}
 
 		userRepository.flush();
 		return UserDTOAssembler.assemble(attachedUser);
 	}
 
-	@RequestMapping("changePassword")
+	// TODO philipn test
+	@RequestMapping("user/changePassword")
 	@ResponseBody
 	public void changePassword(@RequestBody ChangePasswordDTO changePasswordDTO, HttpServletResponse response) {
-		User attachedUser = userRepository.findByName(changePasswordDTO.getUserName());
-		try {
-			attachedUser.changePassword(changePasswordDTO.getNewPassword(), changePasswordDTO.getNewPasswordConfirmation());
-		} catch (SimbaException ex) {
-			try {
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
-			} catch (IOException e) {
-				throw new RuntimeException(e.getCause());
-			}
+		if (changePasswordDTO.getSsoToken() == null || changePasswordDTO.getUserName() == null) {
+			sendError(response, "Unauthorized");
+			return;
 		}
 
-		userRepository.flush();
+		Session activeSession = sessionRepository.findBySSOToken(new SSOToken(changePasswordDTO.getSsoToken()));
+		if (activeSession == null) {
+			sendError(response, "Unauthorized");
+			return;
+
+		} else {
+
+			User sessionUser = activeSession.getUser();
+			User userThatNeedsPasswordChange = userRepository.findByName(changePasswordDTO.getUserName());
+			if (!sessionUser.getName().equals(userThatNeedsPasswordChange.getName())) {
+				sendError(response, "Unauthorized");
+				return;
+
+			} else {
+				try {
+					userThatNeedsPasswordChange.changePassword(changePasswordDTO.getNewPassword(), changePasswordDTO.getNewPasswordConfirmation());
+				} catch (SimbaException ex) {
+					sendError(response, ex.getMessage());
+					return;
+				}
+
+				userRepository.flush();
+			}
+		}
+	}
+
+	@RequestMapping("admin/changePasswordOfUser")
+	@ResponseBody
+	public void changeUserPassword(@RequestBody ChangePasswordDTO changePasswordDTO, HttpServletResponse response) throws IOException {
+
+		if (changePasswordDTO.getSsoToken() == null) {
+			sendError(response, "Unauthorized");
+			return;
+		}
+
+		Session activeSession = sessionRepository.findBySSOToken(new SSOToken(changePasswordDTO.getSsoToken()));
+		if (activeSession == null || !activeSession.getUser().hasRole("admin")) {
+			sendError(response, "Unauthorized");
+			return;
+
+		} else {
+
+			User attachedUser = userRepository.findByName(changePasswordDTO.getUserName());
+			try {
+				attachedUser.changePassword(changePasswordDTO.getNewPassword(), changePasswordDTO.getNewPasswordConfirmation());
+			} catch (SimbaException ex) {
+				sendError(response, ex.getMessage());
+			}
+
+			userRepository.flush();
+		}
+	}
+
+	private void sendError(HttpServletResponse response, String message) {
+		try {
+			response.sendError(444, message); // TODO
+												// don't
+												// use
+												// 400
+												// here,
+												// but
+												// custom
+		} catch (IOException e) {
+			throw new RuntimeException(e.getCause());
+		}
 	}
 
 	@RequestMapping("createWithRoles")

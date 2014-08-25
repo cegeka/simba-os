@@ -15,7 +15,10 @@
  */
 package org.simbasecurity.core.service.authorization;
 
-import static org.simbasecurity.core.audit.AuditMessages.*;
+import static org.simbasecurity.core.audit.AuditMessages.LOG_DELIM;
+import static org.simbasecurity.core.audit.AuditMessages.RESOURCE_LABEL;
+import static org.simbasecurity.core.audit.AuditMessages.URL_RESOURCE_LABEL;
+import static org.simbasecurity.core.audit.AuditMessages.USER_ALLOWED_IN_ROLE_LABEL;
 
 import java.util.Collection;
 
@@ -26,7 +29,6 @@ import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.domain.ResourceOperationType;
 import org.simbasecurity.core.domain.ResourceRule;
-import org.simbasecurity.core.domain.Role;
 import org.simbasecurity.core.domain.URLOperationType;
 import org.simbasecurity.core.domain.URLRule;
 import org.simbasecurity.core.domain.User;
@@ -38,104 +40,103 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service("authorizationService")
-
 @Transactional
 public class AuthorizationServiceImpl implements AuthorizationService.Iface {
 
-    public static final PolicyDecision NEVER_ALLOWED = new PolicyDecision(false, Long.MAX_VALUE);
-    public static final PolicyDecision ALWAYS_ALLOWED = new PolicyDecision(true, Long.MAX_VALUE);
+	public static final PolicyDecision NEVER_ALLOWED = new PolicyDecision(false, Long.MAX_VALUE);
+	public static final PolicyDecision ALWAYS_ALLOWED = new PolicyDecision(true, Long.MAX_VALUE);
 
-    @Autowired private RuleRepository ruleRepository;
-    @Autowired private UserRepository userRepository;
-    @Autowired private Audit audit;
-    @Autowired private AuditLogEventFactory eventFactory;
+	@Autowired
+	private RuleRepository ruleRepository;
+	@Autowired
+	private UserRepository userRepository;
+	@Autowired
+	private Audit audit;
+	@Autowired
+	private AuditLogEventFactory eventFactory;
 
-    @Override
-    public PolicyDecision isResourceRuleAllowed(String username, String resourceName, String operation) {
-        return isResourceRuleAllowed(username, resourceName, ResourceOperationType.resolve(operation));
-    }
+	@Override
+	public PolicyDecision isResourceRuleAllowed(String username, String resourceName, String operation) {
+		return isResourceRuleAllowed(username, resourceName, ResourceOperationType.resolve(operation));
+	}
 
-    private PolicyDecision isResourceRuleAllowed(String username, String resourceName,
-                                                 ResourceOperationType operationType) {
-        AuthorizationRequestContext context = new AuthorizationRequestContext(username);
-        Collection<ResourceRule> resourceRules = ruleRepository.findResourceRules(username, resourceName);
+	private PolicyDecision isResourceRuleAllowed(String username, String resourceName, ResourceOperationType operationType) {
+		AuthorizationRequestContext context = new AuthorizationRequestContext(username);
+		Collection<ResourceRule> resourceRules = ruleRepository.findResourceRules(username, resourceName);
 
-        PolicyDecision decision = null;
+		PolicyDecision decision = null;
 
-        for (ResourceRule resourceRule : resourceRules) {
-            boolean allowed = resourceRule.getPolicy().applies(context) && resourceRule.isAllowed(operationType);
-            long newTimestamp = resourceRule.getPolicy().getExpirationTimestamp(context);
+		for (ResourceRule resourceRule : resourceRules) {
+			boolean allowed = resourceRule.getPolicy().applies(context) && resourceRule.isAllowed(operationType);
+			long newTimestamp = resourceRule.getPolicy().getExpirationTimestamp(context);
 
-            decision = determineDecisionBasedOn(decision, allowed, newTimestamp);
-        }
+			decision = determineDecisionBasedOn(decision, allowed, newTimestamp);
+		}
 
-        if (decision == null) {
-            decision = NEVER_ALLOWED;
-        }
-        logAuthorizationDecision(username, RESOURCE_LABEL + resourceName + LOG_DELIM + operationType.name() + LOG_DELIM
-                + decision.toString());
-        return decision;
-    }
+		if (decision == null) {
+			decision = NEVER_ALLOWED;
+		}
+		logAuthorizationDecision(username, RESOURCE_LABEL + resourceName + LOG_DELIM + operationType.name() + LOG_DELIM + decision.toString());
+		return decision;
+	}
 
-    @Override
-    public PolicyDecision isURLRuleAllowed(String username, String url, String httpMethod) {
-        return isURLRuleAllowed(username, url, URLOperationType.resolve(httpMethod));
-    }
+	@Override
+	public PolicyDecision isURLRuleAllowed(String username, String url, String httpMethod) {
+		return isURLRuleAllowed(username, url, URLOperationType.resolve(httpMethod));
+	}
 
-    private PolicyDecision isURLRuleAllowed(String username, String url, URLOperationType operationType) {
-        AuthorizationRequestContext context = new AuthorizationRequestContext(username);
-        Collection<URLRule> rules = ruleRepository.findURLRules(username);
+	private PolicyDecision isURLRuleAllowed(String username, String url, URLOperationType operationType) {
+		AuthorizationRequestContext context = new AuthorizationRequestContext(username);
+		Collection<URLRule> rules = ruleRepository.findURLRules(username);
 
-        PolicyDecision decision = null;
+		PolicyDecision decision = null;
 
-        for (URLRule rule : rules) {
-            if (FilenameUtils.wildcardMatch(url, rule.getResourceName())) {
-                boolean allowed = rule.getPolicy().applies(context) && rule.isAllowed(operationType);
-                long newTimestamp = rule.getPolicy().getExpirationTimestamp(context);
+		for (URLRule rule : rules) {
+			if (FilenameUtils.wildcardMatch(url, rule.getResourceName())) {
+				boolean allowed = rule.getPolicy().applies(context) && rule.isAllowed(operationType);
+				long newTimestamp = rule.getPolicy().getExpirationTimestamp(context);
 
-                decision = determineDecisionBasedOn(decision, allowed, newTimestamp);
-            }
-        }
+				decision = determineDecisionBasedOn(decision, allowed, newTimestamp);
+			}
+		}
 
-        if (decision == null) {
-            decision = NEVER_ALLOWED;
-        }
-        logAuthorizationDecision(username, URL_RESOURCE_LABEL + url + LOG_DELIM + operationType.name() + LOG_DELIM
-                + decision.toString());
-        return decision;
-    }
+		if (decision == null) {
+			decision = NEVER_ALLOWED;
+		}
+		logAuthorizationDecision(username, URL_RESOURCE_LABEL + url + LOG_DELIM + operationType.name() + LOG_DELIM + decision.toString());
+		return decision;
+	}
 
-    @Override
-    public PolicyDecision isUserInRole(String username, String roleName) {
-        User user = userRepository.findByName(username);
-        for (Role role : user.getRoles()) {
-            if (role.getName().equals(roleName)) {
-                logAuthorizationDecision(username, USER_ALLOWED_IN_ROLE_LABEL + roleName + LOG_DELIM + ALWAYS_ALLOWED);
-                return ALWAYS_ALLOWED;
-            }
-        }
-        logAuthorizationDecision(username, USER_ALLOWED_IN_ROLE_LABEL + roleName + LOG_DELIM + NEVER_ALLOWED);
-        return NEVER_ALLOWED;
-    }
+	@Override
+	public PolicyDecision isUserInRole(String username, String roleName) {
+		User user = userRepository.findByName(username);
+		if (user.hasRole(roleName)) {
+			logAuthorizationDecision(username, USER_ALLOWED_IN_ROLE_LABEL + roleName + LOG_DELIM + ALWAYS_ALLOWED);
+			return ALWAYS_ALLOWED;
+		}
 
-    private PolicyDecision determineDecisionBasedOn(PolicyDecision decision, boolean allowed, long newTimestamp) {
-        if (decision == null) {
-            decision = new PolicyDecision(allowed, newTimestamp);
-        } else {
-            if (decision.isAllowed()) {
-                if (allowed && newTimestamp > decision.getExpirationTimestamp()) {
-                    decision = new PolicyDecision(true, newTimestamp);
-                }
-            } else {
-                if (allowed || newTimestamp < decision.getExpirationTimestamp()) {
-                    decision = new PolicyDecision(allowed, newTimestamp);
-                }
-            }
-        }
-        return decision;
-    }
+		logAuthorizationDecision(username, USER_ALLOWED_IN_ROLE_LABEL + roleName + LOG_DELIM + NEVER_ALLOWED);
+		return NEVER_ALLOWED;
+	}
 
-    private void logAuthorizationDecision(String username, String message) {
-        audit.log(eventFactory.createEventForAuthorizationDecision(username, message));
-    }
+	private PolicyDecision determineDecisionBasedOn(PolicyDecision decision, boolean allowed, long newTimestamp) {
+		if (decision == null) {
+			decision = new PolicyDecision(allowed, newTimestamp);
+		} else {
+			if (decision.isAllowed()) {
+				if (allowed && newTimestamp > decision.getExpirationTimestamp()) {
+					decision = new PolicyDecision(true, newTimestamp);
+				}
+			} else {
+				if (allowed || newTimestamp < decision.getExpirationTimestamp()) {
+					decision = new PolicyDecision(allowed, newTimestamp);
+				}
+			}
+		}
+		return decision;
+	}
+
+	private void logAuthorizationDecision(String username, String message) {
+		audit.log(eventFactory.createEventForAuthorizationDecision(username, message));
+	}
 }

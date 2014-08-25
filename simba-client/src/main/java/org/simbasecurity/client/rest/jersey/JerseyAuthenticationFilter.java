@@ -34,9 +34,9 @@ public class JerseyAuthenticationFilter implements ContainerRequestFilter {
         if (auth == null) {
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
-        String[] lap = decode(auth);
-        requestParameters.put(AuthenticationConstants.USERNAME, lap[0]);
-        requestParameters.put(AuthenticationConstants.PASSWORD, lap[1]);
+        String[] credentials = decode(auth);
+        requestParameters.put(AuthenticationConstants.USERNAME, credentials[0]);
+        requestParameters.put(AuthenticationConstants.PASSWORD, credentials[1]);
 
         RequestData requestData = new RequestData(requestParameters, toMap(containerRequest.getRequestHeaders()),
                                                   containerRequest.getAbsolutePath().toString(), simbaWebURL, null /* SSO Token */, null /* Client IP */,

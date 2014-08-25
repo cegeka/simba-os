@@ -15,13 +15,16 @@
  */
 package org.simbasecurity.core.service.authorization;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,8 +39,6 @@ import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.domain.Policy;
 import org.simbasecurity.core.domain.ResourceOperationType;
 import org.simbasecurity.core.domain.ResourceRule;
-import org.simbasecurity.core.domain.Role;
-import org.simbasecurity.core.domain.RoleEntity;
 import org.simbasecurity.core.domain.URLOperationType;
 import org.simbasecurity.core.domain.URLRule;
 import org.simbasecurity.core.domain.UserEntity;
@@ -48,248 +49,231 @@ import org.simbasecurity.core.service.AuthorizationRequestContext;
 @RunWith(MockitoJUnitRunner.class)
 public class AuthorizationServiceImplTest {
 
-    private static final long EXPIRATION_TIMESTAMP_1 = 100000L;
-    private static final long EXPIRATION_TIMESTAMP_2 = 200000L;
+	private static final long EXPIRATION_TIMESTAMP_1 = 100000L;
+	private static final long EXPIRATION_TIMESTAMP_2 = 200000L;
 
-    private static final String RESOURCE_OPERATION = "read";
-    private static final String RESOURCE_NAME = "resourcename";
+	private static final String RESOURCE_OPERATION = "read";
+	private static final String RESOURCE_NAME = "resourcename";
 
-    private static final String URL_OPERATION = "get";
-    private static final String URL = "http://localhost/test/jsp/testpage.faces";
+	private static final String URL_OPERATION = "get";
+	private static final String URL = "http://localhost/test/jsp/testpage.faces";
 
-    private static final String USERNAME = "username";
+	private static final String USERNAME = "username";
 
-    @Mock private RuleRepository mockRuleRepository;
-    @Mock private UserRepository mockUserRepository;
-    @Mock private Audit auditMock;
+	@Mock
+	private RuleRepository mockRuleRepository;
+	@Mock
+	private UserRepository mockUserRepository;
+	@Mock
+	private Audit auditMock;
 
-    @Spy private AuditLogEventFactory auditLogEventFactory;
+	@Spy
+	private AuditLogEventFactory auditLogEventFactory;
 
-    @Mock private ResourceRule mockResourceRule;
-    @Mock private ResourceRule mock2ndResourceRule;
-    @Mock private URLRule mockURLRule;
-    @Mock private Policy mockPolicy;
-    @Mock private Policy mock2ndPolicy;
+	@Mock
+	private ResourceRule mockResourceRule;
+	@Mock
+	private ResourceRule mock2ndResourceRule;
+	@Mock
+	private URLRule mockURLRule;
+	@Mock
+	private Policy mockPolicy;
+	@Mock
+	private Policy mock2ndPolicy;
 
-    @InjectMocks
-    private AuthorizationServiceImpl authorizationServiceImpl;
+	@InjectMocks
+	private AuthorizationServiceImpl authorizationServiceImpl;
 
-    @Before
-    public void setUp() {
-        when(mockResourceRule.getPolicy()).thenReturn(mockPolicy);
-        when(mockPolicy.getExpirationTimestamp(any(AuthorizationRequestContext.class))).thenReturn(
-                EXPIRATION_TIMESTAMP_1);
-        when(mock2ndResourceRule.getPolicy()).thenReturn(mock2ndPolicy);
-        when(mock2ndPolicy.getExpirationTimestamp(any(AuthorizationRequestContext.class))).thenReturn(
-                EXPIRATION_TIMESTAMP_2);
+	@Before
+	public void setUp() {
+		when(mockResourceRule.getPolicy()).thenReturn(mockPolicy);
+		when(mockPolicy.getExpirationTimestamp(any(AuthorizationRequestContext.class))).thenReturn(EXPIRATION_TIMESTAMP_1);
+		when(mock2ndResourceRule.getPolicy()).thenReturn(mock2ndPolicy);
+		when(mock2ndPolicy.getExpirationTimestamp(any(AuthorizationRequestContext.class))).thenReturn(EXPIRATION_TIMESTAMP_2);
 
-        when(mockURLRule.getPolicy()).thenReturn(mockPolicy);
-    }
+		when(mockURLRule.getPolicy()).thenReturn(mockPolicy);
+	}
 
-    @Test
-    public void isURLRuleAllowed_noUrlRuleFound() {
-        when(mockRuleRepository.findURLRules(USERNAME)).thenReturn(Collections.<URLRule>emptyList());
+	@Test
+	public void isURLRuleAllowed_noUrlRuleFound() {
+		when(mockRuleRepository.findURLRules(USERNAME)).thenReturn(Collections.<URLRule> emptyList());
 
-        PolicyDecision decision = authorizationServiceImpl.isURLRuleAllowed(USERNAME, URL, URL_OPERATION);
+		PolicyDecision decision = authorizationServiceImpl.isURLRuleAllowed(USERNAME, URL, URL_OPERATION);
 
-        assertFalse(decision.isAllowed());
-        assertEquals(Long.MAX_VALUE, decision.getExpirationTimestamp());
-    }
+		assertFalse(decision.isAllowed());
+		assertEquals(Long.MAX_VALUE, decision.getExpirationTimestamp());
+	}
 
-    @Test
-    public void isURLRuleAllowed_urlRuleFoundAndResourcenameMatches() {
-        when(mockURLRule.getResourceName()).thenReturn("*/test/*");
-        when(mockURLRule.isAllowed(URLOperationType.resolve(URL_OPERATION))).thenReturn(true);
-        when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
-        when(mockRuleRepository.findURLRules(USERNAME)).thenReturn(Collections.singletonList(mockURLRule));
+	@Test
+	public void isURLRuleAllowed_urlRuleFoundAndResourcenameMatches() {
+		when(mockURLRule.getResourceName()).thenReturn("*/test/*");
+		when(mockURLRule.isAllowed(URLOperationType.resolve(URL_OPERATION))).thenReturn(true);
+		when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
+		when(mockRuleRepository.findURLRules(USERNAME)).thenReturn(Collections.singletonList(mockURLRule));
 
-        PolicyDecision decision = authorizationServiceImpl.isURLRuleAllowed(USERNAME, URL, URL_OPERATION);
+		PolicyDecision decision = authorizationServiceImpl.isURLRuleAllowed(USERNAME, URL, URL_OPERATION);
 
-        assertTrue(decision.isAllowed());
-        assertEquals(EXPIRATION_TIMESTAMP_1, decision.getExpirationTimestamp());
-    }
+		assertTrue(decision.isAllowed());
+		assertEquals(EXPIRATION_TIMESTAMP_1, decision.getExpirationTimestamp());
+	}
 
-    @Test
-    public void isURLRuleAllowed_urlRuleFoundAndResourcenameDoesNotMatch() {
-        when(mockURLRule.getResourceName()).thenReturn("*/notmatching/*");
+	@Test
+	public void isURLRuleAllowed_urlRuleFoundAndResourcenameDoesNotMatch() {
+		when(mockURLRule.getResourceName()).thenReturn("*/notmatching/*");
 
-        PolicyDecision decision = authorizationServiceImpl.isURLRuleAllowed(USERNAME, URL, URL_OPERATION);
+		PolicyDecision decision = authorizationServiceImpl.isURLRuleAllowed(USERNAME, URL, URL_OPERATION);
 
-        assertFalse(decision.isAllowed());
-        assertEquals(Long.MAX_VALUE, decision.getExpirationTimestamp());
-    }
+		assertFalse(decision.isAllowed());
+		assertEquals(Long.MAX_VALUE, decision.getExpirationTimestamp());
+	}
 
-    @Test
-    public void policyDecisionNeverWhenNoRule() {
-        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(
-                Collections.<ResourceRule>emptySet());
+	@Test
+	public void policyDecisionNeverWhenNoRule() {
+		when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(Collections.<ResourceRule> emptySet());
 
-        PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME,
-                RESOURCE_OPERATION);
+		PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME, RESOURCE_OPERATION);
 
-        assertFalse(decision.isAllowed());
+		assertFalse(decision.isAllowed());
 
-        assertEquals(Long.MAX_VALUE, decision.getExpirationTimestamp());
+		assertEquals(Long.MAX_VALUE, decision.getExpirationTimestamp());
 
-        verify(mockRuleRepository).findResourceRules(USERNAME, RESOURCE_NAME);
-    }
+		verify(mockRuleRepository).findResourceRules(USERNAME, RESOURCE_NAME);
+	}
 
-    @Test
-    public void policyAppliesAndRuleAllowedReturnsDecisionTrue() {
-        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(
-                Collections.singleton(mockResourceRule));
-        when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
-        when(mockResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(true);
+	@Test
+	public void policyAppliesAndRuleAllowedReturnsDecisionTrue() {
+		when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(Collections.singleton(mockResourceRule));
+		when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
+		when(mockResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(true);
 
-        PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME,
-                RESOURCE_OPERATION);
+		PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME, RESOURCE_OPERATION);
 
-        assertTrue(decision.isAllowed());
-        assertEquals(EXPIRATION_TIMESTAMP_1, decision.getExpirationTimestamp());
-    }
+		assertTrue(decision.isAllowed());
+		assertEquals(EXPIRATION_TIMESTAMP_1, decision.getExpirationTimestamp());
+	}
 
-    @Test
-    public void policyAppliesAndRuleDisallowedReturnsDecisionFalse() {
-        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(
-                Collections.singleton(mockResourceRule));
-        when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
-        when(mockResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(false);
+	@Test
+	public void policyAppliesAndRuleDisallowedReturnsDecisionFalse() {
+		when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(Collections.singleton(mockResourceRule));
+		when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
+		when(mockResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(false);
 
-        PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME,
-                RESOURCE_OPERATION);
+		PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME, RESOURCE_OPERATION);
 
-        assertFalse(decision.isAllowed());
-        assertEquals(EXPIRATION_TIMESTAMP_1, decision.getExpirationTimestamp());
-    }
+		assertFalse(decision.isAllowed());
+		assertEquals(EXPIRATION_TIMESTAMP_1, decision.getExpirationTimestamp());
+	}
 
-    @Test
-    public void policyDoesNotApplyReturnsDecisionFalse() {
-        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(
-                Collections.singleton(mockResourceRule));
-        when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(false);
+	@Test
+	public void policyDoesNotApplyReturnsDecisionFalse() {
+		when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(Collections.singleton(mockResourceRule));
+		when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(false);
 
-        PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME,
-                RESOURCE_OPERATION);
+		PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME, RESOURCE_OPERATION);
 
-        assertFalse(decision.isAllowed());
-        assertEquals(EXPIRATION_TIMESTAMP_1, decision.getExpirationTimestamp());
-    }
+		assertFalse(decision.isAllowed());
+		assertEquals(EXPIRATION_TIMESTAMP_1, decision.getExpirationTimestamp());
+	}
 
-    @Test
-    public void policyAppliesAnd2ndRuleAllowedReturnsDecisionTrue_1stPolicyDoesNotApply() {
-        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(
-                Arrays.asList(mockResourceRule, mock2ndResourceRule));
-        when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(false);
-        when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
-        when(mock2ndResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(true);
+	@Test
+	public void policyAppliesAnd2ndRuleAllowedReturnsDecisionTrue_1stPolicyDoesNotApply() {
+		when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(Arrays.asList(mockResourceRule, mock2ndResourceRule));
+		when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(false);
+		when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
+		when(mock2ndResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(true);
 
-        PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME,
-                RESOURCE_OPERATION);
+		PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME, RESOURCE_OPERATION);
 
-        assertEquals(EXPIRATION_TIMESTAMP_2, decision.getExpirationTimestamp());
-        assertTrue(decision.isAllowed());
-    }
+		assertEquals(EXPIRATION_TIMESTAMP_2, decision.getExpirationTimestamp());
+		assertTrue(decision.isAllowed());
+	}
 
-    @Test
-    public void policyAppliesAnd2ndRuleDisallowedReturnsDecisionFalse_1stPolicyDoesNotApply() {
-        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(
-                Arrays.asList(mockResourceRule, mock2ndResourceRule));
-        when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(false);
+	@Test
+	public void policyAppliesAnd2ndRuleDisallowedReturnsDecisionFalse_1stPolicyDoesNotApply() {
+		when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(Arrays.asList(mockResourceRule, mock2ndResourceRule));
+		when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(false);
 
-        when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
-        when(mock2ndResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(false);
+		when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
+		when(mock2ndResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(false);
 
-        PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME,
-                RESOURCE_OPERATION);
+		PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME, RESOURCE_OPERATION);
 
-        assertFalse(decision.isAllowed());
-        assertEquals(EXPIRATION_TIMESTAMP_1, decision.getExpirationTimestamp());
-    }
+		assertFalse(decision.isAllowed());
+		assertEquals(EXPIRATION_TIMESTAMP_1, decision.getExpirationTimestamp());
+	}
 
-    @Test
-    public void policyDoesNotApplyAnd2ndRuleAllowedReturnsDecisionFalseWithSmallestExpirationStamp_1stPolicyDoesNotApply() {
-        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(
-                Arrays.asList(mockResourceRule, mock2ndResourceRule));
-        when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(false);
-        when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(false);
+	@Test
+	public void policyDoesNotApplyAnd2ndRuleAllowedReturnsDecisionFalseWithSmallestExpirationStamp_1stPolicyDoesNotApply() {
+		when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(Arrays.asList(mockResourceRule, mock2ndResourceRule));
+		when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(false);
+		when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(false);
 
-        PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME,
-                RESOURCE_OPERATION);
+		PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME, RESOURCE_OPERATION);
 
-        assertFalse(decision.isAllowed());
-        assertEquals(EXPIRATION_TIMESTAMP_1, decision.getExpirationTimestamp());
-    }
+		assertFalse(decision.isAllowed());
+		assertEquals(EXPIRATION_TIMESTAMP_1, decision.getExpirationTimestamp());
+	}
 
-    @Test
-    public void policyAppliesAnd2ndRuleAllowedReturnsDecisionTrue_1stRuleDisallowed() {
-        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(
-                Arrays.asList(mockResourceRule, mock2ndResourceRule));
-        when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
-        when(mockResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(false);
-        when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
-        when(mock2ndResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(true);
+	@Test
+	public void policyAppliesAnd2ndRuleAllowedReturnsDecisionTrue_1stRuleDisallowed() {
+		when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(Arrays.asList(mockResourceRule, mock2ndResourceRule));
+		when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
+		when(mockResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(false);
+		when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
+		when(mock2ndResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(true);
 
-        PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME,
-                RESOURCE_OPERATION);
+		PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME, RESOURCE_OPERATION);
 
-        assertTrue(decision.isAllowed());
-        assertEquals(EXPIRATION_TIMESTAMP_2, decision.getExpirationTimestamp());
-    }
+		assertTrue(decision.isAllowed());
+		assertEquals(EXPIRATION_TIMESTAMP_2, decision.getExpirationTimestamp());
+	}
 
-    @Test
-    public void policyAppliesAnd2ndRuleDisallowedReturnsDecisionFalseWithSmallestExpirationStamp_1stRuleDisallowed() {
-        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(
-                Arrays.asList(mockResourceRule, mock2ndResourceRule));
-        when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
-        when(mockResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(false);
-        when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
-        when(mock2ndResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(false);
+	@Test
+	public void policyAppliesAnd2ndRuleDisallowedReturnsDecisionFalseWithSmallestExpirationStamp_1stRuleDisallowed() {
+		when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(Arrays.asList(mockResourceRule, mock2ndResourceRule));
+		when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
+		when(mockResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(false);
+		when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
+		when(mock2ndResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(false);
 
-        PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME,
-                RESOURCE_OPERATION);
+		PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME, RESOURCE_OPERATION);
 
-        assertFalse(decision.isAllowed());
-        assertEquals(EXPIRATION_TIMESTAMP_1, decision.getExpirationTimestamp());
-    }
+		assertFalse(decision.isAllowed());
+		assertEquals(EXPIRATION_TIMESTAMP_1, decision.getExpirationTimestamp());
+	}
 
-    @Test
-    public void policyDoesNotApplyAnd2ndRuleAllowedReturnsDecisionFalse_1stRuleDisallowed() {
-        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(
-                Arrays.asList(mockResourceRule, mock2ndResourceRule));
-        when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
-        when(mockResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(false);
-        when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(false);
+	@Test
+	public void policyDoesNotApplyAnd2ndRuleAllowedReturnsDecisionFalse_1stRuleDisallowed() {
+		when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(Arrays.asList(mockResourceRule, mock2ndResourceRule));
+		when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
+		when(mockResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(false);
+		when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(false);
 
-        PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME,
-                RESOURCE_OPERATION);
+		PolicyDecision decision = authorizationServiceImpl.isResourceRuleAllowed(USERNAME, RESOURCE_NAME, RESOURCE_OPERATION);
 
-        assertFalse(decision.isAllowed());
-        assertEquals(EXPIRATION_TIMESTAMP_1, decision.getExpirationTimestamp());
-    }
+		assertFalse(decision.isAllowed());
+		assertEquals(EXPIRATION_TIMESTAMP_1, decision.getExpirationTimestamp());
+	}
 
-    @Test
-    public void isUserInRole_isInRole() {
-        setUpIsUserInRole();
+	@Test
+	public void isUserInRole_isInRole() {
+		setUpIsUserInRole();
 
-        assertTrue(authorizationServiceImpl.isUserInRole("testuser", "testrole").isAllowed());
-    }
+		assertTrue(authorizationServiceImpl.isUserInRole("testuser", "testrole").isAllowed());
+	}
 
-    @Test
-    public void isUserInRole_isNotInRole() {
-        setUpIsUserInRole();
+	@Test
+	public void isUserInRole_isNotInRole() {
+		setUpIsUserInRole();
 
-        assertFalse(authorizationServiceImpl.isUserInRole("testuser", "testotherrole").isAllowed());
-    }
+		assertFalse(authorizationServiceImpl.isUserInRole("testuser", "testotherrole").isAllowed());
+	}
 
-    private void setUpIsUserInRole() {
-        RoleEntity roleEntity = mock(RoleEntity.class);
-        HashSet<Role> roles = new HashSet<Role>();
-        roles.add(roleEntity);
-        UserEntity userEntity = mock(UserEntity.class);
+	private void setUpIsUserInRole() {
+		UserEntity userEntity = mock(UserEntity.class);
+		when(userEntity.hasRole("testrole")).thenReturn(true);
 
-        when(roleEntity.getName()).thenReturn("testrole");
-        when(userEntity.getRoles()).thenReturn(roles);
-        when(mockUserRepository.findByName("testuser")).thenReturn(userEntity);
-    }
+		when(mockUserRepository.findByName("testuser")).thenReturn(userEntity);
+	}
 
 }

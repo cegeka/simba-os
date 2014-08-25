@@ -15,7 +15,8 @@
  */
 package org.simbasecurity.core.service.manager.assembler;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,75 +31,76 @@ import org.simbasecurity.core.service.manager.dto.TimeConditionDTO;
 
 public class ConditionDTOAssemblerTest {
 
-    @Test (expected = IllegalArgumentException.class)
-    public void testAssembleSingleCondition_Failure() {
-        Condition condition = new ConditionEntity() {
-            @Override
-            protected boolean conditionApplies(AuthorizationRequestContext context) {
-                return false;
-            }
-        };
+	@Test(expected = IllegalArgumentException.class)
+	public void testAssembleSingleCondition_Failure() {
+		@SuppressWarnings("serial")
+		Condition condition = new ConditionEntity() {
+			@Override
+			protected boolean conditionApplies(AuthorizationRequestContext context) {
+				return false;
+			}
+		};
 
-        ConditionDTOAssembler.assemble(condition);
-    }
+		ConditionDTOAssembler.assemble(condition);
+	}
 
-    @Test
-    public void testAssembleSingleCondition() {
-        TimeConditionDTO condition = createTimeConditionData();
+	@Test
+	public void testAssembleSingleCondition() {
+		TimeConditionDTO condition = createTimeConditionData();
 
-        TimeCondition conditionData = (TimeCondition) ConditionDTOAssembler.assemble(condition);
+		TimeCondition conditionData = (TimeCondition) ConditionDTOAssembler.assemble(condition);
 
-        assertNotNull(conditionData);
-        assertEquals(0, conditionData.getId());
-        assertEquals(condition.getName(), conditionData.getName());
-        assertEquals(condition.getStartCondition(), conditionData.getStartCondition());
-        assertEquals(condition.getEndCondition(), conditionData.getEndCondition());
+		assertNotNull(conditionData);
+		assertEquals(0, conditionData.getId());
+		assertEquals(condition.getName(), conditionData.getName());
+		assertEquals(condition.getStartCondition(), conditionData.getStartCondition());
+		assertEquals(condition.getEndCondition(), conditionData.getEndCondition());
 
-        assertEquals(0, conditionData.getId());
-        assertEquals(0, conditionData.getVersion());
-    }
+		assertEquals(0, conditionData.getId());
+		assertEquals(0, conditionData.getVersion());
+	}
 
-    @Test
-    public void testAssembleSingleConditionData() {
-        TimeCondition condition = createTimeCondition();
+	@Test
+	public void testAssembleSingleConditionData() {
+		TimeCondition condition = createTimeCondition();
 
-        TimeConditionDTO conditionData = (TimeConditionDTO) ConditionDTOAssembler.assemble(condition);
+		TimeConditionDTO conditionData = (TimeConditionDTO) ConditionDTOAssembler.assemble(condition);
 
-        assertNotNull(conditionData);
-        assertEquals(0, conditionData.getId());
-        assertEquals(condition.getName(), conditionData.getName());
-        assertEquals(condition.getStartCondition(), conditionData.getStartCondition());
-        assertEquals(condition.getEndCondition(), conditionData.getEndCondition());
+		assertNotNull(conditionData);
+		assertEquals(0, conditionData.getId());
+		assertEquals(condition.getName(), conditionData.getName());
+		assertEquals(condition.getStartCondition(), conditionData.getStartCondition());
+		assertEquals(condition.getEndCondition(), conditionData.getEndCondition());
 
-        assertEquals(0, conditionData.getId());
-        assertEquals(0, conditionData.getVersion());
-    }
+		assertEquals(0, conditionData.getId());
+		assertEquals(0, conditionData.getVersion());
+	}
 
-    private TimeConditionDTO createTimeConditionData() {
-        TimeConditionDTO condition = new TimeConditionDTO();
-        condition.setName("time condition");
-        condition.setStartCondition("0 0 12 * * ?");
-        condition.setEndCondition("0 0 12 * * ?");
-        return condition;
-    }
+	private TimeConditionDTO createTimeConditionData() {
+		TimeConditionDTO condition = new TimeConditionDTO();
+		condition.setName("time condition");
+		condition.setStartCondition("0 0 12 * * ?");
+		condition.setEndCondition("0 0 12 * * ?");
+		return condition;
+	}
 
-    private TimeCondition createTimeCondition() {
-        TimeCondition condition = new TimeCondition();
-        condition.setName("time condition");
-        condition.setStartCondition("0 0 12 * * ?");
-        condition.setEndCondition("0 0 12 * * ?");
-        return condition;
-    }
+	private TimeCondition createTimeCondition() {
+		TimeCondition condition = new TimeCondition();
+		condition.setName("time condition");
+		condition.setStartCondition("0 0 12 * * ?");
+		condition.setEndCondition("0 0 12 * * ?");
+		return condition;
+	}
 
-    @Test
-    public void testAssembleMultipleConditionsData() {
-        Condition condition = createTimeCondition();
+	@Test
+	public void testAssembleMultipleConditionsData() {
+		Condition condition = createTimeCondition();
 
-        Collection<ConditionDTO> policyDataList = ConditionDTOAssembler.assemble(Arrays.asList(condition));
+		Collection<ConditionDTO> policyDataList = ConditionDTOAssembler.assemble(Arrays.asList(condition));
 
-        assertNotNull(policyDataList);
-        assertEquals(1, policyDataList.size());
+		assertNotNull(policyDataList);
+		assertEquals(1, policyDataList.size());
 
-    }
+	}
 
 }

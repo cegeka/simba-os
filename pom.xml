@@ -56,10 +56,8 @@
         <module>simba-client</module>
         <module>simba-core</module>
         <module>simba-ri</module>
-        <!--<module>simba-manager-api</module>-->
         <module>simba-manager</module>
-        <!--<module>simba-dist</module>-->
-        <module>simba-zoo</module>
+		<module>simba-zoo</module>        
         <module>simba-webdriver-test</module>
 	</modules>
 

@@ -41,7 +41,6 @@ import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.SessionRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.exception.SimbaException;
-import org.simbasecurity.core.service.authorization.AuthorizedAdmin;
 import org.simbasecurity.core.service.manager.assembler.GroupDTOAssembler;
 import org.simbasecurity.core.service.manager.assembler.PolicyDTOAssembler;
 import org.simbasecurity.core.service.manager.assembler.RoleDTOAssembler;
@@ -52,6 +51,7 @@ import org.simbasecurity.core.service.manager.dto.GroupDTO;
 import org.simbasecurity.core.service.manager.dto.PolicyDTO;
 import org.simbasecurity.core.service.manager.dto.RoleDTO;
 import org.simbasecurity.core.service.manager.dto.UserDTO;
+import org.simbasecurity.core.service.manager.interceptor.ManagerSecurityInterceptor;
 import org.simbasecurity.core.service.manager.web.JsonBody;
 import org.simbasecurity.core.service.validation.DTOValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +62,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * Called from the manager, implies an admin role
+ * Called from the manager GUI. This service is guarded by the
+ * {@link ManagerSecurityInterceptor}. The chain called there contains a Command
+ * that check if you are admin.
  */
 @Transactional
 @Controller
@@ -90,35 +92,30 @@ public class UserManagerService {
 	@Autowired
 	private ConfigurationService configurationService;
 
-	@AuthorizedAdmin
 	@RequestMapping("findAll")
 	@ResponseBody
 	public Collection<UserDTO> findAll() {
 		return UserDTOAssembler.assemble(userRepository.findAll());
 	}
 
-	@AuthorizedAdmin
 	@RequestMapping("findByRole")
 	@ResponseBody
 	public Collection<UserDTO> find(@RequestBody RoleDTO role) {
 		return UserDTOAssembler.assemble(roleRepository.lookUp(role).getUsers());
 	}
 
-	@AuthorizedAdmin
 	@RequestMapping("findRoles")
 	@ResponseBody
 	public Collection<RoleDTO> findRoles(@RequestBody UserDTO user) {
 		return RoleDTOAssembler.assemble(userRepository.lookUp(user).getRoles());
 	}
 
-	@AuthorizedAdmin
 	@RequestMapping("findRolesNotLinked")
 	@ResponseBody
 	public Collection<RoleDTO> findRolesNotLinked(@RequestBody UserDTO user) {
 		return RoleDTOAssembler.assemble(roleRepository.findNotLinked(userRepository.lookUp(user)));
 	}
 
-	@AuthorizedAdmin
 	@RequestMapping("removeRole")
 	public void removeRole(@JsonBody("user") UserDTO user, @JsonBody("role") RoleDTO role) {
 		User attachedUser = userRepository.refreshWithOptimisticLocking(user);
@@ -127,7 +124,6 @@ public class UserManagerService {
 		attachedUser.removeRole(attachedRole);
 	}
 
-	@AuthorizedAdmin
 	@RequestMapping("addRoles")
 	public void addRoles(@JsonBody("user") UserDTO user, @JsonBody("roles") Set<RoleDTO> roles) {
 		User attachedUser = userRepository.refreshWithOptimisticLocking(user);
@@ -136,21 +132,18 @@ public class UserManagerService {
 		attachedUser.addRoles(attachedRoles);
 	}
 
-	@AuthorizedAdmin
 	@RequestMapping("findPolicies")
 	@ResponseBody
 	public Collection<PolicyDTO> findPolicies(@RequestBody UserDTO user) {
 		return PolicyDTOAssembler.assemble(policyRepository.find(userRepository.lookUp(user)));
 	}
 
-	@AuthorizedAdmin
 	@RequestMapping("findGroups")
 	@ResponseBody
 	public Collection<GroupDTO> findGroups(@RequestBody UserDTO user) {
 		return GroupDTOAssembler.assemble(groupRepository.find(userRepository.lookUp(user)));
 	}
 
-	@AuthorizedAdmin
 	@RequestMapping("resetPassword")
 	@ResponseBody
 	public UserDTO resetPassword(@RequestBody UserDTO user, HttpServletResponse response) {
@@ -169,7 +162,6 @@ public class UserManagerService {
 
 	@RequestMapping("changePassword")
 	@ResponseBody
-	@AuthorizedAdmin
 	public void changeUserPassword(@RequestBody ChangePasswordDTO changePasswordDTO, HttpServletResponse response) {
 
 		if (changePasswordDTO.getSsoToken() == null) {
@@ -178,8 +170,7 @@ public class UserManagerService {
 		}
 
 		Session activeSession = sessionRepository.findBySSOToken(new SSOToken(changePasswordDTO.getSsoToken()));
-		if (activeSession == null) { // TODO philipn move to annotation:
-										// !activeSession.getUser().hasRole("admin")
+		if (activeSession == null) {
 			sendUnauthorizedError(response);
 			return;
 

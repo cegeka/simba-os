@@ -79,7 +79,7 @@ Your chainContext.xml should contain the chains as such:
 
 Note that the manager's chain is configured through Simba itself via the simba.properties which will contain
 
-    simba.manager.authentication.chain.name=authenticationChain
+    simba.manager.authorization.chain.name=managerAuthorizationChain
 
 ### Dependencies
 

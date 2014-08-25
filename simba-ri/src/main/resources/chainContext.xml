@@ -18,12 +18,25 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
   <!-- Chains -->
+  <!-- the simba authentication chain to secure your application -->
   <bean id="authenticationChain" class="org.simbasecurity.core.chain.ChainImpl">
     <property name="commands">
       <list>
         <ref bean="excludeResourceCommand" />
         <ref bean="checkHttpRequestMethodCommand" />
         <ref bean="credentialDecisionCommand" />
+      </list>
+    </property>
+  </bean>
+  
+  <!-- the chain to secure your manager services - also checks the admin role -->
+  <bean id="managerAuthorizationChain" class="org.simbasecurity.core.chain.ChainImpl">
+    <property name="commands">
+      <list>
+        <ref bean="excludeResourceCommand" />
+        <ref bean="checkHttpRequestMethodCommand" />
+        <ref bean="credentialDecisionCommand" />
+        <ref bean="checkAdminRoleCommand" />
       </list>
     </property>
   </bean>
@@ -74,4 +87,5 @@
     <constructor-arg ref="credentialChain" />
     <constructor-arg ref="sessionChain" />
   </bean>
+  
 </beans>

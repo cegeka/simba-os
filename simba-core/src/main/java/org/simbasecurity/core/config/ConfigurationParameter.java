@@ -210,7 +210,9 @@ public enum ConfigurationParameter {
     
     EXPIRED_URL(StoreType.DATABASE, true, StringType.class, "/jsp/expired.jsp"),
 
-    ENABLE_AD_GROUPS(StoreType.DATABASE, true, BooleanType.class, "false");
+    ENABLE_AD_GROUPS(StoreType.DATABASE, true, BooleanType.class, "false"),
+
+    ADMIN_ROLE_NAME(StoreType.DATABASE, true, StringType.class, "simba-admin");
     
     
     

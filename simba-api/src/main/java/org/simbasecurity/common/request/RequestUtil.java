@@ -15,7 +15,26 @@
  */
 package org.simbasecurity.common.request;
 
-import static org.simbasecurity.common.constants.AuthenticationConstants.LOGIN_TOKEN;
+import org.simbasecurity.api.service.thrift.RequestData;
+import org.simbasecurity.api.service.thrift.SSOToken;
+import org.simbasecurity.common.constants.AuthenticationConstants;
+import org.simbasecurity.common.util.StringUtil;
+import org.simbasecurity.common.xpath.UserNameTokenNamespaceContext;
+import org.w3c.dom.Element;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.net.*;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import static org.simbasecurity.common.constants.AuthenticationConstants.*;
 import static org.simbasecurity.common.request.RequestConstants.HEADER_X_FORWARDED_FOR;
 import static org.simbasecurity.common.request.RequestConstants.HEADER_X_ORIGINAL_SCHEME;
 import static org.simbasecurity.common.request.RequestConstants.SIMBA_ACTION_PARAMETER;
@@ -25,29 +44,6 @@ import static org.simbasecurity.common.request.RequestConstants.SIMBA_LOGIN_PATH
 import static org.simbasecurity.common.request.RequestConstants.SIMBA_LOGOUT_ACTION;
 import static org.simbasecurity.common.request.RequestConstants.SIMBA_SHOW_CHANGE_PASSWORD_ACTION;
 import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
-
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import org.simbasecurity.api.service.thrift.RequestData;
-import org.simbasecurity.api.service.thrift.SSOToken;
-import org.simbasecurity.common.constants.AuthenticationConstants;
-import org.simbasecurity.common.util.StringUtil;
-import org.simbasecurity.common.xpath.UserNameTokenNamespaceContext;
-import org.w3c.dom.Element;
 
 public final class RequestUtil {
 
@@ -255,8 +251,11 @@ public final class RequestUtil {
 			if (inetAddress.isLoopbackAddress()) {
 				remoteAddress = InetAddress.getLocalHost().getHostAddress();
 			}
-		} catch (UnknownHostException ignored) {
-		}
+
+            remoteAddress = translateToIPv6Address(remoteAddress, inetAddress);
+        } catch (UnknownHostException ignored) {
+        }
+
 
 		final String xForwardedFor = request.getHeader(HEADER_X_FORWARDED_FOR);
 
@@ -270,4 +269,23 @@ public final class RequestUtil {
 		}
 		return remoteAddress;
 	}
+
+    private static String translateToIPv6Address(String remoteAddress, InetAddress inetAddress) throws UnknownHostException {
+        if (!inetAddress.isLoopbackAddress() && !(inetAddress instanceof Inet6Address)) {
+            InetAddress[] addresses = InetAddress.getAllByName(inetAddress.getHostName());
+            for (InetAddress address : addresses) {
+                if (address instanceof Inet6Address) {
+                    return address.getHostAddress();
+                }
+            }
+        } else if (inetAddress.isLoopbackAddress()) {
+            InetAddress[] addresses = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName());
+            for (InetAddress address : addresses) {
+                if (address instanceof Inet6Address) {
+                    return address.getHostAddress();
+                }
+            }
+        }
+        return remoteAddress;
+    }
 }

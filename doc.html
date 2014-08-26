@@ -7,8 +7,11 @@
     <meta name="description" content="Simba-os : Simba, UAM, IAM, security, access management, owasp, cegeka" />
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/idea.css">
     <script src="javascripts/jquery.js"></script>
     <script src="javascripts/jquery-ui.min.js"></script>
+    <script src="javascripts/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <title>Simba-os - Documentation</title>
 </head>
 
@@ -81,10 +84,8 @@ ActionDescriptor actionDescriptor =
                    resource. The URL for this service is "/authorizationService"</p>
 
                 <p>Following snippet shows how the authorization service can be called using Java:</p>
-                <pre><code>AuthorizationService.Client authorizationClient =
-    new AuthorizationService.Client(tProtocol);
-PolicyDecision decision =
-    authorizationClient.isResourceRuleAllowed(userName, resource, action);
+                <pre><code>AuthorizationService.Client authorizationClient = new AuthorizationService.Client(tProtocol);
+PolicyDecision decision = authorizationClient.isResourceRuleAllowed(userName, resource, action);
 if (!decision.isAllowed()) {
     throw new SecurityException("You are not allowed here !");
 }</code></pre>

@@ -6,6 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <meta name="description" content="Simba-os : Simba, UAM, IAM, security, access management, owasp, cegeka" />
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/idea.css">
+    <script src="javascripts/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <title>Simba-os - Adapt</title>
   </head>
 
@@ -48,19 +51,62 @@
  		application but you can use the chains in the "chainContext.xml" as a starting point:
  		</p>
  		<p>
-			<img alt="Command example" src="images/simba-command.png">
-			<img alt="Chain example" src="images/simba-chaincontext.png">
+<pre><code>@Component
+public class CheckPasswordExpiredCommand implements Command {
+
+   @Autowired private CredentialService credentialService;
+   @Autowired private Audit audit;
+   @Autowired private AuditLogEventFactory auditLogFactory;
+
+   @Override
+   public State execute(ChainContext context) throws Exception {
+       if (mustShowChangePassword(context)) {
+           redirectToChangePassword(context);
+           return State.FINISH;
+       }
+       logSuccess(context, AuditMessages.CHECK_PASSWORD_EXPIRED);
+       return State.CONTINUE;
+   }
+}</code></pre>
+</p><p>
+<pre><code>&lt;bean id="credentialChain" class="org.simbasecurity.core.chain.ChainImpl"&gt;
+&lt;property name="commands"&gt;
+  &lt;list&gt;
+      &lt;ref bean="validateRequestParametersCommand" /&gt;
+      &lt;ref bean="checkUserActiveCommand" /&gt;
+      &lt;ref bean="jaasLoginCommand" /&gt;
+      &lt;ref bean="checkAccountBlockedCommand" /&gt;
+      &lt;ref bean="checkPasswordExpiredCommand" /&gt;
+      &lt;ref bean="changePasswordCommand" /&gt;
+      &lt;ref bean="createSessionCommand" /&gt;
+  &lt;/list&gt;
+&lt;/property&gt;
+&lt;/bean&gt;</code></pre>
 			See the reference doc for a complete overview of the main <a href="doc.html#tabs-2">Commands</a>.
  		</p>
  		
  		<h3>Database</h3>
 		<p>You can choose your preferred DB by:
 			<ol>
-				<li>Importing the correct persistenceContext in the spring file.
-					<img alt="choose dependency" src="images/chooseDB-spring.png">
+				<li>Importing the correct persistenceContext in the spring applicationContext.xml file.
+<pre><code>&lt;!-- switch between the db of your choice here --&gt;
+&lt;!-- &lt;import resource="classpath:db/mysql/persistenceContext.xml" /&gt; --&gt;
+&lt;import resource="classpath:db/hsqldb-embedded/persistenceContext.xml" /&gt;</code></pre>
 				</li>
 				<li>Selecting the correct dependency in ri and parent pom.
-				 	<img alt="choose dependency" src="images/chooseDB-pom.png"> 
+<pre><code>&lt;!-- switch between the DB of your choice here --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.hsqldb&lt;/groupId&gt;
+    &lt;artifactId&gt;hsqldb&lt;/artifactId&gt;
+    &lt;version&gt;2.3.0&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;!--&lt;dependency&gt;
+  &lt;groupId&gt;mysql&lt;/groupId&gt;
+  &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+  &lt;version&gt;5.1.29&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;--&gt;</code></pre>                    
 				 </li>
 			</ol>
 		</p>
@@ -69,30 +115,270 @@
 			There are a big number of settings you can tweak to determine success and failure urls, password complexity (regex), session time-outs, ... and much more :
 		</p>
 		<p>
-			<img alt="choose DB values" src="images/simba-configurable-db-params.png">
+<pre><code>('APPLICATION_NAME','SIMBA Manager');
+('PASSWORD_LIFE_TIME','90');
+('PASSWORD_MAX_LENGTH','15');
+('PASSWORD_MIN_LENGTH','6');
+('PASSWORD_VALID_CHARACTERS','[\x21-\x7E]*');
+('PASSWORD_COMPLEXITY_RULE','.*[A-Z].*');
+('PASSWORD_COMPLEXITY_RULE','.*[a-z].*');
+('PASSWORD_COMPLEXITY_RULE','.*[0-9].*');
+('PASSWORD_COMPLEXITY_RULE','.*[\W_].*');
+('PASSWORD_MINIMUM_COMPLEXITY','3');
+('PASSWORD_CHANGE_REQUIRED','true');
+('INVALID_LOGIN_MAX_COUNT','5');
+('CACHING_ENABLED','false');
+('LOGIN_URL','/jsp/login.jsp');
+('LOGOUT_URL','/jsp/logout.jsp');
+('PASSWORD_CHANGED_URL','/jsp/passwordchanged.jsp');
+('ACCESS_DENIED_URL','/jsp/access-denied.jsp');
+('CHANGE_PASSWORD_URL','/jsp/changepassword.jsp');
+('SUCCESS_URL','/simba-zoo/index.jsp');
+('SUCCESSURL_MAX_LENGTH','250');
+('SESSION_TIME_OUT','30');
+('USERNAME_MAX_LENGTH','15');
+('USERNAME_MIN_LENGTH','3');
+('USERNAME_REGEX','\w*');
+('FIRSTNAME_MAX_LENGTH','20');
+('FIRSTNAME_MIN_LENGTH','1');
+('LASTNAME_MAX_LENGTH','30');
+('LASTNAME_MIN_LENGTH','1');
+('KEYSTORE_JVM_ARG','simbaKeystore');
+('KEYSTORE_ALIAS','simbaalias');
+('KEYSTORE_PASSWORD','password');
+('AUDIT_LOG_INTEGRITY_ENABLED','true');
+('DEFAULT_PASSWORD','Simba3D');
+('EXPIRED_URL', '/jsp/expired.jsp');
+('MAX_LOGIN_ELAPSED_TIME', '2');
+('ENABLE_AD_GROUPS','false');
+('SIMBA_ADMIN', 'simba-admin');</code></pre>
 		</p>
-		
+		<p>
+            To keep our examples simple we use spring's SimpleDriverDataSource.
+<pre><code>&lt;bean id="datasource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource"&gt;
+    &lt;property name="driverClass" value="com.mysql.jdbc.Driver"/&gt;
+    &lt;property name="url" value="jdbc:mysql://localhost:3306/simba"/&gt;
+    &lt;property name="username" value="root"/&gt;
+    &lt;property name="password" value="password"/&gt;
+&lt;/bean&gt;</code></pre>
+            Of course is this not the best solution in a production environment. Below is an example using c3p0:
+<pre><code>&lt;bean id="datasource"
+                 class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close"&gt;
+    &lt;property name="jdbcUrl" value="${simba.database.url}" /&gt;
+    &lt;property name="user" value="${simba.database.username}" /&gt;
+    &lt;property name="password" value="${simba.database.password}" /&gt;
+    &lt;property name="driverClass" value="${simba.database.driver}" /&gt;
+
+    &lt;property name="acquireIncrement" value="${simba.database.acquireIncrement}" /&gt;
+    &lt;property name="minPoolSize" value="${simba.database.minPoolSize}" /&gt;
+    &lt;property name="maxPoolSize" value="${simba.database.maxPoolSize}" /&gt;
+    &lt;property name="maxIdleTime" value="${simba.database.maxIdleTime}" /&gt;
+&lt;/bean&gt;</code></pre>
+          
+    Corresponding simba.properties are necessary of course:
+          
+<pre><code>simba.database.url=jdbc:mysql://localhost:3306/simba
+simba.database.username=simba_local
+simba.database.password=simba_local
+simba.database.driver=com.mysql.jdbc.Driver
+
+simba.database.acquireIncrement=1
+simba.database.minPoolSize=8
+simba.database.maxPoolSize=50
+simba.database.maxIdleTime=3</code></pre>
+          
+    Dependency in pom.xml:
+          
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.mchange&lt;/groupId&gt;
+    &lt;artifactId&gt;c3p0&lt;/artifactId&gt;
+    &lt;version&gt;0.9.2.1&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+		</p>
+
 		<h3>JAAS</h3>
 		<p>You can choose your preferred JAAS login module by specifying the correct login module in the login.conf file:</p>
-		<p><img alt="DB login" src="images/jaasDB.png"></p>		
-		<p><img alt="AD login" src="images/jaasAD.png"></p>		
-		
+		<p>
+<pre><code>simbaJAAS {
+    org.simbasecurity.core.jaas.loginmodule.DatabaseLoginModule REQUIRED debug=true;
+};</code></pre>
+        </p>
+		<p>
+<pre><code>simbaJAAS {
+    org.simbasecurity.core.jaas.loginmodule.ActiveDirectoryLoginModule SUFFICIENT
+    ...
+    debug=true;
+    org.simbasecurity.core.jaas.loginmodule.DatabaseLoginModule REQUIRED debug=true;
+};</code></pre>
+
 		<h3>CORS</h3>
 		<p>The web.xml contains a piece of <a href="http://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a> configuration. Please don't forget to specify your manager domains here:</p>
-		<p><img alt="ri web.xml specify CORS domain" src="images/corsFilter.png"></p>		
+		<p>
+<pre><code>&lt;filter&gt;
+    &lt;filter-name&gt;CORS&lt;/filter-name&gt;
+    &lt;filter-class&gt;com.thetransactioncompany.cors.CORSFilter&lt;/filter-class&gt;
+    &lt;!--
+       See http://software.dzhuvinov.com/cors-filter-configuration.html for more information on configuring the
+       CORS filter
+      --&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;cors.allowGenericHttpRequests&lt;/param-name&gt;
+        &lt;param-value&gt;true&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;cors.allowOrigin&lt;/param-name&gt;
+        &lt;param-value&gt;*&lt;/param-value&gt;&lt;!-- insert the domain of your manager here! --&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;cors.allowSubdomains&lt;/param-name&gt;
+        &lt;param-value&gt;false&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;cors.supportedMethods&lt;/param-name&gt;
+        &lt;param-value&gt;GET, POST, HEAD, OPTIONS&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;cors.supportedHeaders&lt;/param-name&gt;
+        &lt;param-value&gt;*&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;!--&lt;init-param&gt;--&gt;
+    &lt;!--&lt;param-name&gt;cors.exposedHeaders&lt;/param-name&gt;--&gt;
+    &lt;!--&lt;param-value&gt;&lt;/param-value&gt;--&gt;
+    &lt;!--&lt;/init-param&gt;--&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;cors.supportsCredentials&lt;/param-name&gt;
+        &lt;param-value&gt;true&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;cors.maxAge&lt;/param-name&gt;
+        &lt;param-value&gt;-1&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;cors.tagRequests&lt;/param-name&gt;
+        &lt;param-value&gt;false&lt;/param-value&gt;
+    &lt;/init-param&gt;
+&lt;/filter&gt;</code></pre>            
+        </p>
 		
 		<h3>Webservices</h3>
 		<p>In addition to an exampel of a servlet filter (check the web.xml) we have also provided an example of a (JAXWS) webservice filter
 		which can serve as an example on how to authenticate a webservice call:</p>
-		<p><img alt="WS Handler" src="images/simba-ws-handler.png"></p>
+		<p>
+<pre><code>public final class SimbaJAXWSHandler implements SOAPHandler&lt;SOAPMessageContext&gt; {
+
+    private String simbaURL;
+    private String simbaWebURL;
+
+    @Override
+    public void close(final MessageContext context) {
+    }
+
+    @Override
+    public boolean handleFault(final SOAPMessageContext context) {
+        return true;
+    }
+
+    @Override
+    public boolean handleMessage(final SOAPMessageContext context) {
+        if (isInboundMessage(context)) {
+            try {
+                final SOAPHeader header = context.getMessage().getSOAPHeader();
+
+                final HttpServletRequest httpServletRequest = (HttpServletRequest) context.get(MessageContext.SERVLET_REQUEST);
+                final ServletContext servletContext = (ServletContext) context.get(MessageContext.SERVLET_CONTEXT);
+
+                final RequestData requestData = RequestUtil.createWSSERequestData(httpServletRequest, header,
+                getSimbaWebURL(servletContext));
+
+                THttpClient tHttpClient = null;
+                try {
+                    tHttpClient = new THttpClient(getSimbaURL(servletContext));
+                    TProtocol tProtocol = new TJSONProtocol(tHttpClient);
+
+                    AuthenticationFilterService.Client authenticationClient = new AuthenticationFilterService.Client(tProtocol);
+
+                    ActionDescriptor actionDescriptor = authenticationClient.processRequest(requestData, "wsLoginChain");
+                    if (!actionDescriptor.getActionTypes().contains(ActionType.DO_FILTER_AND_SET_PRINCIPAL)) {
+                        throw new SimbaWSAuthenticationException("Authentication Failed");
+                    }
+
+                    String username = actionDescriptor.getPrincipal();
+
+                    Principal principal = null;
+                    if (username != null) {
+                        principal = new UserPrincipal(username);
+                    }
+                    if (principal != null) {
+                        context.put(SimbaPrincipal.SIMBA_USER_CTX_KEY, principal);
+                        context.setScope(SimbaPrincipal.SIMBA_USER_CTX_KEY, MessageContext.Scope.APPLICATION);
+                    }
+                } finally {
+                    if (tHttpClient != null) {
+                        tHttpClient.close();
+                    }
+                }
+            } catch (Exception e) {
+                throw new SimbaWSAuthenticationException("Authentication Failed", e);
+            }
+        }
+
+        return true;
+    }
+    ...
+}</code></pre>
+        </p>
 		
 		<h3>REST</h3>
 		<p>Since there are various ways to communicate credentials to Simba, you just need to get the user and password from whatever your context is, we have also provided a <strong>weak</strong> example of a 
 		Rest authentication filter (Jersey). It's weak since it just uses base64 encoding and decoding meaning this should not be used in an unsafe context such as outside the corporate trust boundary
 		or over plain HTTP! Implement your own version with stronger encryption if you want to use this in an unsafe context!
 		</p>
-		<p><img alt="Jersey filter" src="images/simba-jersey-filter.png"></p>		
-		
+		<p>
+<pre><code>public class JerseyAuthenticationFilter implements ContainerRequestFilter {
+
+    private String simbaWebURL = SystemConfiguration.getSimbaWebURL();
+
+    @Override
+    public ContainerRequest filter(ContainerRequest containerRequest) {
+
+        Map&lt;String, String&gt; requestParameters = toMap(containerRequest.getQueryParameters());
+        String auth = containerRequest.getHeaderValue("authorization");
+        if (auth == null) {
+            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+        }
+        String[] credentials = decode(auth);
+        requestParameters.put(AuthenticationConstants.USERNAME, credentials[0]);
+        requestParameters.put(AuthenticationConstants.PASSWORD, credentials[1]);
+
+        RequestData requestData = new RequestData(requestParameters, toMap(containerRequest.getRequestHeaders()),
+                                                  containerRequest.getAbsolutePath().toString(), simbaWebURL, null /* SSO Token */, null /* Client IP */,
+                                                  false, false, false, false, false, containerRequest.getMethod(), RequestUtil.HOST_SERVER_NAME, null);
+
+        THttpClient tHttpClient = null;
+        try {
+            tHttpClient = new THttpClient(simbaWebURL + "authenticationService");
+            TProtocol tProtocol = new TJSONProtocol(tHttpClient);
+
+            AuthenticationFilterService.Client authenticationClient = new AuthenticationFilterService.Client(tProtocol);
+
+            ActionDescriptor actionDescriptor = authenticationClient.processRequest(requestData, "wsLoginChain");
+            if (!actionDescriptor.getActionTypes().contains(ActionType.DO_FILTER_AND_SET_PRINCIPAL)) {
+                throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+            }
+
+            return containerRequest;
+        } catch (Exception e) {
+            throw new WebApplicationException(e, Response.Status.UNAUTHORIZED);
+        } finally {
+            if (tHttpClient != null) {
+                tHttpClient.close();
+            }
+        }
+    }
+    ...
+}</code></pre>
+		</p>
+
 		<!-- MAIN CONTENT end -->
       </section>
     </div>

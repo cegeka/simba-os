@@ -51,7 +51,6 @@ public class UserServiceTest {
 
 		changePasswordDTO = new ChangePasswordDTO();
 		changePasswordDTO.setUserName(userName);
-		changePasswordDTO.setSsoToken(ssoToken.getToken());
 		changePasswordDTO.setNewPassword(newPassword);
 		changePasswordDTO.setNewPasswordConfirmation(newPasswordConfirmation);
 
@@ -67,9 +66,18 @@ public class UserServiceTest {
 	}
 
 	@Test
-	public void changePasswordOk() {
+	public void changePasswordOk_headerToken() {
 
-		service.changePassword(changePasswordDTO, responseMock);
+		service.changePassword(ssoToken.getToken(), null, changePasswordDTO, responseMock);
+
+		verify(correspondingUser).changePassword(newPassword, newPasswordConfirmation);
+		verifyZeroInteractions(responseMock);
+	}
+
+	@Test
+	public void changePasswordOk_cookieToken() {
+
+		service.changePassword(null, ssoToken.getToken(), changePasswordDTO, responseMock);
 
 		verify(correspondingUser).changePassword(newPassword, newPasswordConfirmation);
 		verifyZeroInteractions(responseMock);
@@ -78,8 +86,7 @@ public class UserServiceTest {
 	@Test
 	public void changePasswordNotOk_noSsoToken_unauthorized() throws IOException {
 
-		changePasswordDTO.setSsoToken(null);
-		service.changePassword(changePasswordDTO, responseMock);
+		service.changePassword(null, null, changePasswordDTO, responseMock);
 
 		assertPasswordNotChanged();
 		assertUnauthorizedError();
@@ -89,7 +96,7 @@ public class UserServiceTest {
 	public void changePasswordNotOk_noActiveSession_unauthorized() throws IOException {
 
 		when(sessionRepository.findBySSOToken(ssoToken)).thenReturn(null);
-		service.changePassword(changePasswordDTO, responseMock);
+		service.changePassword(ssoToken.getToken(), null, changePasswordDTO, responseMock);
 
 		assertPasswordNotChanged();
 		assertUnauthorizedError();
@@ -99,7 +106,7 @@ public class UserServiceTest {
 	public void changePasswordNotOk_noUserName_unauthorized() throws IOException {
 
 		changePasswordDTO.setUserName(null);
-		service.changePassword(changePasswordDTO, responseMock);
+		service.changePassword(ssoToken.getToken(), null, changePasswordDTO, responseMock);
 
 		assertPasswordNotChanged();
 		assertUnauthorizedError();

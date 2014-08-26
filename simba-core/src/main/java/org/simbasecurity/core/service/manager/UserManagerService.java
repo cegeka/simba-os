@@ -15,6 +15,7 @@
  */
 package org.simbasecurity.core.service.manager;
 
+import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
 import static org.simbasecurity.core.config.ConfigurationParameter.PASSWORD_CHANGE_REQUIRED;
 import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS;
 import static org.simbasecurity.core.service.ErrorSender.NO_USER_FOUND_ERROR_CODE;
@@ -57,7 +58,9 @@ import org.simbasecurity.core.service.validation.DTOValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -162,14 +165,16 @@ public class UserManagerService {
 
 	@RequestMapping("changePassword")
 	@ResponseBody
-	public void changeUserPassword(@RequestBody ChangePasswordDTO changePasswordDTO, HttpServletResponse response) {
+	public void changeUserPassword(@RequestHeader(value = SIMBA_SSO_TOKEN) String ssoTokenFromHeader,
+			@CookieValue(SIMBA_SSO_TOKEN) String ssoTokenFromCookie, @RequestBody ChangePasswordDTO changePasswordDTO, HttpServletResponse response) {
 
-		if (changePasswordDTO.getSsoToken() == null) {
+		String ssoToken = (ssoTokenFromHeader != null ? ssoTokenFromHeader : ssoTokenFromCookie);
+		if (ssoToken == null) {
 			sendUnauthorizedError(response);
 			return;
 		}
 
-		Session activeSession = sessionRepository.findBySSOToken(new SSOToken(changePasswordDTO.getSsoToken()));
+		Session activeSession = sessionRepository.findBySSOToken(new SSOToken(ssoToken));
 		if (activeSession == null) {
 			sendUnauthorizedError(response);
 			return;

@@ -65,7 +65,8 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 
 	private static final long serialVersionUID = 552484022516217422L;
 
-	private static final ObjectPool ENCRYPTOR_POOL = new StackObjectPool(new PasswordEncryptorFactory(), 2, 2);
+	@SuppressWarnings("unchecked")
+	private static final ObjectPool<PasswordEncryptor> ENCRYPTOR_POOL = new StackObjectPool<PasswordEncryptor>(new PasswordEncryptorFactory(), 2, 2);
 
 	private static PasswordEncryptor retrievePasswordEncryptor() {
 		try {

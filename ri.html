@@ -211,6 +211,42 @@ simba.database.maxIdleTime=3</code></pre>
     org.simbasecurity.core.jaas.loginmodule.DatabaseLoginModule REQUIRED debug=true;
 };</code></pre>
 
+		<h3>Spring quartz jobs</h3>
+		<p>Simba uses quartz jobs as a way to check if invalid user sessions need to be deleted from the DB for instance and for a number of other background processes. 
+		You can define your own custom Job/Task by implementing simba QuartzTask interface:</p>
+		<p>
+<pre><code>@Component
+public class PurgeExpiredSessionsTask implements QuartzTask {</code></pre>
+        </p>
+		<p>Adding them or changing existing jobs can be done via the JobSchedulerConfiguration:
+<pre><code>@Configuration
+public class JobSchedulerConfiguration {
+
+    @Autowired
+    private DataSource dataSource;
+
+    @Autowired
+    private Trigger verifyAuditLogIntegrityTrigger;
+    @Autowired
+    private Trigger cleanUpAuditLogTrigger;
+    @Autowired
+    private Trigger purgeExpiredLoginMappingsTrigger;
+    @Autowired
+    private Trigger purgeExpiredSessionsTrigger;
+    @Autowired
+    private Trigger markUsersForPasswordChangeTrigger;
+
+    @Bean(destroyMethod = "destroy")
+    public SchedulerFactoryBean schedulerFactory() {
+        ...
+
+        Trigger[] triggers = new Trigger[] {
+           verifyAuditLogIntegrityTrigger,
+           cleanUpAuditLogTrigger,
+           purgeExpiredLoginMappingsTrigger,
+           purgeExpiredSessionsTrigger,
+           markUsersForPasswordChangeTrigger,
+        };</code></pre>
 		<h3>CORS</h3>
 		<p>The web.xml contains a piece of <a href="http://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a> configuration. Please don't forget to specify your manager domains here:</p>
 		<p>

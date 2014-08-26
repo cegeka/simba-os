@@ -20,7 +20,7 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.THttpClient;
 import org.simbasecurity.api.service.thrift.AuthorizationService;
 import org.simbasecurity.api.service.thrift.PolicyDecision;
-import org.simbasecurity.client.configuration.SimbaConfiguration;
+import org.simbasecurity.common.config.SystemConfiguration;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -42,13 +42,14 @@ public class FeedingServlet extends HttpServlet {
 
         THttpClient tHttpClient = null;
         try {
-            tHttpClient = new THttpClient(SimbaConfiguration.getSimbaAuthorizationURL());
+            tHttpClient = new THttpClient(SystemConfiguration.getSimbaServiceURL(getServletContext()) + "/authorizationService");
             TProtocol tProtocol = new TJSONProtocol(tHttpClient);
 
             AuthorizationService.Client authorizationClient = new AuthorizationService.Client(tProtocol);
-            PolicyDecision decision = authorizationClient.isResourceRuleAllowed(request.getUserPrincipal().getName(), "boekhouding", "WRITE");
+            PolicyDecision decision = authorizationClient.isResourceRuleAllowed(request.getUserPrincipal().getName(), "ANIMAL", "WRITE");
             if (!decision.isAllowed()) {
-                throw new SecurityException("You are not allowed here !");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
             response.sendRedirect("jsp/feeding.jsp");
         } catch (Exception e) {

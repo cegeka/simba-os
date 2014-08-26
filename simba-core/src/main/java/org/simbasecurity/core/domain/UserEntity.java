@@ -50,14 +50,14 @@ import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.pool.ObjectPool;
 import org.apache.commons.pool.impl.StackObjectPool;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
-import org.jasypt.util.password.BasicPasswordEncryptor;
-import org.jasypt.util.password.PasswordEncryptor;
+import org.jasypt.util.password.ConfigurablePasswordEncryptor;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.util.PasswordEncryptorFactory;
+import org.simbasecurity.core.util.SHA1PasswordEncryptorFactory;
 
 @Entity
 @Table(name = "SIMBA_USER")
@@ -65,18 +65,18 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 
 	private static final long serialVersionUID = 552484022516217422L;
 
-	@SuppressWarnings("unchecked")
-	private static final ObjectPool<PasswordEncryptor> ENCRYPTOR_POOL = new StackObjectPool<PasswordEncryptor>(new PasswordEncryptorFactory(), 2, 2);
+	private static final ObjectPool<ConfigurablePasswordEncryptor> ENCRYPTOR_POOL = new StackObjectPool<ConfigurablePasswordEncryptor>(
+			new PasswordEncryptorFactory(), 2, 2);
 
-	private static PasswordEncryptor retrievePasswordEncryptor() {
+	private static ConfigurablePasswordEncryptor retrievePasswordEncryptor() {
 		try {
-			return (PasswordEncryptor) ENCRYPTOR_POOL.borrowObject();
+			return ENCRYPTOR_POOL.borrowObject();
 		} catch (Exception e) {
 			throw new RuntimeException("Unable to borrow buffer from pool" + e.toString());
 		}
 	}
 
-	private static void returnPasswordEncryptor(PasswordEncryptor encryptor) {
+	private static void returnPasswordEncryptor(ConfigurablePasswordEncryptor encryptor) {
 		try {
 			ENCRYPTOR_POOL.returnObject(encryptor);
 		} catch (Exception ignore) {
@@ -269,7 +269,7 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 
 	@Override
 	public boolean checkPassword(String password) {
-		PasswordEncryptor encryptor = retrievePasswordEncryptor();
+		ConfigurablePasswordEncryptor encryptor = retrievePasswordEncryptor();
 		try {
 			return encryptor.checkPassword(password, this.password);
 		} finally {
@@ -278,8 +278,8 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 	}
 
 	@Override
-	public boolean checkPasswordWithBasicEncryptor(String plainPassword) {
-		boolean validPassword = new BasicPasswordEncryptor().checkPassword(plainPassword, this.password);
+	public boolean checkPasswordWithSHA1EncryptorAndReEncrypt(String plainPassword) {
+		boolean validPassword = new SHA1PasswordEncryptorFactory().createLegacyEncryptor().checkPassword(plainPassword, this.password);
 		if (validPassword) {
 			reEncryptPassword(plainPassword);
 		}
@@ -288,7 +288,7 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 	}
 
 	private void reEncryptPassword(String plainPassword) {
-		PasswordEncryptor encryptor = retrievePasswordEncryptor();
+		ConfigurablePasswordEncryptor encryptor = retrievePasswordEncryptor();
 		try {
 			this.password = encryptor.encryptPassword(plainPassword);
 		} finally {
@@ -346,7 +346,7 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 	private void setPassword(String newPassword) {
 		getPasswordValidator().validatePassword(newPassword);
 
-		PasswordEncryptor encryptor = retrievePasswordEncryptor();
+		ConfigurablePasswordEncryptor encryptor = retrievePasswordEncryptor();
 		try {
 			this.password = encryptor.encryptPassword(newPassword);
 		} finally {

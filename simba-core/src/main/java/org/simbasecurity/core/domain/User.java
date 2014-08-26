@@ -129,12 +129,12 @@ public interface User extends Versionable {
 
 	/**
 	 * @param password
-	 *            the plain text password to check according to the basic
-	 *            encryptor
+	 *            the plain text password to check according to the SHA1
+	 *            encryptor. Should only be used for legacy systems using SHA-1.
 	 * @return <tt>true</tt> if the given password matches the stored password
 	 *         for this user; <tt>false</tt> otherwise
 	 */
-	boolean checkPasswordWithBasicEncryptor(String password);
+	boolean checkPasswordWithSHA1EncryptorAndReEncrypt(String password);
 
 	/**
 	 * Changes the password to newPassword if oldPassword is valid for this

@@ -36,7 +36,7 @@ public interface CredentialService {
      * @param password The password
      * @return <code>true</code> if the user name and password correspond; <code>false</code> otherwise
      */
-    boolean checkCredentialsAccordingToBasicEncryptor(String username, String password);
+    boolean checkCredentialsWithSHA1EncryptorAndReEncrypt(String username, String password);
 
     /**
      * Check if a user exists.

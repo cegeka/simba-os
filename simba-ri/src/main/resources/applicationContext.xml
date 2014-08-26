@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:context="http://www.springframework.org/schema/context"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
   <context:component-scan base-package="org.simbasecurity.refimpl" />
 
@@ -25,5 +25,10 @@
   <import resource="classpath:simbaCoreContext.xml" />
 
   <import resource="classpath:chainContext.xml" />
-  
+
+  <!-- Dummy test data -->
+  <jdbc:initialize-database ignore-failures="NONE" data-source="datasource">
+    <jdbc:script location="classpath:/db/hsqldb-embedded/scripts/insert_test_data.sql" />
+  </jdbc:initialize-database>
+
 </beans>

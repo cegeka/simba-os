@@ -32,13 +32,9 @@
   <jdbc:initialize-database ignore-failures="NONE" data-source="datasource">
     <jdbc:script location="classpath:/db/hsqldb-embedded/scripts/create_db.sql" />
     <jdbc:script location="classpath:/db/hsqldb-embedded/scripts/insert_parameters.sql" />
-
-    <!-- Dummy test data -->
-    <jdbc:script location="classpath:/db/hsqldb-embedded/scripts/insert_test_data.sql" />
   </jdbc:initialize-database>
 
   <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-     <property name="location" value="classpath:simba.properties" />
   	 <property name="ignoreUnresolvablePlaceholders" value="true" />
   </bean>
   

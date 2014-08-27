@@ -60,8 +60,8 @@ public class PasswordValidatorImpl implements PasswordValidator {
 
         int complexity = 0;
 
-        for (String element : complexityRules) {
-            if (password.matches(element)) {
+        for (String rule : complexityRules) {
+            if (password.matches(rule)) {
                 complexity++;
             }
         }

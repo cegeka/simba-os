@@ -57,7 +57,7 @@ public class PasswordValidatorImplTest {
 	public void testPasswordComplexity_ok() {
 		validator.validatePassword("Blarr3");
 		validator.validatePassword("Blarr_3");
-		validator.validatePassword("Bla0rr3"); // case of Tim
+		validator.validatePassword("Bla0rr3");
 		validator.validatePassword("_Blarr_3");
 		validator.validatePassword("Bla_rr_3");
 		validator.validatePassword("AaBb1Cc2Dd_3");

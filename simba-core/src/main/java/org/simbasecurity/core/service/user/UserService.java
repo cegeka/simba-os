@@ -62,8 +62,9 @@ public class UserService {
 
 	@RequestMapping("changePassword")
 	@ResponseBody
-	public void changePassword(@RequestHeader(value = SIMBA_SSO_TOKEN) String ssoTokenFromHeader,
-			@CookieValue(SIMBA_SSO_TOKEN) String ssoTokenFromCookie, @RequestBody ChangePasswordDTO changePasswordDTO, HttpServletResponse response) {
+	public void changePassword(@RequestHeader(value = SIMBA_SSO_TOKEN, required = false) String ssoTokenFromHeader,
+			@CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoTokenFromCookie, @RequestBody ChangePasswordDTO changePasswordDTO,
+			HttpServletResponse response) {
 
 		String ssoToken = (ssoTokenFromHeader != null ? ssoTokenFromHeader : ssoTokenFromCookie);
 		if (ssoToken == null || changePasswordDTO.getUserName() == null) {

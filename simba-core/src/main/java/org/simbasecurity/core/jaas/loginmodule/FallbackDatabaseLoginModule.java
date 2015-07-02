@@ -37,7 +37,7 @@ public class FallbackDatabaseLoginModule extends DatabaseLoginModule {
         try {
             validCredentials = credentialService.checkCredentials(getUsername(), getPassword());
         } catch (EncryptionOperationNotPossibleException legacyPasswordException) {
-            validCredentials = verifyWithBasicEncryptor(credentialService);
+            validCredentials = verifyWithSHA1Encryptor(credentialService);
         }
 
         if (validCredentials) {
@@ -49,8 +49,8 @@ public class FallbackDatabaseLoginModule extends DatabaseLoginModule {
         throw new FailedLoginException(getUsername());
     }
 
-    private boolean verifyWithBasicEncryptor(CredentialService credentialService) {
-        return credentialService.checkCredentialsAccordingToBasicEncryptor(getUsername(), getPassword());
+    private boolean verifyWithSHA1Encryptor(CredentialService credentialService) {
+        return credentialService.checkCredentialsWithSHA1EncryptorAndReEncrypt(getUsername(), getPassword());
     }
 
 }

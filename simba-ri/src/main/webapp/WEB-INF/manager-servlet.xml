@@ -26,16 +26,18 @@
 
     <tx:annotation-driven/>
 
-    <context:component-scan base-package="org.simbasecurity.core.service.manager"/>
+    <context:component-scan base-package="org.simbasecurity.core.service.manager, org.simbasecurity.core.service.user"/>
+    
     <mvc:annotation-driven>
         <mvc:argument-resolvers>
             <bean class="org.simbasecurity.core.service.manager.web.JSonArgumentResolver" />
         </mvc:argument-resolvers>
     </mvc:annotation-driven>
     <mvc:interceptors>
-            <mvc:interceptor>
-                <mvc:mapping path="/**" />
-                <bean class="org.simbasecurity.core.service.manager.interceptor.ManagerSecurityInterceptor" />
-            </mvc:interceptor>
-        </mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**" />
+            <bean class="org.simbasecurity.core.service.manager.interceptor.ManagerSecurityInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
+    
 </beans>

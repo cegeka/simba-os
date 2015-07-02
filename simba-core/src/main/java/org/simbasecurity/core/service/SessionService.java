@@ -20,13 +20,14 @@ import org.simbasecurity.core.domain.Session;
 
 public interface SessionService {
 
-    Session createSession(String userName, String clientIpAddress, String hostServerName, String userAgent,
-                          String requestURL);
+	Session createSession(String userName, String clientIpAddress, String hostServerName, String userAgent, String requestURL);
 
-    void removeSession(Session session);
+	void removeSession(Session session);
 
-    Session getSession(SSOToken token);
+	Session getSession(SSOToken token);
 
-    void purgeExpiredSessions();
+	void purgeExpiredSessions();
+
+	void purgeSessionsOlderThanAbsoluteSessionTimeOut();
 
 }

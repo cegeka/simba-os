@@ -60,9 +60,9 @@ public class CredentialServiceImpl implements CredentialService {
 	}
 
     @Override
-    public boolean checkCredentialsAccordingToBasicEncryptor(String username, String password) {
+    public boolean checkCredentialsWithSHA1EncryptorAndReEncrypt(String username, String password) {
         User user = userRepository.findByName(username);
-        return user != null && !user.isDatabaseLoginBlocked() && user.checkPasswordWithBasicEncryptor(password);
+        return user != null && !user.isDatabaseLoginBlocked() && user.checkPasswordWithSHA1EncryptorAndReEncrypt(password);
     }
 
     @Override

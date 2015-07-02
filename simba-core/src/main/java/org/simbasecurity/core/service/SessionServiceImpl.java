@@ -15,7 +15,7 @@
  */
 package org.simbasecurity.core.service;
 
-import static org.simbasecurity.core.audit.AuditMessages.*;
+import static org.simbasecurity.core.audit.AuditMessages.SESSION_CREATED;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -37,55 +37,67 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class SessionServiceImpl implements SessionService {
 
-    @Autowired private Audit audit;
+	@Autowired
+	private Audit audit;
 
-    @Autowired private UserRepository userRepository;
-    @Autowired private SessionRepository sessionRepository;
+	@Autowired
+	private UserRepository userRepository;
+	@Autowired
+	private SessionRepository sessionRepository;
 
-    @Qualifier("ArchiveSessionService")
-    @Autowired
-    private ArchiveSessionService archiveSessionService;
-    @Autowired private AuditLogEventFactory auditLogEventFactory;
-
-    @Override
-    public Session createSession(String userName, String clientIpAddress, String hostServerName, String userAgent,String requestURL) {
-        User user = userRepository.findByName(userName);
-
-        SSOToken ssoToken = new SSOToken(UUID.randomUUID().toString());
-        Session session = new SessionEntity(user, ssoToken, clientIpAddress, hostServerName);
-
-        sessionRepository.persist(session);
-        audit.log(auditLogEventFactory.createEventForSession(user.getUserName(), ssoToken, clientIpAddress, hostServerName, userAgent, requestURL, SESSION_CREATED));
-        return session;
-    }
-
-    @Override
-    public void removeSession(Session session) {
-        archiveSession(session);
-    	sessionRepository.remove(session);
-    }
-
+	@Qualifier("ArchiveSessionService")
+	@Autowired
+	private ArchiveSessionService archiveSessionService;
+	@Autowired
+	private AuditLogEventFactory auditLogEventFactory;
 
 	@Override
-    public Session getSession(SSOToken token) {
-        if (token == null)
-            return null;
-        return sessionRepository.findBySSOToken(token);
-    }
+	public Session createSession(String userName, String clientIpAddress, String hostServerName, String userAgent, String requestURL) {
+		User user = userRepository.findByName(userName);
 
-    @Override
-    public void purgeExpiredSessions() {
-        Collection<Session> sessions = sessionRepository.findAll();
+		SSOToken ssoToken = new SSOToken(UUID.randomUUID().toString());
+		Session session = new SessionEntity(user, ssoToken, clientIpAddress, hostServerName);
 
-        for (Session session : sessions) {
-            if (session.isExpired()) {
-            	archiveSession(session);
-            	audit.log(auditLogEventFactory.createEventForSession(session.getUser().getUserName(), session.getSSOToken(), session.getClientIpAddress(), "Purged expired session"));
-                sessionRepository.remove(session);
-            }
-        }
-    }
-    private void archiveSession(Session session) {
-    	 archiveSessionService.archive(session);    	
-    }
+		sessionRepository.persist(session);
+		audit.log(auditLogEventFactory.createEventForSession(user.getUserName(), ssoToken, clientIpAddress, hostServerName, userAgent, requestURL,
+				SESSION_CREATED));
+		return session;
+	}
+
+	@Override
+	public void removeSession(Session session) {
+		archiveSession(session);
+		sessionRepository.remove(session);
+	}
+
+	@Override
+	public Session getSession(SSOToken token) {
+		if (token == null)
+			return null;
+		return sessionRepository.findBySSOToken(token);
+	}
+
+	@Override
+	public void purgeExpiredSessions() {
+		Collection<Session> sessions = sessionRepository.findAll();
+
+		for (Session session : sessions) {
+			if (session.isExpired()) {
+				archiveSession(session);
+				audit.log(auditLogEventFactory.createEventForSession(session.getUser().getUserName(), session.getSSOToken(),
+						session.getClientIpAddress(), "Purged expired session"));
+				sessionRepository.remove(session);
+			}
+		}
+	}
+
+	@Override
+	public void purgeSessionsOlderThanAbsoluteSessionTimeOut() {
+		// TODO philipn finish
+	}
+
+	private void archiveSession(Session session) {
+		archiveSessionService.archive(session);
+	}
+
 }

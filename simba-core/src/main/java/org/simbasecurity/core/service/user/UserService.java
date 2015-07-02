@@ -15,6 +15,7 @@
  */
 package org.simbasecurity.core.service.user;
 
+import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
 import static org.simbasecurity.core.service.ErrorSender.sendError;
 import static org.simbasecurity.core.service.ErrorSender.sendUnauthorizedError;
 
@@ -33,7 +34,9 @@ import org.simbasecurity.core.service.manager.dto.ChangePasswordDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -59,13 +62,17 @@ public class UserService {
 
 	@RequestMapping("changePassword")
 	@ResponseBody
-	public void changePassword(@RequestBody ChangePasswordDTO changePasswordDTO, HttpServletResponse response) {
-		if (changePasswordDTO.getSsoToken() == null || changePasswordDTO.getUserName() == null) {
+	public void changePassword(@RequestHeader(value = SIMBA_SSO_TOKEN, required = false) String ssoTokenFromHeader,
+			@CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoTokenFromCookie, @RequestBody ChangePasswordDTO changePasswordDTO,
+			HttpServletResponse response) {
+
+		String ssoToken = (ssoTokenFromHeader != null ? ssoTokenFromHeader : ssoTokenFromCookie);
+		if (ssoToken == null || changePasswordDTO.getUserName() == null) {
 			sendUnauthorizedError(response);
 			return;
 		}
 
-		Session activeSession = sessionRepository.findBySSOToken(new SSOToken(changePasswordDTO.getSsoToken()));
+		Session activeSession = sessionRepository.findBySSOToken(new SSOToken(ssoToken));
 		if (activeSession == null) {
 			sendUnauthorizedError(response);
 			return;
@@ -90,4 +97,5 @@ public class UserService {
 			}
 		}
 	}
+
 }

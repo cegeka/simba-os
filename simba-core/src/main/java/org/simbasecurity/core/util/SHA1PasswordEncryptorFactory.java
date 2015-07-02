@@ -15,21 +15,24 @@
  */
 package org.simbasecurity.core.util;
 
-import org.apache.commons.pool.BasePoolableObjectFactory;
 import org.jasypt.digest.config.SimpleStringDigesterConfig;
 import org.jasypt.salt.RandomSaltGenerator;
 import org.jasypt.util.password.ConfigurablePasswordEncryptor;
+import org.simbasecurity.core.jaas.loginmodule.FallbackDatabaseLoginModule;
 
-public class PasswordEncryptorFactory extends BasePoolableObjectFactory<ConfigurablePasswordEncryptor> {
+/**
+ * Should only be used as a fallback for existing legacy systems that use SHA-1!
+ * Used in {@link FallbackDatabaseLoginModule}.
+ */
+public class SHA1PasswordEncryptorFactory {
 
-	private final static String ALGORITHM = "SHA-256";
+	private final static String LEGACY_ALGORITHM = "SHA-1";
 
-	@Override
-	public ConfigurablePasswordEncryptor makeObject() throws Exception {
+	public ConfigurablePasswordEncryptor createLegacyEncryptor() {
 
 		ConfigurablePasswordEncryptor configurablePasswordEncryptor = new ConfigurablePasswordEncryptor();
-		configurablePasswordEncryptor.setAlgorithm(ALGORITHM);
-		configurablePasswordEncryptor.setConfig(createMinimumSafeStringDigester(ALGORITHM));
+		configurablePasswordEncryptor.setAlgorithm(LEGACY_ALGORITHM);
+		configurablePasswordEncryptor.setConfig(createMinimumSafeStringDigester(LEGACY_ALGORITHM));
 		configurablePasswordEncryptor.setPlainDigest(false);
 		return configurablePasswordEncryptor;
 	}

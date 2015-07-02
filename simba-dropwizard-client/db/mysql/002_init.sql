@@ -57,7 +57,7 @@ Insert into SIMBA_RULE (VERSION,NAME,RESOURCENAME,POLICY_ID,CREATE_ALLOWED,DELET
 	from SIMBA_POLICY p
 	where name = 'simba mgmt read';
 
-Insert into SIMBA_ROLE (VERSION,NAME) values (0,'simba-manager');
+Insert into SIMBA_ROLE (VERSION,NAME) values (0,'simba-admin');
 
 /* Other Simba rules */
 Insert into SIMBA_RULE (VERSION,NAME,RESOURCENAME,POLICY_ID,GET_ALLOWED,POST_ALLOWED,RULE_TYPE)
@@ -94,13 +94,13 @@ Insert into SIMBA_POLICY_SIMBA_ROLE (POLICY_ID,ROLE_ID)
 	select p.id, r.id
 	from SIMBA_POLICY p, SIMBA_ROLE r
 	where p.name in ('Simba Manager REST API','simba mgmt read','simba mgmt write')
-	and r.name in ('simba-manager');
+	and r.name in ('simba-admin');
 	
 /* All appUsers that are allowed to access the Simba Manager REST services */
 Insert into SIMBA_USER_ROLE (USER_ID,ROLE_ID) 
 	select u.id, r.id 
 	from SIMBA_USER u, SIMBA_ROLE r
-	where r.name='simba-manager'
+	where r.name='simba-admin'
 	and u.username in ('appUser');
 
 commit;

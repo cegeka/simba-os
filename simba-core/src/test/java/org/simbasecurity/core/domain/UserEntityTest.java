@@ -15,10 +15,14 @@
  */
 package org.simbasecurity.core.domain;
 
-import static org.apache.commons.lang.time.DateUtils.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.simbasecurity.core.exception.SimbaMessageKey.*;
+import static org.apache.commons.lang.time.DateUtils.truncate;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORD_INVALID_LENGTH;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -41,7 +45,7 @@ public class UserEntityTest extends LocatorTestCase {
 	private static final String OLD_PASSWORD = "oldPassword";
 	private static final String USERNAME = "Lenne";
 
-    private UserEntity user;
+	private UserEntity user;
 
 	@Before
 	public void setUp() {
@@ -49,10 +53,9 @@ public class UserEntityTest extends LocatorTestCase {
 
 		PasswordValidator mockPasswordValidator = implantMock(PasswordValidator.class);
 
-		doThrow(new SimbaException(PASSWORD_INVALID_LENGTH)).when(mockPasswordValidator).validatePassword(
-				INVALID_PASSWORD);
+		doThrow(new SimbaException(PASSWORD_INVALID_LENGTH)).when(mockPasswordValidator).validatePassword(INVALID_PASSWORD);
 
-        ConfigurationService configurationServiceMock = implantMock(ConfigurationService.class);
+		ConfigurationService configurationServiceMock = implantMock(ConfigurationService.class);
 		when(configurationServiceMock.getValue(ConfigurationParameter.DEFAULT_PASSWORD)).thenReturn(DEFAULT_PASSWORD);
 
 		user = new UserEntity(USERNAME, null, null, null, Language.en_US, Status.ACTIVE, true, true);
@@ -107,7 +110,7 @@ public class UserEntityTest extends LocatorTestCase {
 	}
 
 	@Test(expected = SimbaException.class)
-	public void changePassword_newPasswordInvalid() {
+	public void changePassword_passwordConfirmationInvalid() {
 		user.changePassword(DEFAULT_PASSWORD, INVALID_PASSWORD);
 	}
 

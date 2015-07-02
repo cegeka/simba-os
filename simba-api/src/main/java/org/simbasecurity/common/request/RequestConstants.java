@@ -65,4 +65,9 @@ public interface RequestConstants {
      */
     String SIMBA_LOGIN_PATH = "/simba-login";
 
+    /**
+     * The SAML response when using redirect binding
+     */
+    String SAML_RESPONSE = "SAMLResponse";
+
 }

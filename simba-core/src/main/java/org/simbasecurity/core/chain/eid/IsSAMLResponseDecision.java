@@ -11,10 +11,10 @@ public class IsSAMLResponseDecision implements Decision {
 
     @Override
     public boolean applies(ChainContext context) {
-        return isSAMLResponseUsingRedirectBinding(context.getRequestParameters());
+        return isSAMLResponseUsingRedirectBindingOrPostBinding(context.getRequestParameters());
     }
 
-    private boolean isSAMLResponseUsingRedirectBinding(Map<String, String> requestParameters) {
+    private boolean isSAMLResponseUsingRedirectBindingOrPostBinding(Map<String, String> requestParameters) {
         return requestParameters.containsKey(SAML_RESPONSE);
     }
 }

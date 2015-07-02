@@ -74,7 +74,7 @@ public final class SimbaFilter implements Filter {
 
 		THttpClient tHttpClient = null;
 		try {
-			tHttpClient = new THttpClient(simbaURL + "/authenticationService");
+			tHttpClient = new THttpClient(simbaURL + "/" + authenticationChainName);
 			TProtocol tProtocol = new TJSONProtocol(tHttpClient);
 
 			AuthenticationFilterService.Client authenticationClient = new AuthenticationFilterService.Client(tProtocol);

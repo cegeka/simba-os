@@ -15,9 +15,6 @@
  */
 package org.simbasecurity.core.chain;
 
-import java.io.Serializable;
-import java.util.Map;
-
 import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.api.service.thrift.SSOToken;
@@ -25,6 +22,9 @@ import org.simbasecurity.core.chain.eid.SAMLUser;
 import org.simbasecurity.core.domain.LoginMapping;
 import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.core.exception.SimbaMessageKey;
+
+import java.io.Serializable;
+import java.util.Map;
 
 /**
  * A ChainContext represents the state information that is accessed and manipulated by the execution
@@ -132,4 +132,6 @@ public interface ChainContext extends Serializable {
     void redirectToChangePasswordWithFilter();
 
     void setSAMLUser(SAMLUser samlUser);
+
+    SAMLUser getSAMLUser();
 }

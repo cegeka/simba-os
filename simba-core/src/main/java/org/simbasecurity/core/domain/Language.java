@@ -21,5 +21,15 @@ package org.simbasecurity.core.domain;
 public enum Language {
     en_US,
     nl_NL,
-    fr_FR
+    fr_FR;
+
+    public static Language fromISO639Code(String code) {
+        String lowerCaseCode = code.toLowerCase();
+        for (Language language : values()) {
+            if (language.name().toLowerCase().endsWith(lowerCaseCode)) {
+                return language;
+            }
+        }
+        return null;
+    }
 }

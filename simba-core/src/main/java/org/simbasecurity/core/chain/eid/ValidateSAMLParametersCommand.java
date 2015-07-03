@@ -13,8 +13,10 @@ import static org.simbasecurity.core.audit.AuditMessages.INVALID_SAML_RESPONSE;
 import static org.simbasecurity.core.audit.AuditMessages.VALID_SAML_RESPONSE;
 
 /**
- * The ValidateSAMLParametersCommand checks if the request contains...
+ * The ValidateSAMLParametersCommand checks if the request contains
+ * a valid SAML response.
  *
+ * @see org.simbasecurity.core.saml.SAMLResponseHandler#isValid(String...)
  * @since 2.1.3
  */
 @Component

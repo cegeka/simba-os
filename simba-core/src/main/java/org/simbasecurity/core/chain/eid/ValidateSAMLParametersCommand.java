@@ -32,7 +32,7 @@ public class ValidateSAMLParametersCommand implements Command {
         String samlResponse = context.getRequestParameter(SAML_RESPONSE);
 
         if (!samlService.getSAMLResponseHandler(samlResponse, context.getRequestURL()).isValid()) {
-            context.redirectToAccessDenied(); // Check
+            context.redirectToAccessDenied();
             logFailure(context, INVALID_SAML_RESPONSE);
             return State.FINISH;
         }

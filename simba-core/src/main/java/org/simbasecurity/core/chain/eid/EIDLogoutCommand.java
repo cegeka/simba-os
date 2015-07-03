@@ -1,7 +1,7 @@
 package org.simbasecurity.core.chain.eid;
 
 import org.simbasecurity.core.chain.ChainContext;
-import org.simbasecurity.core.chain.session.CheckSessionCommand;
+import org.simbasecurity.core.chain.session.LogoutCommand;
 import org.simbasecurity.core.saml.SAMLService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,25 +12,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class EIDCheckSessionCommand extends CheckSessionCommand {
+public class EIDLogoutCommand extends LogoutCommand {
 
-    @Autowired private SAMLService samlService;
+    @Autowired SAMLService samlService;
 
     @Override
-    protected void redirectToLogin(ChainContext context) {
+    protected void redirectToLogout(ChainContext context) {
         Map<String, String> parameters = new HashMap<String, String>();
-        String authRequestId = context.createLoginMapping().getToken();
-        context.redirectWithParameters(getSAMLAuthRequest(authRequestId), parameters);
+        String logoutRequestId = context.getRequestSSOToken().getToken();
+        context.redirectWithParameters(getSAMLLogoutRequest(logoutRequestId), parameters);
     }
 
-    private String getSAMLAuthRequest(String authRequestId) {
+    private String getSAMLLogoutRequest(String logoutRequestId) {
         try {
-            return samlService.getAuthRequestUrl(authRequestId);
+            return samlService.getLogoutRequestUrl(logoutRequestId);
         } catch (XMLStreamException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public boolean postProcess(ChainContext context, Exception exception) {
+        return false;
     }
 }
 

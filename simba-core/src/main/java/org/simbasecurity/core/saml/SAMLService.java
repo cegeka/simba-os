@@ -8,11 +8,13 @@ import java.text.SimpleDateFormat;
 public interface SAMLService {
     DateFormat SAML_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
-    String getRequest(String authRequestId) throws XMLStreamException, IOException;
+    String createAuthRequest(String authRequestId) throws XMLStreamException, IOException;
 
-    String getSSOurl(String authRequestId) throws XMLStreamException, IOException;
+    String getAuthRequestUrl(String authRequestId) throws XMLStreamException, IOException;
 
-    String getSSOurl() throws XMLStreamException, IOException;
+    String createLogoutRequest(String authRequestId) throws XMLStreamException, IOException;
+
+    String getLogoutRequestUrl(String authRequestId) throws XMLStreamException, IOException;
 
     SAMLResponseHandler getSAMLResponseHandler(String response, String currentURL) throws Exception;
 }

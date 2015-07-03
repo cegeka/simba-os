@@ -48,10 +48,14 @@ public class LogoutCommand implements Command {
 + context.getRequestSSOToken()));
 
             context.activateAction(ActionType.DELETE_COOKIE);
-            context.redirectToLogout();
+            redirectToLogout(context);
             return State.FINISH;
         }
         return State.CONTINUE;
+    }
+
+    protected void redirectToLogout(ChainContext context) {
+        context.redirectToLogout();
     }
 
     @Override

@@ -36,6 +36,7 @@ public interface AuditMessages {
 	String EMPTY_SUCCESS_URL = "No success URL specified for this user";
 	String NO_FUNCTIONAL_AUDIT_LOGGIN = "No functional audit logging possible";
 	String INVALID_HTTP_REQUEST_METHOD = "invalid http request method";
+	String INVALID_SAML_RESPONSE = "Invalid SAML response";
 
 	String SUCCESS = "SUCCESS: ";
 	String FAILURE = "FAILURE: ";
@@ -67,5 +68,6 @@ public interface AuditMessages {
 	String CHECK_SHOW_PASSWORD = "check to show change password screen";
 	String ENTER_APPLICATION = "entered the application";
 	String CHECK_HTTP_REQUEST_METHOD = "http request method allowed";
+	String VALID_SAML_RESPONSE = "Valid SAML response";
 
 }

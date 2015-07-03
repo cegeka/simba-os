@@ -4,6 +4,8 @@ public interface SAMLConstants {
     // Value added to the current time in time condition validations
     Integer ALOWED_CLOCK_DRIFT = 180; // 3 min in seconds
 
+    String AUTH_RESPONSE_NODE_NAME = "Response";
+    String LOGOUT_RESPONSE_NODE_NAME = "LogoutResponse";
 
     // NameID Formats
     String NAMEID_EMAIL_ADDRESS = "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress";

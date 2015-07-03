@@ -10,6 +10,8 @@ import javax.xml.xpath.XPathExpressionException;
 import java.security.cert.Certificate;
 import java.util.*;
 
+import static org.simbasecurity.core.saml.SAMLConstants.*;
+
 public class SAMLResponseHandlerImpl implements SAMLResponseHandler {
 
     private static final Logger log = LoggerFactory.getLogger(SAMLResponseHandlerImpl.class);
@@ -19,7 +21,6 @@ public class SAMLResponseHandlerImpl implements SAMLResponseHandler {
     private Document document;
 
     private Element rootElement;
-    private String response;
     private StringBuilder error;
     private String audienceUrl;
 
@@ -36,16 +37,26 @@ public class SAMLResponseHandlerImpl implements SAMLResponseHandler {
         this.certificate = certificate;
         loadXmlFromBase64(response);
         this.currentUrl = currentURL;
+        this.error = new StringBuilder();
     }
 
     public void loadXmlFromBase64(String responseStr) throws Exception {
         Base64 base64 = new Base64();
         byte[] decodedB = base64.decode(responseStr);
-        this.response = new String(decodedB);
-        this.document = Utils.loadXML(this.response);
+        this.document = Utils.loadXML(new String(decodedB));
         if (this.document == null) {
             throw new Exception("SAML Response could not be processed");
         }
+    }
+
+    @Override
+    public boolean isLogoutResponse() {
+        return LOGOUT_RESPONSE_NODE_NAME.equals(document.getDocumentElement().getLocalName());
+    }
+
+    @Override
+    public boolean isAuthenticationResponse() {
+        return AUTH_RESPONSE_NODE_NAME.equals(document.getDocumentElement().getLocalName());
     }
 
     // isValid() function should be called to make basic security checks to responses.

@@ -212,10 +212,12 @@ public enum ConfigurationParameter {
 
     ENABLE_AD_GROUPS(StoreType.DATABASE, true, BooleanType.class, "false"),
 
-    ADMIN_ROLE_NAME(StoreType.DATABASE, true, StringType.class, "simba-admin");
-    
-    
-    
+    ADMIN_ROLE_NAME(StoreType.DATABASE, true, StringType.class, "simba-admin"),
+
+    SAML_IDP_TARGET_URL(StoreType.DATABASE, true, StringType.class, ""),
+    SAML_ASSERTION_CONSUMER_SERVICE_URL(StoreType.DATABASE, true, StringType.class, ""),
+    SAML_ISSUER(StoreType.DATABASE, true, StringType.class, ""),
+    SAML_IDP_CERTIFICATE(DATABASE, true, StringType.class, "");
 
     private final boolean unique;
     private final Type<?> typeConverter;
@@ -223,11 +225,11 @@ public enum ConfigurationParameter {
     private final StoreType storeType;
     private final String defaultValue;
 
-    private ConfigurationParameter(StoreType storeType, boolean unique, Class<? extends Type<?>> type, String defaultValue) {
+    ConfigurationParameter(StoreType storeType, boolean unique, Class<? extends Type<?>> type, String defaultValue) {
         this(storeType, unique, type, null, defaultValue);
     }
 
-    private ConfigurationParameter(StoreType storeType, boolean unique, Class<? extends Type<?>> type, TimeUnit timeUnit, String defaultValue) {
+    ConfigurationParameter(StoreType storeType, boolean unique, Class<? extends Type<?>> type, TimeUnit timeUnit, String defaultValue) {
         this.storeType = storeType;
         if (type.equals(TimeType.class) && timeUnit == null) {
             throw new IllegalArgumentException("Parameter of time type requires a time unit");

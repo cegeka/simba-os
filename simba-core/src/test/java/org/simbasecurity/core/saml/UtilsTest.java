@@ -113,11 +113,6 @@ public class UtilsTest {
 
     }
 
-    /**
-     * Tests the query method of the com.onelogin.saml.Utils
-     * <p/>
-     * covers Utils.query
-     */
     @Test
     public void testQuery() throws XPathExpressionException {
         Document dom = loadSignatureDocument("responses/valid_response.xml.base64");

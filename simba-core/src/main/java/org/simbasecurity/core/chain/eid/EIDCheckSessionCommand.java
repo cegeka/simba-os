@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.simbasecurity.common.constants.AuthenticationConstants.LOGIN_TOKEN;
-
 @Component
 public class EIDCheckSessionCommand extends CheckSessionCommand {
 

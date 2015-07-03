@@ -198,11 +198,17 @@ public class ChainContextImpl implements ChainContext {
     public void redirectToChangePasswordWithFilter(){
     	Map<String, String> requestParameters = new HashMap<String, String>();
     	requestParameters.put(USERNAME, getUserName());
-		requestParameters.put(LOGIN_TOKEN, createLoginMapping().getToken());
+		addLoginTokenToRequestParameters(requestParameters, createLoginMapping());
 
 		String url = getSimbaWebURL() + configurationService.getValue(CHANGE_PASSWORD_URL);
 		redirectWithParameters(url, requestParameters);
     }
+
+	private void addLoginTokenToRequestParameters(Map<String, String> requestParameters, LoginMapping loginMapping) {
+		if (loginMapping != null) {
+			requestParameters.put(LOGIN_TOKEN, loginMapping.getToken());
+		}
+	}
 
 	@Override
 	public LoginMapping createLoginMapping() {
@@ -228,7 +234,7 @@ public class ChainContextImpl implements ChainContext {
     	requestParameters.put(USERNAME, getUserName());
     	requestParameters.put(SIMBA_SSO_TOKEN, getRequestSSOToken().getToken());
 
-		requestParameters.put(LOGIN_TOKEN, createLoginMapping().getToken());
+		addLoginTokenToRequestParameters(requestParameters, createLoginMapping());
 
 		String url = getSimbaWebURL() + configurationService.getValue(CHANGE_PASSWORD_URL);
 		redirectWithParameters(url, requestParameters);
@@ -248,7 +254,7 @@ public class ChainContextImpl implements ChainContext {
     public void redirectToLogin(){
     	Map<String, String> parameters = new HashMap<String, String>();
 
-		parameters.put(LOGIN_TOKEN, createLoginMapping().getToken());
+		addLoginTokenToRequestParameters(parameters, createLoginMapping());
 		String url = getSimbaWebURL() + configurationService.getValue(LOGIN_URL);
 		redirectWithParameters(url, parameters);
     }
@@ -271,7 +277,7 @@ public class ChainContextImpl implements ChainContext {
     	Map<String, String> requestParameters = new HashMap<String, String>();
     	requestParameters.put(USERNAME, getUserName());
     	requestParameters.put(ERROR_MESSAGE, errorKey.name());
-		requestParameters.put(LOGIN_TOKEN, createLoginMapping().getToken());
+		addLoginTokenToRequestParameters(requestParameters, createLoginMapping());
 
 		redirectWithParameters(getSimbaWebURL() + getCredentialPath(), requestParameters);
     }

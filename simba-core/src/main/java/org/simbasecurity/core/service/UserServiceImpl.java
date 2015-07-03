@@ -15,10 +15,6 @@
  */
 package org.simbasecurity.core.service;
 
-import static org.simbasecurity.core.exception.SimbaMessageKey.*;
-
-import java.util.List;
-
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.domain.Role;
@@ -28,6 +24,10 @@ import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.exception.SimbaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -58,4 +58,8 @@ public class UserServiceImpl implements UserService {
         return newUser;
     }
 
+    @Override
+    public User findByName(String userName) {
+        return userRepository.findByName(userName);
+    }
 }

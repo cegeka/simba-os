@@ -15,10 +15,26 @@
  */
 package org.simbasecurity.core.service;
 
-import java.util.List;
-
 import org.simbasecurity.core.domain.User;
 
+import java.util.List;
+
 public interface UserService {
+    /**
+     * Create a new user with a predefined set of roles.
+     *
+     * @param user      the user to create
+     * @param roleNames the List of roles for the user
+     * @return the user object as stored in the database
+     */
     User create(User user, List<String> roleNames);
+
+    /**
+     * Lookup a user by its user name.
+     *
+     * @param userName the user name by which the user is registered
+     * @return the user object if found; <tt>null</tt> otherwise
+     * @since 2.1.3
+     */
+    User findByName(String userName);
 }

@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.simbasecurity.core.audit.Audit;
@@ -13,9 +14,12 @@ import org.simbasecurity.core.chain.Command;
 import org.simbasecurity.core.domain.LoginMappingEntity;
 import org.simbasecurity.core.saml.SAMLService;
 
+import java.util.Date;
 import java.util.Map;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.simbasecurity.common.constants.AuthenticationConstants.LOGIN_TOKEN;
@@ -47,11 +51,11 @@ public class EIDCheckSessionCommandTest {
 
         LoginMappingEntity loginMapping = new LoginMappingEntity();
         when(contextMock.createLoginMapping()).thenReturn(loginMapping);
-        when(samlService.getAuthRequestUrl(loginMapping.getToken())).thenReturn("SAMLAuthRequestURL");
+        when(samlService.getAuthRequestUrl(eq(loginMapping.getToken()), any(Date.class))).thenReturn("SAMLAuthRequestURL");
         assertEquals(Command.State.FINISH, command.execute(contextMock));
 
         verify(contextMock).redirectWithParameters(urlCaptor.capture(), parametersCaptor.capture());
-        verify(samlService).getAuthRequestUrl(loginMapping.getToken());
+        verify(samlService).getAuthRequestUrl(eq(loginMapping.getToken()), any(Date.class));
         assertEquals("SAMLAuthRequestURL", urlCaptor.getAllValues().get(0));
         assertEquals(loginMapping.getToken(), parametersCaptor.getAllValues().get(0).get(LOGIN_TOKEN));
     }

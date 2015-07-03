@@ -187,7 +187,8 @@ public class ChainContextImpl implements ChainContext {
         return requestData.isSsoTokenMappingKeyProvided();
     }
 
-    public void redirectWithParameters(String redirectURL, Map<String, String> parameters) {
+    @Override
+	public void redirectWithParameters(String redirectURL, Map<String, String> parameters) {
     	activateAction(ActionType.ADD_PARAMETER_TO_TARGET);
     	activateAction(ActionType.REDIRECT);
     	addParametersToTarget(parameters);
@@ -197,39 +198,39 @@ public class ChainContextImpl implements ChainContext {
     public void redirectToChangePasswordWithFilter(){
     	Map<String, String> requestParameters = new HashMap<String, String>();
     	requestParameters.put(USERNAME, getUserName());
-    	addLoginTokenToRequestParameters(requestParameters);
-    	
-    	String url = getSimbaWebURL() + configurationService.getValue(CHANGE_PASSWORD_URL);
+		requestParameters.put(LOGIN_TOKEN, createLoginMapping().getToken());
+
+		String url = getSimbaWebURL() + configurationService.getValue(CHANGE_PASSWORD_URL);
 		redirectWithParameters(url, requestParameters);
     }
 
-	private void addLoginTokenToRequestParameters(
-			Map<String, String> requestParameters) {
+	@Override
+	public LoginMapping createLoginMapping() {
 		LoginMapping newMapping = null;
-    	if (getLoginToken() != null) {
-    		LoginMapping mapping = getLoginMapping() != null ? getLoginMapping() : loginMappingService.getMapping(getLoginToken());
-    		if (mapping != null) {
+		if (getLoginToken() != null) {
+			LoginMapping mapping = getLoginMapping() != null ? getLoginMapping() : loginMappingService.getMapping(getLoginToken());
+			if (mapping != null) {
 				newMapping = loginMappingService.createMapping(mapping.getTargetURL());
-    			loginMappingService.removeMapping(getLoginToken());
-    		}
+				loginMappingService.removeMapping(getLoginToken());
+			}
 		} else if(!isLoginUsingJSP()){
 			newMapping = loginMappingService.createMapping(getRequestURL());
-    	}
-    	if (newMapping != null) {
-    		setLoginMapping(newMapping);
-    		requestParameters.put(LOGIN_TOKEN, newMapping.getToken());
-    	}
+		}
+		if (newMapping != null) {
+			setLoginMapping(newMapping);
+		}
+
+		return getLoginMapping();
 	}
     
     public void redirectToChangePasswordDirect(){
     	Map<String, String> requestParameters = new HashMap<String, String>();
     	requestParameters.put(USERNAME, getUserName());
     	requestParameters.put(SIMBA_SSO_TOKEN, getRequestSSOToken().getToken());
-    	
-    	LoginMapping loginToken = loginMappingService.createMapping(getRequestURL());
-    	requestParameters.put(LOGIN_TOKEN, loginToken.getToken());
-    	
-    	String url = getSimbaWebURL() + configurationService.getValue(CHANGE_PASSWORD_URL);
+
+		requestParameters.put(LOGIN_TOKEN, createLoginMapping().getToken());
+
+		String url = getSimbaWebURL() + configurationService.getValue(CHANGE_PASSWORD_URL);
 		redirectWithParameters(url, requestParameters);
     }
     
@@ -245,11 +246,10 @@ public class ChainContextImpl implements ChainContext {
     }
     
     public void redirectToLogin(){
-    	Map<String, String> parameters = new HashMap<String, String>(); 
+    	Map<String, String> parameters = new HashMap<String, String>();
 
-    	LoginMapping loginToken = loginMappingService.createMapping(getRequestURL());
-    	parameters.put(LOGIN_TOKEN, loginToken.getToken());
-    	String url = getSimbaWebURL() + configurationService.getValue(LOGIN_URL);
+		parameters.put(LOGIN_TOKEN, createLoginMapping().getToken());
+		String url = getSimbaWebURL() + configurationService.getValue(LOGIN_URL);
 		redirectWithParameters(url, parameters);
     }
 
@@ -271,10 +271,9 @@ public class ChainContextImpl implements ChainContext {
     	Map<String, String> requestParameters = new HashMap<String, String>();
     	requestParameters.put(USERNAME, getUserName());
     	requestParameters.put(ERROR_MESSAGE, errorKey.name());
-    	
-    	addLoginTokenToRequestParameters(requestParameters);
-    	
-    	redirectWithParameters(getSimbaWebURL() + getCredentialPath(), requestParameters);
+		requestParameters.put(LOGIN_TOKEN, createLoginMapping().getToken());
+
+		redirectWithParameters(getSimbaWebURL() + getCredentialPath(), requestParameters);
     }
 
     public boolean isLoginUsingJSP() {

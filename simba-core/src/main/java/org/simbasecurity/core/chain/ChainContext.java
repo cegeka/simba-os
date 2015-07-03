@@ -102,6 +102,8 @@ public interface ChainContext extends Serializable {
 
     void redirectToAccessDenied();
 
+    LoginMapping createLoginMapping();
+
     void redirectToChangePasswordDirect();
 
     boolean isShowChangePasswordRequest();
@@ -123,6 +125,8 @@ public interface ChainContext extends Serializable {
 	LoginMapping getLoginMapping();
 	
 	void redirectWhenLoginTokenExpired();
-	
-	void redirectToChangePasswordWithFilter();
+
+    void redirectWithParameters(String redirectURL, Map<String, String> parameters);
+
+    void redirectToChangePasswordWithFilter();
 }

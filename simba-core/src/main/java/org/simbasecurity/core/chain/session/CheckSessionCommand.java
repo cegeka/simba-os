@@ -48,7 +48,8 @@ public class CheckSessionCommand implements Command {
             ssoToken = context.getRequestSSOToken();
         }
         if (ssoToken == null) {
-            context.redirectToLogin();
+            redirectToLogin(context);
+
             audit.log(auditLogFactory.createEventForAuthentication(context, AuditMessages.NO_SSOTOKEN_FOUND_REDIRECT_LOGIN));
             return State.FINISH;
         }
@@ -56,7 +57,7 @@ public class CheckSessionCommand implements Command {
         Session currentSession = context.getCurrentSession();
 
         if (currentSession == null || currentSession.isExpired()) {
-            context.redirectToLogin();
+            redirectToLogin(context);
             sessionService.removeSession(currentSession);
             logFailure(context, AuditMessages.SESSION_INVALID);
             return State.FINISH;
@@ -66,6 +67,10 @@ public class CheckSessionCommand implements Command {
         context.setUserPrincipal(currentSession.getUser().getUserName());
         logSuccess(context, AuditMessages.CHECK_SESSION);
         return State.CONTINUE;
+    }
+
+    protected void redirectToLogin(ChainContext context) {
+        context.redirectToLogin();
     }
 
     @Override

@@ -47,6 +47,8 @@ public class SAMLServiceImpl implements SAMLService {
         writer.writeAttribute("ID", id);
         writer.writeAttribute("Version", "2.0");
         writer.writeAttribute("IssueInstant", issueInstant);
+        writer.writeAttribute("ForceAuthn", "false");
+        writer.writeAttribute("IsPassive", "false");
         writer.writeAttribute("ProtocolBinding", BINDING_HTTP_POST);
         writer.writeAttribute("AssertionConsumerServiceURL", configurationService.<String>getValue(ConfigurationParameter.SAML_ASSERTION_CONSUMER_SERVICE_URL));
 
@@ -57,7 +59,8 @@ public class SAMLServiceImpl implements SAMLService {
 
         writer.writeStartElement("samlp", "NameIDPolicy", NS_SAMLP);
 
-        writer.writeAttribute("Format", NAMEID_UNSPECIFIED);
+        writer.writeAttribute("Format", NAMEID_TRANSIENT);
+        writer.writeAttribute("SPNameQualifier", configurationService.<String>getValue(ConfigurationParameter.SAML_ISSUER));
         writer.writeAttribute("AllowCreate", "true");
         writer.writeEndElement();
 
@@ -67,7 +70,7 @@ public class SAMLServiceImpl implements SAMLService {
 
         writer.writeStartElement("saml", "AuthnContextClassRef", NS_SAML);
         writer.writeNamespace("saml", NS_SAML);
-        writer.writeCharacters(AC_PASSWORD_PROTECTED_TRANSPORT);
+        writer.writeCharacters(AC_FAS_EID);
         writer.writeEndElement();
 
         writer.writeEndElement();

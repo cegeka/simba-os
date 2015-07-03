@@ -21,6 +21,7 @@ import java.util.Map;
 import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.api.service.thrift.SSOToken;
+import org.simbasecurity.core.chain.eid.SAMLUser;
 import org.simbasecurity.core.domain.LoginMapping;
 import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.core.exception.SimbaMessageKey;
@@ -129,4 +130,6 @@ public interface ChainContext extends Serializable {
     void redirectWithParameters(String redirectURL, Map<String, String> parameters);
 
     void redirectToChangePasswordWithFilter();
+
+    void setSAMLUser(SAMLUser samlUser);
 }

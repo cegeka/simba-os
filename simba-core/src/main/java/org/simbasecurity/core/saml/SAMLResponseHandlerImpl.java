@@ -217,6 +217,14 @@ public class SAMLResponseHandlerImpl implements SAMLResponseHandler {
         return nodes.item(0).getTextContent();
     }
 
+    @Override
+    public String getInResponseTo() {
+        return rootElement.hasAttribute("InResponseTo")
+            ? rootElement.getAttribute("InResponseTo")
+            : null;
+    }
+
+    @Override
     public String getAttribute(String name) {
         HashMap<String, ArrayList<String>> attributes = getAttributes();
         if (!attributes.isEmpty()) {

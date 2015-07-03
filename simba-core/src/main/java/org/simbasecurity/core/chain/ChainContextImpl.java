@@ -41,6 +41,7 @@ import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.api.service.thrift.RequestData;
 import org.simbasecurity.api.service.thrift.SSOToken;
+import org.simbasecurity.core.chain.eid.SAMLUser;
 import org.simbasecurity.core.config.ConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.LoginMapping;
@@ -70,9 +71,10 @@ public class ChainContextImpl implements ChainContext {
 	private long commandCounter = 0;
 	private UUID uuiIdForAChain;
 	private LoginMapping loginMapping;
-	
+	private SAMLUser samlUser;
 
-    /**
+
+	/**
      * Create a new ChainContext from the given {@link HttpServletRequest}. The
      * required info is stripped from the {@link HttpServletRequest} and stored
      * for easy access.
@@ -203,6 +205,15 @@ public class ChainContextImpl implements ChainContext {
 		String url = getSimbaWebURL() + configurationService.getValue(CHANGE_PASSWORD_URL);
 		redirectWithParameters(url, requestParameters);
     }
+
+	@Override
+	public void setSAMLUser(SAMLUser samlUser) {
+		this.samlUser = samlUser;
+	}
+
+	public SAMLUser getSAMLUser() {
+		return samlUser;
+	}
 
 	private void addLoginTokenToRequestParameters(Map<String, String> requestParameters, LoginMapping loginMapping) {
 		if (loginMapping != null) {

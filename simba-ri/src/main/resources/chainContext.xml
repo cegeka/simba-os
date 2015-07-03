@@ -87,5 +87,45 @@
     <constructor-arg ref="credentialChain" />
     <constructor-arg ref="sessionChain" />
   </bean>
+
+
+  <!-- The SAML EID integration chain -->
+  <bean id="eidAuthenticationChain" class="org.simbasecurity.core.chain.ChainImpl">
+    <property name="commands">
+      <list>
+        <ref bean="samlResponseDecisionCommand" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="samlHandlingChain" class="org.simbasecurity.core.chain.ChainImpl">
+    <property name="commands">
+      <list>
+        <ref bean="validateSAMLParametersCommand" />
+        <ref bean="SAMLLogoutCommand" />
+        <ref bean="SAMLAuthResponseCommand" />
+        <ref bean="createEIDUserCommand" />
+        <ref bean="createSessionCommand" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="eidSessionChain" class="org.simbasecurity.core.chain.ChainImpl">
+    <property name="commands">
+      <list>
+        <ref bean="EIDCheckSessionCommand" />
+        <ref bean="checkClientIPCommand" />
+        <ref bean="EIDLogoutCommand" />
+        <ref bean="URLRuleCheckCommand" />
+        <ref bean="enterApplicationCommand" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="samlResponseDecisionCommand" class="org.simbasecurity.core.chain.DecisionCommand">
+    <constructor-arg ref="isSAMLResponseDecision" />
+    <constructor-arg ref="samlHandlingChain" />
+    <constructor-arg ref="eidSessionChain" />
+  </bean>
   
 </beans>

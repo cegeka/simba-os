@@ -7,9 +7,11 @@ import org.simbasecurity.core.saml.SAMLResponseHandler;
 import org.simbasecurity.core.saml.SAMLService;
 import org.simbasecurity.core.service.LoginMappingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import static org.simbasecurity.common.request.RequestConstants.SAML_RESPONSE;
 
+@Component
 public class SAMLAuthResponseCommand implements Command {
 
     @Autowired

@@ -15,8 +15,6 @@
  */
 package org.simbasecurity.core.chain.authorization;
 
-import static org.simbasecurity.core.audit.AuditMessages.*;
-
 import org.simbasecurity.api.service.thrift.AuthorizationService;
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
@@ -25,6 +23,8 @@ import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.simbasecurity.core.audit.AuditMessages.ACCESS_DENIED;
 
 /**
  * The URLRuleCheckCommand checks if a user is allowed to access a specific URL.
@@ -43,11 +43,11 @@ public class URLRuleCheckCommand implements Command {
     public State execute(ChainContext context) throws Exception {
         if (this.authorizationService.isURLRuleAllowed(context.getUserName(), context.getRequestURL(),
                 context.getRequestMethod()).isAllowed()) {
-        	logSuccess(context, AuditMessages.CHECK_URL_RULE);
+            audit.log(auditLogFactory.createEventForAuthorizationForSuccess(context, AuditMessages.CHECK_URL_RULE));
             return State.CONTINUE;
         }
 
-        logFailure(context, ACCESS_DENIED + context.getRequestURL());
+        audit.log(auditLogFactory.createEventForAuthorizationForFailure(context, ACCESS_DENIED + context.getRequestURL()));
         context.redirectToAccessDenied();
 
         return State.FINISH;
@@ -58,13 +58,4 @@ public class URLRuleCheckCommand implements Command {
         return false;
     }
 
-    @Override
-    public void logSuccess(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthorizationForSuccess(context, message));
-    }
-
-    @Override
-    public void logFailure(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthorizationForFailure(context, message));
-    }
 }

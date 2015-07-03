@@ -15,8 +15,6 @@
  */
 package org.simbasecurity.core.chain.session;
 
-import static org.simbasecurity.core.audit.AuditMessages.*;
-
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.audit.AuditMessages;
@@ -25,6 +23,8 @@ import org.simbasecurity.core.chain.Command;
 import org.simbasecurity.core.domain.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.simbasecurity.core.audit.AuditMessages.CLIENT_IP_CHECK;
 
 /**
  * The CheckClientIPCommand checks if the client IP in the request is the same
@@ -44,11 +44,11 @@ public class CheckClientIPCommand implements Command {
         boolean isTheSameIP = isAccessibleFrom(context.getCurrentSession(), context.getClientIpAddress());
 
         if (!isTheSameIP) {
-        	logFailure(context, AuditMessages.IP_IN_SESSION_NOT_THE_SAME);
+            audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, AuditMessages.IP_IN_SESSION_NOT_THE_SAME));
             context.redirectToLogin();
             return State.FINISH;
         }
-        logSuccess(context, AuditMessages.CHECK_CLIENT_IP);
+        audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, AuditMessages.CHECK_CLIENT_IP));
         return State.CONTINUE;
     }
 
@@ -75,13 +75,4 @@ public class CheckClientIPCommand implements Command {
         return false;
     }
 
-    @Override
-    public void logSuccess(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, message));
-    }
-
-    @Override
-    public void logFailure(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, message));
-    }
 }

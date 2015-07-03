@@ -15,9 +15,6 @@
  */
 package org.simbasecurity.core.chain.authentication;
 
-import static org.simbasecurity.core.audit.AuditMessages.*;
-import static org.simbasecurity.core.exception.SimbaMessageKey.*;
-
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.chain.ChainContext;
@@ -26,6 +23,10 @@ import org.simbasecurity.core.domain.Status;
 import org.simbasecurity.core.service.CredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.simbasecurity.core.audit.AuditMessages.ACCOUNT_NOT_EXISTS_OR_INACTIVE;
+import static org.simbasecurity.core.audit.AuditMessages.CHECK_USER_ACTIVE;
+import static org.simbasecurity.core.exception.SimbaMessageKey.LOGIN_FAILED;
 
 /**
  * The CheckUserActiveCommand checks if a user exists in the data store and if
@@ -45,29 +46,19 @@ public class CheckUserActiveCommand implements Command {
     public State execute(ChainContext context) throws Exception {
         if (!credentialService.checkUserExists(context.getUserName())
                 || credentialService.checkUserStatus(context.getUserName(), Status.INACTIVE)) {
-        	logFailure(context,ACCOUNT_NOT_EXISTS_OR_INACTIVE);
+            audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, ACCOUNT_NOT_EXISTS_OR_INACTIVE));
             context.redirectWithCredentialError(LOGIN_FAILED);
             return State.FINISH;
         }
 
         context.setUserPrincipal(context.getUserName());
-        logSuccess(context, CHECK_USER_ACTIVE);
+        audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, CHECK_USER_ACTIVE));
         return State.CONTINUE;
     }
 
     @Override
     public boolean postProcess(ChainContext context, Exception exception) {
         return false;
-    }
-
-    @Override
-    public void logSuccess(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, message));
-    }
-
-    @Override
-    public void logFailure(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, message));
     }
 
 }

@@ -16,7 +16,6 @@
 package org.simbasecurity.core.chain.session;
 
 import org.simbasecurity.api.service.thrift.ActionType;
-import org.simbasecurity.core.audit.AuditMessages;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command;
 import org.slf4j.Logger;
@@ -48,16 +47,6 @@ public class CreateCookieForNewSSOTokenCommand implements Command {
     @Override
     public boolean postProcess(ChainContext context, Exception exception) {
         return false;
-    }
-
-    @Override
-    public void logSuccess(ChainContext context, String message) {
-        throw new UnsupportedOperationException(AuditMessages.NO_FUNCTIONAL_AUDIT_LOGGIN);
-    }
-
-    @Override
-    public void logFailure(ChainContext context, String message) {
-        throw new UnsupportedOperationException(AuditMessages.NO_FUNCTIONAL_AUDIT_LOGGIN);
     }
 
 }

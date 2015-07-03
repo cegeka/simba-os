@@ -42,23 +42,13 @@ public class CheckShowChangePasswordCommand implements Command {
             context.redirectToChangePasswordDirect();
             return State.FINISH;
         }
-        logSuccess(context, AuditMessages.CHECK_SHOW_PASSWORD);
+        audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, AuditMessages.CHECK_SHOW_PASSWORD));
         return State.CONTINUE;
     }
 
     @Override
     public boolean postProcess(ChainContext context, Exception exception) {
         return false;
-    }
-
-    @Override
-    public void logSuccess(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, message));
-    }
-
-    @Override
-    public void logFailure(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, message));
     }
 
 }

@@ -33,11 +33,11 @@ public class ValidateSAMLParametersCommand implements Command {
 
         if (!samlService.getSAMLResponseHandler(samlResponse, context.getRequestURL()).isValid()) {
             context.redirectToAccessDenied();
-            logFailure(context, INVALID_SAML_RESPONSE);
+            audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, INVALID_SAML_RESPONSE));
             return State.FINISH;
         }
 
-        logSuccess(context, VALID_SAML_RESPONSE);
+        audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, VALID_SAML_RESPONSE));
         return State.CONTINUE;
     }
 
@@ -45,13 +45,4 @@ public class ValidateSAMLParametersCommand implements Command {
         return false;
     }
 
-    @Override
-    public void logSuccess(ChainContext context, String message) {
-        audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, message));
-    }
-
-    @Override
-    public void logFailure(ChainContext context, String message) {
-        audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, message));
-    }
 }

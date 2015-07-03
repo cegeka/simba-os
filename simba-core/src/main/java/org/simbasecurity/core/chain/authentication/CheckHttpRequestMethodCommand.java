@@ -15,17 +15,18 @@
  */
 package org.simbasecurity.core.chain.authentication;
 
-import static org.simbasecurity.core.audit.AuditMessages.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.simbasecurity.core.audit.AuditMessages.CHECK_HTTP_REQUEST_METHOD;
+import static org.simbasecurity.core.audit.AuditMessages.INVALID_HTTP_REQUEST_METHOD;
 
 @Component
 public class CheckHttpRequestMethodCommand implements Command {
@@ -38,13 +39,13 @@ public class CheckHttpRequestMethodCommand implements Command {
 		List<String> allowedHttpRequestMethods = loadAllowedHttpRequestMethods();
 		
 		if(!allowedHttpRequestMethods.contains(context.getRequestMethod())){
-			logFailure(context, INVALID_HTTP_REQUEST_METHOD);
+			audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, INVALID_HTTP_REQUEST_METHOD));
 			context.redirectToAccessDenied();
             return State.FINISH;
 		}
-		
-		logSuccess(context, CHECK_HTTP_REQUEST_METHOD);
-        return State.CONTINUE;
+
+		audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, CHECK_HTTP_REQUEST_METHOD));
+		return State.CONTINUE;
 	}
 
 	private List<String> loadAllowedHttpRequestMethods() {
@@ -52,16 +53,6 @@ public class CheckHttpRequestMethodCommand implements Command {
 		list.add("POST");
 		list.add("GET");
 		return list;
-	}
-
-	@Override
-	public void logFailure(ChainContext context, String message) {
-		audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, message));
-	}
-
-	@Override
-	public void logSuccess(ChainContext context, String message) {
-		audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, message));
 	}
 
 	@Override

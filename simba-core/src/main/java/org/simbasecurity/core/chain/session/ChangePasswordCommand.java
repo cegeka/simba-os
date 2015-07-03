@@ -15,9 +15,6 @@
  */
 package org.simbasecurity.core.chain.session;
 
-import static org.simbasecurity.common.constants.AuthenticationConstants.*;
-import static org.simbasecurity.core.audit.AuditMessages.*;
-
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.chain.ChainContext;
@@ -26,6 +23,11 @@ import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.CredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.simbasecurity.common.constants.AuthenticationConstants.NEW_PASSWORD;
+import static org.simbasecurity.common.constants.AuthenticationConstants.NEW_PASSWORD_CONFIRMATION;
+import static org.simbasecurity.core.audit.AuditMessages.PASSWORD_CHANGED;
+import static org.simbasecurity.core.audit.AuditMessages.PASSWORD_NOT_VALID;
 
 /**
  * The ChangePasswordCommand checks if a user is changing his password and
@@ -48,13 +50,13 @@ public class ChangePasswordCommand implements Command {
 
             try {
                 credentialService.changePassword(userName, newPassword, newPasswordConfirmation);
-                logSuccess(context, PASSWORD_CHANGED);
+                audit.log(auditLogFactory.createEventForSessionForSuccess(context, PASSWORD_CHANGED));
                 if (isChangePasswordDuringSession(context)) {
                     context.redirectToPasswordChanged();
                     return State.FINISH;
                 }
             } catch (SimbaException e) {
-            	logFailure(context, PASSWORD_NOT_VALID);
+                audit.log(auditLogFactory.createEventForSessionForFailure(context, PASSWORD_NOT_VALID));
                 context.redirectWithCredentialError(e.getMessageKey());
                 return State.FINISH;
             }
@@ -69,16 +71,6 @@ public class ChangePasswordCommand implements Command {
     @Override
     public boolean postProcess(ChainContext context, Exception exception) {
         return false;
-    }
-
-    @Override
-    public void logSuccess(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForSessionForSuccess(context, message));
-    }
-
-    @Override
-    public void logFailure(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForSessionForFailure(context, message));
     }
 
 }

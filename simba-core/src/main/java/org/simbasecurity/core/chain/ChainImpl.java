@@ -15,15 +15,15 @@
  */
 package org.simbasecurity.core.chain;
 
-import static org.simbasecurity.core.audit.AuditMessages.*;
-
-import java.util.List;
-import java.util.logging.Logger;
-
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static org.simbasecurity.core.audit.AuditMessages.CHAIN_FAILURE;
+import static org.simbasecurity.core.audit.AuditMessages.CHAIN_SUCCESS;
 
 /**
  * A Chain represents a configured list of {@link org.simbasecurity.core.chain.Command commands} that will be
@@ -76,7 +76,7 @@ public class ChainImpl implements Chain {
 
                 if (savedResult == State.FINISH) {
                     LOG.debug("Finished in {}.", command.getClass().getSimpleName());
-                    logSuccess(context, CHAIN_SUCCESS + command.getClass().getSimpleName());
+                    audit.log(auditLogFactory.createEventForChainSuccess(context, CHAIN_SUCCESS + command.getClass().getSimpleName()));
                     break;
                 }
             } catch (Exception e) {
@@ -85,7 +85,7 @@ public class ChainImpl implements Chain {
 				if(command != null){
 					commandName = command.getClass().getName();
 				}
-				logFailure(context, CHAIN_FAILURE + commandName);
+                audit.log(auditLogFactory.createEventForChainFailure(context, CHAIN_FAILURE + commandName));
                 break;
             }
         }
@@ -125,16 +125,6 @@ public class ChainImpl implements Chain {
             }
         }
         return handled;
-    }
-
-	@Override
-    public void logSuccess(ChainContext context, String message) {
-		audit.log(auditLogFactory.createEventForChainSuccess(context, message));
-    }
-
-    @Override
-    public void logFailure(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForChainFailure(context, message));
     }
 
 }

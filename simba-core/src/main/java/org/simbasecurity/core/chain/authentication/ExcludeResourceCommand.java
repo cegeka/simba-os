@@ -45,7 +45,7 @@ public class ExcludeResourceCommand implements Command {
     public State execute(ChainContext context) throws Exception {
         if (excludeResourceService.isResourceExcluded(context.getRequestURL())) {
             if(!excludeResourceService.isResourceLoggingExcluded(context.getRequestURL())) {
-        	    logSuccess(context, "Resource excluded [" + context.getRequestURL() + "]");
+                audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, "Resource excluded [" + context.getRequestURL() + "]"));
             }
             context.activateAction(ActionType.DO_FILTER_AND_SET_PRINCIPAL);
             return State.FINISH;
@@ -57,16 +57,6 @@ public class ExcludeResourceCommand implements Command {
     @Override
     public boolean postProcess(ChainContext context, Exception exception) {
         return false;
-    }
-
-    @Override
-    public void logSuccess(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, message));
-    }
-
-    @Override
-    public void logFailure(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, message));
     }
 
 }

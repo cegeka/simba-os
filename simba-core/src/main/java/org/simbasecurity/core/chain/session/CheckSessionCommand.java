@@ -59,13 +59,13 @@ public class CheckSessionCommand implements Command {
         if (currentSession == null || currentSession.isExpired()) {
             redirectToLogin(context);
             sessionService.removeSession(currentSession);
-            logFailure(context, AuditMessages.SESSION_INVALID);
+            audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, AuditMessages.SESSION_INVALID));
             return State.FINISH;
         }
 
         currentSession.updateLastAccesTime();
         context.setUserPrincipal(currentSession.getUser().getUserName());
-        logSuccess(context, AuditMessages.CHECK_SESSION);
+        audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, AuditMessages.CHECK_SESSION));
         return State.CONTINUE;
     }
 
@@ -78,13 +78,4 @@ public class CheckSessionCommand implements Command {
         return false;
     }
 
-    @Override
-    public void logSuccess(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, message));
-    }
-
-    @Override
-    public void logFailure(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, message));
-    }
 }

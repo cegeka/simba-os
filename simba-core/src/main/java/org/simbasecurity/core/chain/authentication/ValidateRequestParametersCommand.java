@@ -15,10 +15,6 @@
  */
 package org.simbasecurity.core.chain.authentication;
 
-import static org.apache.commons.lang.StringUtils.*;
-import static org.simbasecurity.common.constants.AuthenticationConstants.*;
-import static org.simbasecurity.core.audit.AuditMessages.*;
-
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.audit.AuditMessages;
@@ -30,6 +26,10 @@ import org.simbasecurity.core.exception.SimbaMessageKey;
 import org.simbasecurity.core.service.LoginMappingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.apache.commons.lang.StringUtils.isEmpty;
+import static org.simbasecurity.common.constants.AuthenticationConstants.PASSWORD;
+import static org.simbasecurity.core.audit.AuditMessages.EMPTY_USERNAME;
 
 /**
  * The ValidateRequestParametersCommand checks if the request contains a user
@@ -52,7 +52,7 @@ public final class ValidateRequestParametersCommand implements Command {
 			return State.FINISH;
 		}
 
-		logSuccess(context, AuditMessages.VALID_REQUEST_PARAM);
+		audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, AuditMessages.VALID_REQUEST_PARAM));
 		return State.CONTINUE;
 	}
 
@@ -66,12 +66,12 @@ public final class ValidateRequestParametersCommand implements Command {
 	 */
 	private boolean checkEmptyContextParameters(ChainContext context) {
 		if (isEmpty(context.getUserName())) {
-			logFailure(context, EMPTY_USERNAME);
+			audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, EMPTY_USERNAME));
 			context.redirectWithCredentialError(SimbaMessageKey.EMPTY_USERNAME);
 			return false;
 		}
 		if (isEmpty(getPassword(context))) {
-			logFailure(context, AuditMessages.EMPTY_PASSWORD);
+			audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, AuditMessages.EMPTY_PASSWORD));
 			context.redirectWithCredentialError(SimbaMessageKey.EMPTY_PASSWORD);
 			return false;
 		}
@@ -79,8 +79,8 @@ public final class ValidateRequestParametersCommand implements Command {
         try {
             checkIfLoginTokenExpired(context);
         } catch (SimbaException e) {
-            logFailure(context, e.getMessageKey().name());
-            context.redirectWhenLoginTokenExpired();
+			audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, e.getMessageKey().name()));
+			context.redirectWhenLoginTokenExpired();
             return false;
         }
 
@@ -113,13 +113,4 @@ public final class ValidateRequestParametersCommand implements Command {
 		return false;
 	}
 
-    @Override
-    public void logSuccess(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, message));
-    }
-
-    @Override
-    public void logFailure(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, message));
-    }
 }

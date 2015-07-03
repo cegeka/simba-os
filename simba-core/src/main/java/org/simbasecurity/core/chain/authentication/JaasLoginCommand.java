@@ -15,11 +15,6 @@
  */
 package org.simbasecurity.core.chain.authentication;
 
-import static org.simbasecurity.core.exception.SimbaMessageKey.*;
-
-import javax.security.auth.login.LoginContext;
-import javax.security.auth.login.LoginException;
-
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.audit.AuditMessages;
@@ -31,6 +26,11 @@ import org.simbasecurity.core.service.CredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import javax.security.auth.login.LoginContext;
+import javax.security.auth.login.LoginException;
+
+import static org.simbasecurity.core.exception.SimbaMessageKey.LOGIN_FAILED;
 
 /**
  * Manages the JAAS Flow by initializing the LoginContext, calling the login()
@@ -65,16 +65,16 @@ public class JaasLoginCommand implements Command {
 
             credentialService.resetInvalidLoginCount(userName);
 
-            logSuccess(context, AuditMessages.JAAS_LOGIN_SUCCESS);
+            audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, AuditMessages.JAAS_LOGIN_SUCCESS));
 
             return State.CONTINUE;
         } catch (LoginException e) {
-        	logFailure(context, AuditMessages.JAAS_LOGIN_FAILED);
+            audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, AuditMessages.JAAS_LOGIN_FAILED));
 
             if (credentialService.checkUserStatus(userName, Status.ACTIVE)) {
                 boolean blocked = credentialService.increaseInvalidLoginCountAndBlockAccount(userName);
                 if (blocked) {
-                	logFailure(context, AuditMessages.ACCOUNT_BLOCKED);
+                    audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, AuditMessages.ACCOUNT_BLOCKED));
                 }
             }
 
@@ -88,13 +88,4 @@ public class JaasLoginCommand implements Command {
         return false;
     }
 
-    @Override
-    public void logSuccess(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, message));
-    }
-
-    @Override
-    public void logFailure(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, message));
-    }
 }

@@ -15,8 +15,6 @@
  */
 package org.simbasecurity.core.chain.authentication;
 
-import static org.simbasecurity.core.audit.AuditMessages.*;
-
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.chain.ChainContext;
@@ -26,6 +24,9 @@ import org.simbasecurity.core.exception.SimbaMessageKey;
 import org.simbasecurity.core.service.CredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.simbasecurity.core.audit.AuditMessages.CHECK_ACCOUNT_BLOCKED;
+import static org.simbasecurity.core.audit.AuditMessages.DENIED_ACCESS_TO_BLOCKED_ACCOUNT;
 
 /**
  * The CheckAccountBlockedCommand checks if a user tries to login to a blocked
@@ -44,11 +45,11 @@ public class CheckAccountBlockedCommand implements Command {
     @Override
     public State execute(ChainContext context) throws Exception {
         if (credentialService.checkUserStatus(context.getUserName(), Status.BLOCKED)) {
-        	logFailure(context, DENIED_ACCESS_TO_BLOCKED_ACCOUNT);
+            audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, DENIED_ACCESS_TO_BLOCKED_ACCOUNT));
             context.redirectWithCredentialError(SimbaMessageKey.ACCOUNT_BLOCKED);
             return State.FINISH;
         }
-        logSuccess(context, CHECK_ACCOUNT_BLOCKED);
+        audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, CHECK_ACCOUNT_BLOCKED));
         return State.CONTINUE;
     }
 
@@ -57,13 +58,4 @@ public class CheckAccountBlockedCommand implements Command {
         return false;
     }
 
-    @Override
-    public void logSuccess(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, message));
-    }
-
-    @Override
-    public void logFailure(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, message));
-    }
 }

@@ -48,7 +48,7 @@ public interface Command {
      *         {@link org.simbasecurity.core.chain.Command.State#CONTINUE} if the processing of this
      *         {@link ChainContext} should be delegated to a subsequent Command
      *         in the enclosing {@link org.simbasecurity.core.chain.Chain}
-     * @throws ChainException general purpose exception to indicate abnormal termination
+     * @throws Exception general purpose exception to indicate abnormal termination
      */
     State execute(ChainContext context) throws Exception;
 
@@ -65,27 +65,5 @@ public interface Command {
      *         return <tt>false</tt>
      */
     boolean postProcess(ChainContext context, Exception exception);
-
-    /**
-     * Makes an success entry in the audit log. Because a command can be used
-     * anywhere in a chain, you need to log each event of the chain to ensure a
-     * full audit trail.
-     *
-     * @param context        the ChainContext which contains all request data for this chain
-     * @param message         The message that is registered in the audit log. You can use
-     *                        constants from {@link org.simbasecurity.core.audit.AuditMessages}
-     */
-     void logSuccess(ChainContext context, String message);
-
-    /**
-     * Makes an failure entry in the audit log. Because a command can be used
-     * anywhere in a chain, you need to log each event of the chain to ensure a
-     * full audit trail.
-     *
-     * @param context        the ChainContext which contains all request data for this chain
-     * @param message         The message that is registered in the audit log. You can use
-     *                        constants from {@link org.simbasecurity.core.audit.AuditMessages}
-     */
-    void logFailure(ChainContext context, String message);	
-
+    
 }

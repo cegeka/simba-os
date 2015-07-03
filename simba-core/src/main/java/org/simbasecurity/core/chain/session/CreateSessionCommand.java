@@ -15,9 +15,6 @@
  */
 package org.simbasecurity.core.chain.session;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.commons.lang.StringUtils;
 import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.common.constants.AuthenticationConstants;
@@ -36,6 +33,9 @@ import org.simbasecurity.core.service.SSOTokenMappingService;
 import org.simbasecurity.core.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * The CreateSessionCommand creates a session for a user if there's none
@@ -65,7 +65,7 @@ public class CreateSessionCommand implements Command {
 				
 				String successURL = credentialService.getSuccessURL(context.getUserName());
 				if (StringUtils.isBlank(successURL)) {
-					logFailure(context, AuditMessages.EMPTY_SUCCESS_URL);
+					audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, AuditMessages.EMPTY_SUCCESS_URL));
 					context.redirectWithCredentialError(SimbaMessageKey.EMPTY_SUCCESS_URL);
 					return State.FINISH;
 				}
@@ -92,8 +92,8 @@ public class CreateSessionCommand implements Command {
 		context.setRedirectURL(targetURL);
 		context.setNewSession(session);
 
-		logSuccess(context, AuditMessages.SESSION_CREATED + ": SSOToken=" + session.getSSOToken().getToken());
-		
+		audit.log(auditLogFactory.createEventForSessionForSuccess(context, AuditMessages.SESSION_CREATED + ": SSOToken=" + session.getSSOToken().getToken()));
+
 		return State.FINISH;
 	}
 
@@ -122,14 +122,4 @@ public class CreateSessionCommand implements Command {
 		return false;
 	}
 
-	@Override
-	public void logSuccess(ChainContext context, String message) {
-		audit.log(auditLogFactory.createEventForSessionForSuccess(context, message));
-	}
-
-	@Override
-	public void logFailure(ChainContext context, String message) {
-		audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, message));
-	}
-	
 }

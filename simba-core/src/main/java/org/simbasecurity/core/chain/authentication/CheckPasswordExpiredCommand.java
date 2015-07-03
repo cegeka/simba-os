@@ -15,8 +15,6 @@
  */
 package org.simbasecurity.core.chain.authentication;
 
-import static org.simbasecurity.core.audit.AuditMessages.*;
-
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.audit.AuditMessages;
@@ -25,6 +23,8 @@ import org.simbasecurity.core.chain.Command;
 import org.simbasecurity.core.service.CredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.simbasecurity.core.audit.AuditMessages.MUST_CHANGE_PASSWORD;
 
 /**
  * The CheckPasswordExpiredCommand checks if a user's password is expired. If
@@ -45,7 +45,7 @@ public class CheckPasswordExpiredCommand implements Command {
             redirectToChangePassword(context);
             return State.FINISH;
         }
-        logSuccess(context, AuditMessages.CHECK_PASSWORD_EXPIRED);
+        audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, AuditMessages.CHECK_PASSWORD_EXPIRED));
         return State.CONTINUE;
     }
 
@@ -64,13 +64,4 @@ public class CheckPasswordExpiredCommand implements Command {
         return false;
     }
 
-    @Override
-    public void logSuccess(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, message));
-    }
-
-    @Override
-    public void logFailure(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, message));
-    }
 }

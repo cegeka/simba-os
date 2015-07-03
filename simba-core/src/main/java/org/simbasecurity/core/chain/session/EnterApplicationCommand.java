@@ -41,7 +41,7 @@ public class EnterApplicationCommand implements Command {
     @Override
     public State execute(ChainContext context) throws Exception {
         context.activateAction(ActionType.DO_FILTER_AND_SET_PRINCIPAL);
-        logSuccess(context, AuditMessages.ENTER_APPLICATION);
+        audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, AuditMessages.ENTER_APPLICATION));
         return State.FINISH;
     }
 
@@ -50,13 +50,4 @@ public class EnterApplicationCommand implements Command {
         return false;
     }
 
-    @Override
-    public void logSuccess(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForSuccess(context, message));
-    }
-
-    @Override
-    public void logFailure(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, message));
-    }
 }

@@ -15,8 +15,6 @@
  */
 package org.simbasecurity.core.chain;
 
-import org.simbasecurity.core.audit.AuditMessages;
-
 /**
  * The decision command is a {@link org.simbasecurity.core.chain.Command} allowing to execute one of to
  * {@link org.simbasecurity.core.chain.Command commands} depending on a {@link org.simbasecurity.core.chain.Decision}.
@@ -52,13 +50,4 @@ public class DecisionCommand implements Command {
         return falseCommand.postProcess(context, exception);
     }
 
-    @Override
-    public void logSuccess(ChainContext context, String message) {
-        throw new UnsupportedOperationException(AuditMessages.NO_FUNCTIONAL_AUDIT_LOGGIN);
-    }
-
-    @Override
-    public void logFailure(ChainContext context, String message) {
-        throw new UnsupportedOperationException(AuditMessages.NO_FUNCTIONAL_AUDIT_LOGGIN);
-    }
 }

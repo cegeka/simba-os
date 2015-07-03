@@ -44,8 +44,8 @@ public class LogoutCommand implements Command {
         if (context.isLogoutRequest()) {
             sessionService.removeSession(context.getCurrentSession());
 
-            logSuccess(context, AuditMessages.LOGGED_OUT + ": SSOToken="
-                    + context.getRequestSSOToken());
+            audit.log(auditLogFactory.createEventForSessionForSuccess(context, AuditMessages.LOGGED_OUT + ": SSOToken="
++ context.getRequestSSOToken()));
 
             context.activateAction(ActionType.DELETE_COOKIE);
             context.redirectToLogout();
@@ -57,16 +57,6 @@ public class LogoutCommand implements Command {
     @Override
     public boolean postProcess(ChainContext context, Exception exception) {
         return false;
-    }
-
-    @Override
-    public void logSuccess(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForSessionForSuccess(context, message));
-    }
-
-    @Override
-    public void logFailure(ChainContext context, String message) {
-    	audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, message));
     }
 
 }

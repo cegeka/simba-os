@@ -15,8 +15,6 @@
  */
 package org.simbasecurity.core.chain.authorization;
 
-import static org.simbasecurity.core.audit.AuditMessages.ACCESS_DENIED;
-
 import org.simbasecurity.api.service.thrift.AuthorizationService;
 import org.simbasecurity.api.service.thrift.PolicyDecision;
 import org.simbasecurity.core.audit.Audit;
@@ -28,6 +26,8 @@ import org.simbasecurity.core.config.ConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.simbasecurity.core.audit.AuditMessages.ACCESS_DENIED;
 
 @Component
 public class CheckAdminRoleCommand implements Command {
@@ -49,11 +49,11 @@ public class CheckAdminRoleCommand implements Command {
 				(String) configurationService.getValue(ConfigurationParameter.ADMIN_ROLE_NAME));
 		if (policyDecision.isAllowed()) {
 
-			logSuccess(context, AuditMessages.USER_HAS_ADMIN_ROLE);
+			audit.log(auditLogFactory.createEventForAuthorizationForSuccess(context, AuditMessages.USER_HAS_ADMIN_ROLE));
 			return State.CONTINUE;
 		}
 
-		logFailure(context, ACCESS_DENIED + context.getRequestURL());
+		audit.log(auditLogFactory.createEventForAuthorizationForFailure(context, ACCESS_DENIED + context.getRequestURL()));
 		context.redirectToAccessDenied();
 
 		return State.FINISH;
@@ -64,13 +64,4 @@ public class CheckAdminRoleCommand implements Command {
 		return false;
 	}
 
-	@Override
-	public void logSuccess(ChainContext context, String message) {
-		audit.log(auditLogFactory.createEventForAuthorizationForSuccess(context, message));
-	}
-
-	@Override
-	public void logFailure(ChainContext context, String message) {
-		audit.log(auditLogFactory.createEventForAuthorizationForFailure(context, message));
-	}
 }

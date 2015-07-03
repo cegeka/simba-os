@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class EIDLogoutCommand extends LogoutCommand {
 
     private String getSAMLLogoutRequest(String logoutRequestId) {
         try {
-            return samlService.getLogoutRequestUrl(logoutRequestId);
+            return samlService.getLogoutRequestUrl(logoutRequestId, new Date());
         } catch (XMLStreamException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

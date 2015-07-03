@@ -31,9 +31,7 @@ public class SAMLServiceImpl implements SAMLService {
 
 
     @Override
-    public String createAuthRequest(String authRequestId) throws XMLStreamException, IOException {
-        final String issueInstant = SAML_DATE_FORMAT.format(new Date());
-
+    public String createAuthRequest(String authRequestId, Date issueInstant) throws XMLStreamException, IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         XMLOutputFactory factory = XMLOutputFactory.newInstance();
@@ -44,7 +42,7 @@ public class SAMLServiceImpl implements SAMLService {
 
         writer.writeAttribute("ID", authRequestId);
         writer.writeAttribute("Version", "2.0");
-        writer.writeAttribute("IssueInstant", issueInstant);
+        writer.writeAttribute("IssueInstant", SAML_DATE_FORMAT.format(issueInstant));
         writer.writeAttribute("ForceAuthn", "false");
         writer.writeAttribute("IsPassive", "false");
         writer.writeAttribute("ProtocolBinding", BINDING_HTTP_POST);
@@ -100,14 +98,12 @@ public class SAMLServiceImpl implements SAMLService {
     }
 
     @Override
-    public String getAuthRequestUrl(String authRequestId) throws XMLStreamException, IOException {
-        return generateSamlRedirectBindingUrl(createAuthRequest(authRequestId));
+    public String getAuthRequestUrl(String authRequestId, Date issueInstant) throws XMLStreamException, IOException {
+        return generateSamlRedirectBindingUrl(createAuthRequest(authRequestId, issueInstant));
     }
 
     @Override
-    public String createLogoutRequest(String logoutRequestId) throws XMLStreamException, IOException {
-        final String issueInstant = SAML_DATE_FORMAT.format(new Date());
-
+    public String createLogoutRequest(String logoutRequestId, Date issueInstant) throws XMLStreamException, IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         XMLOutputFactory factory = XMLOutputFactory.newInstance();
@@ -118,7 +114,7 @@ public class SAMLServiceImpl implements SAMLService {
 
         writer.writeAttribute("ID", logoutRequestId);
         writer.writeAttribute("Version", "2.0");
-        writer.writeAttribute("IssueInstant", issueInstant);
+        writer.writeAttribute("IssueInstant", SAML_DATE_FORMAT.format(issueInstant));
 
         writer.writeStartElement("saml", "Issuer", NS_SAML);
         writer.writeNamespace("saml", NS_SAML);
@@ -126,7 +122,7 @@ public class SAMLServiceImpl implements SAMLService {
         writer.writeEndElement();
 
         writer.writeStartElement("saml", "NameID", NS_SAML);
-
+        writer.writeNamespace("saml", NS_SAML);
         writer.writeAttribute("NameQualifier", configurationService.<String>getValue(ConfigurationParameter.SAML_IDP_TARGET_URL));
         writer.writeAttribute("SPNameQualifier", "https://iamapps.belgium.be/");
         writer.writeAttribute("Format", NAMEID_TRANSIENT);
@@ -134,7 +130,7 @@ public class SAMLServiceImpl implements SAMLService {
         writer.writeEndElement();
 
         writer.writeStartElement("samlp", "SessionIndex", NS_SAMLP);
-
+        writer.writeNamespace("saml", NS_SAMLP);
         writer.writeCharacters(UUID.randomUUID().toString());
         writer.writeEndElement();
 
@@ -145,8 +141,8 @@ public class SAMLServiceImpl implements SAMLService {
     }
 
     @Override
-    public String getLogoutRequestUrl(String authRequestId) throws XMLStreamException, IOException {
-        return generateSamlRedirectBindingUrl(createLogoutRequest(authRequestId));
+    public String getLogoutRequestUrl(String authRequestId, Date issueInstant) throws XMLStreamException, IOException {
+        return generateSamlRedirectBindingUrl(createLogoutRequest(authRequestId, issueInstant));
     }
 
     @Override

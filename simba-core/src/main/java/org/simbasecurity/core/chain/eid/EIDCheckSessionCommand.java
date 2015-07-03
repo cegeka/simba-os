@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class EIDCheckSessionCommand extends CheckSessionCommand {
 
     private String getSAMLAuthRequest(String authRequestId) {
         try {
-            return samlService.getAuthRequestUrl(authRequestId);
+            return samlService.getAuthRequestUrl(authRequestId, new Date());
         } catch (XMLStreamException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

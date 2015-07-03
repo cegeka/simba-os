@@ -51,7 +51,7 @@ public class EIDCheckSessionCommandTest {
 
         LoginMappingEntity loginMapping = new LoginMappingEntity();
         when(contextMock.createLoginMapping()).thenReturn(loginMapping);
-        when(samlService.getSSOurl()).thenReturn("SAMLAuthRequestURL");
+        when(samlService.getSSOurl(loginMapping.getToken())).thenReturn("SAMLAuthRequestURL");
         assertEquals(Command.State.FINISH, command.execute(contextMock));
 
         verify(contextMock).redirectWithParameters(urlCaptor.capture(), parametersCaptor.capture());

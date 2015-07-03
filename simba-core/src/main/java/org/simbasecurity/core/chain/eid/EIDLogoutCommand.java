@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Component
 public class EIDLogoutCommand extends LogoutCommand {
@@ -26,7 +27,10 @@ public class EIDLogoutCommand extends LogoutCommand {
 
     private String getSAMLLogoutRequest(String logoutRequestId) {
         try {
-            return samlService.getLogoutRequestUrl(logoutRequestId, new Date());
+            Date issueInstant = new Date();
+            String nameId = UUID.randomUUID().toString();
+            String sessionIndex = UUID.randomUUID().toString();
+            return samlService.getLogoutRequestUrl(logoutRequestId, issueInstant, nameId, sessionIndex);
         } catch (XMLStreamException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

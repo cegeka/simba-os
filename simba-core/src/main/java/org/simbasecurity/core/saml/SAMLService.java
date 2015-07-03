@@ -13,9 +13,9 @@ public interface SAMLService {
 
     String getAuthRequestUrl(String authRequestId, Date issueInstant) throws XMLStreamException, IOException;
 
-    String createLogoutRequest(String authRequestId, Date issueInstant) throws XMLStreamException, IOException;
+    String createLogoutRequest(String logoutRequestId, Date issueInstant, String nameId, String sessionIndex) throws XMLStreamException, IOException;
 
-    String getLogoutRequestUrl(String authRequestId, Date issueInstant) throws XMLStreamException, IOException;
+    String getLogoutRequestUrl(String authRequestId, Date issueInstant, String nameId, String sessionIndex) throws XMLStreamException, IOException;
 
     SAMLResponseHandler getSAMLResponseHandler(String response, String currentURL) throws Exception;
 }

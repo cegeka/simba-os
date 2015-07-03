@@ -61,7 +61,7 @@ public class SAMLServiceImpl implements SAMLService {
         writer.writeEndElement();
 
         writer.writeStartElement("samlp", "RequestedAuthnContext", NS_SAMLP);
-
+        writer.writeNamespace("samlp", NS_SAMLP);
         writer.writeAttribute("Comparison", "exact");
 
         writer.writeStartElement("saml", "AuthnContextClassRef", NS_SAML);
@@ -77,7 +77,6 @@ public class SAMLServiceImpl implements SAMLService {
     }
 
     protected String encodeSAMLRequest(byte[] pSAMLRequest) throws RuntimeException {
-
         Base64 base64Encoder = new Base64();
 
         try {
@@ -103,7 +102,7 @@ public class SAMLServiceImpl implements SAMLService {
     }
 
     @Override
-    public String createLogoutRequest(String logoutRequestId, Date issueInstant) throws XMLStreamException, IOException {
+    public String createLogoutRequest(String logoutRequestId, Date issueInstant, String nameId, String sessionIndex) throws XMLStreamException, IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         XMLOutputFactory factory = XMLOutputFactory.newInstance();
@@ -126,12 +125,12 @@ public class SAMLServiceImpl implements SAMLService {
         writer.writeAttribute("NameQualifier", configurationService.<String>getValue(ConfigurationParameter.SAML_IDP_TARGET_URL));
         writer.writeAttribute("SPNameQualifier", "https://iamapps.belgium.be/");
         writer.writeAttribute("Format", NAMEID_TRANSIENT);
-        writer.writeCharacters(UUID.randomUUID().toString());
+        writer.writeCharacters(nameId);
         writer.writeEndElement();
 
         writer.writeStartElement("samlp", "SessionIndex", NS_SAMLP);
         writer.writeNamespace("saml", NS_SAMLP);
-        writer.writeCharacters(UUID.randomUUID().toString());
+        writer.writeCharacters(sessionIndex);
         writer.writeEndElement();
 
         writer.writeEndElement();
@@ -141,8 +140,8 @@ public class SAMLServiceImpl implements SAMLService {
     }
 
     @Override
-    public String getLogoutRequestUrl(String authRequestId, Date issueInstant) throws XMLStreamException, IOException {
-        return generateSamlRedirectBindingUrl(createLogoutRequest(authRequestId, issueInstant));
+    public String getLogoutRequestUrl(String authRequestId, Date issueInstant, String nameId, String sessionIndex) throws XMLStreamException, IOException {
+        return generateSamlRedirectBindingUrl(createLogoutRequest(authRequestId, issueInstant, nameId, sessionIndex));
     }
 
     @Override

@@ -31,8 +31,7 @@ public class SAMLServiceImpl implements SAMLService {
 
 
     @Override
-    public String getRequest() throws XMLStreamException, IOException {
-        final String id = "_" + UUID.randomUUID().toString();
+    public String getRequest(String authRequestID) throws XMLStreamException, IOException {
         final String issueInstant = SAML_DATE_FORMAT.format(new Date());
 
 
@@ -44,7 +43,7 @@ public class SAMLServiceImpl implements SAMLService {
         writer.writeStartElement("samlp", "AuthnRequest", NS_SAMLP);
         writer.writeNamespace("samlp", NS_SAMLP);
 
-        writer.writeAttribute("ID", id);
+        writer.writeAttribute("ID", authRequestID);
         writer.writeAttribute("Version", "2.0");
         writer.writeAttribute("IssueInstant", issueInstant);
         writer.writeAttribute("ForceAuthn", "false");
@@ -102,17 +101,14 @@ public class SAMLServiceImpl implements SAMLService {
     }
 
     @Override
-    public String getSSOurl(String relayState) throws XMLStreamException, IOException {
-        String ssourl = getSSOurl();
-        if (relayState != null && !relayState.isEmpty()) {
-            ssourl = ssourl + "&RelayState=" + relayState;
-        }
-        return ssourl;
+    public String getSSOurl(String authRequestId) throws XMLStreamException, IOException {
+        return configurationService.getValue(ConfigurationParameter.SAML_IDP_TARGET_URL) + "?SAMLRequest=" + URLEncoder.encode(getRequest(authRequestId), "UTF-8");
     }
 
     @Override
     public String getSSOurl() throws XMLStreamException, IOException {
-        return configurationService.getValue(ConfigurationParameter.SAML_IDP_TARGET_URL) + "?SAMLRequest=" + URLEncoder.encode(getRequest(), "UTF-8");
+        String authRequestId = UUID.randomUUID().toString();
+        return getSSOurl(authRequestId);
     }
 
     @Override

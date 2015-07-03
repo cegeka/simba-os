@@ -8,9 +8,9 @@ import java.text.SimpleDateFormat;
 public interface SAMLService {
     DateFormat SAML_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
-    String getRequest() throws XMLStreamException, IOException;
+    String getRequest(String authRequestId) throws XMLStreamException, IOException;
 
-    String getSSOurl(String relayState) throws XMLStreamException, IOException;
+    String getSSOurl(String authRequestId) throws XMLStreamException, IOException;
 
     String getSSOurl() throws XMLStreamException, IOException;
 

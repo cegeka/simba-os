@@ -55,6 +55,7 @@ public class EIDCheckSessionCommandTest {
         assertEquals(Command.State.FINISH, command.execute(contextMock));
 
         verify(contextMock).redirectWithParameters(urlCaptor.capture(), parametersCaptor.capture());
+        verify(samlService).getSSOurl(loginMapping.getToken());
         assertEquals("SAMLAuthRequestURL", urlCaptor.getAllValues().get(0));
         assertEquals(loginMapping.getToken(), parametersCaptor.getAllValues().get(0).get(LOGIN_TOKEN));
     }

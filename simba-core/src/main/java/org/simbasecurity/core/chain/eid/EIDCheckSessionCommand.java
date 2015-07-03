@@ -21,13 +21,13 @@ public class EIDCheckSessionCommand extends CheckSessionCommand {
     @Override
     protected void redirectToLogin(ChainContext context) {
         Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put(LOGIN_TOKEN, context.createLoginMapping().getToken());
-        context.redirectWithParameters(getSAMLAuthRequest(), parameters);
+        String authRequestId = context.createLoginMapping().getToken();
+        context.redirectWithParameters(getSAMLAuthRequest(authRequestId), parameters);
     }
 
-    private String getSAMLAuthRequest() {
+    private String getSAMLAuthRequest(String authRequestId) {
         try {
-            return samlService.getSSOurl();
+            return samlService.getSSOurl(authRequestId);
         } catch (XMLStreamException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

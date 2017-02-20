@@ -25,9 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
 public class GroupDatabaseRepositoryTest extends PersistenceTestCase {
 

@@ -1,14 +1,10 @@
 package org.simbasecurity.core.service.validation;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.reference.DefaultSecurityConfiguration;
 import org.springframework.context.annotation.Configuration;
+
+import java.io.*;
 
 @Configuration
 public class SimbaESAPIConfiguration extends DefaultSecurityConfiguration {
@@ -77,7 +73,7 @@ public class SimbaESAPIConfiguration extends DefaultSecurityConfiguration {
             }
         }
 
-        throw new IllegalArgumentException("Failed to load " + RESOURCE_FILE + " as a classloader resource.");
+        throw new IllegalArgumentException("Failed to load " + DEFAULT_RESOURCE_FILE + " as a classloader resource.");
     }
 
 }

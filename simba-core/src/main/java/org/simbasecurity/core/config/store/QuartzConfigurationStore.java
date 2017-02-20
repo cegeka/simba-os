@@ -15,21 +15,16 @@
  */
 package org.simbasecurity.core.config.store;
 
-import java.util.EnumMap;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.quartz.CronTrigger;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SimpleTrigger;
-import org.quartz.Trigger;
+import org.quartz.*;
 import org.simbasecurity.core.config.ConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
+import java.util.EnumMap;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class QuartzConfigurationStore implements ConfigurationStore {
@@ -72,19 +67,26 @@ public class QuartzConfigurationStore implements ConfigurationStore {
             String oldValue;
 
             if (trigger instanceof SimpleTrigger) {
-                newTrigger = new SimpleTrigger(trigger.getName(), SIMBA_JOB_GROUP, SimpleTrigger.REPEAT_INDEFINITELY, TimeUnit.MILLISECONDS.convert(Long.parseLong(value), parameter.getTimeUnit()));
-                newTrigger.setStartTime(trigger.getNextFireTime());
+                newTrigger = TriggerBuilder.newTrigger()
+                                           .withIdentity(trigger.getKey().getName(), SIMBA_JOB_GROUP)
+                                           .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever((int) TimeUnit.SECONDS.convert(Long.parseLong(value),
+                                                                                                                                    parameter.getTimeUnit())))
+                                           .startAt(trigger.getNextFireTime())
+                                           .forJob(jobDetail.getKey().getName(), SIMBA_JOB_GROUP)
+                                           .build();
                 oldValue = String.valueOf(((SimpleTrigger) trigger).getRepeatInterval());
             } else if (trigger instanceof CronTrigger) {
-                newTrigger = new CronTrigger(trigger.getName(), SIMBA_JOB_GROUP, value);
+                newTrigger = TriggerBuilder.newTrigger()
+                                           .withIdentity(trigger.getKey().getName(), SIMBA_JOB_GROUP)
+                                           .withSchedule(CronScheduleBuilder.cronSchedule(value))
+                                           .forJob(jobDetail.getKey().getName(), SIMBA_JOB_GROUP)
+                                           .build();
                 oldValue = ((CronTrigger) trigger).getCronExpression();
             } else {
                 throw new IllegalStateException("Type " + trigger.getClass().getName() + " not handled");
             }
-            newTrigger.setJobName(jobDetail.getName());
-            newTrigger.setJobGroup(SIMBA_JOB_GROUP);
 
-            scheduler.rescheduleJob(trigger.getName(), SIMBA_JOB_GROUP, newTrigger);
+            scheduler.rescheduleJob(new TriggerKey(trigger.getKey().getName(), SIMBA_JOB_GROUP), newTrigger);
             return oldValue;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -100,7 +102,7 @@ public class QuartzConfigurationStore implements ConfigurationStore {
             throw new IllegalArgumentException("No job detail bound to parameter '" + parameter + "'");
         }
         String jobName = configurableJobNames.get(parameter);
-        return scheduler.getTriggersOfJob(jobName, SIMBA_JOB_GROUP)[0];
+        return scheduler.getTriggersOfJob(new JobKey(jobName, SIMBA_JOB_GROUP)).get(0);
     }
 
     private JobDetail findJob(ConfigurationParameter parameter) throws SchedulerException {
@@ -109,6 +111,6 @@ public class QuartzConfigurationStore implements ConfigurationStore {
         }
 
         String jobName = configurableJobNames.get(parameter);
-        return scheduler.getJobDetail(jobName, SIMBA_JOB_GROUP);
+        return scheduler.getJobDetail(new JobKey(jobName, SIMBA_JOB_GROUP));
     }
 }

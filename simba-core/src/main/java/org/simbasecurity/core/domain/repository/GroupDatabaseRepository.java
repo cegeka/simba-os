@@ -50,19 +50,10 @@ public class GroupDatabaseRepository extends AbstractVersionedDatabaseRepository
 
     @Override
     public Collection<Group> find(User user) {
-        ArrayList<Group> result = new ArrayList<Group>();
-        Query query = entityManager.createQuery("SELECT g FROM GroupEntity g ");
-        for (Group group : (List<Group>)query.getResultList()) {
-            if(group.getUsers().contains(user)) {
-                result.add(group);
-            }
-        }
-        return result;
-//        TODO: use implementation below when hibernate bug is fixed
-//        Query query = entityManager.createQuery(
-//                "SELECT g FROM GroupEntity g " +
-//                "WHERE :user in g.users")
-//                .setParameter("user", user);
-//        return query.getResultList();
+        Query query = entityManager.createQuery(
+                "SELECT g FROM GroupEntity g " +
+                "WHERE :user member of g.users")
+                .setParameter("user", user);
+        return query.getResultList();
     }
 }

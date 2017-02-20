@@ -15,14 +15,7 @@
  */
 package org.simbasecurity.core.spring.quartz;
 
-import java.lang.reflect.InvocationTargetException;
-
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.StatefulJob;
+import org.quartz.*;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -30,6 +23,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.JobMethodInvocationFailedException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.util.MethodInvoker;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class BeanInvokingJobDetailFactoryBean implements FactoryBean<JobDetail>, BeanNameAware, InitializingBean {
 
@@ -125,19 +120,13 @@ public class BeanInvokingJobDetailFactoryBean implements FactoryBean<JobDetail>,
 
         // Consider the concurrent flag to choose between stateful and stateless
         // job.
-        Class<?> jobClass = (this.concurrent ? BeanInvokingJob.class : StatefullBeanInvokingJob.class);
+        Class<? extends Job> jobClass = (this.concurrent ? BeanInvokingJob.class : StatefullBeanInvokingJob.class);
 
-        // Build JobDetail instance.
-        this.jobDetail = new JobDetail(name, this.group, jobClass);
-        this.jobDetail.getJobDataMap().put("beanName", targetBeanName);
-        this.jobDetail.getJobDataMap().put("executionMethod", executionMethod);
-
-        // Register job listener names.
-        if (this.jobListenerNames != null) {
-            for (String jobListenerName : this.jobListenerNames) {
-                this.jobDetail.addJobListener(jobListenerName);
-            }
-        }
+        this.jobDetail = JobBuilder.newJob(jobClass)
+                                   .withIdentity(new JobKey(name, this.group))
+                                   .usingJobData("beanName", targetBeanName)
+                                   .usingJobData("executionMethod", executionMethod)
+                                   .build();
 
         postProcessJobDetail(this.jobDetail);
     }

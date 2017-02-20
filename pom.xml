@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.simbasecurity</groupId>
     <artifactId>simba</artifactId>
-    <version>2.1.3-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>http://www.simbasecurity.org</url>
 
@@ -29,11 +29,11 @@
         <!-- standard properties -->
 
         <!-- version settings -->
-        <org.springframework.version>3.2.4.RELEASE</org.springframework.version>
-        <org.hibernate.version>4.2.8.Final</org.hibernate.version>
-        <junit.version>4.11</junit.version>
+        <org.springframework.version>4.3.6.RELEASE</org.springframework.version>
+        <org.hibernate.version>5.2.6.Final</org.hibernate.version>
+        <junit.version>4.12</junit.version>
         <mockito.version>1.9.5</mockito.version>
-        <thrift.version>0.9.1</thrift.version>
+        <thrift.version>0.10.0</thrift.version>
     </properties>
 
     <name>Simba</name>
@@ -58,7 +58,7 @@
         <module>simba-ri</module>
         <module>simba-manager</module>
 		<module>simba-zoo</module>        
-        <module>simba-webdriver-test</module>
+        <!--<module>simba-webdriver-test</module>-->
 	</modules>
 
     <distributionManagement>
@@ -86,33 +86,46 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.easytesting</groupId>
-            <artifactId>fest-assert</artifactId>
-            <version>1.4</version>
-            <scope>test</scope>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.6.2</version>
         </dependency>
-    </dependencies>
+   </dependencies>
 
 	<build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-report-plugin</artifactId>
+                    <version>2.19.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
+				<version>3.3</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.15</version>
-				<configuration>
-					<excludes>
-						<exclude>**/webdriver/**</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
+			<!--<plugin>-->
+				<!--<groupId>org.apache.maven.plugins</groupId>-->
+				<!--<artifactId>maven-surefire-plugin</artifactId>-->
+				<!--<version>2.19.1</version>-->
+				<!--<configuration>-->
+					<!--<excludes>-->
+						<!--<exclude>**/webdriver/**</exclude>-->
+					<!--</excludes>-->
+				<!--</configuration>-->
+			<!--</plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.19.1</version>
+            </plugin>
 			<plugin>
 			  <groupId>org.codehaus.mojo</groupId>
 			  <artifactId>versions-maven-plugin</artifactId>
@@ -120,7 +133,17 @@
 			</plugin>
 		</plugins>
 	</build>
-			
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.19.1</version>
+            </plugin>
+        </plugins>
+    </reporting>
+
     <repositories>
         <repository>
             <id>nexus</id>
@@ -145,6 +168,7 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+
 
     <profiles>
 		<!-- THRIFT -->

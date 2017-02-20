@@ -19,36 +19,43 @@
  */
 package org.simbasecurity.core.spring.quartz;
 
+import org.quartz.CronExpression;
+
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.quartz.CronExpression;
-
-public class ExtendedCronExpression extends CronExpression {
+public class ExtendedCronExpression implements Serializable {
 
     private static final long serialVersionUID = 4400034885809646850L;
 
-    public ExtendedCronExpression(String cronExpression)
-            throws ParseException {
-        super(cronExpression);
+    private static final int MINUTE = 1;
+    private static final int HOUR = 2;
+    private static final int DAY_OF_MONTH = 3;
+    private static final int MONTH = 4;
+    private static final int DAY_OF_WEEK = 5;
+    private static final int YEAR = 6;
+
+    private final CronExpression delegate;
+
+    public ExtendedCronExpression(String cronExpression) throws ParseException {
+        delegate = new CronExpression(cronExpression);
     }
 
-    @Override
     public Date getTimeAfter(Date afterTime) {
-        return super.getTimeAfter(afterTime);
+        return delegate.getTimeAfter(afterTime);
     }
 
-    @Override
     public Date getTimeBefore(Date beforeTime) {
-        Calendar cl = Calendar.getInstance(getTimeZone());
+        Calendar cl = Calendar.getInstance(delegate.getTimeZone());
 
         // to match this
         Date nextFireTime = getTimeAfter(beforeTime);
         cl.setTime(nextFireTime);
         cl.add(Calendar.SECOND, -1);
 
-        String[] expression = getCronExpression().split(" ");
+        String[] expression = delegate.getCronExpression().split(" ");
         int increment = findIncrement(expression);
 
         switch (increment) {

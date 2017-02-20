@@ -15,7 +15,6 @@
  */
 package org.simbasecurity.core.domain.repository;
 
-import org.fest.assertions.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.simbasecurity.core.domain.*;
@@ -25,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 public class PolicyDatabaseRepositoryTest extends PersistenceTestCase {
@@ -84,13 +84,13 @@ public class PolicyDatabaseRepositoryTest extends PersistenceTestCase {
     @Test
     public void canFindPoliciesById() throws Exception {
         Collection<Policy> result = policyDatabaseRepository.findAllByIds(Arrays.asList(policy1.getId(), policy3.getId()));
-        assertArrayEquals(Arrays.asList(policy1, policy3).toArray(), result.toArray());
+        assertThat(result).containsOnly(policy1, policy3);
     }
 
     @Test
     public void findPoliciesNotLinked() throws Exception {
         Collection<Policy> result = policyDatabaseRepository.findNotLinked(role1);
-        Assertions.assertThat(result).containsOnly(policy3, policy4, policy5);
+        assertThat(result).containsOnly(policy3, policy4, policy5);
     }
 
 }

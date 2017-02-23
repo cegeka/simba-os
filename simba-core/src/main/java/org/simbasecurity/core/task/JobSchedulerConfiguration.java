@@ -1,14 +1,13 @@
 package org.simbasecurity.core.task;
 
-import java.util.Properties;
-import javax.sql.DataSource;
-
 import org.quartz.Trigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+
+import javax.sql.DataSource;
+import java.util.Properties;
 
 @Configuration
 public class JobSchedulerConfiguration {
@@ -31,7 +30,6 @@ public class JobSchedulerConfiguration {
     public SchedulerFactoryBean schedulerFactory() {
         Properties quartzProperties = new Properties();
 
-        quartzProperties.put("org.quartz.jobStore.tablePrefix", "SIMBA_QRTZ_");
         quartzProperties.put("org.quartz.threadPool.threadCount", "2");
 
         Trigger[] triggers = new Trigger[] {

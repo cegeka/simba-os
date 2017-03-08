@@ -15,6 +15,7 @@
  */
 package org.simbasecurity.core.service;
 
+import org.jasypt.util.password.PasswordEncryptor;
 import org.simbasecurity.core.domain.Status;
 
 
@@ -37,6 +38,18 @@ public interface CredentialService {
      * @return <code>true</code> if the user name and password correspond; <code>false</code> otherwise
      */
     boolean checkCredentialsWithSHA1EncryptorAndReEncrypt(String username, String password);
+
+    /**
+     * This methods allows for checking the password against any provided encryptor. This is useful for
+     * providing a fallback login module whenever the hashing algorithm internally changes.
+     *
+     * @param username The user name
+     * @param password The password
+     * @param encryptor     the encryptor to use for checking the password
+     * @param reEncrypt     whether to re-encrypt the stored password to the standard mechanism; or not
+     * @return <code>true</code> if the user name and password correspond; <code>false</code> otherwise
+     */
+    boolean checkCredentials(String username, String password, PasswordEncryptor encryptor, boolean reEncrypt);
 
     /**
      * Check if a user exists.

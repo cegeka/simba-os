@@ -15,20 +15,21 @@
  */
 package org.simbasecurity.client.filter.action;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.client.filter.request.HttpServletRequestWithPrincipal;
+
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.HashSet;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class DoFilterAndSetPrincipalActionTest {
 
@@ -45,7 +46,7 @@ public class DoFilterAndSetPrincipalActionTest {
     public void testExecute_withPrincipal() throws Exception {
         FilterChain filterChain = mock(FilterChain.class);
 
-        ActionDescriptor actionDescriptor = new ActionDescriptor(new HashSet<ActionType>(), new HashMap<String, String>(), null, null, null);
+        ActionDescriptor actionDescriptor = new ActionDescriptor(new HashSet<ActionType>(), new HashMap<String, String>(), null, null, null,null );
         actionDescriptor.getActionTypes().add(ActionType.DO_FILTER_AND_SET_PRINCIPAL);
         actionDescriptor.setPrincipal("principal");
 
@@ -61,7 +62,7 @@ public class DoFilterAndSetPrincipalActionTest {
     public void testExecute_withoutPrincipal() throws Exception {
         FilterChain filterChain = mock(FilterChain.class);
 
-        ActionDescriptor actionDescriptor = new ActionDescriptor(new HashSet<ActionType>(), new HashMap<String, String>(), null, null, null);
+        ActionDescriptor actionDescriptor = new ActionDescriptor(new HashSet<ActionType>(), new HashMap<String, String>(), null, null, null, null);
         actionDescriptor.getActionTypes().add(ActionType.DO_FILTER_AND_SET_PRINCIPAL);
 
         DoFilterAndSetPrincipalAction action = new DoFilterAndSetPrincipalAction(actionDescriptor);

@@ -22,7 +22,10 @@ import org.simbasecurity.core.domain.Rule;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.RuleRepository;
-import org.simbasecurity.core.service.manager.assembler.*;
+import org.simbasecurity.core.service.manager.assembler.PolicyAssembler;
+import org.simbasecurity.core.service.manager.assembler.PolicyDTOAssembler;
+import org.simbasecurity.core.service.manager.assembler.RoleDTOAssembler;
+import org.simbasecurity.core.service.manager.assembler.RuleDTOAssembler;
 import org.simbasecurity.core.service.manager.dto.PolicyDTO;
 import org.simbasecurity.core.service.manager.dto.RoleDTO;
 import org.simbasecurity.core.service.manager.dto.RuleDTO;
@@ -54,22 +57,25 @@ public class PolicyManagerService {
     @Autowired
     private RuleRepository ruleRepository;
 
+    @Autowired
+    private EntityFilterService filterService;
+
     @RequestMapping("findAll")
     @ResponseBody
     public Collection<PolicyDTO> findAll() {
-        return assemble(policyRepository.findAll());
+        return assemble(filterService.filterPolicies(policyRepository.findAll()));
     }
 
     @RequestMapping("findRoles")
     @ResponseBody
     public Collection<RoleDTO> findRoles(@RequestBody PolicyDTO policy) {
-        return RoleDTOAssembler.assemble(policyRepository.lookUp(policy).getRoles());
+        return RoleDTOAssembler.assemble(filterService.filterRoles(policyRepository.lookUp(policy).getRoles()));
     }
 
     @RequestMapping("findRolesNotLinked")
     @ResponseBody
     public Collection<RoleDTO> findRolesNotLinked(@RequestBody PolicyDTO policy) {
-        return RoleDTOAssembler.assemble(roleRepository.findNotLinked(policyRepository.lookUp(policy)));
+        return RoleDTOAssembler.assemble(filterService.filterRoles(roleRepository.findNotLinked(policyRepository.lookUp(policy))));
     }
 
     @RequestMapping("addRoles")

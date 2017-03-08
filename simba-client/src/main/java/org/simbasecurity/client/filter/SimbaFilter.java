@@ -21,6 +21,7 @@ import org.apache.thrift.transport.THttpClient;
 import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.AuthenticationFilterService;
 import org.simbasecurity.api.service.thrift.RequestData;
+import org.simbasecurity.client.configuration.SimbaConfiguration;
 import org.simbasecurity.client.filter.action.FilterActionFactory;
 import org.simbasecurity.common.config.SystemConfiguration;
 import org.simbasecurity.common.filter.action.MakeCookieAction;
@@ -74,7 +75,7 @@ public final class SimbaFilter implements Filter {
 
 		THttpClient tHttpClient = null;
 		try {
-			tHttpClient = new THttpClient(simbaURL + "/" + authenticationChainName);
+			tHttpClient = new THttpClient(SimbaConfiguration.getSimbaAuthenticationURL());
 			TProtocol tProtocol = new TJSONProtocol(tHttpClient);
 
 			AuthenticationFilterService.Client authenticationClient = new AuthenticationFilterService.Client(tProtocol);

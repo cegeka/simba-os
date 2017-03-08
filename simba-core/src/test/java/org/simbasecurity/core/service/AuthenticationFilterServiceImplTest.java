@@ -15,19 +15,13 @@
  */
 package org.simbasecurity.core.service;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.same;
-
-import java.util.Collections;
-import java.util.UUID;
-
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.simbasecurity.api.service.thrift.RequestData;
 import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.common.request.RequestConstants;
@@ -37,8 +31,15 @@ import org.simbasecurity.core.chain.ChainImpl;
 import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.test.LocatorTestCase;
 
-@RunWith(MockitoJUnitRunner.class)
+import java.util.Collections;
+import java.util.UUID;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
+
 public class AuthenticationFilterServiceImplTest extends LocatorTestCase {
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
 
     @Mock private SessionService sessionServiceMock;
     @Mock private LoginMappingService loginMappingService;

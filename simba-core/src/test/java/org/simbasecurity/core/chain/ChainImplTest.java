@@ -15,26 +15,28 @@
  */
 package org.simbasecurity.core.chain;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.junit.Rule;
+import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import org.simbasecurity.core.audit.Audit;
+import org.simbasecurity.core.audit.AuditLogEventFactory;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.simbasecurity.core.audit.Audit;
-import org.simbasecurity.core.audit.AuditLogEventFactory;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 /**
  * @since 1.0
  */
-@RunWith(MockitoJUnitRunner.class)
 public class ChainImplTest {
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
 
     @Mock private ChainContext contextMock;
     @Mock private Audit auditMock;

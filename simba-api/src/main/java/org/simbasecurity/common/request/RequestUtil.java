@@ -33,6 +33,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import static org.simbasecurity.common.constants.AuthenticationConstants.*;
 import static org.simbasecurity.common.request.RequestConstants.HEADER_X_FORWARDED_FOR;
@@ -73,6 +74,15 @@ public final class RequestUtil {
 		HOST_SERVER_NAME = hostName;
 	}
 
+	public static String addParameterToUrl(String targetURL, String parameter, String value) {
+		return buildURL(targetURL, Collections.singletonMap(parameter, value));
+	}
+
+	public static String addParametersToUrlAndFilterInternalParameters(String targetURL, Map<String, String> requestParameters) {
+		Map<String, String> parameters = filterInteralParameters(requestParameters);
+		return buildURL(targetURL, parameters);
+	}
+
 	public static String buildURL(final String url, final String parameterName, final String parameterValue) {
 		return buildURL(url, Collections.singletonMap(parameterName, parameterValue));
 	}
@@ -94,6 +104,17 @@ public final class RequestUtil {
 		}
 
 		return stringBuilder.toString();
+	}
+
+	private static Map<String, String> filterInteralParameters(Map<String, String> requestParameters) {
+		if (requestParameters == null) return Collections.emptyMap();
+		return requestParameters.entrySet().stream()
+				.filter(e -> !isSimbaInternalParameter(e.getKey()))
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+	}
+
+	private static boolean isSimbaInternalParameter(String key) {
+		return AuthenticationConstants.SIMBA_INTERNALS_REQUEST_CONSTANTS.contains(key);
 	}
 
 	public static RequestData createRequestData(final HttpServletRequest request, final String simbaWebURL) {

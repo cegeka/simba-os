@@ -15,33 +15,6 @@
  */
 package org.simbasecurity.core.domain;
 
-import static org.simbasecurity.core.config.ConfigurationParameter.DEFAULT_PASSWORD;
-import static org.simbasecurity.core.domain.Status.INACTIVE;
-import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORDS_DONT_MATCH;
-import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORD_SAME_AS_OLD;
-
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -51,6 +24,7 @@ import org.apache.commons.pool.ObjectPool;
 import org.apache.commons.pool.impl.StackObjectPool;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.password.ConfigurablePasswordEncryptor;
+import org.jasypt.util.password.PasswordEncryptor;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
@@ -58,6 +32,14 @@ import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.util.PasswordEncryptorFactory;
 import org.simbasecurity.core.util.SHA1PasswordEncryptorFactory;
+
+import javax.persistence.*;
+import java.util.*;
+
+import static org.simbasecurity.core.config.ConfigurationParameter.DEFAULT_PASSWORD;
+import static org.simbasecurity.core.domain.Status.INACTIVE;
+import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORDS_DONT_MATCH;
+import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORD_SAME_AS_OLD;
 
 @Entity
 @Table(name = "SIMBA_USER")
@@ -271,7 +253,7 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 	public boolean checkPassword(String password) {
 		ConfigurablePasswordEncryptor encryptor = retrievePasswordEncryptor();
 		try {
-			return encryptor.checkPassword(password, this.password);
+			return checkPassword(password, encryptor, false);
 		} finally {
 			returnPasswordEncryptor(encryptor);
 		}
@@ -279,11 +261,14 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 
 	@Override
 	public boolean checkPasswordWithSHA1EncryptorAndReEncrypt(String plainPassword) {
-		boolean validPassword = new SHA1PasswordEncryptorFactory().createLegacyEncryptor().checkPassword(plainPassword, this.password);
-		if (validPassword) {
+		return checkPassword(plainPassword, new SHA1PasswordEncryptorFactory().createLegacyEncryptor(), true);
+	}
+
+	public boolean checkPassword(String plainPassword, PasswordEncryptor encryptor, boolean reEncrypt) {
+		boolean validPassword = encryptor.checkPassword(plainPassword, this.password);
+		if (validPassword && reEncrypt) {
 			reEncryptPassword(plainPassword);
 		}
-
 		return validPassword;
 	}
 

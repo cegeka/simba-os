@@ -15,66 +15,66 @@
  */
 package org.simbasecurity.core.domain.validator;
 
-import static org.mockito.Mockito.*;
-import static org.simbasecurity.core.config.ConfigurationParameter.*;
-
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.exception.SimbaException;
 
-@RunWith(MockitoJUnitRunner.class)
+import static org.mockito.Mockito.when;
+import static org.simbasecurity.core.config.ConfigurationParameter.*;
+
 public class UserNameValidatorImplTest {
 
-	@Mock private ConfigurationService mockConfigurationService;
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+    @Mock private ConfigurationService mockConfigurationService;
 
     @InjectMocks
-	private UserNameValidatorImpl validator;
+    private UserNameValidatorImpl validator;
 
-	@Test(expected = SimbaException.class)
-	public void validateUserName_usernameNull() {
-		validator.validateUserName(null);
-	}
+    @Test(expected = SimbaException.class)
+    public void validateUserName_usernameNull() {
+        validator.validateUserName(null);
+    }
 
-	@Test(expected = SimbaException.class)
-	public void validateUserName_usernameEmptyString() {
-		validator.validateUserName("");
-	}
+    @Test(expected = SimbaException.class)
+    public void validateUserName_usernameEmptyString() {
+        validator.validateUserName("");
+    }
 
-	@Test(expected = SimbaException.class)
-	public void validateUserName_usernameTooShort() {
-		Mockito.when(mockConfigurationService.getValue(USERNAME_MIN_LENGTH)).thenReturn(3);
+    @Test(expected = SimbaException.class)
+    public void validateUserName_usernameTooShort() {
+        Mockito.when(mockConfigurationService.getValue(USERNAME_MIN_LENGTH)).thenReturn(3);
 
-		validator.validateUserName("Us");
-	}
+        validator.validateUserName("Us");
+    }
 
-	@Test(expected = SimbaException.class)
-	public void validateUserName_usernameTooLong() {
-		when(mockConfigurationService.getValue(USERNAME_MIN_LENGTH)).thenReturn(3);
-		when(mockConfigurationService.getValue(USERNAME_MAX_LENGTH)).thenReturn(5);
+    @Test(expected = SimbaException.class)
+    public void validateUserName_usernameTooLong() {
+        when(mockConfigurationService.getValue(USERNAME_MIN_LENGTH)).thenReturn(3);
+        when(mockConfigurationService.getValue(USERNAME_MAX_LENGTH)).thenReturn(5);
 
-		validator.validateUserName("Userna");
-	}
+        validator.validateUserName("Userna");
+    }
 
-	@Test(expected = SimbaException.class)
-	public void validateUserName_usernameInvalidCharacters() {
-		when(mockConfigurationService.getValue(USERNAME_MIN_LENGTH)).thenReturn(3);
-		when(mockConfigurationService.getValue(USERNAME_MAX_LENGTH)).thenReturn(5);
-		when(mockConfigurationService.getValue(USERNAME_REGEX)).thenReturn("\\w*");
+    @Test(expected = SimbaException.class)
+    public void validateUserName_usernameInvalidCharacters() {
+        when(mockConfigurationService.getValue(USERNAME_MIN_LENGTH)).thenReturn(3);
+        when(mockConfigurationService.getValue(USERNAME_MAX_LENGTH)).thenReturn(5);
 
-		validator.validateUserName("User{}");
-	}
+        validator.validateUserName("User{}");
+    }
 
-	@Test(expected = SimbaException.class)
-	public void validateUserName_usernameValid() {
-		when(mockConfigurationService.getValue(USERNAME_MIN_LENGTH)).thenReturn(3);
-		when(mockConfigurationService.getValue(USERNAME_MAX_LENGTH)).thenReturn(10);
-		when(mockConfigurationService.getValue(USERNAME_REGEX)).thenReturn("\\w*");
+    @Test(expected = SimbaException.class)
+    public void validateUserName_usernameValid() {
+        when(mockConfigurationService.getValue(USERNAME_MIN_LENGTH)).thenReturn(3);
+        when(mockConfigurationService.getValue(USERNAME_MAX_LENGTH)).thenReturn(10);
 
-		validator.validateUserName("User_name09");
-	}
+        validator.validateUserName("User_name09");
+    }
 }

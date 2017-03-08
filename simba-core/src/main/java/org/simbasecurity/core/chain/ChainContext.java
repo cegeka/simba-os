@@ -53,11 +53,11 @@ public interface ChainContext extends Serializable {
     /**
      * @returns all existings params of the url to avoid that business request params such als ?language=fr get stripped
      */
-     Map<String, String> getRequestParameters();
+    Map<String, String> getRequestParameters();
 
     /**
      * @return the name of the HTTP method with which this request was made. This is one of <code>GET</code>,
-     *         <code>POST</code> or <code>PUT</code>. <p/><em>Note that HTTP PUT methods are not yet supported by Simba</em>.
+     * <code>POST</code> or <code>PUT</code>. <p/><em>Note that HTTP PUT methods are not yet supported by Simba</em>.
      */
     String getRequestMethod();
 
@@ -68,6 +68,8 @@ public interface ChainContext extends Serializable {
     String getHostServerName();
 
     void setSSOTokenForActions(SSOToken requestSSOToken);
+
+    void setMappingTokenForActions(String mappingToken);
 
     void setRedirectURL(String redirectURL);
 
@@ -91,8 +93,6 @@ public interface ChainContext extends Serializable {
 
     boolean isSsoTokenMappingKeyProvided();
 
-    void redirectWithCredentialError(SimbaMessageKey errorKey);
-
     ActionDescriptor getActionDescriptor();
 
     void redirectToPasswordChanged();
@@ -103,29 +103,31 @@ public interface ChainContext extends Serializable {
 
     void redirectToAccessDenied();
 
+    void redirectWithCredentialError(SimbaMessageKey errorKey);
+
     LoginMapping createLoginMapping();
 
     void redirectToChangePasswordDirect();
 
     boolean isShowChangePasswordRequest();
-    
-	String getChainContextId();
 
-	void increaseCommandCounter();
-	
-	void resetCommandCounter();
-	
-	String getUserAgent();
-	
-	String getLoginToken();
-	
-	boolean isLoginUsingJSP();
+    String getChainContextId();
 
-	void setLoginMapping(LoginMapping loginMapping);
-	
-	LoginMapping getLoginMapping();
-	
-	void redirectWhenLoginTokenExpired();
+    void increaseCommandCounter();
+
+    void resetCommandCounter();
+
+    String getUserAgent();
+
+    String getLoginToken();
+
+    boolean isLoginUsingJSP();
+
+    void setLoginMapping(LoginMapping loginMapping);
+
+    LoginMapping getLoginMapping();
+
+    void redirectWhenLoginTokenExpired();
 
     void redirectWithParameters(String redirectURL, Map<String, String> parameters);
 

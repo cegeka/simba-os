@@ -17,19 +17,20 @@ package org.simbasecurity.common.filter.action;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.mockito.ArgumentCaptor;
 import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.common.request.RequestConstants;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 public final class MakeCookieActionTest {
 
@@ -51,7 +52,7 @@ public final class MakeCookieActionTest {
 
     @Test
     public void testExecute() throws Exception {
-        ActionDescriptor actionDescriptor = new ActionDescriptor(new HashSet<ActionType>(), new HashMap<String, String>(), null, null, null);
+        ActionDescriptor actionDescriptor = new ActionDescriptor(new HashSet<>(), new HashMap<>(), null, null, null, null);
         actionDescriptor.getActionTypes().add(ActionType.MAKE_COOKIE);
         actionDescriptor.setSsoToken(SSO_TOKEN);
 
@@ -60,13 +61,21 @@ public final class MakeCookieActionTest {
         action.setResponse(response);
         action.execute();
 
-        Mockito.verify(response).addHeader("Set-Cookie", RequestConstants.SIMBA_SSO_TOKEN + "=" + SSO_TOKEN.getToken() + "; HttpOnly; Path=/");
+        ArgumentCaptor<Cookie> captor = ArgumentCaptor.forClass(Cookie.class);
+        verify(response).addCookie(captor.capture());
+
+        Cookie cookie = captor.getValue();
+        assertThat(cookie.getName()).isEqualTo(RequestConstants.SIMBA_SSO_TOKEN);
+        assertThat(cookie.getValue()).isEqualTo(SSO_TOKEN.getToken());
+        assertThat(cookie.getSecure()).isFalse();
+        assertThat(cookie.isHttpOnly()).isTrue();
+        assertThat(cookie.getPath()).isEqualTo("/");
     }
 
     @Test
     public void testExecute_WithSecureCookies() throws Exception {
         MakeCookieAction.setSecureCookiesEnabled(true);
-        ActionDescriptor actionDescriptor = new ActionDescriptor(new HashSet<ActionType>(), new HashMap<String, String>(), null, null, null);
+        ActionDescriptor actionDescriptor = new ActionDescriptor(new HashSet<>(), new HashMap<>(), null, null, null, null);
         actionDescriptor.getActionTypes().add(ActionType.MAKE_COOKIE);
         actionDescriptor.setSsoToken(SSO_TOKEN);
 
@@ -75,7 +84,16 @@ public final class MakeCookieActionTest {
         action.setResponse(response);
         action.execute();
 
-        Mockito.verify(response).addHeader("Set-Cookie", RequestConstants.SIMBA_SSO_TOKEN + "=" + SSO_TOKEN.getToken() + "; HttpOnly; secure; Path=/");
+
+        ArgumentCaptor<Cookie> captor = ArgumentCaptor.forClass(Cookie.class);
+        verify(response).addCookie(captor.capture());
+
+        Cookie cookie = captor.getValue();
+        assertThat(cookie.getName()).isEqualTo(RequestConstants.SIMBA_SSO_TOKEN);
+        assertThat(cookie.getValue()).isEqualTo(SSO_TOKEN.getToken());
+        assertThat(cookie.getSecure()).isTrue();
+        assertThat(cookie.isHttpOnly()).isTrue();
+        assertThat(cookie.getPath()).isEqualTo("/");
     }
 
 }

@@ -20,6 +20,7 @@ import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.common.request.RequestConstants;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import java.io.IOException;
 
 public final class MakeCookieAction extends AbstractAction {
@@ -35,12 +36,14 @@ public final class MakeCookieAction extends AbstractAction {
         final SSOToken token = getActionDescriptor().getSsoToken();
         assertNotNull(token, "SSOToken should be present");
 
-        String options = "; HttpOnly";
+        Cookie cookie = new Cookie(RequestConstants.SIMBA_SSO_TOKEN, token.getToken());
+        cookie.setHttpOnly(true);
         if(ENABLE_SECURE_COOKIES) {
-            options+="; secure";
+            cookie.setSecure(true);
         }
-        options+="; Path=/";
-        response.addHeader("Set-Cookie", RequestConstants.SIMBA_SSO_TOKEN + "=" + token.getToken() + options);
+        cookie.setPath("/");
+
+        response.addCookie(cookie);
     }
 
     @Override

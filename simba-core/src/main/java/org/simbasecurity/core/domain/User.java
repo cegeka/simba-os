@@ -15,6 +15,8 @@
  */
 package org.simbasecurity.core.domain;
 
+import org.jasypt.util.password.PasswordEncryptor;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
@@ -135,6 +137,19 @@ public interface User extends Versionable {
 	 *         for this user; <tt>false</tt> otherwise
 	 */
 	boolean checkPasswordWithSHA1EncryptorAndReEncrypt(String password);
+
+
+	/**
+	 * This methods allows for checking the password against any provided encryptor. This is useful for
+	 * providing a fallback login module whenever the hashing algorithm internally changes.
+	 *
+	 * @param plainPassword the plain text password to check according to the provided encryptor
+	 * @param encryptor     the encryptor to use for checking the password
+	 * @param reEncrypt     whether to re-encrypt the stored password to the standard mechanism; or not
+	 * @return <tt>true</tt> if the given password matches the stored password
+	 *         for this user; <tt>false</tt> otherwise
+	 */
+	boolean checkPassword(String plainPassword, PasswordEncryptor encryptor, boolean reEncrypt);
 
 	/**
 	 * Changes the password to newPassword if oldPassword is valid for this

@@ -15,31 +15,29 @@
  */
 package org.simbasecurity.core.chain.session;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.simbasecurity.core.exception.SimbaMessageKey.*;
-
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.simbasecurity.common.constants.AuthenticationConstants;
-import org.simbasecurity.core.audit.Audit;
-import org.simbasecurity.core.audit.AuditLogEvent;
-import org.simbasecurity.core.audit.AuditLogEventCategory;
-import org.simbasecurity.core.audit.AuditLogEventFactory;
-import org.simbasecurity.core.audit.AuditMessages;
+import org.simbasecurity.core.audit.*;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command.State;
 import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.CredentialService;
 
-@RunWith(MockitoJUnitRunner.class)
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORD_INVALID_LENGTH;
+
 public class ChangePasswordCommandTest {
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
 
     private static final String USERNAME = "bkkov";
     private static final String OLD_PASSWORD = "password";

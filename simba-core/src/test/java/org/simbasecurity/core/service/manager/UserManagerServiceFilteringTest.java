@@ -9,9 +9,7 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.simbasecurity.core.config.ConfigurationService;
-import org.simbasecurity.core.domain.PolicyEntity;
-import org.simbasecurity.core.domain.RoleEntity;
-import org.simbasecurity.core.domain.UserEntity;
+import org.simbasecurity.core.domain.*;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
@@ -26,6 +24,7 @@ import org.simbasecurity.test.util.ReflectionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -33,7 +32,7 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-public class UserManagerServiceTest {
+public class UserManagerServiceFilteringTest {
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
 
@@ -74,6 +73,23 @@ public class UserManagerServiceTest {
         UserEntity userEntity2 = new UserEntity("user-2");
         UserEntity userEntity3 = new UserEntity("user-3");
 
+        filterServices.add(new EntityFilter() {
+            @Override
+            public Predicate<Role> rolePredicate() {
+                return r -> r.getName().endsWith("-1");
+            }
+
+            @Override
+            public Predicate<Policy> policyPredicate() {
+                return p -> p.getName().endsWith("-1");
+            }
+
+            @Override
+            public Predicate<User> userPredicate() {
+                return u -> u.getUserName().endsWith("-1");
+            }
+        });
+
         ReflectionUtil.setField(entityFilterService, "filters", filterServices);
 
         entityFilterService.initializePredicates();
@@ -105,25 +121,25 @@ public class UserManagerServiceTest {
 
     @Test
     public void findAll() {
-        assertThat(service.findAll()).extracting(UserDTO::getUserName).containsExactlyInAnyOrder("user-1", "user-2", "user-3");
+        assertThat(service.findAll()).extracting(UserDTO::getUserName).containsExactlyInAnyOrder("user-1");
     }
 
     @Test
     public void find() {
-        assertThat(service.find(roleDTO1)).extracting(UserDTO::getUserName).containsExactlyInAnyOrder("user-1", "user-3");
-        assertThat(service.find(roleDTO2)).extracting(UserDTO::getUserName).containsExactlyInAnyOrder("user-2", "user-3");
+        assertThat(service.find(roleDTO1)).extracting(UserDTO::getUserName).containsExactlyInAnyOrder("user-1");
+        assertThat(service.find(roleDTO2)).extracting(UserDTO::getUserName).isEmpty();
     }
 
     @Test
     public void findRoles() {
         assertThat(service.findRoles(userDTO1)).extracting(RoleDTO::getName).containsExactlyInAnyOrder("role-1");
-        assertThat(service.findRoles(userDTO2)).extracting(RoleDTO::getName).containsExactlyInAnyOrder("role-2");
-        assertThat(service.findRoles(userDTO3)).extracting(RoleDTO::getName).containsExactlyInAnyOrder("role-1", "role-2");
+        assertThat(service.findRoles(userDTO2)).extracting(RoleDTO::getName).isEmpty();
+        assertThat(service.findRoles(userDTO3)).extracting(RoleDTO::getName).containsExactlyInAnyOrder("role-1");
     }
 
     @Test
     public void findRolesNotLinked() {
-        assertThat(service.findRolesNotLinked(userDTO1)).extracting(RoleDTO::getName).containsExactlyInAnyOrder("role-2");
+        assertThat(service.findRolesNotLinked(userDTO1)).extracting(RoleDTO::getName).isEmpty();
         assertThat(service.findRolesNotLinked(userDTO2)).extracting(RoleDTO::getName).containsExactlyInAnyOrder("role-1");
         assertThat(service.findRolesNotLinked(userDTO3)).extracting(RoleDTO::getName).isEmpty();
     }
@@ -131,8 +147,8 @@ public class UserManagerServiceTest {
     @Test
     public void findPolicies() {
         assertThat(service.findPolicies(userDTO1)).extracting(PolicyDTO::getName).containsExactlyInAnyOrder("policy-1");
-        assertThat(service.findPolicies(userDTO2)).extracting(PolicyDTO::getName).containsExactlyInAnyOrder("policy-2");
-        assertThat(service.findPolicies(userDTO3)).extracting(PolicyDTO::getName).containsExactlyInAnyOrder("policy-1", "policy-2");
+        assertThat(service.findPolicies(userDTO2)).extracting(PolicyDTO::getName).isEmpty();
+        assertThat(service.findPolicies(userDTO3)).extracting(PolicyDTO::getName).containsExactlyInAnyOrder("policy-1");
 
     }
 }

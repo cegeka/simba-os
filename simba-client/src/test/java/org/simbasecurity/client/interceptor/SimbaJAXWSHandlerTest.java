@@ -15,19 +15,6 @@
  */
 package org.simbasecurity.client.interceptor;
 
-import static org.mockito.Mockito.*;
-import static org.simbasecurity.common.config.SystemConfiguration.*;
-
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.soap.SOAPMessage;
-import javax.xml.ws.handler.MessageContext;
-import javax.xml.ws.handler.soap.SOAPMessageContext;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -37,6 +24,19 @@ import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.api.service.thrift.AuthenticationFilterService;
 import org.simbasecurity.client.principal.SimbaPrincipal;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.soap.SOAPMessage;
+import javax.xml.ws.handler.MessageContext;
+import javax.xml.ws.handler.soap.SOAPMessageContext;
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+
+import static org.mockito.Mockito.*;
+import static org.simbasecurity.common.config.SystemConfiguration.SYS_PROP_SIMBA_INTERNAL_SERVICE_URL;
 
 public class SimbaJAXWSHandlerTest {
 
@@ -98,7 +98,7 @@ public class SimbaJAXWSHandlerTest {
     @Ignore
     // TODO: Create integration test
     public void soapAuthenticationSuccessful() throws Exception {
-        ActionDescriptor actionDescriptor = new ActionDescriptor(new HashSet<ActionType>(), new HashMap<String, String>(), null, null, null);
+        ActionDescriptor actionDescriptor = new ActionDescriptor(new HashSet<ActionType>(), new HashMap<String, String>(), null, null, null, null);
         actionDescriptor.getActionTypes().add(ActionType.DO_FILTER_AND_SET_PRINCIPAL);
         actionDescriptor.setPrincipal("principal");
 

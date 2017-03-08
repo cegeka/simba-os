@@ -15,18 +15,19 @@
  */
 package org.simbasecurity.common.filter.action;
 
-import static org.mockito.Mockito.*;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.ActionType;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.HashSet;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class RedirectActionTest {
 
@@ -47,7 +48,7 @@ public class RedirectActionTest {
 
     @Test
     public void testExecute() throws Exception {
-        ActionDescriptor actionDescriptor = new ActionDescriptor(new HashSet<ActionType>(), new HashMap<String, String>(), null, null, null);
+        ActionDescriptor actionDescriptor = new ActionDescriptor(new HashSet<>(), new HashMap<>(), null, null, null, null);
         actionDescriptor.getActionTypes().add(ActionType.REDIRECT);
         String redirectURL = "redirectURL";
         actionDescriptor.setRedirectURL(redirectURL);

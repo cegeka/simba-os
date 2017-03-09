@@ -26,6 +26,7 @@ import org.simbasecurity.test.util.ReflectionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -46,7 +47,7 @@ public class UserManagerServiceTest {
     @Mock private RoleRepository roleRepository;
     @Mock private UserRepository userRepository;
 
-    @Spy private EntityFilterService entityFilterService;
+    @Spy private EntityFilterService entityFilterService = new EntityFilterService(Optional.empty());
     @InjectMocks private UserManagerService service;
 
     @Mock private RoleDTO roleDTO1;

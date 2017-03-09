@@ -18,6 +18,7 @@ import org.simbasecurity.test.util.ReflectionUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
@@ -33,7 +34,7 @@ public class PolicyManagerServiceFilteringTest {
     @Mock private PolicyRepository policyRepository;
     @Mock private RoleRepository roleRepository;
 
-    @Spy private EntityFilterService entityFilterService;
+    @Spy private EntityFilterService entityFilterService = new EntityFilterService(Optional.empty());
     @InjectMocks private PolicyManagerService policyManagerService;
 
     @Mock private PolicyDTO policyDTO1;

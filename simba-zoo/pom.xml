@@ -24,7 +24,7 @@
         <artifactId>simba</artifactId>
         <version>3.0.0-SNAPSHOT</version>
     </parent>
-    
+
     <artifactId>simba-zoo</artifactId>
     <packaging>war</packaging>
 
@@ -57,29 +57,27 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>9.4.0.v20161208</version>
                 <configuration>
-                    <connectors>
-                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                            <port>8085</port>
-                        </connector>
-                    </connectors>
+                    <httpConnector>
+                        <port>8085</port>
+                    </httpConnector>
                     <webApp>
                         <contextPath>/${project.artifactId}</contextPath>
                     </webApp>
                     <stopPort>8086</stopPort>
                     <stopKey>jetty-stop</stopKey>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
-			        <!--<systemProperties>-->
-			            <!--<systemProperty>-->
-			              <!--<name>simba.properties.file</name>-->
-			              <!--<value>${basedir}/src/main/resources/simba.properties</value>-->
-			            <!--</systemProperty>-->
-		        	<!--</systemProperties>                    -->
+                    <systemProperties>
+                        <systemProperty>
+                            <name>simba.properties.file</name>
+                            <value>${basedir}/src/main/resources/simba.properties</value>
+                        </systemProperty>
+                    </systemProperties>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat8-maven-plugin</artifactId>
-                <version>3.0-r1655215</version>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
                 <configuration>
                     <path>/${project.artifactId}</path>
                     <port>8085</port>

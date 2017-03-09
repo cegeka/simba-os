@@ -108,7 +108,7 @@ public final class SystemConfiguration {
 	 * @see #SYS_PROP_SIMBA_INTERNAL_SERVICE_URL
 	 */
 	public static String getSimbaServiceURL() {
-		return getSimbaServiceURL(Collections.<String, String> emptyMap());
+		return getSimbaServiceURL(Collections.emptyMap());
 	}
 
 	/**

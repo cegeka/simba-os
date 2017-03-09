@@ -15,29 +15,32 @@
  */
 package org.simbasecurity.core.jaas.loginmodule;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import com.sun.security.auth.UserPrincipal;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import org.simbasecurity.core.jaas.callbackhandler.ChainContextCallbackHandler;
 
-import java.security.Principal;
-import java.util.Collections;
-import java.util.Set;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.login.FailedLoginException;
+import java.security.Principal;
+import java.util.Collections;
+import java.util.Set;
 
-import com.sun.security.auth.UserPrincipal;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.simbasecurity.core.jaas.callbackhandler.ChainContextCallbackHandler;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
 public class MemoryLoginModuleTest {
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     private static final String ADMIN = "admin";
 

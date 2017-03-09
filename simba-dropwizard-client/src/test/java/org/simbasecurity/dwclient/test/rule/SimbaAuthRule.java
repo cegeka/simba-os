@@ -1,24 +1,22 @@
 package org.simbasecurity.dwclient.test.rule;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
+import com.google.common.base.Optional;
+import com.sun.jersey.spi.container.ContainerRequest;
+import com.yammer.dropwizard.auth.AuthenticationException;
+import com.yammer.dropwizard.testing.ResourceTest;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 import org.simbasecurity.dwclient.dropwizard.authenticator.SimbaAuthenticator;
 import org.simbasecurity.dwclient.dropwizard.credentials.SimbaCredentials;
+import org.simbasecurity.dwclient.dropwizard.credentials.SimbaCredentialsBuilderForTests;
 import org.simbasecurity.dwclient.dropwizard.credentials.SimbaCredentialsFactory;
 import org.simbasecurity.dwclient.dropwizard.credentials.SimbaPrincipal;
 import org.simbasecurity.dwclient.dropwizard.provider.AuthenticatedPrincipal;
 import org.simbasecurity.dwclient.dropwizard.provider.DomainUserProvider;
 import org.simbasecurity.dwclient.dropwizard.provider.SimbaAuthenticatedProvider;
-import org.simbasecurity.dwclient.dropwizard.credentials.SimbaCredentialsBuilderForTests;
 
-import com.google.common.base.Optional;
-import com.sun.jersey.spi.container.ContainerRequest;
-import com.yammer.dropwizard.auth.AuthenticationException;
-import com.yammer.dropwizard.testing.ResourceTest;
+import static org.mockito.Mockito.*;
 
 public class SimbaAuthRule implements MethodRule {
 

@@ -1,7 +1,6 @@
 package org.simbasecurity.dwclient.gateway;
 
 import static org.fest.assertions.api.Assertions.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import org.junit.Before;

@@ -33,7 +33,7 @@
 		<!-- main dependency versions -->
 		<dropwizard.version>0.6.2</dropwizard.version>
 		<dropwizard-guice.version>0.6.2</dropwizard-guice.version>
-		<simba.version>2.0</simba.version>
+		<simba.version>3.0.0-SNAPSHOT</simba.version>
 		
 		<!-- util dependency versions -->
 		<guice.version>3.0</guice.version>

@@ -72,6 +72,9 @@ public class PolicyManagerServiceTest {
         when(roleRepository.findNotLinked(policyEntity2)).thenReturn(singletonList(roleEntity1));
         when(roleRepository.findNotLinked(policyEntity3)).thenReturn(emptyList());
 
+        when(roleRepository.findForPolicy(policyEntity1)).thenReturn(singletonList(roleEntity1));
+        when(roleRepository.findForPolicy(policyEntity2)).thenReturn(singletonList(roleEntity2));
+        when(roleRepository.findForPolicy(policyEntity3)).thenReturn(asList(roleEntity1, roleEntity2));
     }
 
     @Test

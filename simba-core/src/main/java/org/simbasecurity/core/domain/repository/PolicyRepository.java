@@ -39,6 +39,8 @@ public interface PolicyRepository extends AbstractVersionedRepository<Policy> {
 
     Collection<Policy> findNotLinked(Role role);
 
+    Collection<Policy> findForRole(Role role);
+
     /**
      * @param policy the policy
      * @return the list of policies specified by given user

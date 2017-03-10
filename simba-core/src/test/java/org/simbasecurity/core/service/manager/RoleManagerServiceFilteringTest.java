@@ -116,9 +116,17 @@ public class RoleManagerServiceFilteringTest {
         when(policyRepository.findNotLinked(roleEntity2)).thenReturn(singletonList(policyEntity1));
         when(policyRepository.findNotLinked(roleEntity3)).thenReturn(emptyList());
 
+        when(policyRepository.findForRole(roleEntity1)).thenReturn(singletonList(policyEntity1));
+        when(policyRepository.findForRole(roleEntity2)).thenReturn(singletonList(policyEntity2));
+        when(policyRepository.findForRole(roleEntity3)).thenReturn(asList(policyEntity1, policyEntity2));
+
         when(userRepository.findNotLinked(roleEntity1)).thenReturn(singletonList(userEntity2));
         when(userRepository.findNotLinked(roleEntity2)).thenReturn(singletonList(userEntity1));
         when(userRepository.findNotLinked(roleEntity3)).thenReturn(emptyList());
+
+        when(userRepository.findForRole(roleEntity1)).thenReturn(singletonList(userEntity1));
+        when(userRepository.findForRole(roleEntity2)).thenReturn(singletonList(userEntity2));
+        when(userRepository.findForRole(roleEntity3)).thenReturn(asList(userEntity1, userEntity2));
     }
 
     @Test

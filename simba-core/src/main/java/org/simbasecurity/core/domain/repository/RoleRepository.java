@@ -37,7 +37,11 @@ public interface RoleRepository extends AbstractVersionedRepository<Role> {
 
     Collection<Role> findNotLinked(Policy policy);
 
+    Collection<Role> findForPolicy(Policy policy);
+
     Collection<Role> findNotLinked(User user);
+
+    Collection<Role> findForUser(User user);
 
     Collection<Role> findNotLinked(Group group);
 }

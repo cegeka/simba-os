@@ -86,13 +86,13 @@ public class UserManagerService {
     @RequestMapping("findByRole")
     @ResponseBody
     public Collection<UserDTO> find(@RequestBody RoleDTO role) {
-        return UserDTOAssembler.assemble(filterService.filterUsers(roleRepository.lookUp(role).getUsers()));
+        return UserDTOAssembler.assemble(filterService.filterUsers(userRepository.findForRole(roleRepository.lookUp(role))));
     }
 
     @RequestMapping("findRoles")
     @ResponseBody
     public Collection<RoleDTO> findRoles(@RequestBody UserDTO user) {
-        return RoleDTOAssembler.assemble(filterService.filterRoles(userRepository.lookUp(user).getRoles()));
+        return RoleDTOAssembler.assemble(filterService.filterRoles(roleRepository.findForUser(userRepository.lookUp(user))));
     }
 
     @RequestMapping("findRolesNotLinked")
@@ -102,6 +102,7 @@ public class UserManagerService {
     }
 
     @RequestMapping("removeRole")
+    @ResponseBody
     public void removeRole(@JsonBody("user") UserDTO user, @JsonBody("role") RoleDTO role) {
         User attachedUser = userRepository.refreshWithOptimisticLocking(user);
         Role attachedRole = roleRepository.refreshWithOptimisticLocking(role);
@@ -110,6 +111,7 @@ public class UserManagerService {
     }
 
     @RequestMapping("addRoles")
+    @ResponseBody
     public void addRoles(@JsonBody("user") UserDTO user, @JsonBody("roles") Set<RoleDTO> roles) {
         User attachedUser = userRepository.refreshWithOptimisticLocking(user);
         Collection<Role> attachedRoles = roleRepository.refreshWithOptimisticLocking(roles);

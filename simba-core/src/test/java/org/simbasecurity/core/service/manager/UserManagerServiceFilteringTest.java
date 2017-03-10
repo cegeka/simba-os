@@ -108,8 +108,15 @@ public class UserManagerServiceFilteringTest {
         when(userRepository.lookUp(userDTO2)).thenReturn(userEntity2);
         when(userRepository.lookUp(userDTO3)).thenReturn(userEntity3);
 
+        when(userRepository.findForRole(roleEntity1)).thenReturn(asList(userEntity1, userEntity3));
+        when(userRepository.findForRole(roleEntity2)).thenReturn(asList(userEntity2, userEntity3));
+
         when(roleRepository.lookUp(roleDTO1)).thenReturn(roleEntity1);
         when(roleRepository.lookUp(roleDTO2)).thenReturn(roleEntity2);
+
+        when(roleRepository.findForUser(userEntity1)).thenReturn(singletonList(roleEntity1));
+        when(roleRepository.findForUser(userEntity2)).thenReturn(singletonList(roleEntity2));
+        when(roleRepository.findForUser(userEntity3)).thenReturn(asList(roleEntity1, roleEntity2));
 
         when(roleRepository.findNotLinked(userEntity1)).thenReturn(singletonList(roleEntity2));
         when(roleRepository.findNotLinked(userEntity2)).thenReturn(singletonList(roleEntity1));

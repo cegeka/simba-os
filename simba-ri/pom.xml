@@ -116,6 +116,11 @@
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>LATEST</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -131,7 +136,7 @@
                     <webApp>
                         <contextPath>/simba</contextPath>
                     </webApp>
-                    <stopPort>8081</stopPort>
+                    <stopPort>8082</stopPort>
                     <stopKey>jetty-stop</stopKey>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
                     <systemProperties>

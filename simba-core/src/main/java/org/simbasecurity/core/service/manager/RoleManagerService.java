@@ -68,7 +68,7 @@ public class RoleManagerService {
     @RequestMapping("findPolicies")
     @ResponseBody
     public Collection<PolicyDTO> findPolicies(@RequestBody RoleDTO role) {
-        return PolicyDTOAssembler.assemble(filterService.filterPolicies(roleRepository.lookUp(role).getPolicies()));
+        return PolicyDTOAssembler.assemble(filterService.filterPolicies(policyRepository.findForRole(roleRepository.lookUp(role))));
     }
 
     @RequestMapping("findPoliciesNotLinked")
@@ -80,7 +80,7 @@ public class RoleManagerService {
     @RequestMapping("findUsers")
     @ResponseBody
     public Collection<UserDTO> findUsers(@RequestBody RoleDTO role) {
-        return UserDTOAssembler.assemble(filterService.filterUsers(roleRepository.lookUp(role).getUsers()));
+        return UserDTOAssembler.assemble(filterService.filterUsers(userRepository.findForRole(roleRepository.lookUp(role))));
     }
 
     @RequestMapping("findUsersNotLinked")

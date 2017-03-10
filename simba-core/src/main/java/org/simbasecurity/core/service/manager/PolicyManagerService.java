@@ -69,7 +69,7 @@ public class PolicyManagerService {
     @RequestMapping("findRoles")
     @ResponseBody
     public Collection<RoleDTO> findRoles(@RequestBody PolicyDTO policy) {
-        return RoleDTOAssembler.assemble(filterService.filterRoles(policyRepository.lookUp(policy).getRoles()));
+        return RoleDTOAssembler.assemble(filterService.filterRoles(roleRepository.findForPolicy(policyRepository.lookUp(policy))));
     }
 
     @RequestMapping("findRolesNotLinked")

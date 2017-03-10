@@ -79,6 +79,7 @@ angular.module('SimbaApp')
                     $user.addRoles($scope.user, selectedUnlinkedRoles)
                         .success(function(){
                             $scope.initRoles();
+                            refreshSelectedUser();
                         })
                         .error(function(){
                             $error.showError('error.update.failed');
@@ -96,6 +97,10 @@ angular.module('SimbaApp')
 
     $scope.deleteRole = function(role) {
         $user.removeRole($scope.user, role)
+        .success(function() {
+            $scope.initRoles();
+            refreshSelectedUser();
+        })
         .error(function() {
             $error.showError('error.update.failed');
         });
@@ -119,4 +124,13 @@ angular.module('SimbaApp')
         $scope.hideErrorMessage = function() {
             $error.hideError();
         };
+
+    var refreshSelectedUser = function () {
+        if (typeof $scope.user !== 'undefined') {
+            $user.refresh($scope.user)
+            .success(function (data) {
+                $scope.user = data;
+            });
+        }
+    }
   }]);

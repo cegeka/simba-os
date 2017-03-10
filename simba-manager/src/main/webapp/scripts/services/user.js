@@ -39,6 +39,9 @@ angular.module('SimbaApp')
             },
             getSuccessUrls: function() {
                 return ['/dummyURL/'];
-            }
+            },
+            refresh: function(user) {
+                return $rest.post('user/refresh', user);
+            },
         };
     }]);

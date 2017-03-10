@@ -9,6 +9,7 @@ angular.module('SimbaApp')
     $scope.headers = [
       'useroverview.username',
       'useroverview.active',
+      'useroverview.blocked',
       'useroverview.name',
       'useroverview.firstname'
     ];
@@ -36,13 +37,22 @@ angular.module('SimbaApp')
         modalInstance.result.then(function (user) {
             $user.update(user)
                 .success(function(data) {
-                    selectedUser = data;
+                    var i = $scope.users.indexOf(selectedUser);
+                    $scope.users[i] = data;
                 })
                 .error(function() {
                     $error.showError('error.update.failed');
                 });
         }, function () {
             $log.info('Modal dismissed at: ' + new Date());
+            $user.refresh(selectedUser)
+                .success(function(data) {
+                    var i = $scope.users.indexOf(selectedUser);
+                    $scope.users[i] = data;
+                })
+                .error(function() {
+                    $error.showError('error.refresh.failed');
+                });
         });
     };
    
@@ -73,4 +83,10 @@ angular.module('SimbaApp')
     $scope.isUserInactive = function(user) {
         return user.status === 'INACTIVE';
     };
+
+    $scope.isUserBlocked = function(user) {
+        return user.status === 'BLOCKED';
+    };
+
+
   }]);

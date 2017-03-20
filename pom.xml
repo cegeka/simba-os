@@ -33,7 +33,7 @@
         <org.hibernate.version>5.2.6.Final</org.hibernate.version>
         <junit.version>4.12</junit.version>
         <mockito.version>2.7.11</mockito.version>
-        <thrift.version>0.10.0</thrift.version>
+        <thrift.version>0.9.3</thrift.version> <!-- Thrift 0.10.0 contains a nasty debug message resulting in many "Received 1" log messages in the server log. -->
     </properties>
 
     <name>Simba</name>

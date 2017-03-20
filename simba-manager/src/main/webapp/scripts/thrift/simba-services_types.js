@@ -68,11 +68,14 @@ SSOToken.prototype.write = function(output) {
 };
 
 ActionDescriptor = function(args) {
-  this.actionTypes = null;
-  this.parameterMap = null;
+  this.actionTypes = [];
+  this.parameterMap = {
+
+};
   this.ssoToken = null;
   this.redirectURL = null;
   this.principal = null;
+  this.mappingToken = null;
   if (args) {
     if (args.actionTypes !== undefined && args.actionTypes !== null) {
       this.actionTypes = Thrift.copyList(args.actionTypes, [null]);
@@ -88,6 +91,9 @@ ActionDescriptor = function(args) {
     }
     if (args.principal !== undefined && args.principal !== null) {
       this.principal = args.principal;
+    }
+    if (args.mappingToken !== undefined && args.mappingToken !== null) {
+      this.mappingToken = args.mappingToken;
     }
   }
 };
@@ -176,6 +182,13 @@ ActionDescriptor.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 6:
+      if (ftype == Thrift.Type.STRING) {
+        this.mappingToken = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -231,14 +244,23 @@ ActionDescriptor.prototype.write = function(output) {
     output.writeString(this.principal);
     output.writeFieldEnd();
   }
+  if (this.mappingToken !== null && this.mappingToken !== undefined) {
+    output.writeFieldBegin('mappingToken', Thrift.Type.STRING, 6);
+    output.writeString(this.mappingToken);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
 };
 
 RequestData = function(args) {
-  this.requestParameters = null;
-  this.requestHeaders = null;
+  this.requestParameters = {
+
+};
+  this.requestHeaders = {
+
+};
   this.requestURL = null;
   this.simbaWebURL = null;
   this.ssoToken = null;

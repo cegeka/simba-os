@@ -1,13 +1,14 @@
 package org.simbasecurity.core.chain.eid;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.simbasecurity.core.audit.*;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command.State;
@@ -15,34 +16,27 @@ import org.simbasecurity.core.saml.SAMLResponseHandler;
 import org.simbasecurity.core.saml.SAMLService;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
 public class ValidateSAMLParametersCommandTest {
 
-    @Mock
-    private Audit auditMock;
-    @Mock
-    private ChainContext chainContextMock;
-    @Mock
-    private SAMLService samlServiceMock;
-    @Mock
-    private SAMLResponseHandler samlResponseHandlerMock;
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    @Spy
-    private AuditLogEventFactory auditLogEventFactory;
+    @Mock private Audit auditMock;
+    @Mock private ChainContext chainContextMock;
+    @Mock private SAMLService samlServiceMock;
+    @Mock private SAMLResponseHandler samlResponseHandlerMock;
+
+    @Spy private AuditLogEventFactory auditLogEventFactory;
 
     private ArgumentCaptor<AuditLogEvent> captor = ArgumentCaptor.forClass(AuditLogEvent.class);
 
-    @InjectMocks
-    private ValidateSAMLParametersCommand command;
-
+    @InjectMocks private ValidateSAMLParametersCommand command;
 
     @Before
     public void setUp() throws Exception {
-        when(samlServiceMock.getSAMLResponseHandler(anyString(), anyString())).thenReturn(samlResponseHandlerMock);
+        when(samlServiceMock.getSAMLResponseHandler(null, null)).thenReturn(samlResponseHandlerMock);
     }
 
     @Test

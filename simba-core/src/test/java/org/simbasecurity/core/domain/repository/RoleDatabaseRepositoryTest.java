@@ -21,6 +21,8 @@ import org.simbasecurity.core.domain.*;
 import org.simbasecurity.test.PersistenceTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collection;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -36,16 +38,20 @@ public class RoleDatabaseRepositoryTest extends PersistenceTestCase {
 
     private RoleEntity role1;
     private UserEntity user;
+    private PolicyEntity policy;
 
     @Before
     public void setUp() {
         user = new UserEntity("jos");
+        policy = new PolicyEntity("aPolicy");
         role1 = new RoleEntity(VENN_DOSSIERBEHEERDER);
+
         RoleEntity role2 = new RoleEntity(SS_DOSSIERBEHEERDER);
         RoleEntity role3 = new RoleEntity(KB_DOSSIERBEHEERDER);
-        persistAndRefresh(user, role1, role2, role3);
+        persistAndRefresh(user, role1, role2, role3, policy);
 
         role1.addUser(user);
+        role1.addPolicy(policy);
     }
 
     @Test
@@ -53,6 +59,18 @@ public class RoleDatabaseRepositoryTest extends PersistenceTestCase {
         Role result = roleDatabaseRepository.findByName(SS_DOSSIERBEHEERDER);
         assertNotNull(result);
         assertEquals(result.getName(), SS_DOSSIERBEHEERDER);
+    }
+
+    @Test
+    public void findForPolicy() {
+        Collection<Role> result = roleDatabaseRepository.findForPolicy(policy);
+        assertThat(result).containsOnly(role1);
+    }
+
+    @Test
+    public void findForUser() {
+        Collection<Role> result = roleDatabaseRepository.findForUser(user);
+        assertThat(result).containsOnly(role1);
     }
 
     @Test

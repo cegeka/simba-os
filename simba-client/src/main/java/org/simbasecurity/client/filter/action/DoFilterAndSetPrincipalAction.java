@@ -15,16 +15,18 @@
  */
 package org.simbasecurity.client.filter.action;
 
-import java.io.IOException;
-import java.security.Principal;
-import javax.servlet.ServletException;
-
 import com.sun.security.auth.UserPrincipal;
 import org.simbasecurity.api.service.thrift.ActionDescriptor;
-import org.simbasecurity.common.filter.action.AbstractAction;
 import org.simbasecurity.client.filter.request.HttpServletRequestWithPrincipal;
+import org.simbasecurity.common.filter.action.AbstractAction;
+
+import javax.servlet.ServletException;
+import java.io.IOException;
+import java.security.Principal;
 
 public final class DoFilterAndSetPrincipalAction extends AbstractAction {
+
+    private DoFilterExtension doFilterExtension;
 
     public DoFilterAndSetPrincipalAction(final ActionDescriptor actionDescriptor) {
         super(actionDescriptor);
@@ -41,7 +43,12 @@ public final class DoFilterAndSetPrincipalAction extends AbstractAction {
             request = new HttpServletRequestWithPrincipal(request, principal);
         }
 
-        filterChain.doFilter(request, response);
+        if (doFilterExtension != null) doFilterExtension.before();
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            if (doFilterExtension != null) doFilterExtension.after();
+        }
     }
 
     @Override

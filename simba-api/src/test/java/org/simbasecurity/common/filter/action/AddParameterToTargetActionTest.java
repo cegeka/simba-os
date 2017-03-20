@@ -15,20 +15,20 @@
  */
 package org.simbasecurity.common.filter.action;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+import org.simbasecurity.api.service.thrift.ActionDescriptor;
+import org.simbasecurity.api.service.thrift.ActionType;
 
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.junit.Test;
-import org.simbasecurity.api.service.thrift.ActionDescriptor;
-import org.simbasecurity.api.service.thrift.ActionType;
+import static org.junit.Assert.assertEquals;
 
 public class AddParameterToTargetActionTest {
 
     @Test
     public void testExecute() throws Exception {
-        ActionDescriptor actionDescriptor = new ActionDescriptor(new HashSet<ActionType>(), new HashMap<String, String>(), null, null, null);
+        ActionDescriptor actionDescriptor = new ActionDescriptor(new HashSet<ActionType>(), new HashMap<String, String>(), null, null, null, null);
         actionDescriptor.getActionTypes().add(ActionType.ADD_PARAMETER_TO_TARGET);
 
         String redirectURL = "http://localhost/redirect";

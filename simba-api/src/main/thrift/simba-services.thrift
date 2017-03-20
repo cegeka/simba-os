@@ -56,12 +56,12 @@ struct ActionDescriptor {
     /**
      * The set of actions the client should perform.
      */
-    1: set<ActionType> actionTypes,
+    1: set<ActionType> actionTypes = {},
 
     /**
      * A possible map of parameters the client should append to the redirect URL
      */
-    2: map<string, string> parameterMap,
+    2: map<string, string> parameterMap = {},
 
     /**
      * The resulting SSOToken
@@ -76,7 +76,12 @@ struct ActionDescriptor {
     /**
      * The resulting principal (username)
      */
-    5: string principal
+    5: string principal,
+
+    /**
+     * The mapping token
+     */
+    6: string mappingToken
 }
 
 /**
@@ -87,12 +92,12 @@ struct RequestData {
     /**
      * A map containing the request parameters
      */
-    1:  map<string, string> requestParameters,
+    1:  map<string, string> requestParameters = {},
 
     /**
      * A map containing the request headers
      */
-    2:  map<string, string> requestHeaders,
+    2:  map<string, string> requestHeaders = {},
 
     /**
      * The requested URL

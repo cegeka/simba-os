@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.common.constants.AuthenticationConstants;
 import org.simbasecurity.common.request.RequestConstants;
+import org.simbasecurity.common.request.RequestUtil;
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.audit.AuditMessages;
@@ -40,86 +41,93 @@ import java.util.Map.Entry;
 /**
  * The CreateSessionCommand creates a session for a user if there's none
  * available.
- * 
+ *
  * @since 1.0
  */
 @Component
 public class CreateSessionCommand implements Command {
 
-    @Autowired private SessionService sessionService;
-    @Autowired private CredentialService credentialService;
-    @Autowired private Audit audit;
-    @Autowired private SSOTokenMappingService ssoTokenMappingService;
-    @Autowired private AuditLogEventFactory auditLogFactory;
+    @Autowired
+    private SessionService sessionService;
+    @Autowired
+    private CredentialService credentialService;
+    @Autowired
+    private Audit audit;
+    @Autowired
+    private SSOTokenMappingService ssoTokenMappingService;
+    @Autowired
+    private AuditLogEventFactory auditLogFactory;
 
-	@Override
-	public State execute(ChainContext context) throws Exception {
-		String targetURL;
+    @Override
+    public State execute(ChainContext context) throws Exception {
+        String targetURL;
 
-		if (context.isLoginUsingJSP()) {
-			LoginMapping mapping = context.getLoginMapping();		
-			if (mapping != null) {
-				targetURL = mapping.getTargetURL();
-				
-			} else {
-				
-				String successURL = credentialService.getSuccessURL(context.getUserName());
-				if (StringUtils.isBlank(successURL)) {
-					audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, AuditMessages.EMPTY_SUCCESS_URL));
-					context.redirectWithCredentialError(SimbaMessageKey.EMPTY_SUCCESS_URL);
-					return State.FINISH;
-				}
-				
-				targetURL = successURL;
-			}
-			
-		} else {
-			targetURL = context.getRequestURL();
-		}
-		
-		Session session = sessionService.createSession(context.getUserName(), context.getClientIpAddress(), context
-				.getHostServerName(), context.getUserAgent(), context.getRequestURL());
+        if (context.isLoginUsingJSP()) {
+            LoginMapping mapping = context.getLoginMapping();
+            if (mapping != null) {
+                targetURL = mapping.getTargetURL();
+
+            } else {
+
+                String successURL = credentialService.getSuccessURL(context.getUserName());
+                if (StringUtils.isBlank(successURL)) {
+                    audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, AuditMessages.EMPTY_SUCCESS_URL));
+                    context.redirectWithCredentialError(SimbaMessageKey.EMPTY_SUCCESS_URL);
+                    return State.FINISH;
+                }
+
+                targetURL = successURL;
+            }
+        } else {
+            targetURL = context.getRequestURL();
+        }
+
+        Session session = sessionService.createSession(context.getUserName(), context.getClientIpAddress(), context
+                .getHostServerName(), context.getUserAgent(), context.getRequestURL());
         SSOTokenMapping ssoMappingToken = ssoTokenMappingService.createMapping(session.getSSOToken());
-		
-        targetURL = addMappingTokenToUrl(targetURL, ssoMappingToken, context.getRequestParameters());
-		
-		if (!context.isLoginUsingJSP()) {
-			context.activateAction(ActionType.MAKE_COOKIE);
-		}
-		
-        context.setSSOTokenForActions(session.getSSOToken());
-		context.activateAction(ActionType.REDIRECT);
-		context.setRedirectURL(targetURL);
-		context.setNewSession(session);
 
-		audit.log(auditLogFactory.createEventForSessionForSuccess(context, AuditMessages.SESSION_CREATED + ": SSOToken=" + session.getSSOToken().getToken()));
+        targetURL = RequestUtil.addParametersToUrlAndFilterInternalParameters(targetURL, context.getRequestParameters());
 
-		return State.FINISH;
-	}
+        if (!context.isLoginUsingJSP()) {
+            context.activateAction(ActionType.MAKE_COOKIE);
+            context.setSSOTokenForActions(session.getSSOToken());
+            context.setMappingTokenForActions(ssoMappingToken.getToken());
+        } else {
+            targetURL = RequestUtil.addParameterToUrl(targetURL, RequestConstants.SIMBA_SSO_TOKEN, ssoMappingToken.getToken());
+        }
 
-	String addMappingTokenToUrl(String targetURL, SSOTokenMapping ssoMappingToken, Map<String, String> requestParameters) {
-		char separator = targetURL.indexOf('?') >= 0 ? '&' : '?';
+        context.activateAction(ActionType.REDIRECT);
+        context.setRedirectURL(targetURL);
+        context.setNewSession(session);
 
-		StringBuilder sb = new StringBuilder(targetURL);
-		for (Entry<String, String> entry : requestParameters.entrySet()) {
-			if (!isSimbaInternalParameter(entry.getKey())) {
-				sb.append(separator).append(entry.getKey()).append('=')
-						.append(entry.getValue());
-				separator = '&';
-			}
-		}
+        audit.log(auditLogFactory.createEventForSessionForSuccess(context, AuditMessages.SESSION_CREATED + ": SSOToken=" + session.getSSOToken().getToken()));
 
-		sb.append(separator).append(RequestConstants.SIMBA_SSO_TOKEN).append('=').append(ssoMappingToken.getToken());
-		return sb.toString();
-	}
+        return State.FINISH;
+    }
 
-	private boolean isSimbaInternalParameter(String key) {
-		return AuthenticationConstants.SIMBA_INTERNALS_REQUEST_CONSTANTS.contains(key);
-	}
-		
-	@Override
-	public boolean postProcess(ChainContext context, Exception exception) {
-		return false;
-	}
+    String addMappingTokenToUrl(String targetURL, SSOTokenMapping ssoMappingToken, Map<String, String> requestParameters) {
+        char separator = targetURL.indexOf('?') >= 0 ? '&' : '?';
+
+        StringBuilder sb = new StringBuilder(targetURL);
+        for (Entry<String, String> entry : requestParameters.entrySet()) {
+            if (!isSimbaInternalParameter(entry.getKey())) {
+                sb.append(separator).append(entry.getKey()).append('=')
+                  .append(entry.getValue());
+                separator = '&';
+            }
+        }
+
+        sb.append(separator).append(RequestConstants.SIMBA_SSO_TOKEN).append('=').append(ssoMappingToken.getToken());
+        return sb.toString();
+    }
+
+    private boolean isSimbaInternalParameter(String key) {
+        return AuthenticationConstants.SIMBA_INTERNALS_REQUEST_CONSTANTS.contains(key);
+    }
+
+    @Override
+    public boolean postProcess(ChainContext context, Exception exception) {
+        return false;
+    }
 
 }

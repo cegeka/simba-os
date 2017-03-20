@@ -15,25 +15,24 @@
  */
 package org.simbasecurity.core.jaas.loginmodule;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import com.sun.security.auth.UserPrincipal;
+import org.junit.Before;
+import org.junit.Test;
+import org.simbasecurity.core.jaas.callbackhandler.ChainContextCallbackHandler;
+import org.simbasecurity.core.service.CredentialService;
+import org.simbasecurity.test.LocatorTestCase;
 
-import java.security.Principal;
-import java.util.Collections;
-import java.util.Set;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.login.FailedLoginException;
+import java.security.Principal;
+import java.util.Collections;
+import java.util.Set;
 
-import com.sun.security.auth.UserPrincipal;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Matchers;
-import org.simbasecurity.core.jaas.callbackhandler.ChainContextCallbackHandler;
-import org.simbasecurity.core.service.CredentialService;
-import org.simbasecurity.test.LocatorTestCase;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class DatabaseLoginModuleTest extends LocatorTestCase {
 
@@ -71,14 +70,14 @@ public class DatabaseLoginModuleTest extends LocatorTestCase {
 
     @Test
     public void testLogin() throws Exception {
-        when(mockCredentialService.checkCredentials(Matchers.<String>any(), Matchers.<String>any())).thenReturn(true);
+        when(mockCredentialService.checkCredentials(any(), any())).thenReturn(true);
         assertTrue(module.login());
         assertTrue(module.isSucceeded());
     }
 
     @Test
     public void testCommitWhenLoginWasSuccessful_PrincipalShouldBeAddedToSubject() throws Exception {
-        when(mockCredentialService.checkCredentials(Matchers.<String>any(), Matchers.<String>any())).thenReturn(true);
+        when(mockCredentialService.checkCredentials(any(), any())).thenReturn(true);
         module.login();
 
         assertTrue(module.commit());
@@ -88,7 +87,7 @@ public class DatabaseLoginModuleTest extends LocatorTestCase {
 
     @Test(expected = FailedLoginException.class)
     public void testCommitWhenLoginWasNotSuccessful_NoPrincipalAddedToSubjectAfterCommit() throws Exception {
-        when(mockCredentialService.checkCredentials(Matchers.<String>any(), Matchers.<String>any())).thenReturn(false);
+        when(mockCredentialService.checkCredentials(any(), any())).thenReturn(false);
         when(mockPasswordCallback.getPassword()).thenReturn("fout passwoord".toCharArray());
         assertFalse(module.login());
         assertFalse(module.commit());
@@ -98,7 +97,7 @@ public class DatabaseLoginModuleTest extends LocatorTestCase {
 
     @Test
     public void testLogout_allStatesMustBeCleaned() throws Exception {
-        when(mockCredentialService.checkCredentials(Matchers.<String>any(), Matchers.<String>any())).thenReturn(true);
+        when(mockCredentialService.checkCredentials(any(), any())).thenReturn(true);
         module.login();
         module.commit();
 
@@ -112,14 +111,14 @@ public class DatabaseLoginModuleTest extends LocatorTestCase {
 
     @Test(expected = FailedLoginException.class)
     public void testAbortNotSucceeded() throws Exception {
-        when(mockCredentialService.checkCredentials(Matchers.<String>any(), Matchers.<String>any())).thenReturn(false);
+        when(mockCredentialService.checkCredentials(any(), any())).thenReturn(false);
         when(mockPasswordCallback.getPassword()).thenReturn("fout passwoord".toCharArray());
         module.login();
     }
 
     @Test
     public void testAbort_LoginSucceeded_CommitFailed() throws Exception {
-        when(mockCredentialService.checkCredentials(Matchers.<String>any(), Matchers.<String>any())).thenReturn(true);
+        when(mockCredentialService.checkCredentials(any(), any())).thenReturn(true);
         module.login();
 
         assertTrue(module.abort());
@@ -131,7 +130,7 @@ public class DatabaseLoginModuleTest extends LocatorTestCase {
 
     @Test
     public void testAbort_LoginAndCommitSucceeded_doLogout() throws Exception {
-        when(mockCredentialService.checkCredentials(Matchers.<String>any(), Matchers.<String>any())).thenReturn(true);
+        when(mockCredentialService.checkCredentials(any(),any())).thenReturn(true);
         module.login();
         module.commit();
 

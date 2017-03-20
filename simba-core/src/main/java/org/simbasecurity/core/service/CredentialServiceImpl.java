@@ -15,14 +15,9 @@
  */
 package org.simbasecurity.core.service;
 
-import static org.simbasecurity.core.exception.SimbaMessageKey.*;
-
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-
 import org.apache.commons.lang.time.DateUtils;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
+import org.jasypt.util.password.PasswordEncryptor;
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.audit.AuditMessages;
@@ -35,6 +30,12 @@ import org.simbasecurity.core.exception.SimbaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+
+import static org.simbasecurity.core.exception.SimbaMessageKey.USER_DOESNT_EXISTS;
 
 @Service
 @Transactional(noRollbackFor = EncryptionOperationNotPossibleException.class)
@@ -63,6 +64,12 @@ public class CredentialServiceImpl implements CredentialService {
     public boolean checkCredentialsWithSHA1EncryptorAndReEncrypt(String username, String password) {
         User user = userRepository.findByName(username);
         return user != null && !user.isDatabaseLoginBlocked() && user.checkPasswordWithSHA1EncryptorAndReEncrypt(password);
+    }
+
+    @Override
+    public boolean checkCredentials(String username, String password, PasswordEncryptor encryptor, boolean reEncrypt) {
+        User user = userRepository.findByName(username);
+        return user != null && !user.isDatabaseLoginBlocked() && user.checkPassword(password, encryptor, reEncrypt);
     }
 
     @Override

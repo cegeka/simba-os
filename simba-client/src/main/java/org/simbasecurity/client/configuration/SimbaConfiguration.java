@@ -15,10 +15,10 @@
  */
 package org.simbasecurity.client.configuration;
 
+import org.simbasecurity.common.config.SystemConfiguration;
 import org.simbasecurity.common.util.StringUtil;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.*;
 
 public class SimbaConfiguration {
     private SimbaConfiguration() {
@@ -39,15 +39,15 @@ public class SimbaConfiguration {
 	}
 
 	public static String getSimbaAuthorizationURL() {
-        return getSimbaURL() + "/authorizationService";
+        return normalize(getSimbaURL() + "/authorizationService");
 	}
 
     public static String getSimbaAuthenticationURL() {
-        return getSimbaURL() + "/authenticationService";
+        return normalize(getSimbaURL() + "/authenticationService");
     }
 
 	private static String getSimbaURL() {
-		String url = System.getProperty("simba.url");
+		String url = SystemConfiguration.getSimbaServiceURL();
 		if (StringUtil.isEmpty(url)) {
 			throw new IllegalArgumentException("Simba URL has not been set. Check system property [simba.url]");
 		}
@@ -59,7 +59,7 @@ public class SimbaConfiguration {
 
 	private static String resolveLocalhostToHostname(String urlToResolve) {
 		String url = urlToResolve;
-		if (url.indexOf("{localhost}") >= 0) {
+		if (url.contains("{localhost}")) {
 			try {
 				url = url.replaceAll("\\{localhost\\}", InetAddress.getLocalHost().getCanonicalHostName());
 			} catch (UnknownHostException e) {
@@ -67,5 +67,14 @@ public class SimbaConfiguration {
 			}
 		}
 		return url;
+	}
+
+	private static String normalize(String url) {
+		try {
+			URI uri = new URI(url);
+			return uri.normalize().toString();
+		} catch (URISyntaxException e) {
+			return url;
+		}
 	}
 }

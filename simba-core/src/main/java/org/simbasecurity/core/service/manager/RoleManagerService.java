@@ -15,9 +15,6 @@
  */
 package org.simbasecurity.core.service.manager;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.owasp.esapi.errors.ValidationException;
 import org.simbasecurity.core.domain.Policy;
 import org.simbasecurity.core.domain.Role;
@@ -41,6 +38,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Collection;
+import java.util.List;
+
 @Transactional
 @Controller
 @RequestMapping("role")
@@ -56,34 +56,37 @@ public class RoleManagerService {
     private UserRepository userRepository;
 
 
+    @Autowired
+    private EntityFilterService filterService;
+
     @RequestMapping("findAll")
     @ResponseBody
     public Collection<RoleDTO> findAll() {
-        return RoleDTOAssembler.assemble(roleRepository.findAll());
+        return RoleDTOAssembler.assemble(filterService.filterRoles(roleRepository.findAll()));
     }
 
     @RequestMapping("findPolicies")
     @ResponseBody
     public Collection<PolicyDTO> findPolicies(@RequestBody RoleDTO role) {
-        return PolicyDTOAssembler.assemble(roleRepository.lookUp(role).getPolicies());
+        return PolicyDTOAssembler.assemble(filterService.filterPolicies(policyRepository.findForRole(roleRepository.lookUp(role))));
     }
 
     @RequestMapping("findPoliciesNotLinked")
     @ResponseBody
     public Collection<PolicyDTO> findPoliciesNotLinked(@RequestBody RoleDTO role) {
-        return PolicyDTOAssembler.assemble(policyRepository.findNotLinked(roleRepository.lookUp(role)));
+        return PolicyDTOAssembler.assemble(filterService.filterPolicies(policyRepository.findNotLinked(roleRepository.lookUp(role))));
     }
 
     @RequestMapping("findUsers")
     @ResponseBody
     public Collection<UserDTO> findUsers(@RequestBody RoleDTO role) {
-        return UserDTOAssembler.assemble(roleRepository.lookUp(role).getUsers());
+        return UserDTOAssembler.assemble(filterService.filterUsers(userRepository.findForRole(roleRepository.lookUp(role))));
     }
 
     @RequestMapping("findUsersNotLinked")
     @ResponseBody
     public Collection<UserDTO> findUsersNotLinked(@RequestBody RoleDTO role) {
-        return UserDTOAssembler.assemble(userRepository.findNotLinked(roleRepository.lookUp(role)));
+        return UserDTOAssembler.assemble(filterService.filterUsers(userRepository.findNotLinked(roleRepository.lookUp(role))));
     }
 
     @RequestMapping("addPolicy")

@@ -15,24 +15,19 @@
  */
 package org.simbasecurity.common.config;
 
-import static java.lang.System.getProperty;
+import org.simbasecurity.common.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
-
-import org.simbasecurity.common.util.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static java.lang.System.getProperty;
 
 /**
  * This class provides utility methods to access several system configuration
@@ -113,7 +108,7 @@ public final class SystemConfiguration {
 	 * @see #SYS_PROP_SIMBA_INTERNAL_SERVICE_URL
 	 */
 	public static String getSimbaServiceURL() {
-		return getSimbaServiceURL(Collections.<String, String> emptyMap());
+		return getSimbaServiceURL(Collections.emptyMap());
 	}
 
 	/**
@@ -221,8 +216,12 @@ public final class SystemConfiguration {
 	private static void loadSimbaProperties() {
 		try {
 			String propertyFileLocation = System.getProperty("simba.properties.file");
-			InputStream propertiesFile = new FileInputStream(propertyFileLocation);
-			SystemConfiguration.simbaProperties.load(propertiesFile);
+			if (propertyFileLocation != null) {
+				InputStream propertiesFile = new FileInputStream(propertyFileLocation);
+				SystemConfiguration.simbaProperties.load(propertiesFile);
+			} else {
+				LOG.info("no simba.properties file configured, falling back to using System properties");
+			}
 			propertiesLoaded = true;
 		} catch (Exception e) {
 			LOG.warn("error loading simba.properties file in SystemConfiguration", e);

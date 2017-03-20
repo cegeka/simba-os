@@ -18,6 +18,7 @@
 "useroverview.name":"Name",
 "useroverview.firstname":"First Name",
 "useroverview.active":"Inactive",
+"useroverview.blocked":"Blocked",
 
 "roleoverview.roles":"Roles",
 "policyoverview.policies":"Policies",

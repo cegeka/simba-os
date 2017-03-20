@@ -15,18 +15,18 @@
  */
 package org.simbasecurity.common.filter.action;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.ActionType;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 public final class RequestActionFactoryTest {
 
@@ -47,7 +47,7 @@ public final class RequestActionFactoryTest {
 
     @Test
     public void testCreate() {
-        ActionDescriptor actionDescriptor = new ActionDescriptor(new HashSet<ActionType>(), new HashMap<String, String>(), null, null, null);
+        ActionDescriptor actionDescriptor = new ActionDescriptor(new HashSet<>(), new HashMap<>(), null, null, null, null);
         actionDescriptor.getActionTypes().add(ActionType.MAKE_COOKIE);
         actionDescriptor.getActionTypes().add(ActionType.REDIRECT);
 

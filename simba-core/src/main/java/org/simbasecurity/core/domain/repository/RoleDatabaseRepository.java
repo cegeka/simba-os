@@ -18,7 +18,7 @@ package org.simbasecurity.core.domain.repository;
 import org.simbasecurity.core.domain.*;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,10 +26,9 @@ import java.util.List;
 @Repository
 public class RoleDatabaseRepository extends AbstractVersionedDatabaseRepository<Role> implements RoleRepository {
 
-    @SuppressWarnings("unchecked")
     public Role findByName(String roleName) {
-        Query query = entityManager.createQuery("SELECT r FROM RoleEntity r WHERE r.name = :roleName")
-                .setParameter("roleName", roleName);
+        TypedQuery<Role> query = entityManager.createQuery("SELECT r FROM RoleEntity r WHERE r.name = :roleName", Role.class)
+                                              .setParameter("roleName", roleName);
         List<Role> resultList = query.getResultList();
 
         if (resultList.size() == 0) {
@@ -41,23 +40,34 @@ public class RoleDatabaseRepository extends AbstractVersionedDatabaseRepository<
         throw new IllegalStateException("Multiple roles found for rolename: '" + roleName + "'");
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Collection<Role> findNotLinked(Policy policy) {
-        Query query = entityManager.createQuery("SELECT r FROM RoleEntity r WHERE :policy not in " +
-                "elements(r.policies) order by r.name")
-                .setParameter("policy", policy);
+        TypedQuery<Role> query = entityManager.createQuery("SELECT r FROM RoleEntity r WHERE :policy not in elements(r.policies) order by r.name", Role.class)
+                                              .setParameter("policy", policy);
 
         return query.getResultList();
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+    public Collection<Role> findForPolicy(Policy policy) {
+        TypedQuery<Role> query = entityManager.createQuery("SELECT r FROM RoleEntity r WHERE :policy in elements(r.policies) order by r.name", Role.class)
+                                              .setParameter("policy", policy);
+
+        return query.getResultList();
+    }
+
     @Override
     public Collection<Role> findNotLinked(User user) {
-        Query query = entityManager.createQuery("SELECT r FROM RoleEntity r WHERE :user not in " +
-                "elements(r.users) order by r.name")
-                .setParameter("user", user);
+        TypedQuery<Role> query = entityManager.createQuery("SELECT r FROM RoleEntity r WHERE :user not in elements(r.users) order by r.name", Role.class)
+                                              .setParameter("user", user);
 
+        return query.getResultList();
+    }
+
+    @Override
+    public Collection<Role> findForUser(User user) {
+        TypedQuery<Role> query = entityManager.createQuery("SELECT r FROM RoleEntity r WHERE :user in elements(r.users) order by r.name", Role.class)
+                                              .setParameter("user", user);
         return query.getResultList();
     }
 
@@ -65,7 +75,7 @@ public class RoleDatabaseRepository extends AbstractVersionedDatabaseRepository<
     public Collection<Role> findNotLinked(Group group) {
         ArrayList<Role> result = new ArrayList<Role>();
         for (Role role : findAll()) {
-            if(!role.getGroups().contains(group)) {
+            if (!role.getGroups().contains(group)) {
                 result.add(role);
             }
         }

@@ -1,12 +1,7 @@
 package org.simbasecurity.dwclient.gateway;
 
-import static org.fest.assertions.api.Assertions.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-import static org.simbasecurity.dwclient.gateway.SimbaGateway.*;
-
-import java.net.SocketException;
-
+import com.google.common.base.Optional;
+import com.sun.jersey.spi.container.ContainerRequest;
 import org.apache.thrift.TException;
 import org.apache.thrift.transport.THttpClient;
 import org.apache.thrift.transport.TTransportException;
@@ -29,8 +24,11 @@ import org.simbasecurity.dwclient.exception.SimbaUnavailableException;
 import org.simbasecurity.dwclient.test.rule.MockitoRule;
 import org.simbasecurity.dwclient.test.stub.simba.ActionDescriptorBuilderForTests;
 
-import com.google.common.base.Optional;
-import com.sun.jersey.spi.container.ContainerRequest;
+import java.net.SocketException;
+
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+import static org.simbasecurity.dwclient.gateway.SimbaGateway.*;
 
 public class SimbaGatewayTest {
 

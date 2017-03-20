@@ -15,23 +15,25 @@
  */
 package org.simbasecurity.core.domain;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import org.simbasecurity.core.service.AuthorizationRequestContext;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.simbasecurity.core.service.AuthorizationRequestContext;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 
-@RunWith(MockitoJUnitRunner.class)
 public class PolicyEntityTest {
+
+    @org.junit.Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
 
     @Mock private AuthorizationRequestContext context;
 

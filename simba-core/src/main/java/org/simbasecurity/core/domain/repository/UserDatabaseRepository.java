@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.simbasecurity.core.domain.Role;
 import org.simbasecurity.core.domain.User;
@@ -29,11 +30,9 @@ import org.springframework.stereotype.Repository;
 public class UserDatabaseRepository extends AbstractVersionedDatabaseRepository<User> implements UserRepository {
 
     @Override
-    @SuppressWarnings("unchecked")
     public User findByName(String userName) {
-        Query query = entityManager.createQuery(
-                "SELECT u FROM UserEntity u WHERE u.userName = :userName").setParameter(
-                "userName", userName);
+        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM UserEntity u WHERE u.userName = :userName", User.class)
+                                              .setParameter("userName", userName);
         List<User> resultList = query.getResultList();
 
         if (resultList.size() == 0) {
@@ -45,14 +44,18 @@ public class UserDatabaseRepository extends AbstractVersionedDatabaseRepository<
         throw new IllegalStateException("Multiple users found for username: '" + userName + "'");
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Collection<User> findNotLinked(Role role) {
-        Query query = entityManager
-                .createQuery("SELECT user FROM UserEntity user WHERE :role not in "
-                        + "elements(user.roles) order by user.userName");
-        query.setParameter("role", role);
-        return new ArrayList<User>(query.getResultList());
+        TypedQuery<User> query = entityManager.createQuery("SELECT user FROM UserEntity user WHERE :role not in elements(user.roles) order by user.userName", User.class)
+                                              .setParameter("role", role);
+        return new ArrayList<>(query.getResultList());
+    }
+
+    @Override
+    public Collection<User> findForRole(Role role) {
+        TypedQuery<User> query = entityManager.createQuery("SELECT user FROM UserEntity user WHERE :role in elements(user.roles) order by user.userName", User.class)
+                                              .setParameter("role", role);
+        return new ArrayList<>(query.getResultList());
     }
 
     @Override

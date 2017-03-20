@@ -15,10 +15,10 @@
  */
 package org.simbasecurity.core.domain.repository;
 
-import java.util.Collection;
-
 import org.simbasecurity.core.domain.Role;
 import org.simbasecurity.core.domain.User;
+
+import java.util.Collection;
 
 public interface UserRepository extends AbstractVersionedRepository<User> {
 
@@ -36,4 +36,5 @@ public interface UserRepository extends AbstractVersionedRepository<User> {
 
     Collection<User> findNotLinked(Role role);
 
+    Collection<User> findForRole(Role role);
 }

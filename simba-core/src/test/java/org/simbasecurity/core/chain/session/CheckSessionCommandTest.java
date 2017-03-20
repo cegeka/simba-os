@@ -15,15 +15,13 @@
  */
 package org.simbasecurity.core.chain.session;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
@@ -32,8 +30,13 @@ import org.simbasecurity.core.chain.Command.State;
 import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.core.service.SessionService;
 
-@RunWith(MockitoJUnitRunner.class)
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+
 public class CheckSessionCommandTest {
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
+
     private static final String CLIENT_IP = "10.0.0.100";
 
     private static final SSOToken SSO_TOKEN = new SSOToken();

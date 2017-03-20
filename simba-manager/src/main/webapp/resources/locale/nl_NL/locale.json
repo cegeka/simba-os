@@ -18,6 +18,7 @@
 "useroverview.name":"Naam",
 "useroverview.firstname":"Voornaam",
 "useroverview.active":"Inactief",
+"useroverview.blocked":"Geblokkeerd",
 
 "roleoverview.roles":"Rollen",
 "policyoverview.policies":"Policies",

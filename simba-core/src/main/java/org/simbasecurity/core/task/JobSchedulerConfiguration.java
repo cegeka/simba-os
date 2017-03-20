@@ -2,6 +2,7 @@ package org.simbasecurity.core.task;
 
 import org.quartz.Trigger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
@@ -26,19 +27,22 @@ public class JobSchedulerConfiguration {
     @Autowired
     private Trigger markUsersForPasswordChangeTrigger;
 
+    @Value("${quartz.jobstore.delegate:org.quartz.impl.jdbcjobstore.HSQLDBDelegate}")
+    private String quartzJobstoreDelegate;
+
     @Bean(destroyMethod = "destroy")
     public SchedulerFactoryBean schedulerFactory() {
         Properties quartzProperties = new Properties();
 
         quartzProperties.put("org.quartz.threadPool.threadCount", "2");
-        quartzProperties.put("org.quartz.jobStore.driverDelegateClass", "org.quartz.impl.jdbcjobstore.HSQLDBDelegate");
+        quartzProperties.put("org.quartz.jobStore.driverDelegateClass", quartzJobstoreDelegate);
 
-        Trigger[] triggers = new Trigger[] {
-           verifyAuditLogIntegrityTrigger,
-           cleanUpAuditLogTrigger,
-           purgeExpiredLoginMappingsTrigger,
-           purgeExpiredSessionsTrigger,
-           markUsersForPasswordChangeTrigger,
+        Trigger[] triggers = new Trigger[]{
+                verifyAuditLogIntegrityTrigger,
+                cleanUpAuditLogTrigger,
+                purgeExpiredLoginMappingsTrigger,
+                purgeExpiredSessionsTrigger,
+                markUsersForPasswordChangeTrigger,
         };
 
         SchedulerFactoryBean bean = new SchedulerFactoryBean();

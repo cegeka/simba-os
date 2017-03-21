@@ -147,6 +147,10 @@
 "textboxpopup.cancel":"Annuler",
 
 "create.role":"Créer rôle",
-"create.policy":"Créer policy"
+"create.policy":"Créer policy",
+
+  "idle.title":"Vous êtes actuellement inactif!",
+  "idle.message":"Vous serez déconnecté dans ",
+  "idle.message.2":" seconde(s)."
 
 }

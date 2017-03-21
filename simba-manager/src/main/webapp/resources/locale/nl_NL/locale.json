@@ -147,5 +147,9 @@
 "textboxpopup.cancel":"Annuleren",
 
 "create.role":"Rol Aanmaken",
-"create.policy":"Policy Aanmaken"
+"create.policy":"Policy Aanmaken",
+
+  "idle.title":"U bent momenteel inactief!",
+  "idle.message":"U zal worden afgemeld in ",
+  "idle.message.2":" second(en)."
 }

@@ -146,5 +146,9 @@
 "textboxpopup.cancel":"Cancel",
 
 "create.role":"Create role",
-"create.policy":"Create policy"
+"create.policy":"Create policy",
+
+  "idle.title":"You are currently idle!",
+  "idle.message":"You'll be logged out in ",
+  "idle.message.2":" second(s)."
 }

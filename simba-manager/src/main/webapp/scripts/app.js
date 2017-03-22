@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('SimbaApp', ['ui.bootstrap', 'pascalprecht.translate', 'ngRoute', 'ngResource', 'xeditable'])
+angular.module('SimbaApp', ['ui.bootstrap', 'pascalprecht.translate', 'ngRoute', 'ngResource', 'xeditable', 'ngIdle'])
   .config(['$routeProvider', function ($routeProvider) {
     $routeProvider
       .when('/', {

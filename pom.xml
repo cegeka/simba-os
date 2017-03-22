@@ -64,11 +64,11 @@
     <distributionManagement>
         <snapshotRepository>
             <id>simba-snapshots</id>
-            <url>http://nexus.cegeka.be:8080/nexus/content/repositories/simba-snapshots</url>
+            <url>http://nexus.cegeka.be/nexus/content/repositories/simba-snapshots</url>
         </snapshotRepository>
         <repository>
             <id>simba-releases</id>
-            <url>http://nexus.cegeka.be:8080/nexus/content/repositories/simba-releases</url>
+            <url>http://nexus.cegeka.be/nexus/content/repositories/simba-releases</url>
         </repository>
     </distributionManagement>
 

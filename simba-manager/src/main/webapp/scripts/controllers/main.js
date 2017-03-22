@@ -46,7 +46,6 @@ angular.module('SimbaApp')
         }
 
         $scope.$on('IdleStart', function () {
-            console.log('IdleStart');
             closeModals();
 
             $scope.warning = $modal.open({
@@ -56,21 +55,11 @@ angular.module('SimbaApp')
         });
 
         $scope.$on('IdleEnd', function () {
-            console.log('IdleEnd');
             closeModals();
         });
 
-        $scope.$on('IdleWarn', function (e, countdown) {
-            console.log('IdleWarn');
-        });
-
         $scope.$on('IdleTimeout', function () {
-            console.log('IdleTimeout');
             window.location = '/simba-manager/?SimbaAction=SimbaLogoutAction';
-        });
-
-        $scope.$on('Keepalive', function () {
-            console.log('Keepalive');
         });
 
         $scope.reset = function () {

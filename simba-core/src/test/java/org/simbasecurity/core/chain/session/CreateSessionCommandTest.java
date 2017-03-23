@@ -36,10 +36,7 @@ import org.simbasecurity.core.service.CredentialService;
 import org.simbasecurity.core.service.SSOTokenMappingService;
 import org.simbasecurity.core.service.SessionService;
 
-import java.util.HashMap;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
 
@@ -143,28 +140,4 @@ public class CreateSessionCommandTest {
         verify(contextMock).activateAction(ActionType.REDIRECT);
         verify(contextMock).setRedirectURL(REQUEST_URL);
     }
-
-    @Test
-    public void ssoMappingTokenDoesNotRemoveOtherRequestParams() throws Exception {
-
-        HashMap<String, String> requestParams = new HashMap<String, String>();
-        requestParams.put("par1", "val1");
-        requestParams.put("par2", "val2");
-        requestParams.put("par3", "val3");
-        requestParams.put("username", "bkbla");
-        requestParams.put("password", "pazz");
-
-        String result = command.addMappingTokenToUrl(REQUEST_URL + "?foo=bar", ssoTokenMappingMock, requestParams);
-        assertThat(result).startsWith(REQUEST_URL);
-        assertThat(result).containsOnlyOnce("?");
-        assertThat(result).containsOnlyOnce("foo=bar");
-        assertThat(result).containsOnlyOnce("par1=val1");
-        assertThat(result).containsOnlyOnce("par2=val2");
-        assertThat(result).containsOnlyOnce("par3=val3");
-        assertThat(result).containsOnlyOnce(SIMBA_SSO_TOKEN + "=" + NEW_TEMPORARY_TOKEN);
-
-        assertThat(result).doesNotContain("username=bkbla");
-        assertThat(result).doesNotContain("password=pazz");
-    }
-
 }

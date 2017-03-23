@@ -176,7 +176,7 @@ public class ChainContextImpl implements ChainContext {
     public void redirectToChangePasswordWithFilter() {
         Map<String, String> requestParameters = new HashMap<>();
         requestParameters.put(USERNAME, getUserName());
-        addLoginTokenToRequestParameters(requestParameters);
+        addLoginTokenToRequestParameters(requestParameters, createLoginMapping());
 
         String url = getSimbaWebURL() + configurationService.getValue(CHANGE_PASSWORD_URL);
         redirectWithParameters(url, requestParameters);
@@ -190,20 +190,13 @@ public class ChainContextImpl implements ChainContext {
         return this.samlUser;
     }
 
-    private void addLoginTokenToRequestParameters(Map<String, String> requestParameters) {
-        LoginMapping newMapping = null;
-        if (getLoginToken() != null) {
-            LoginMapping mapping = getLoginMapping() != null ? getLoginMapping() : loginMappingService.getMapping(getLoginToken());
-            if (mapping != null) {
-                newMapping = loginMappingService.createMapping(mapping.getTargetURL());
-                loginMappingService.removeMapping(getLoginToken());
-            }
-        } else if(!isLoginUsingJSP()){
-            newMapping = createMapping();
-        }
-        if (newMapping != null) {
-            setLoginMapping(newMapping);
-            requestParameters.put(LOGIN_TOKEN, newMapping.getToken());
+    public boolean isLoginUsingEID() {
+        return getSAMLUser() != null;
+    }
+
+    private void addLoginTokenToRequestParameters(Map<String, String> requestParameters, LoginMapping loginMapping) {
+        if (loginMapping != null) {
+            requestParameters.put(LOGIN_TOKEN, loginMapping.getToken());
         }
     }
 
@@ -232,7 +225,7 @@ public class ChainContextImpl implements ChainContext {
         requestParameters.put(USERNAME, getUserName());
         requestParameters.put(SIMBA_SSO_TOKEN, getRequestSSOToken().toString());
 
-        LoginMapping loginToken = createMapping();
+        LoginMapping loginToken = createLoginMapping();
         requestParameters.put(LOGIN_TOKEN, loginToken.getToken());
 
         String url = getSimbaWebURL() + configurationService.getValue(CHANGE_PASSWORD_URL);
@@ -253,14 +246,10 @@ public class ChainContextImpl implements ChainContext {
     public void redirectToLogin(){
         Map<String, String> parameters = new HashMap<>();
 
-        LoginMapping loginToken = createMapping();
+        LoginMapping loginToken = createLoginMapping();
         parameters.put(LOGIN_TOKEN, loginToken.getToken());
         String url = getSimbaWebURL() + configurationService.getValue(LOGIN_URL);
         redirectWithParameters(url, parameters);
-    }
-
-    private LoginMapping createMapping() {
-        return loginMappingService.createMapping(addParametersToUrlAndFilterInternalParameters(getRequestURL(), getRequestParameters()));
     }
 
     public void redirectToLogout(){
@@ -282,7 +271,7 @@ public class ChainContextImpl implements ChainContext {
         requestParameters.put(USERNAME, getUserName());
         requestParameters.put(ERROR_MESSAGE, errorKey.name());
 
-        addLoginTokenToRequestParameters(requestParameters);
+        addLoginTokenToRequestParameters(requestParameters, createLoginMapping());
 
         redirectWithParameters(getSimbaWebURL() + getCredentialPath(), requestParameters);
     }
@@ -355,5 +344,10 @@ public class ChainContextImpl implements ChainContext {
     @Override
     public void setLoginMapping(LoginMapping loginMapping) {
         this.loginMapping = loginMapping;
+    }
+
+    @Override
+    public String getSimbaEidSuccessUrl() {
+        return requestData.getSimbaEidSuccessUrl();
     }
 }

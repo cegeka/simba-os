@@ -66,7 +66,6 @@ public class CreateSessionCommand implements Command {
             LoginMapping mapping = context.getLoginMapping();
             if (mapping != null) {
                 targetURL = mapping.getTargetURL();
-
             } else {
 
                 String successURL = credentialService.getSuccessURL(context.getUserName());
@@ -78,6 +77,8 @@ public class CreateSessionCommand implements Command {
 
                 targetURL = successURL;
             }
+        } else if (context.isLoginUsingEID()) {
+            targetURL = context.getSimbaEidSuccessUrl();
         } else {
             targetURL = context.getRequestURL();
         }
@@ -85,7 +86,6 @@ public class CreateSessionCommand implements Command {
         Session session = sessionService.createSession(context.getUserName(), context.getClientIpAddress(), context
                 .getHostServerName(), context.getUserAgent(), context.getRequestURL());
         SSOTokenMapping ssoMappingToken = ssoTokenMappingService.createMapping(session.getSSOToken());
-
         targetURL = RequestUtil.addParametersToUrlAndFilterInternalParameters(targetURL, context.getRequestParameters());
 
         if (!context.isLoginUsingJSP()) {
@@ -101,28 +101,7 @@ public class CreateSessionCommand implements Command {
         context.setNewSession(session);
 
         audit.log(auditLogFactory.createEventForSessionForSuccess(context, AuditMessages.SESSION_CREATED + ": SSOToken=" + session.getSSOToken().getToken()));
-
         return State.FINISH;
-    }
-
-    String addMappingTokenToUrl(String targetURL, SSOTokenMapping ssoMappingToken, Map<String, String> requestParameters) {
-        char separator = targetURL.indexOf('?') >= 0 ? '&' : '?';
-
-        StringBuilder sb = new StringBuilder(targetURL);
-        for (Entry<String, String> entry : requestParameters.entrySet()) {
-            if (!isSimbaInternalParameter(entry.getKey())) {
-                sb.append(separator).append(entry.getKey()).append('=')
-                  .append(entry.getValue());
-                separator = '&';
-            }
-        }
-
-        sb.append(separator).append(RequestConstants.SIMBA_SSO_TOKEN).append('=').append(ssoMappingToken.getToken());
-        return sb.toString();
-    }
-
-    private boolean isSimbaInternalParameter(String key) {
-        return AuthenticationConstants.SIMBA_INTERNALS_REQUEST_CONSTANTS.contains(key);
     }
 
     @Override

@@ -19,7 +19,7 @@ public class EIDCheckSessionCommand extends CheckSessionCommand {
 
     @Override
     protected void redirectToLogin(ChainContext context) {
-        Map<String, String> parameters = new HashMap<String, String>();
+        Map<String, String> parameters = new HashMap<>();
         String authRequestId = context.createLoginMapping().getToken();
         context.redirectWithParameters(getSAMLAuthRequest(authRequestId), parameters);
     }
@@ -27,9 +27,7 @@ public class EIDCheckSessionCommand extends CheckSessionCommand {
     private String getSAMLAuthRequest(String authRequestId) {
         try {
             return samlService.getAuthRequestUrl(authRequestId, new Date());
-        } catch (XMLStreamException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (XMLStreamException | IOException e) {
             throw new RuntimeException(e);
         }
     }

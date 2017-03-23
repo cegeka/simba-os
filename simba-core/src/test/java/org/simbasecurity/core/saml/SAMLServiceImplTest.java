@@ -1,22 +1,24 @@
 package org.simbasecurity.core.saml;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.simbasecurity.core.config.ConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 import static org.simbasecurity.core.saml.SAMLService.SAML_DATE_FORMAT;
 
-@RunWith(MockitoJUnitRunner.class)
 public class SAMLServiceImplTest {
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @InjectMocks private SAMLServiceImpl samlService;
 
@@ -24,7 +26,7 @@ public class SAMLServiceImplTest {
 
     private static final String ISSUER = "FedletTest1";
     private static final String ASSERTION_CONSUMER_SERVICE_URL = "https://sp2.iamdemo.be:443/fedlet/fedletapplication";
-    private static final String IDP_TARGET_URL = "https://idp.iamfas.belgium.be/fas";
+    private static final String IDP_SLO_TARGET_URL = "https://idp.iamfas.int.belgium.be/fas/SPSloRedirect/metaAlias/sp";
     private static final Date ISSUE_INSTANT = new Date();
     private static final String REQUEST_ID = "rid123456";
     private static final String NAME_ID = "nid123456";
@@ -37,7 +39,7 @@ public class SAMLServiceImplTest {
                                                         "https://iamapps.belgium.be/" +
                                                     "</saml:Issuer>" +
                                                     "<saml:NameID xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" " +
-                                                        "NameQualifier=\"" + IDP_TARGET_URL + "\" " +
+                                                        "NameQualifier=\"" + IDP_SLO_TARGET_URL + "\" " +
                                                         "SPNameQualifier=\"https://iamapps.belgium.be/\" " +
                                                         "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:transient\">" +
                                                         NAME_ID +
@@ -73,7 +75,7 @@ public class SAMLServiceImplTest {
 
     @Before
     public void setup() {
-        when(configurationService.<String>getValue(ConfigurationParameter.SAML_IDP_TARGET_URL)).thenReturn(IDP_TARGET_URL);
+        when(configurationService.<String>getValue(ConfigurationParameter.SAML_IDP_SLO_TARGET_URL)).thenReturn(IDP_SLO_TARGET_URL);
         when(configurationService.<String>getValue(ConfigurationParameter.SAML_ASSERTION_CONSUMER_SERVICE_URL)).thenReturn(ASSERTION_CONSUMER_SERVICE_URL);
         when(configurationService.<String>getValue(ConfigurationParameter.SAML_ISSUER)).thenReturn(ISSUER);
     }

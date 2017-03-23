@@ -15,12 +15,13 @@
  */
 package org.simbasecurity.core.audit;
 
-import static org.simbasecurity.core.audit.AuditLogEventCategory.*;
-import static org.simbasecurity.core.audit.AuditMessages.*;
-
 import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.core.chain.ChainContext;
 import org.springframework.stereotype.Component;
+
+import static org.simbasecurity.core.audit.AuditLogEventCategory.*;
+import static org.simbasecurity.core.audit.AuditMessages.FAILURE;
+import static org.simbasecurity.core.audit.AuditMessages.SUCCESS;
 
 @Component
 public class AuditLogEventFactory {
@@ -104,6 +105,17 @@ public class AuditLogEventFactory {
 	        }
 		return new AuditLogEvent(category, userName, chainContext.getRequestSSOToken(),
 				chainContext.getClientIpAddress(), message, chainContext.getUserAgent(),chainContext.getHostServerName(),null,null,chainContext.getRequestURL(),chainContext.getChainContextId());
+	}
+
+	public AuditLogEvent createEventForAuthenticationEIDSAMLResponse(ChainContext chainContext, String messageID, String timestamp, String endUser) {
+		String message = "samlMessageID=[" + messageID + "];timestamp=[" + timestamp + "];user=[" + endUser + "]";
+		AuditLogEvent auditLogEvent = createAuditLogEvent(AuditLogEventCategory.AUTH_EID_SAML_RESPONSE, chainContext, message);
+		auditLogEvent.markAuditLogToBeArchived();
+		return auditLogEvent;
+	}
+
+	public AuditLogEvent createEventForEIDSAMLResponse(ChainContext context, String message) {
+		return createAuditLogEvent(AuditLogEventCategory.AUTH_EID_SAML_RESPONSE, context, message);
 	}
 }
 

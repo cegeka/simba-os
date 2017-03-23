@@ -20,7 +20,7 @@ public class EIDLogoutCommand extends LogoutCommand {
 
     @Override
     protected void redirectToLogout(ChainContext context) {
-        Map<String, String> parameters = new HashMap<String, String>();
+        Map<String, String> parameters = new HashMap<>();
         String logoutRequestId = context.getRequestSSOToken().getToken();
         context.redirectWithParameters(getSAMLLogoutRequest(logoutRequestId), parameters);
     }
@@ -31,9 +31,7 @@ public class EIDLogoutCommand extends LogoutCommand {
             String nameId = UUID.randomUUID().toString();
             String sessionIndex = UUID.randomUUID().toString();
             return samlService.getLogoutRequestUrl(logoutRequestId, issueInstant, nameId, sessionIndex);
-        } catch (XMLStreamException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (XMLStreamException | IOException e) {
             throw new RuntimeException(e);
         }
     }

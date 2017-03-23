@@ -158,7 +158,12 @@ struct RequestData {
     /**
      * The login token provided
      */
-    14: string loginToken
+    14: string loginToken,
+
+    /**
+     * The success URL for EID
+     */
+    15: string simbaEidSuccessUrl
 }
 
 /**

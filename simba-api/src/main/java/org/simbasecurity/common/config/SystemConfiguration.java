@@ -45,237 +45,243 @@ import static java.lang.System.getProperty;
  */
 public final class SystemConfiguration {
 
-	/**
-	 * System property for the Simba Service URL. For internal usages (like
-	 * thrift, ...)
-	 */
-	public static final String SYS_PROP_SIMBA_INTERNAL_SERVICE_URL = "simba.url";
+    /**
+     * System property for the Simba Service URL. For internal usages (like
+     * thrift, ...)
+     */
+    public static final String SYS_PROP_SIMBA_INTERNAL_SERVICE_URL = "simba.url";
 
-	/**
-	 * System property for the Simba Web URL. For external usage (like login
-	 * parameter)
-	 */
-	public static final String SYS_PROP_SIMBA_WEB_URL = "simba.web.url";
+    /**
+     * System property for the Simba Web URL. For external usage (like login
+     * parameter)
+     */
+    public static final String SYS_PROP_SIMBA_WEB_URL = "simba.web.url";
 
-	public static final String SYS_PROP_SIMBA_SECURE_COOKIES_ENABLED = "simba.secure.cookies.enabled";
+    public static final String SYS_PROP_SIMBA_SECURE_COOKIES_ENABLED = "simba.secure.cookies.enabled";
 
-	public static final String SYS_PROP_SIMBA_AUTHENTICATION_CHAIN_NAME = "simba.authentication.chain.name";
-	public static final String SYS_PROP_SIMBA_MANAGER_AUTHORIZATION_CHAIN_NAME = "simba.manager.authorization.chain.name";
+    public static final String SYS_PROP_SIMBA_AUTHENTICATION_CHAIN_NAME = "simba.authentication.chain.name";
+    public static final String SYS_PROP_SIMBA_MANAGER_AUTHORIZATION_CHAIN_NAME = "simba.manager.authorization.chain.name";
+    public static final String EXCLUDED_URL = "excludedUrl";
+    public static final String SIMBA_EID_SUCCESS_URL = "simba.eid.success.url";
 
-	private static final Logger LOG = LoggerFactory.getLogger(SystemConfiguration.class);
-	private static final Properties simbaProperties = new Properties();
-	private static boolean propertiesLoaded = false;
+    private static final Logger LOG = LoggerFactory.getLogger(SystemConfiguration.class);
+    private static final Properties simbaProperties = new Properties();
+    private static boolean propertiesLoaded = false;
 
-	private SystemConfiguration() {
-	}
+    private SystemConfiguration() {
+    }
 
-	/**
-	 * Get the configuration value for the Simba Service URL, using the
-	 * specified {@link FilterConfig} as default.
-	 * 
-	 * @param config
-	 *            the FilterConfig from which to get default configuration in
-	 *            the init parameters.
-	 * @return the configuration value for the Simba Service URL. When there is
-	 *         no configuration, {@code null} is returned.
-	 * @see #SYS_PROP_SIMBA_INTERNAL_SERVICE_URL
-	 */
-	public static String getSimbaServiceURL(final FilterConfig config) {
-		return getSimbaServiceURL(getDefaultsMap(config));
-	}
+    /**
+     * Get the configuration value for the Simba Service URL, using the
+     * specified {@link FilterConfig} as default.
+     *
+     * @param config the FilterConfig from which to get default configuration in
+     *               the init parameters.
+     * @return the configuration value for the Simba Service URL. When there is
+     * no configuration, {@code null} is returned.
+     * @see #SYS_PROP_SIMBA_INTERNAL_SERVICE_URL
+     */
+    public static String getSimbaServiceURL(final FilterConfig config) {
+        return getSimbaServiceURL(getDefaultsMap(config));
+    }
 
-	/**
-	 * Get the configuration value for the Simba Service URL, using the
-	 * specified {@link ServletContext} as default.
-	 * 
-	 * @param servletContext
-	 *            the ServletContext from which to get default configuration in
-	 *            the init parameters.
-	 * @return the configuration value for the Simba Service URL. When there is
-	 *         no configuration, {@code null} is returned.
-	 * @see #SYS_PROP_SIMBA_INTERNAL_SERVICE_URL
-	 */
-	public static String getSimbaServiceURL(final ServletContext servletContext) {
-		return getSimbaServiceURL(getDefaultsMap(servletContext));
-	}
+    /**
+     * Get the configuration value for the Simba Service URL, using the
+     * specified {@link ServletContext} as default.
+     *
+     * @param servletContext the ServletContext from which to get default configuration in
+     *                       the init parameters.
+     * @return the configuration value for the Simba Service URL. When there is
+     * no configuration, {@code null} is returned.
+     * @see #SYS_PROP_SIMBA_INTERNAL_SERVICE_URL
+     */
+    public static String getSimbaServiceURL(final ServletContext servletContext) {
+        return getSimbaServiceURL(getDefaultsMap(servletContext));
+    }
 
-	/**
-	 * Get the configuration value for the Simba Service URL without using any
-	 * defaults.
-	 * 
-	 * @return the configuration value for the Simba Service URL. When there is
-	 *         no configuration, {@code null} is returned.
-	 * @see #SYS_PROP_SIMBA_INTERNAL_SERVICE_URL
-	 */
-	public static String getSimbaServiceURL() {
-		return getSimbaServiceURL(Collections.emptyMap());
-	}
+    /**
+     * Get the configuration value for the Simba Service URL without using any
+     * defaults.
+     *
+     * @return the configuration value for the Simba Service URL. When there is
+     * no configuration, {@code null} is returned.
+     * @see #SYS_PROP_SIMBA_INTERNAL_SERVICE_URL
+     */
+    public static String getSimbaServiceURL() {
+        return getSimbaServiceURL(Collections.emptyMap());
+    }
 
-	/**
-	 * Get the configuration value for the Simba Web URL, using the specified
-	 * {@link FilterConfig} as default. If this property is not configured, the
-	 * Simba Service URL is returned instead.
-	 * 
-	 * @param config
-	 *            the FilterConfig from which to get default configuration in
-	 *            the init parameters.
-	 * @return the configuration value for the Simba Web URL. When there is no
-	 *         configuration, {@code null} is returned.
-	 * @see #SYS_PROP_SIMBA_WEB_URL
-	 * @see #getSimbaServiceURL()
-	 */
-	public static String getSimbaWebURL(final FilterConfig config) {
-		return getSimbaWebURL(getDefaultsMap(config));
-	}
+    /**
+     * Get the configuration value for the Simba Web URL, using the specified
+     * {@link FilterConfig} as default. If this property is not configured, the
+     * Simba Service URL is returned instead.
+     *
+     * @param config the FilterConfig from which to get default configuration in
+     *               the init parameters.
+     * @return the configuration value for the Simba Web URL. When there is no
+     * configuration, {@code null} is returned.
+     * @see #SYS_PROP_SIMBA_WEB_URL
+     * @see #getSimbaServiceURL()
+     */
+    public static String getSimbaWebURL(final FilterConfig config) {
+        return getSimbaWebURL(getDefaultsMap(config));
+    }
 
-	/**
-	 * Get the configuration value for the Simba Web URL, using the specified
-	 * {@link ServletContext} as default. If this property is not configured,
-	 * the Simba Service URL is returned instead.
-	 * 
-	 * @param servletContext
-	 *            the ServletContext from which to get default configuration in
-	 *            the init parameters.
-	 * @return the configuration value for the Simba Web URL. When there is no
-	 *         configuration, {@code null} is returned.
-	 * @see #SYS_PROP_SIMBA_WEB_URL
-	 * @see #getSimbaServiceURL()
-	 */
-	public static String getSimbaWebURL(final ServletContext servletContext) {
-		return getSimbaWebURL(getDefaultsMap(servletContext));
-	}
+    /**
+     * Get the configuration value for the Simba Web URL, using the specified
+     * {@link ServletContext} as default. If this property is not configured,
+     * the Simba Service URL is returned instead.
+     *
+     * @param servletContext the ServletContext from which to get default configuration in
+     *                       the init parameters.
+     * @return the configuration value for the Simba Web URL. When there is no
+     * configuration, {@code null} is returned.
+     * @see #SYS_PROP_SIMBA_WEB_URL
+     * @see #getSimbaServiceURL()
+     */
+    public static String getSimbaWebURL(final ServletContext servletContext) {
+        return getSimbaWebURL(getDefaultsMap(servletContext));
+    }
 
-	/**
-	 * Get the configuration value for the Simba Web URL without using any
-	 * defaults.
-	 * 
-	 * @return the configuration value for the Simba Web URL
-	 * @see #SYS_PROP_SIMBA_WEB_URL
-	 * @see #getSimbaServiceURL()
-	 */
-	public static String getSimbaWebURL() {
-		return getSimbaWebURL(Collections.<String, String> emptyMap());
-	}
+    /**
+     * Get the configuration value for the Simba Web URL without using any
+     * defaults.
+     *
+     * @return the configuration value for the Simba Web URL
+     * @see #SYS_PROP_SIMBA_WEB_URL
+     * @see #getSimbaServiceURL()
+     */
+    public static String getSimbaWebURL() {
+        return getSimbaWebURL(Collections.<String, String>emptyMap());
+    }
 
-	public static String getAuthenticationChainName(final FilterConfig filterConfig) {
-		return getAuthenticationChainName(getDefaultsMap(filterConfig));
-	}
+    public static String getAuthenticationChainName(final FilterConfig filterConfig) {
+        return getAuthenticationChainName(getDefaultsMap(filterConfig));
+    }
 
-	public static String getAuthenticationChainName(final ServletContext servletContext) {
-		return getAuthenticationChainName(getDefaultsMap(servletContext));
-	}
+    public static String getAuthenticationChainName(final ServletContext servletContext) {
+        return getAuthenticationChainName(getDefaultsMap(servletContext));
+    }
 
-	private static String getSimbaServiceURL(final Map<String, String> defaults) {
-		final String url = resolveConfigurationParameter(SYS_PROP_SIMBA_INTERNAL_SERVICE_URL, defaults);
+    private static String getSimbaServiceURL(final Map<String, String> defaults) {
+        final String url = resolveConfigurationParameter(SYS_PROP_SIMBA_INTERNAL_SERVICE_URL, defaults);
 
-		if (StringUtil.isEmpty(url)) {
-			return null;
-		}
+        if (StringUtil.isEmpty(url)) {
+            return null;
+        }
 
-		return resolveLocalhostToHostname(url);
-	}
+        return resolveLocalhostToHostname(url);
+    }
 
-	private static String getSimbaWebURL(final Map<String, String> defaults) {
-		final String url = resolveConfigurationParameter(SYS_PROP_SIMBA_WEB_URL, defaults);
-		if (StringUtil.isEmpty(url)) {
-			return getSimbaServiceURL(defaults);
-		} else {
-			return resolveLocalhostToHostname(url);
-		}
-	}
+    private static String getSimbaWebURL(final Map<String, String> defaults) {
+        final String url = resolveConfigurationParameter(SYS_PROP_SIMBA_WEB_URL, defaults);
+        if (StringUtil.isEmpty(url)) {
+            return getSimbaServiceURL(defaults);
+        } else {
+            return resolveLocalhostToHostname(url);
+        }
+    }
 
-	public static String getManagerAuthorizationChainName() {
-		return resolveConfigurationParameter(SYS_PROP_SIMBA_MANAGER_AUTHORIZATION_CHAIN_NAME, new HashMap<String, String>());
-	}
+    public static String getManagerAuthorizationChainName() {
+        return resolveConfigurationParameter(SYS_PROP_SIMBA_MANAGER_AUTHORIZATION_CHAIN_NAME, new HashMap<>());
+    }
 
-	public static String getAuthenticationChainName(final Map<String, String> defaults) {
-		return resolveConfigurationParameter(SYS_PROP_SIMBA_AUTHENTICATION_CHAIN_NAME, defaults);
-	}
+    public static String getAuthenticationChainName(final Map<String, String> defaults) {
+        return resolveConfigurationParameter(SYS_PROP_SIMBA_AUTHENTICATION_CHAIN_NAME, defaults);
+    }
 
-	private static String resolveConfigurationParameter(final String parameterName, final Map<String, String> defaults) {
-		String value = getSimbaProperty(parameterName);
-		if (StringUtil.isEmpty(value)) {
-			value = getProperty(parameterName);
-			if (StringUtil.isEmpty(value)) {
-				value = defaults.get(parameterName);
-				if (StringUtil.isEmpty(value)) {
-					LOG.warn("The parameter " + parameterName + " was not set. This could cause unexpected behaviour.");
-				}
-			}
-		}
-		return value;
-	}
+    private static String resolveConfigurationParameter(final String parameterName, final Map<String, String> defaults) {
+        String value = getSimbaProperty(parameterName);
+        if (StringUtil.isEmpty(value)) {
+            value = getProperty(parameterName);
+            if (StringUtil.isEmpty(value)) {
+                value = defaults.get(parameterName);
+                if (StringUtil.isEmpty(value)) {
+                    LOG.warn("The parameter " + parameterName + " was not set. This could cause unexpected behaviour.");
+                }
+            }
+        }
+        return value;
+    }
 
-	private static String getSimbaProperty(String key) {
-		if (!propertiesLoaded) {
-			loadSimbaProperties();
-		}
-		return simbaProperties.getProperty(key);
-	}
+    private static String getSimbaProperty(String key) {
+        if (!propertiesLoaded) {
+            loadSimbaProperties();
+        }
+        return simbaProperties.getProperty(key);
+    }
 
-	private static void loadSimbaProperties() {
-		try {
-			String propertyFileLocation = System.getProperty("simba.properties.file");
-			if (propertyFileLocation != null) {
-				InputStream propertiesFile = new FileInputStream(propertyFileLocation);
-				SystemConfiguration.simbaProperties.load(propertiesFile);
-			} else {
-				LOG.info("no simba.properties file configured, falling back to using System properties");
-			}
-			propertiesLoaded = true;
-		} catch (Exception e) {
-			LOG.warn("error loading simba.properties file in SystemConfiguration", e);
-		}
-	}
+    private static void loadSimbaProperties() {
+        try {
+            String propertyFileLocation = System.getProperty("simba.properties.file");
+            if (propertyFileLocation != null) {
+                InputStream propertiesFile = new FileInputStream(propertyFileLocation);
+                SystemConfiguration.simbaProperties.load(propertiesFile);
+            } else {
+                LOG.info("no simba.properties file configured, falling back to using System properties");
+            }
+            propertiesLoaded = true;
+        } catch (Exception e) {
+            LOG.warn("error loading simba.properties file in SystemConfiguration", e);
+        }
+    }
 
-	private static String resolveLocalhostToHostname(final String urlToResolve) {
-		String url = urlToResolve;
-		if (url.contains("{localhost}")) {
-			try {
-				url = url.replaceAll("\\{localhost\\}", InetAddress.getLocalHost().getCanonicalHostName());
-			} catch (UnknownHostException e) {
-				throw new RuntimeException(e);
-			}
-		}
-		return url;
-	}
+    private static String resolveLocalhostToHostname(final String urlToResolve) {
+        String url = urlToResolve;
+        if (url.contains("{localhost}")) {
+            try {
+                url = url.replaceAll("\\{localhost\\}", InetAddress.getLocalHost().getCanonicalHostName());
+            } catch (UnknownHostException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return url;
+    }
 
-	@SuppressWarnings("unchecked")
-	private static Map<String, String> getDefaultsMap(final FilterConfig config) {
-		if (config == null) {
-			return Collections.emptyMap();
-		}
+    @SuppressWarnings("unchecked")
+    private static Map<String, String> getDefaultsMap(final FilterConfig config) {
+        if (config == null) {
+            return Collections.emptyMap();
+        }
 
-		final Map<String, String> defaults = getDefaultsMap(config.getServletContext());
+        final Map<String, String> defaults = getDefaultsMap(config.getServletContext());
 
-		final Enumeration<String> names = config.getInitParameterNames();
+        final Enumeration<String> names = config.getInitParameterNames();
 
-		while (names.hasMoreElements()) {
-			final String name = names.nextElement();
-			defaults.put(name, config.getInitParameter(name));
-		}
-		return defaults;
-	}
+        while (names.hasMoreElements()) {
+            final String name = names.nextElement();
+            defaults.put(name, config.getInitParameter(name));
+        }
+        return defaults;
+    }
 
-	@SuppressWarnings("unchecked")
-	private static Map<String, String> getDefaultsMap(final ServletContext context) {
-		if (context == null) {
-			return Collections.emptyMap();
-		}
+    @SuppressWarnings("unchecked")
+    private static Map<String, String> getDefaultsMap(final ServletContext context) {
+        if (context == null) {
+            return Collections.emptyMap();
+        }
 
-		final Map<String, String> defaults = new HashMap<String, String>();
+        final Map<String, String> defaults = new HashMap<>();
 
-		final Enumeration<String> names = context.getInitParameterNames();
+        final Enumeration<String> names = context.getInitParameterNames();
 
-		while (names.hasMoreElements()) {
-			final String name = names.nextElement();
-			defaults.put(name, context.getInitParameter(name));
-		}
-		return defaults;
-	}
+        while (names.hasMoreElements()) {
+            final String name = names.nextElement();
+            defaults.put(name, context.getInitParameter(name));
+        }
+        return defaults;
+    }
 
-	public static boolean getSecureCookiesEnabled(FilterConfig filterConfig) {
-		String secureCookiesEnabled = resolveConfigurationParameter(SYS_PROP_SIMBA_SECURE_COOKIES_ENABLED, getDefaultsMap(filterConfig));
-		return Boolean.valueOf(secureCookiesEnabled);
-	}
+    public static boolean getSecureCookiesEnabled(FilterConfig filterConfig) {
+        String secureCookiesEnabled = resolveConfigurationParameter(SYS_PROP_SIMBA_SECURE_COOKIES_ENABLED, getDefaultsMap(filterConfig));
+        return Boolean.valueOf(secureCookiesEnabled);
+    }
+
+    public static String getExclusionContextPath(FilterConfig filterConfig) {
+        return resolveConfigurationParameter(EXCLUDED_URL, getDefaultsMap(filterConfig));
+    }
+
+    public static String getSimbaEidSuccessUrl(FilterConfig filterConfig) {
+        return resolveConfigurationParameter(SIMBA_EID_SUCCESS_URL, getDefaultsMap(filterConfig));
+    }
 }

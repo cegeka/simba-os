@@ -1,5 +1,7 @@
 package org.simbasecurity.core.chain.eid;
 
+import org.simbasecurity.core.audit.Audit;
+import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command;
 import org.simbasecurity.core.domain.LoginMapping;
@@ -14,11 +16,10 @@ import static org.simbasecurity.common.request.RequestConstants.SAML_RESPONSE;
 @Component
 public class SAMLAuthResponseCommand implements Command {
 
-    @Autowired
-    private SAMLService samlService;
-
-    @Autowired
-    private LoginMappingService loginMappingService;
+    @Autowired private SAMLService samlService;
+    @Autowired private LoginMappingService loginMappingService;
+    @Autowired private Audit audit;
+    @Autowired private AuditLogEventFactory auditLogFactory;
 
     @Override
     public State execute(ChainContext context) throws Exception {
@@ -36,13 +37,21 @@ public class SAMLAuthResponseCommand implements Command {
                 )
             );
             context.setLoginMapping(loginMapping);
+            auditLog(context, samlResponse);
             return State.CONTINUE;
         }
 
         context.redirectToAccessDenied();
+        auditLog(context, samlResponse);
         return State.FINISH;
     }
 
+    private void auditLog(ChainContext context, SAMLResponseHandler samlResponse) {
+        String messageID = samlResponse.getMessageID();
+        String timestamp = samlResponse.getIssueInstant();
+        String endUser = samlResponse.getAttribute("uid");
+        audit.log(auditLogFactory.createEventForAuthenticationEIDSAMLResponse(context, messageID, timestamp, endUser));
+    }
     @Override
     public boolean postProcess(ChainContext context, Exception exception) {
         return false;

@@ -273,6 +273,7 @@ RequestData = function(args) {
   this.requestMethod = null;
   this.hostServerName = null;
   this.loginToken = null;
+  this.simbaEidSuccessUrl = null;
   if (args) {
     if (args.requestParameters !== undefined && args.requestParameters !== null) {
       this.requestParameters = Thrift.copyMap(args.requestParameters, [null]);
@@ -315,6 +316,9 @@ RequestData = function(args) {
     }
     if (args.loginToken !== undefined && args.loginToken !== null) {
       this.loginToken = args.loginToken;
+    }
+    if (args.simbaEidSuccessUrl !== undefined && args.simbaEidSuccessUrl !== null) {
+      this.simbaEidSuccessUrl = args.simbaEidSuccessUrl;
     }
   }
 };
@@ -475,6 +479,13 @@ RequestData.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 15:
+      if (ftype == Thrift.Type.STRING) {
+        this.simbaEidSuccessUrl = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -574,6 +585,11 @@ RequestData.prototype.write = function(output) {
   if (this.loginToken !== null && this.loginToken !== undefined) {
     output.writeFieldBegin('loginToken', Thrift.Type.STRING, 14);
     output.writeString(this.loginToken);
+    output.writeFieldEnd();
+  }
+  if (this.simbaEidSuccessUrl !== null && this.simbaEidSuccessUrl !== undefined) {
+    output.writeFieldBegin('simbaEidSuccessUrl', Thrift.Type.STRING, 15);
+    output.writeString(this.simbaEidSuccessUrl);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

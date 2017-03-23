@@ -214,11 +214,18 @@ public enum ConfigurationParameter {
 
     ADMIN_ROLE_NAME(StoreType.DATABASE, true, StringType.class, "simba-admin"),
 
-    SAML_IDP_TARGET_URL(StoreType.DATABASE, true, StringType.class, ""),
+    SAML_IDP_SSO_TARGET_URL(StoreType.DATABASE, true, StringType.class, ""),
+    SAML_IDP_SLO_TARGET_URL(StoreType.DATABASE, true, StringType.class, ""),
     SAML_ASSERTION_CONSUMER_SERVICE_URL(StoreType.DATABASE, true, StringType.class, ""),
     SAML_ISSUER(StoreType.DATABASE, true, StringType.class, ""),
     SAML_IDP_CERTIFICATE(DATABASE, true, StringType.class, "");
 
+/*
+TODO
+    DOSSIER_STATUS_WEBSERVICE(StoreType.DATABASE, true, StringType.class),
+    DOSSIER_STATUS_WEBSERVICE_USERNAME(StoreType.DATABASE, true, StringType.class),
+    DOSSIER_STATUS_WEBSERVICE_PASSWORD(StoreType.DATABASE, true, StringType.class)
+*/
     private final boolean unique;
     private final Type<?> typeConverter;
     private final TimeUnit timeUnit;

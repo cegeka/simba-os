@@ -18,7 +18,6 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.Date;
-import java.util.UUID;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
@@ -46,17 +45,17 @@ public class SAMLServiceImpl implements SAMLService {
         writer.writeAttribute("ForceAuthn", "false");
         writer.writeAttribute("IsPassive", "false");
         writer.writeAttribute("ProtocolBinding", BINDING_HTTP_POST);
-        writer.writeAttribute("AssertionConsumerServiceURL", configurationService.<String>getValue(ConfigurationParameter.SAML_ASSERTION_CONSUMER_SERVICE_URL));
+        writer.writeAttribute("AssertionConsumerServiceURL", configurationService.getValue(ConfigurationParameter.SAML_ASSERTION_CONSUMER_SERVICE_URL));
 
         writer.writeStartElement("saml", "Issuer", NS_SAML);
         writer.writeNamespace("saml", NS_SAML);
-        writer.writeCharacters(configurationService.<String>getValue(ConfigurationParameter.SAML_ISSUER));
+        writer.writeCharacters(configurationService.getValue(ConfigurationParameter.SAML_ISSUER));
         writer.writeEndElement();
 
         writer.writeStartElement("samlp", "NameIDPolicy", NS_SAMLP);
 
         writer.writeAttribute("Format", NAMEID_TRANSIENT);
-        writer.writeAttribute("SPNameQualifier", configurationService.<String>getValue(ConfigurationParameter.SAML_ISSUER));
+        writer.writeAttribute("SPNameQualifier", configurationService.getValue(ConfigurationParameter.SAML_ISSUER));
         writer.writeAttribute("AllowCreate", "true");
         writer.writeEndElement();
 
@@ -98,7 +97,8 @@ public class SAMLServiceImpl implements SAMLService {
 
     @Override
     public String getAuthRequestUrl(String authRequestId, Date issueInstant) throws XMLStreamException, IOException {
-        return generateSamlRedirectBindingUrl(createAuthRequest(authRequestId, issueInstant));
+        String targetUrl = configurationService.getValue(ConfigurationParameter.SAML_IDP_SSO_TARGET_URL);
+        return generateSamlRedirectBindingUrl(createAuthRequest(authRequestId, issueInstant), targetUrl);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class SAMLServiceImpl implements SAMLService {
 
         writer.writeStartElement("saml", "NameID", NS_SAML);
         writer.writeNamespace("saml", NS_SAML);
-        writer.writeAttribute("NameQualifier", configurationService.<String>getValue(ConfigurationParameter.SAML_IDP_TARGET_URL));
+        writer.writeAttribute("NameQualifier", configurationService.getValue(ConfigurationParameter.SAML_IDP_SLO_TARGET_URL));
         writer.writeAttribute("SPNameQualifier", "https://iamapps.belgium.be/");
         writer.writeAttribute("Format", NAMEID_TRANSIENT);
         writer.writeCharacters(nameId);
@@ -141,7 +141,8 @@ public class SAMLServiceImpl implements SAMLService {
 
     @Override
     public String getLogoutRequestUrl(String authRequestId, Date issueInstant, String nameId, String sessionIndex) throws XMLStreamException, IOException {
-        return generateSamlRedirectBindingUrl(createLogoutRequest(authRequestId, issueInstant, nameId, sessionIndex));
+        String targetUrl = configurationService.getValue(ConfigurationParameter.SAML_IDP_SLO_TARGET_URL);
+        return generateSamlRedirectBindingUrl(createLogoutRequest(authRequestId, issueInstant, nameId, sessionIndex), targetUrl);
     }
 
     @Override
@@ -149,8 +150,8 @@ public class SAMLServiceImpl implements SAMLService {
         return new SAMLResponseHandlerImpl(loadCertificate(), response, currentURL);
     }
 
-    private String generateSamlRedirectBindingUrl(String authRequest) throws XMLStreamException, IOException {
-        return configurationService.getValue(ConfigurationParameter.SAML_IDP_TARGET_URL) + "?SAMLRequest=" + URLEncoder.encode(authRequest, "UTF-8");
+    private String generateSamlRedirectBindingUrl(String authRequest, String idpTargetUrl) throws XMLStreamException, IOException {
+        return idpTargetUrl + "?SAMLRequest=" + URLEncoder.encode(authRequest, "UTF-8");
     }
 
     private Certificate loadCertificate() throws CertificateException {

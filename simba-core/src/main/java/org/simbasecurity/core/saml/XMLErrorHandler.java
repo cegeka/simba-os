@@ -14,8 +14,8 @@ import java.util.List;
 class XMLErrorHandler extends DefaultHandler {
 
     private static final Logger log = LoggerFactory.getLogger(XMLErrorHandler.class);
-    protected final static Marker FATAL = MarkerFactory.getMarker("FATAL");
-    List<String> errorXML = new ArrayList<String>();
+    private static final Marker FATAL = MarkerFactory.getMarker("FATAL");
+    private List<String> errorXML = new ArrayList<>();
 
     @Override
     public void error(SAXParseException e) throws SAXException {
@@ -29,7 +29,7 @@ class XMLErrorHandler extends DefaultHandler {
         log.error(FATAL, "FATALERROR: " + (e.getMessage()));
     }
 
-    public List<String> getErrorXML() {
+    List<String> getErrorXML() {
         return errorXML;
     }
 

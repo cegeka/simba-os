@@ -25,6 +25,8 @@ import java.util.function.Supplier;
  * @see PolicyManagerService
  * @see RoleManagerService
  * @see EntityFilter
+ *
+ * @since 3.0.0
  */
 @Service
 public class EntityFilterService {

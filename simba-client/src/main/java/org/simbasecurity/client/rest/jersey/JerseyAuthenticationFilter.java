@@ -1,13 +1,7 @@
 package org.simbasecurity.client.rest.jersey;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.xml.bind.DatatypeConverter;
-
+import com.sun.jersey.spi.container.ContainerRequest;
+import com.sun.jersey.spi.container.ContainerRequestFilter;
 import org.apache.thrift.protocol.TJSONProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.THttpClient;
@@ -19,8 +13,12 @@ import org.simbasecurity.common.config.SystemConfiguration;
 import org.simbasecurity.common.constants.AuthenticationConstants;
 import org.simbasecurity.common.request.RequestUtil;
 
-import com.sun.jersey.spi.container.ContainerRequest;
-import com.sun.jersey.spi.container.ContainerRequestFilter;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.xml.bind.DatatypeConverter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class JerseyAuthenticationFilter implements ContainerRequestFilter {
 
@@ -39,8 +37,8 @@ public class JerseyAuthenticationFilter implements ContainerRequestFilter {
         requestParameters.put(AuthenticationConstants.PASSWORD, credentials[1]);
 
         RequestData requestData = new RequestData(requestParameters, toMap(containerRequest.getRequestHeaders()),
-                                                  containerRequest.getAbsolutePath().toString(), simbaWebURL, null /* SSO Token */, null /* Client IP */,
-                                                  false, false, false, false, false, containerRequest.getMethod(), RequestUtil.HOST_SERVER_NAME, null);
+                                                  containerRequest.getAbsolutePath().toString(), simbaWebURL, null, null,
+                                                  false, false, false, false, false, containerRequest.getMethod(), RequestUtil.HOST_SERVER_NAME, null, null);
 
         THttpClient tHttpClient = null;
         try {

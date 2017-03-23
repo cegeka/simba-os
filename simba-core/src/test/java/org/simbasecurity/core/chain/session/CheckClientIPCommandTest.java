@@ -15,16 +15,14 @@
  */
 package org.simbasecurity.core.chain.session;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
@@ -34,8 +32,12 @@ import org.simbasecurity.core.chain.Command.State;
 import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.core.domain.User;
 
-@RunWith(MockitoJUnitRunner.class)
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 public class CheckClientIPCommandTest {
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     private static final String IP_ADDRESS = "192.168.1.1";
     private static final String OTHER_IP_ADDRESS = "10.0.0.1";

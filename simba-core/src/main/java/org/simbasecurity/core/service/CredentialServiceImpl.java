@@ -115,12 +115,15 @@ public class CredentialServiceImpl implements CredentialService {
     public void markUsersForPasswordChange() {
         Collection<User> allUsers = userRepository.findAll();
 
-        int passwordLifeTime = (Integer) configurationService.getValue(ConfigurationParameter.PASSWORD_LIFE_TIME);
+        int passwordLifeTime = configurationService.getValue(ConfigurationParameter.PASSWORD_LIFE_TIME);
 
         Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
 
         for (User user : allUsers) {
             Date changeDate = user.getDateOfLastPasswordChange();
+            if (changeDate == null) {
+                changeDate = new Date(0);
+            }
             Date lastDateForNextChange = DateUtils.addDays(changeDate, passwordLifeTime);
 
             if (user.isPasswordChangeRequired() && today.after(lastDateForNextChange)) {

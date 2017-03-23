@@ -16,13 +16,14 @@
 package org.simbasecurity.core.service.config;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.simbasecurity.core.config.ConfigurationStore;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.StoreType;
 import org.simbasecurity.core.event.EventService;
 import org.simbasecurity.core.event.SimbaEventType;
@@ -31,13 +32,14 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
 public class ConfigurationServiceImplTest {
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     private static final String APP_NAME = "app-name";
     private static final List<String> SUCCESS_URLS = Arrays.asList("url-1", "url-2", "url-3");
@@ -60,47 +62,47 @@ public class ConfigurationServiceImplTest {
 
     @Test
     public void cachedParameterDoesNotQueryStore() {
-        when(databaseStore.getValue(ConfigurationParameter.APPLICATION_NAME)).thenReturn(APP_NAME);
-        configService.getValue(ConfigurationParameter.APPLICATION_NAME);
+        when(databaseStore.getValue(SimbaConfigurationParameter.APPLICATION_NAME)).thenReturn(APP_NAME);
+        configService.getValue(SimbaConfigurationParameter.APPLICATION_NAME);
 
         reset(databaseStore); // Reset because we don't want any mock to be
         // called for cached parameters
 
-        assertEquals(APP_NAME, configService.getValue(ConfigurationParameter.APPLICATION_NAME));
+        assertEquals(APP_NAME, configService.getValue(SimbaConfigurationParameter.APPLICATION_NAME));
         verifyZeroInteractions(databaseStore, quartzStore);
     }
 
     @Test
     public void getUniqueParameterReturnsSimpleType() {
-        when(databaseStore.getValue(ConfigurationParameter.APPLICATION_NAME)).thenReturn(APP_NAME);
+        when(databaseStore.getValue(SimbaConfigurationParameter.APPLICATION_NAME)).thenReturn(APP_NAME);
 
-        configService.getValue(ConfigurationParameter.APPLICATION_NAME);
+        configService.getValue(SimbaConfigurationParameter.APPLICATION_NAME);
 
-        verify(databaseStore).getValue(ConfigurationParameter.APPLICATION_NAME);
+        verify(databaseStore).getValue(SimbaConfigurationParameter.APPLICATION_NAME);
     }
 
     @Test
     public void getNonUniqueParameterReturnsList() {
-        when(databaseStore.getValueList(ConfigurationParameter.SUCCESS_URL)).thenReturn(SUCCESS_URLS);
+        when(databaseStore.getValueList(SimbaConfigurationParameter.SUCCESS_URL)).thenReturn(SUCCESS_URLS);
 
-        configService.getValue(ConfigurationParameter.SUCCESS_URL);
+        configService.getValue(SimbaConfigurationParameter.SUCCESS_URL);
 
-        verify(databaseStore).getValueList(ConfigurationParameter.SUCCESS_URL);
+        verify(databaseStore).getValueList(SimbaConfigurationParameter.SUCCESS_URL);
     }
 
     @Test
     public void changeUniqueParameterStoresSimpleType() {
-        configService.changeParameter(ConfigurationParameter.APPLICATION_NAME, APP_NAME);
-        verify(databaseStore).setValue(ConfigurationParameter.APPLICATION_NAME, APP_NAME);
+        configService.changeParameter(SimbaConfigurationParameter.APPLICATION_NAME, APP_NAME);
+        verify(databaseStore).setValue(SimbaConfigurationParameter.APPLICATION_NAME, APP_NAME);
         verify(eventService).publish(SimbaEventType.CONFIG_PARAM_CHANGED,
-                ConfigurationParameter.APPLICATION_NAME.name(), "SIMBA Manager", APP_NAME);
+                                     SimbaConfigurationParameter.APPLICATION_NAME.name(), "SIMBA Manager", APP_NAME);
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void changeNonUniqueParameterStoresList() {
-        configService.changeParameter(ConfigurationParameter.SUCCESS_URL, SUCCESS_URLS);
+        configService.changeParameter(SimbaConfigurationParameter.SUCCESS_URL, SUCCESS_URLS);
 
-        verify(databaseStore).setValueList(eq(ConfigurationParameter.SUCCESS_URL), anyList());
+        verify(databaseStore).setValueList(eq(SimbaConfigurationParameter.SUCCESS_URL), anyList());
     }
 }

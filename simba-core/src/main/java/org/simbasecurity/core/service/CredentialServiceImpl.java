@@ -21,7 +21,7 @@ import org.jasypt.util.password.PasswordEncryptor;
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.audit.AuditMessages;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.Status;
 import org.simbasecurity.core.domain.User;
@@ -84,7 +84,7 @@ public class CredentialServiceImpl implements CredentialService {
         boolean accountBlocked = false;
         if (user != null) {
             int invalidLoginCount = user.increaseInvalidLoginCount();
-            Integer maxInvalidLoginCount = configurationService.getValue(ConfigurationParameter.INVALID_LOGIN_MAX_COUNT);
+            Integer maxInvalidLoginCount = configurationService.getValue(SimbaConfigurationParameter.INVALID_LOGIN_MAX_COUNT);
             if (invalidLoginCount >= maxInvalidLoginCount) {
                 user.setStatus(Status.BLOCKED);
                 accountBlocked = true;
@@ -115,7 +115,7 @@ public class CredentialServiceImpl implements CredentialService {
     public void markUsersForPasswordChange() {
         Collection<User> allUsers = userRepository.findAll();
 
-        int passwordLifeTime = configurationService.getValue(ConfigurationParameter.PASSWORD_LIFE_TIME);
+        int passwordLifeTime = configurationService.getValue(SimbaConfigurationParameter.PASSWORD_LIFE_TIME);
 
         Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
 

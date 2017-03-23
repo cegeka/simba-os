@@ -28,7 +28,7 @@ import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.core.audit.AuditLogEvent;
 import org.simbasecurity.core.audit.AuditLogEventCategory;
 import org.simbasecurity.core.audit.AuditLogLevel;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.test.DatabaseTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -52,7 +52,7 @@ public class DatabaseAuditLogProviderTest extends DatabaseTestCase {
 
     @Test
     public void auditEventIsPersisted_digestNotEnabled() {
-        when(configurationServiceMock.getValue(ConfigurationParameter.AUDIT_LOG_INTEGRITY_ENABLED)).thenReturn(
+        when(configurationServiceMock.getValue(SimbaConfigurationParameter.AUDIT_LOG_INTEGRITY_ENABLED)).thenReturn(
                                                                                                                       Boolean.FALSE);
 
         SSOToken ssoToken = new SSOToken();
@@ -65,7 +65,7 @@ public class DatabaseAuditLogProviderTest extends DatabaseTestCase {
 
     @Test
     public void auditEventIsPersisted_digestEnabled() {
-        when(configurationServiceMock.getValue(ConfigurationParameter.AUDIT_LOG_INTEGRITY_ENABLED)).thenReturn(
+        when(configurationServiceMock.getValue(SimbaConfigurationParameter.AUDIT_LOG_INTEGRITY_ENABLED)).thenReturn(
                                                                                                               Boolean.TRUE);
 
         SSOToken ssoToken = new SSOToken();

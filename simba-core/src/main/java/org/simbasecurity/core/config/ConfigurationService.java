@@ -15,10 +15,13 @@
  */
 package org.simbasecurity.core.config;
 
+import java.util.List;
 
 public interface ConfigurationService {
 
     <T> T getValue(ConfigurationParameter parameter);
 
     <T> void changeParameter(ConfigurationParameter parameter, T value);
+
+    List<ConfigurationParameter> getConfigurationParameters();
 }

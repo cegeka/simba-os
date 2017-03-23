@@ -43,7 +43,7 @@ import static org.simbasecurity.api.service.thrift.ActionType.REDIRECT;
 import static org.simbasecurity.common.constants.AuthenticationConstants.ERROR_MESSAGE;
 import static org.simbasecurity.common.constants.AuthenticationConstants.LOGIN_TOKEN;
 import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
-import static org.simbasecurity.core.config.ConfigurationParameter.*;
+import static org.simbasecurity.core.config.SimbaConfigurationParameter.*;
 import static org.simbasecurity.core.exception.SimbaMessageKey.LOGIN_FAILED;
 
 public class ChainContextImplTest {

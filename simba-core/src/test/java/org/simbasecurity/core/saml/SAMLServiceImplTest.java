@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 
 import java.util.Date;
@@ -75,9 +75,9 @@ public class SAMLServiceImplTest {
 
     @Before
     public void setup() {
-        when(configurationService.<String>getValue(ConfigurationParameter.SAML_IDP_SLO_TARGET_URL)).thenReturn(IDP_SLO_TARGET_URL);
-        when(configurationService.<String>getValue(ConfigurationParameter.SAML_ASSERTION_CONSUMER_SERVICE_URL)).thenReturn(ASSERTION_CONSUMER_SERVICE_URL);
-        when(configurationService.<String>getValue(ConfigurationParameter.SAML_ISSUER)).thenReturn(ISSUER);
+        when(configurationService.<String>getValue(SimbaConfigurationParameter.SAML_IDP_SLO_TARGET_URL)).thenReturn(IDP_SLO_TARGET_URL);
+        when(configurationService.<String>getValue(SimbaConfigurationParameter.SAML_ASSERTION_CONSUMER_SERVICE_URL)).thenReturn(ASSERTION_CONSUMER_SERVICE_URL);
+        when(configurationService.<String>getValue(SimbaConfigurationParameter.SAML_ISSUER)).thenReturn(ISSUER);
     }
 
     @Test

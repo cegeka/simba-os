@@ -16,7 +16,7 @@
 package org.simbasecurity.core.domain.validator;
 
 import static org.mockito.Mockito.*;
-import static org.simbasecurity.core.config.ConfigurationParameter.*;
+import static org.simbasecurity.core.config.SimbaConfigurationParameter.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

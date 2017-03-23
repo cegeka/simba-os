@@ -4,7 +4,7 @@ import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.User;
@@ -36,7 +36,7 @@ public class CreateEIDUserCommand implements Command {
 
         User user = userService.findByName(samlUser.getInsz());
         if (user == null) {
-            List<String> roles = configurationService.getValue(ConfigurationParameter.DEFAULT_USER_ROLE);
+            List<String> roles = configurationService.getValue(SimbaConfigurationParameter.DEFAULT_USER_ROLE);
 
             user = new UserEntity(samlUser.getInsz());
             user.setName(samlUser.getLastname());

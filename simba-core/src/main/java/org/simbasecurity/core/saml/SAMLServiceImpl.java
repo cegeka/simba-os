@@ -2,7 +2,7 @@ package org.simbasecurity.core.saml;
 
 
 import org.apache.commons.codec.binary.Base64;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,17 +45,17 @@ public class SAMLServiceImpl implements SAMLService {
         writer.writeAttribute("ForceAuthn", "false");
         writer.writeAttribute("IsPassive", "false");
         writer.writeAttribute("ProtocolBinding", BINDING_HTTP_POST);
-        writer.writeAttribute("AssertionConsumerServiceURL", configurationService.getValue(ConfigurationParameter.SAML_ASSERTION_CONSUMER_SERVICE_URL));
+        writer.writeAttribute("AssertionConsumerServiceURL", configurationService.getValue(SimbaConfigurationParameter.SAML_ASSERTION_CONSUMER_SERVICE_URL));
 
         writer.writeStartElement("saml", "Issuer", NS_SAML);
         writer.writeNamespace("saml", NS_SAML);
-        writer.writeCharacters(configurationService.getValue(ConfigurationParameter.SAML_ISSUER));
+        writer.writeCharacters(configurationService.getValue(SimbaConfigurationParameter.SAML_ISSUER));
         writer.writeEndElement();
 
         writer.writeStartElement("samlp", "NameIDPolicy", NS_SAMLP);
 
         writer.writeAttribute("Format", NAMEID_TRANSIENT);
-        writer.writeAttribute("SPNameQualifier", configurationService.getValue(ConfigurationParameter.SAML_ISSUER));
+        writer.writeAttribute("SPNameQualifier", configurationService.getValue(SimbaConfigurationParameter.SAML_ISSUER));
         writer.writeAttribute("AllowCreate", "true");
         writer.writeEndElement();
 
@@ -97,7 +97,7 @@ public class SAMLServiceImpl implements SAMLService {
 
     @Override
     public String getAuthRequestUrl(String authRequestId, Date issueInstant) throws XMLStreamException, IOException {
-        String targetUrl = configurationService.getValue(ConfigurationParameter.SAML_IDP_SSO_TARGET_URL);
+        String targetUrl = configurationService.getValue(SimbaConfigurationParameter.SAML_IDP_SSO_TARGET_URL);
         return generateSamlRedirectBindingUrl(createAuthRequest(authRequestId, issueInstant), targetUrl);
     }
 
@@ -122,7 +122,7 @@ public class SAMLServiceImpl implements SAMLService {
 
         writer.writeStartElement("saml", "NameID", NS_SAML);
         writer.writeNamespace("saml", NS_SAML);
-        writer.writeAttribute("NameQualifier", configurationService.getValue(ConfigurationParameter.SAML_IDP_SLO_TARGET_URL));
+        writer.writeAttribute("NameQualifier", configurationService.getValue(SimbaConfigurationParameter.SAML_IDP_SLO_TARGET_URL));
         writer.writeAttribute("SPNameQualifier", "https://iamapps.belgium.be/");
         writer.writeAttribute("Format", NAMEID_TRANSIENT);
         writer.writeCharacters(nameId);
@@ -141,7 +141,7 @@ public class SAMLServiceImpl implements SAMLService {
 
     @Override
     public String getLogoutRequestUrl(String authRequestId, Date issueInstant, String nameId, String sessionIndex) throws XMLStreamException, IOException {
-        String targetUrl = configurationService.getValue(ConfigurationParameter.SAML_IDP_SLO_TARGET_URL);
+        String targetUrl = configurationService.getValue(SimbaConfigurationParameter.SAML_IDP_SLO_TARGET_URL);
         return generateSamlRedirectBindingUrl(createLogoutRequest(authRequestId, issueInstant, nameId, sessionIndex), targetUrl);
     }
 
@@ -155,7 +155,7 @@ public class SAMLServiceImpl implements SAMLService {
     }
 
     private Certificate loadCertificate() throws CertificateException {
-        String certificate = configurationService.getValue(ConfigurationParameter.SAML_IDP_CERTIFICATE);
+        String certificate = configurationService.getValue(SimbaConfigurationParameter.SAML_IDP_CERTIFICATE);
         CertificateFactory fty = CertificateFactory.getInstance("X.509");
         ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decodeBase64(certificate.getBytes()));
         return fty.generateCertificate(bais);

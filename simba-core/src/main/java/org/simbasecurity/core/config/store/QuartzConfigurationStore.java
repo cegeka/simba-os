@@ -18,12 +18,13 @@ package org.simbasecurity.core.config.store;
 import org.quartz.*;
 import org.simbasecurity.core.config.ConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationStore;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -33,7 +34,7 @@ public class QuartzConfigurationStore implements ConfigurationStore {
 
     @Autowired
     @Qualifier("configurableJobNames")
-    private EnumMap<ConfigurationParameter, String> configurableJobNames;
+    private Map<ConfigurationParameter, String> configurableJobNames;
 
     @Autowired private Scheduler scheduler;
 
@@ -43,7 +44,7 @@ public class QuartzConfigurationStore implements ConfigurationStore {
 
             if (trigger instanceof SimpleTrigger) {
                 long repeatInterval = ((SimpleTrigger) trigger).getRepeatInterval();
-                return String.valueOf(parameter.getTimeUnit().convert(repeatInterval, TimeUnit.MILLISECONDS));
+                return String.valueOf(((SimbaConfigurationParameter) parameter).getTimeUnit().convert(repeatInterval, TimeUnit.MILLISECONDS));
             } else if (trigger instanceof CronTrigger) {
                 return ((CronTrigger) trigger).getCronExpression();
             } else {
@@ -70,7 +71,7 @@ public class QuartzConfigurationStore implements ConfigurationStore {
                 newTrigger = TriggerBuilder.newTrigger()
                                            .withIdentity(trigger.getKey().getName(), SIMBA_JOB_GROUP)
                                            .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever((int) TimeUnit.SECONDS.convert(Long.parseLong(value),
-                                                                                                                                    parameter.getTimeUnit())))
+                                                                                                                                    ((SimbaConfigurationParameter) parameter).getTimeUnit())))
                                            .startAt(trigger.getNextFireTime())
                                            .forJob(jobDetail.getKey().getName(), SIMBA_JOB_GROUP)
                                            .build();

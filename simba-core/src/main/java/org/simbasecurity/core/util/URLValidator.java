@@ -1,6 +1,6 @@
 package org.simbasecurity.core.util;
 
-import static org.simbasecurity.core.config.ConfigurationParameter.*;
+import static org.simbasecurity.core.config.SimbaConfigurationParameter.*;
 
 import org.apache.thrift.TException;
 import org.simbasecurity.api.service.thrift.AuthorizationService;

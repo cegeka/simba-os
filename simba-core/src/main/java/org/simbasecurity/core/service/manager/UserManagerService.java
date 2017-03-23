@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
-import static org.simbasecurity.core.config.ConfigurationParameter.PASSWORD_CHANGE_REQUIRED;
+import static org.simbasecurity.core.config.SimbaConfigurationParameter.PASSWORD_CHANGE_REQUIRED;
 import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS;
 import static org.simbasecurity.core.service.ErrorSender.*;
 

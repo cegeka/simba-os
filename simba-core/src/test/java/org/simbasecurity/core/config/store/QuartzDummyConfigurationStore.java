@@ -15,10 +15,10 @@
  */
 package org.simbasecurity.core.config.store;
 
-import java.util.List;
-
 import org.simbasecurity.core.config.ConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationStore;
+
+import java.util.List;
 
 public class QuartzDummyConfigurationStore implements ConfigurationStore {
 

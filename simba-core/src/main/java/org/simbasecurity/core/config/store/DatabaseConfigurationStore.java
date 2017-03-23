@@ -81,6 +81,4 @@ public class DatabaseConfigurationStore implements ConfigurationStore {
         }
         return oldValue;
     }
-
-
 }

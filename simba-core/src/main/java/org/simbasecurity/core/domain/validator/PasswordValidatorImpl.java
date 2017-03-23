@@ -15,7 +15,7 @@
  */
 package org.simbasecurity.core.domain.validator;
 
-import static org.simbasecurity.core.config.ConfigurationParameter.*;
+import static org.simbasecurity.core.config.SimbaConfigurationParameter.*;
 import static org.simbasecurity.core.exception.SimbaMessageKey.*;
 
 import java.util.List;

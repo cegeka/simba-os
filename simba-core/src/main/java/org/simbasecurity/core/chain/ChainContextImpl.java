@@ -5,7 +5,7 @@ import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.api.service.thrift.RequestData;
 import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.core.chain.eid.SAMLUser;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.LoginMapping;
 import org.simbasecurity.core.domain.Session;
@@ -23,7 +23,7 @@ import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.simbasecurity.common.constants.AuthenticationConstants.*;
 import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
 import static org.simbasecurity.common.request.RequestUtil.addParametersToUrlAndFilterInternalParameters;
-import static org.simbasecurity.core.config.ConfigurationParameter.*;
+import static org.simbasecurity.core.config.SimbaConfigurationParameter.*;
 import static org.simbasecurity.core.exception.SimbaMessageKey.ACCESS_DENIED;
 import static org.simbasecurity.core.exception.SimbaMessageKey.LOGIN_TIME_EXPIRED;
 
@@ -233,14 +233,14 @@ public class ChainContextImpl implements ChainContext {
     }
 
     public void redirectToPasswordChanged(){
-        String passwordChangedURL = configurationService.getValue(ConfigurationParameter.PASSWORD_CHANGED_URL);
+        String passwordChangedURL = configurationService.getValue(SimbaConfigurationParameter.PASSWORD_CHANGED_URL);
         redirectWithParameters(getSimbaWebURL() + passwordChangedURL, new HashMap<>());
     }
 
     public void redirectWhenLoginTokenExpired(){
         Map<String, String> requestParameters = new HashMap<>();
         requestParameters.put(ERROR_MESSAGE, LOGIN_TIME_EXPIRED.name());
-        redirectWithParameters(getSimbaWebURL() + configurationService.getValue(ConfigurationParameter.EXPIRED_URL) , requestParameters);
+        redirectWithParameters(getSimbaWebURL() + configurationService.getValue(SimbaConfigurationParameter.EXPIRED_URL) , requestParameters);
     }
 
     public void redirectToLogin(){

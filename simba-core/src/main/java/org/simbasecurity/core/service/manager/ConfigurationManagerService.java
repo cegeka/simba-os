@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
 @Controller
@@ -43,11 +44,11 @@ public class ConfigurationManagerService {
     public Collection<ConfigurationParameterDTO> findAll() {
         Collection<ConfigurationParameterDTO> configurationParameterDTOs = new ArrayList<ConfigurationParameterDTO>();
 
-        ConfigurationParameter[] configurationParameters = ConfigurationParameter.values();
+        List<ConfigurationParameter> configurationParameters = configurationService.getConfigurationParameters();
 
         for (ConfigurationParameter parameter : configurationParameters) {
             if(parameter.isUnique()) {
-                ConfigurationParameterDTO parameterDTO = new ConfigurationParameterDTO(parameter, configurationService.getValue(parameter));
+                ConfigurationParameterDTO parameterDTO = new ConfigurationParameterDTO(parameter.getName(), configurationService.getValue(parameter));
                 configurationParameterDTOs.add(parameterDTO);
             }
         }
@@ -60,11 +61,11 @@ public class ConfigurationManagerService {
     public Collection<ConfigurationParameterDTO> findListParameters() {
         Collection<ConfigurationParameterDTO> configurationParameterDTOs = new ArrayList<ConfigurationParameterDTO>();
 
-        ConfigurationParameter[] configurationParameters = ConfigurationParameter.values();
+        List<ConfigurationParameter> configurationParameters = configurationService.getConfigurationParameters();
 
         for (ConfigurationParameter parameter : configurationParameters) {
             if(!parameter.isUnique()) {
-                ConfigurationParameterDTO parameterDTO = new ConfigurationParameterDTO(parameter, configurationService.getValue(parameter));
+                ConfigurationParameterDTO parameterDTO = new ConfigurationParameterDTO(parameter.getName(), configurationService.getValue(parameter));
                 configurationParameterDTOs.add(parameterDTO);
             }
         }
@@ -76,27 +77,32 @@ public class ConfigurationManagerService {
         return configurationService.getValue(parameter);
     }
 
+    @SuppressWarnings("unchecked")
     @RequestMapping("getValue")
     @ResponseBody
     public <T> T getValue(@RequestBody String parameter) {
-        return getValue(ConfigurationParameter.valueOf(parameter));
+        return (T)configurationService.getConfigurationParameters().stream()
+                                   .filter(p -> p.getName().equals(parameter))
+                                   .findFirst()
+                                   .map(this::getValue)
+                                   .orElse(null);
     }
 
     @RequestMapping("changeParameter")
     @ResponseBody
     public void changeParameter(@JsonBody("name") String name, @JsonBody("value") String value) {
-        ConfigurationParameter parameter = ConfigurationParameter.valueOf(name);
-        configurationService.changeParameter(parameter, parameter.convertToType(value));
+        configurationService.getConfigurationParameters().stream()
+                            .filter(p -> p.getName().equals(name))
+                            .findFirst()
+                            .ifPresent(p -> configurationService.changeParameter(p, p.convertToType(value)));
     }
 
     @RequestMapping("changeListParameter")
     @ResponseBody
     public void changeListParameter(@JsonBody("name") String name, @JsonBody("value") List<String> values) {
-        ConfigurationParameter parameter = ConfigurationParameter.valueOf(name);
-        ArrayList result = new ArrayList();
-        for (String value : values) {
-            result.add(parameter.convertToType(value));
-        }
-        configurationService.changeParameter(parameter, result);
+        configurationService.getConfigurationParameters().stream()
+                            .filter(p -> p.getName().equals(name))
+                            .findFirst()
+                            .ifPresent(p -> configurationService.changeParameter(p, values.stream().map(p::convertToType).collect(Collectors.toList())));
     }
 }

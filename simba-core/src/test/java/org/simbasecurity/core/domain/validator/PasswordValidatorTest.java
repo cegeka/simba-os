@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.exception.SimbaException;
 
@@ -46,11 +46,11 @@ public class PasswordValidatorTest {
 
     @Before
     public void setup() throws Exception {
-        when(configurationService.getValue(ConfigurationParameter.PASSWORD_MIN_LENGTH)).thenReturn(PASSWORD_MIN_LENGTH);
-        when(configurationService.getValue(ConfigurationParameter.PASSWORD_MAX_LENGTH)).thenReturn(PASSWORD_MAX_LENGTH);
-        when(configurationService.getValue(ConfigurationParameter.PASSWORD_MINIMUM_COMPLEXITY)).thenReturn(PASSWORD_MIN_COMPLEXITY);
-        when(configurationService.getValue(ConfigurationParameter.PASSWORD_VALID_CHARACTERS)).thenReturn(PASSWORD_VALID_CHARS);
-        when(configurationService.getValue(ConfigurationParameter.PASSWORD_COMPLEXITY_RULE)).thenReturn(PASSWORD_RULES);
+        when(configurationService.getValue(SimbaConfigurationParameter.PASSWORD_MIN_LENGTH)).thenReturn(PASSWORD_MIN_LENGTH);
+        when(configurationService.getValue(SimbaConfigurationParameter.PASSWORD_MAX_LENGTH)).thenReturn(PASSWORD_MAX_LENGTH);
+        when(configurationService.getValue(SimbaConfigurationParameter.PASSWORD_MINIMUM_COMPLEXITY)).thenReturn(PASSWORD_MIN_COMPLEXITY);
+        when(configurationService.getValue(SimbaConfigurationParameter.PASSWORD_VALID_CHARACTERS)).thenReturn(PASSWORD_VALID_CHARS);
+        when(configurationService.getValue(SimbaConfigurationParameter.PASSWORD_COMPLEXITY_RULE)).thenReturn(PASSWORD_RULES);
     }
 
     @Test(expected = SimbaException.class)

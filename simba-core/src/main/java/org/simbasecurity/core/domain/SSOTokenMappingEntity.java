@@ -10,7 +10,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.simbasecurity.api.service.thrift.SSOToken;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.locator.GlobalContext;
 
@@ -62,8 +62,8 @@ public class SSOTokenMappingEntity extends AbstractEntity implements SSOTokenMap
     }
 
     private long getMaxLoginElapsedTime() {
-        Integer maxElapsedTime = getConfigurationService().getValue(ConfigurationParameter.MAX_LOGIN_ELAPSED_TIME);
-        return TimeUnit.MILLISECONDS.convert(maxElapsedTime, ConfigurationParameter.MAX_LOGIN_ELAPSED_TIME.getTimeUnit());
+        Integer maxElapsedTime = getConfigurationService().getValue(SimbaConfigurationParameter.MAX_LOGIN_ELAPSED_TIME);
+        return TimeUnit.MILLISECONDS.convert(maxElapsedTime, SimbaConfigurationParameter.MAX_LOGIN_ELAPSED_TIME.getTimeUnit());
     }
 
     private ConfigurationService getConfigurationService() {

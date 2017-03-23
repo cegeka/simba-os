@@ -22,7 +22,7 @@ import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.audit.AuditMessages;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,7 +46,7 @@ public class CheckAdminRoleCommand implements Command {
 	public State execute(ChainContext context) throws Exception {
 
 		PolicyDecision policyDecision = this.authorizationService.isUserInRole(context.getUserName(),
-				(String) configurationService.getValue(ConfigurationParameter.ADMIN_ROLE_NAME));
+				(String) configurationService.getValue(SimbaConfigurationParameter.ADMIN_ROLE_NAME));
 		if (policyDecision.isAllowed()) {
 
 			audit.log(auditLogFactory.createEventForAuthorizationForSuccess(context, AuditMessages.USER_HAS_ADMIN_ROLE));

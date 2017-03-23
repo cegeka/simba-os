@@ -27,7 +27,7 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.locator.GlobalContext;
 
@@ -90,8 +90,8 @@ public class LoginMappingEntity extends AbstractEntity implements LoginMapping {
 	}
 
 	private long getMaxLoginElapsedTime() {
-		Integer maxElapsedTime = getConfigurationService().getValue(ConfigurationParameter.MAX_LOGIN_ELAPSED_TIME);
-        return TimeUnit.MILLISECONDS.convert(maxElapsedTime, ConfigurationParameter.MAX_LOGIN_ELAPSED_TIME.getTimeUnit());
+		Integer maxElapsedTime = getConfigurationService().getValue(SimbaConfigurationParameter.MAX_LOGIN_ELAPSED_TIME);
+        return TimeUnit.MILLISECONDS.convert(maxElapsedTime, SimbaConfigurationParameter.MAX_LOGIN_ELAPSED_TIME.getTimeUnit());
 	}
 	
 	private ConfigurationService getConfigurationService() {

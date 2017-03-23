@@ -13,7 +13,7 @@ import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command.State;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.User;
@@ -61,7 +61,7 @@ public class CreateEIDUserCommandTest extends LocatorTestCase {
         implantMock(PasswordValidator.class);
 
         implant(ConfigurationService.class, configurationServiceMock);
-        when(configurationServiceMock.getValue(ConfigurationParameter.DEFAULT_USER_ROLE)).thenReturn(Collections.singletonList("guest"));
+        when(configurationServiceMock.getValue(SimbaConfigurationParameter.DEFAULT_USER_ROLE)).thenReturn(Collections.singletonList("guest"));
     }
 
     @Test

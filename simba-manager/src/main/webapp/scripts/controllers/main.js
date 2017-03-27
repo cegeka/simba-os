@@ -19,7 +19,7 @@ angular.module('SimbaApp')
         };
 
         $scope.changeLanguage = function (language) {
-            $translate.uses(language.id);
+            $translate.use(language.id);
         };
 
         $scope.hideErrorMessage = function () {

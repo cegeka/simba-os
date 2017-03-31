@@ -144,7 +144,7 @@
     <init-param>
       <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
       <param-value>
-        com.sun.jersey.api.container.filter.LoggingFilter;org.simbasecurity.client.rest.jersey.JerseyAuthenticationFilter
+          com.sun.jersey.api.container.filter.LoggingFilter;org.simbasecurity.client.rest.jersey.JerseyBasicAuthenticationFilter
       </param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>

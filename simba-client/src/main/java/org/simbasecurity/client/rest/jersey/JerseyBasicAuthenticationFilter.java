@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JerseyAuthenticationFilter implements ContainerRequestFilter {
+public class JerseyBasicAuthenticationFilter implements ContainerRequestFilter {
 
     private String simbaWebURL = SystemConfiguration.getSimbaWebURL();
 
@@ -42,7 +42,7 @@ public class JerseyAuthenticationFilter implements ContainerRequestFilter {
 
         THttpClient tHttpClient = null;
         try {
-            tHttpClient = new THttpClient(simbaWebURL + "authenticationService");
+            tHttpClient = new THttpClient(simbaWebURL + "/authenticationService");
             TProtocol tProtocol = new TJSONProtocol(tHttpClient);
 
             AuthenticationFilterService.Client authenticationClient = new AuthenticationFilterService.Client(tProtocol);

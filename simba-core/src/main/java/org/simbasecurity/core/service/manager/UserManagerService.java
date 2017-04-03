@@ -231,14 +231,13 @@ public class UserManagerService {
 
     @RequestMapping("createRestUser")
     @ResponseBody
-    public String createRestUser(String username) {
+    public String createRestUser(@JsonBody("userName") String username) {
         UserDTO userDTO = new UserDTO();
         userDTO.setUserName(username);
         userDTO.setPasswordChangeRequired(false);
         userDTO.setChangePasswordOnNextLogon(false);
         userDTO.setLanguage(Language.nl_NL);
         userDTO.setStatus(Status.ACTIVE);
-
         UserEntity userEntity = userRepository.persist(UserAssembler.assemble(userDTO));
         String password = passwordGenerator.generatePassword();
         userEntity.changePassword(password, password);

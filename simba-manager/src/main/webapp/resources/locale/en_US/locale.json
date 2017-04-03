@@ -87,6 +87,8 @@
 "user.inactivedate":"Date inactive",
 "users.filter":"Filter users...",
 "users.filtered":"Filtered: Showing {0} record(s)",
+"users.add.rest.title":"REST",
+"users.add.webservices.title":"Webservices",
 
 "condition.wizard":"Condition Wizard",
 "condition.name":"Name",
@@ -148,7 +150,10 @@
 "create.role":"Create role",
 "create.policy":"Create policy",
 
-  "idle.title":"You are currently idle!",
-  "idle.message":"You'll be logged out in ",
-  "idle.message.2":" second(s)."
+"idle.title":"You are currently idle!",
+"idle.message":"You'll be logged out in ",
+"idle.message.2":" second(s).",
+
+"generated.password.title":"Generated password",
+"generated.password.body":"Your generated password is: "
 }

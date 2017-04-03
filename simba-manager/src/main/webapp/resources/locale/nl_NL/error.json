@@ -23,5 +23,7 @@
   "error.refresh.failed": "Er is een fout opgetreden bij het verversen van de data.",
   "error.no.role.selected": "Er is een fout opgetreden: er is geen rol geselecteerd.",
   "error.no.policy.selected": "Er is een fout opgetreden: er is geen policy geselecteerd.",
-  "error.loading.data": "Er is een fout opgetreden bij het ophalen van de data."
+  "error.loading.data": "Er is een fout opgetreden bij het ophalen van de data.",
+  "error.create.invalid.type": "Er is een fout opgetreden bij het aanmaken van de gebruiker."
+
 }

@@ -14,7 +14,7 @@ angular.module('SimbaApp')
         ];
 
         tabs.forEach(function(tab) {
-            tab.disabled = !$rule.evaluateRule(tab.resourceName, tab.operation);
+            tab.hidden = !$rule.evaluateRule(tab.resourceName, tab.operation);
 
         });
 

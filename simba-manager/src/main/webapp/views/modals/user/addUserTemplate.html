@@ -4,7 +4,7 @@
     </div>
     <div class="modal-body">
         <tabset>
-            <tab ng-repeat="tab in tabs" heading="{{tab.title|translate}}" active="tab.active" disabled="tab.disabled" select="tab.clickAction()">
+            <tab ng-repeat="tab in tabs" heading="{{tab.title|translate}}" active="tab.active" ng-hide="tab.hidden" select="tab.clickAction()">
                 <div id="tabContent" ng-include="tab.url">
                 </div>
             </tab>

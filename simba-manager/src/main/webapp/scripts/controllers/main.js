@@ -33,7 +33,7 @@ angular.module('SimbaApp')
                 {id: 'Configuration', title: 'menu.configuration', active: false, url: 'views/configuration.html', resourceName: 'manage-sessions', operation: 'READ'}
             ];
             tabs.forEach(function (tab) {
-                tab.disabled = !$rule.evaluateRule(tab.resourceName, tab.operation);
+                tab.hidden = !$rule.evaluateRule(tab.resourceName, tab.operation);
             });
             return tabs;
         };

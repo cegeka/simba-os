@@ -18,9 +18,8 @@ package org.simbasecurity.core.service.manager;
 import org.simbasecurity.api.service.thrift.AuthorizationService;
 import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.core.config.ConfigurationService;
-import org.simbasecurity.core.domain.Role;
-import org.simbasecurity.core.domain.Session;
-import org.simbasecurity.core.domain.User;
+import org.simbasecurity.core.domain.*;
+import org.simbasecurity.core.domain.generator.PasswordGenerator;
 import org.simbasecurity.core.domain.repository.*;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.manager.assembler.*;
@@ -76,6 +75,9 @@ public class UserManagerService {
 
     @Autowired
     private EntityFilterService filterService;
+
+    @Autowired
+    private PasswordGenerator passwordGenerator;
 
     @RequestMapping("findAll")
     @ResponseBody
@@ -226,6 +228,23 @@ public class UserManagerService {
 
         return userRepository.persist(UserAssembler.assemble(user));
     }
+
+    @RequestMapping("createRestUser")
+    @ResponseBody
+    public String createRestUser(String username) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUserName(username);
+        userDTO.setPasswordChangeRequired(false);
+        userDTO.setChangePasswordOnNextLogon(false);
+        userDTO.setLanguage(Language.nl_NL);
+        userDTO.setStatus(Status.ACTIVE);
+
+        UserEntity userEntity = userRepository.persist(UserAssembler.assemble(userDTO));
+        String password = passwordGenerator.generatePassword();
+        userEntity.changePassword(password, password);
+        return password;
+    }
+
 
     @RequestMapping("update")
     @ResponseBody

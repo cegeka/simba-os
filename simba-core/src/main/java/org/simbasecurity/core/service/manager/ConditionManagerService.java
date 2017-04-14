@@ -15,13 +15,6 @@
  */
 package org.simbasecurity.core.service.manager;
 
-import static org.simbasecurity.core.service.manager.assembler.ConditionDTOAssembler.*;
-
-import java.text.ParseException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-
 import org.simbasecurity.core.domain.Condition;
 import org.simbasecurity.core.domain.Policy;
 import org.simbasecurity.core.domain.User;
@@ -43,6 +36,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.text.ParseException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+
+import static org.simbasecurity.core.service.manager.assembler.ConditionDTOAssembler.assemble;
 
 @Transactional
 @Controller
@@ -115,6 +115,7 @@ public class ConditionManagerService {
     }
 
     @RequestMapping("remove")
+    @ResponseBody
     public void remove(@RequestBody ConditionDTO condition) {
         final Condition conditionEntity = conditionRepository.refreshWithOptimisticLocking(condition);
 

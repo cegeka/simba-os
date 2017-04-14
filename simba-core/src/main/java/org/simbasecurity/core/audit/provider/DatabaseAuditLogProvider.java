@@ -19,7 +19,7 @@ import org.jasypt.digest.StringDigester;
 import org.simbasecurity.core.audit.AuditLogEvent;
 import org.simbasecurity.core.audit.AuditLogIntegrityMessageFactory;
 import org.simbasecurity.core.audit.AuditLogLevel;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.locator.GlobalContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +79,7 @@ public class DatabaseAuditLogProvider implements AuditLogProvider {
     }
 
     private boolean isAuditLogIntegrityEnabled() {
-        return GlobalContext.locate(ConfigurationService.class).<Boolean>getValue(ConfigurationParameter.AUDIT_LOG_INTEGRITY_ENABLED);
+        return GlobalContext.locate(ConfigurationService.class).<Boolean>getValue(SimbaConfigurationParameter.AUDIT_LOG_INTEGRITY_ENABLED);
     }
 
     void setJdbcTemplate(JdbcTemplate jdbcTemplate) {

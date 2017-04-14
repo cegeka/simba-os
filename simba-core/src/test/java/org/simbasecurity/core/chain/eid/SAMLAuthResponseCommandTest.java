@@ -8,13 +8,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.simbasecurity.core.audit.Audit;
+import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.domain.LoginMappingEntity;
 import org.simbasecurity.core.saml.SAMLResponseHandler;
 import org.simbasecurity.core.saml.SAMLService;
 import org.simbasecurity.core.service.LoginMappingService;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.simbasecurity.core.chain.Command.State.CONTINUE;
@@ -26,17 +28,15 @@ public class SAMLAuthResponseCommandTest {
 
     private static final String LOGIN_TOKEN_1234 = "loginToken1234";
 
-    @InjectMocks private SAMLAuthResponseCommand samlAuthResponseCommand;
-
     @Mock private SAMLService samlService;
-
     @Mock private ChainContext chainContext;
-
     @Mock private SAMLResponseHandler samlResponse;
-
     @Mock private LoginMappingService loginMappingService;
-
     @Mock private LoginMappingEntity loginMapping;
+    @Mock private Audit audit;
+    @Mock private AuditLogEventFactory auditLogEventFactory;
+
+    @InjectMocks private SAMLAuthResponseCommand samlAuthResponseCommand;
 
     private final ArgumentCaptor<SAMLUser> samlUserCaptor = ArgumentCaptor.forClass(SAMLUser.class);
 

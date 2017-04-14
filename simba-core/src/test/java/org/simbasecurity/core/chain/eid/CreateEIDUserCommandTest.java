@@ -1,16 +1,19 @@
 package org.simbasecurity.core.chain.eid;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import org.simbasecurity.core.audit.Audit;
+import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command.State;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.User;
@@ -23,24 +26,27 @@ import org.simbasecurity.test.LocatorTestCase;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
 public class CreateEIDUserCommandTest extends LocatorTestCase {
-    public static final String INSZ = "insz";
-    public static final String FIRSTNAME = "firstname";
-    public static final String LASTNAME = "lastname";
-    public static final String EMAIL = "email";
-    public static final String NL = "nl";
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
+
+    private static final String INSZ = "insz";
+    private static final String FIRSTNAME = "firstname";
+    private static final String LASTNAME = "lastname";
+    private static final String EMAIL = "email";
+    private static final String NL = "nl";
 
     @Mock private UserService userServiceMock;
     @Mock private ConfigurationService configurationServiceMock;
 
-    @Mock ChainContext chainContextMock;
+    @Mock private ChainContext chainContextMock;
     @Mock private User userMock;
+    @Mock private Audit auditMock;
+    @Mock private AuditLogEventFactory auditLogEventFactoryMock;
 
     @InjectMocks private CreateEIDUserCommand createEIDUserCommand;
 
@@ -55,7 +61,7 @@ public class CreateEIDUserCommandTest extends LocatorTestCase {
         implantMock(PasswordValidator.class);
 
         implant(ConfigurationService.class, configurationServiceMock);
-        when(configurationServiceMock.getValue(ConfigurationParameter.DEFAULT_USER_ROLE)).thenReturn(Collections.singletonList("guest"));
+        when(configurationServiceMock.getValue(SimbaConfigurationParameter.DEFAULT_USER_ROLE)).thenReturn(Collections.singletonList("guest"));
     }
 
     @Test

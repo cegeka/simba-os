@@ -18,9 +18,8 @@ package org.simbasecurity.core.service.manager;
 import org.simbasecurity.api.service.thrift.AuthorizationService;
 import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.core.config.ConfigurationService;
-import org.simbasecurity.core.domain.Role;
-import org.simbasecurity.core.domain.Session;
-import org.simbasecurity.core.domain.User;
+import org.simbasecurity.core.domain.*;
+import org.simbasecurity.core.domain.generator.PasswordGenerator;
 import org.simbasecurity.core.domain.repository.*;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.manager.assembler.*;
@@ -39,7 +38,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
-import static org.simbasecurity.core.config.ConfigurationParameter.PASSWORD_CHANGE_REQUIRED;
+import static org.simbasecurity.core.config.SimbaConfigurationParameter.PASSWORD_CHANGE_REQUIRED;
 import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS;
 import static org.simbasecurity.core.service.ErrorSender.*;
 
@@ -77,6 +76,9 @@ public class UserManagerService {
     @Autowired
     private EntityFilterService filterService;
 
+    @Autowired
+    private PasswordGenerator passwordGenerator;
+
     @RequestMapping("findAll")
     @ResponseBody
     public Collection<UserDTO> findAll() {
@@ -86,13 +88,13 @@ public class UserManagerService {
     @RequestMapping("findByRole")
     @ResponseBody
     public Collection<UserDTO> find(@RequestBody RoleDTO role) {
-        return UserDTOAssembler.assemble(filterService.filterUsers(roleRepository.lookUp(role).getUsers()));
+        return UserDTOAssembler.assemble(filterService.filterUsers(userRepository.findForRole(roleRepository.lookUp(role))));
     }
 
     @RequestMapping("findRoles")
     @ResponseBody
     public Collection<RoleDTO> findRoles(@RequestBody UserDTO user) {
-        return RoleDTOAssembler.assemble(filterService.filterRoles(userRepository.lookUp(user).getRoles()));
+        return RoleDTOAssembler.assemble(filterService.filterRoles(roleRepository.findForUser(userRepository.lookUp(user))));
     }
 
     @RequestMapping("findRolesNotLinked")
@@ -102,6 +104,7 @@ public class UserManagerService {
     }
 
     @RequestMapping("removeRole")
+    @ResponseBody
     public void removeRole(@JsonBody("user") UserDTO user, @JsonBody("role") RoleDTO role) {
         User attachedUser = userRepository.refreshWithOptimisticLocking(user);
         Role attachedRole = roleRepository.refreshWithOptimisticLocking(role);
@@ -110,6 +113,7 @@ public class UserManagerService {
     }
 
     @RequestMapping("addRoles")
+    @ResponseBody
     public void addRoles(@JsonBody("user") UserDTO user, @JsonBody("roles") Set<RoleDTO> roles) {
         User attachedUser = userRepository.refreshWithOptimisticLocking(user);
         Collection<Role> attachedRoles = roleRepository.refreshWithOptimisticLocking(roles);
@@ -224,6 +228,22 @@ public class UserManagerService {
 
         return userRepository.persist(UserAssembler.assemble(user));
     }
+
+    @RequestMapping("createRestUser")
+    @ResponseBody
+    public String createRestUser(@JsonBody("userName") String username) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUserName(username);
+        userDTO.setPasswordChangeRequired(false);
+        userDTO.setChangePasswordOnNextLogon(false);
+        userDTO.setLanguage(Language.nl_NL);
+        userDTO.setStatus(Status.ACTIVE);
+        UserEntity userEntity = userRepository.persist(UserAssembler.assemble(userDTO));
+        String password = passwordGenerator.generatePassword();
+        userEntity.changePassword(password, password);
+        return password;
+    }
+
 
     @RequestMapping("update")
     @ResponseBody

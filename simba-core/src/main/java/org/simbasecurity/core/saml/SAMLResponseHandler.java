@@ -12,4 +12,9 @@ public interface SAMLResponseHandler {
 
     String getAttribute(String name);
 
+    String getMessageID();
+
+    String getIssueInstant();
+
+
 }

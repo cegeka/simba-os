@@ -15,24 +15,24 @@
  */
 package org.simbasecurity.test;
 
-import static org.mockito.Mockito.*;
-
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.mockito.Mockito.when;
 
-@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
-@Transactional
+
+@Transactional(transactionManager = "transactionManager")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:persistenceTestContext.xml")
+@Rollback
 public abstract class DatabaseTestCase extends LocatorTestCase {
 
     protected ConfigurationService configurationServiceMock;
@@ -43,6 +43,6 @@ public abstract class DatabaseTestCase extends LocatorTestCase {
         implantMock(PasswordValidator.class);
 
         configurationServiceMock = implantMock(ConfigurationService.class);
-        when(configurationServiceMock.getValue(ConfigurationParameter.DEFAULT_PASSWORD)).thenReturn("aPassword");
+        when(configurationServiceMock.getValue(SimbaConfigurationParameter.DEFAULT_PASSWORD)).thenReturn("aPassword");
     }
 }

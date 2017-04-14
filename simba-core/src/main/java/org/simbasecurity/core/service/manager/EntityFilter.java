@@ -14,6 +14,8 @@ import java.util.function.Predicate;
  *     e -> true
  * </code>
  * as predicate to allow all entities to remain in the collection.
+ *
+ * @since 3.0.0
  */
 public interface EntityFilter {
 

@@ -93,4 +93,9 @@ public class PolicyDatabaseRepositoryTest extends PersistenceTestCase {
         assertThat(result).containsOnly(policy3, policy4, policy5);
     }
 
+    @Test
+    public void findForRole() {
+        Collection<Policy> result = policyDatabaseRepository.findForRole(role1);
+    }
+
 }

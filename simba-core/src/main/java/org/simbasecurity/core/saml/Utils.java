@@ -31,7 +31,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-
 public class Utils {
     static final String ISO8601DATEFORMAT = "yyyy-MM-ddTHH:mm:ssZ"; //"yyyy-MM-dd'T'HH:mm:ssX"; // "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'";
     private static final Logger log = LoggerFactory.getLogger(Utils.class);
@@ -45,8 +44,7 @@ public class Utils {
      * @return DOMNodeList The queried node
      * @throws XPathExpressionException
      */
-    public static NodeList query(Document dom, String query, Node context)
-            throws XPathExpressionException {
+    public static NodeList query(Document dom, String query, Node context) throws XPathExpressionException {
         NodeList nodeList;
 
         XPath xpath = XPathFactory.newInstance().newXPath();
@@ -54,14 +52,22 @@ public class Utils {
 
             public String getNamespaceURI(String prefix) {
                 String result = null;
-                if (prefix.equals("samlp") || prefix.equals("samlp2"))
-                    result = SAMLConstants.NS_SAMLP;
-                else if (prefix.equals("saml") || prefix.equals("saml2"))
-                    result = SAMLConstants.NS_SAML;
-                else if (prefix.equals("ds"))
-                    result = SAMLConstants.NS_DS;
-                else if (prefix.equals("xenc"))
-                    result = SAMLConstants.NS_XENC;
+                switch (prefix) {
+                    case "samlp":
+                    case "samlp2":
+                        result = SAMLConstants.NS_SAMLP;
+                        break;
+                    case "saml":
+                    case "saml2":
+                        result = SAMLConstants.NS_SAML;
+                        break;
+                    case "ds":
+                        result = SAMLConstants.NS_DS;
+                        break;
+                    case "xenc":
+                        result = SAMLConstants.NS_XENC;
+                        break;
+                }
                 return result;
             }
 
@@ -75,13 +81,10 @@ public class Utils {
             }
         });
 
-        if (context == null)
-            nodeList = (NodeList) xpath.evaluate(query, dom, XPathConstants.NODESET);
-        else
-            nodeList = (NodeList) xpath.evaluate(query, context, XPathConstants.NODESET);
+        if (context == null) nodeList = (NodeList) xpath.evaluate(query, dom, XPathConstants.NODESET);
+        else nodeList = (NodeList) xpath.evaluate(query, context, XPathConstants.NODESET);
         return nodeList;
     }
-
 
     /**
      * Get Status from a Response
@@ -94,24 +97,18 @@ public class Utils {
         Map<String, String> status = new HashMap<String, String>();
 
         try {
-            NodeList statusEntry = query(dom, "/samlp:Response/samlp:Status",
-                    null);
+            NodeList statusEntry = query(dom, "/samlp:Response/samlp:Status", null);
             if (statusEntry.getLength() == 0) {
                 throw new Error("Missing Status on response");
             }
 
-            NodeList codeEntry = query(dom,
-                    "/samlp:Response/samlp:Status/samlp:StatusCode",
-                    statusEntry.item(0));
+            NodeList codeEntry = query(dom, "/samlp:Response/samlp:Status/samlp:StatusCode", statusEntry.item(0));
             if (codeEntry.getLength() == 0) {
                 throw new Error("Missing Status Code on response");
             }
-            status.put("code",
-                    codeEntry.item(0).getAttributes().getNamedItem("Value").getNodeValue());
+            status.put("code", codeEntry.item(0).getAttributes().getNamedItem("Value").getNodeValue());
 
-            NodeList messageEntry = query(dom,
-                    "/samlp:Response/samlp:Status/samlp:StatusMessage",
-                    statusEntry.item(0));
+            NodeList messageEntry = query(dom, "/samlp:Response/samlp:Status/samlp:StatusMessage", statusEntry.item(0));
             if (messageEntry.getLength() == 0) {
                 status.put("msg", "");
             } else {
@@ -127,7 +124,6 @@ public class Utils {
         return status;
     }
 
-
     /**
      * Load an XML string in a save way. Prevent XEE/XXE Attacks
      *
@@ -136,8 +132,7 @@ public class Utils {
      */
     public static Document loadXML(String xml) throws SecurityException {
         if (xml.contains("<!ENTITY")) {
-            throw new SecurityException(
-                    "Detected use of ENTITY in XML, disabled to prevent XXE/XEE attacks");
+            throw new SecurityException("Detected use of ENTITY in XML, disabled to prevent XXE/XEE attacks");
         }
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -146,24 +141,19 @@ public class Utils {
         // Add various options explicitly to prevent XXE attacks. add try/catch around every
         // setAttribute just in case a specific parser does not support it.
         try {
-            factory.setAttribute("http://xml.org/sax/features/external-general-entities",
-                    Boolean.FALSE);
+            factory.setAttribute("http://xml.org/sax/features/external-general-entities", Boolean.FALSE);
         } catch (Throwable t) {  /* OK.  Not all parsers will support this attribute */}
         try {
-            factory.setAttribute("http://xml.org/sax/features/external-parameter-entities",
-                    Boolean.FALSE);
+            factory.setAttribute("http://xml.org/sax/features/external-parameter-entities", Boolean.FALSE);
         } catch (Throwable t) {  /* OK.  Not all parsers will support this attribute */}
         try {
-            factory.setAttribute("http://apache.org/xml/features/disallow-doctype-decl",
-                    Boolean.TRUE);
+            factory.setAttribute("http://apache.org/xml/features/disallow-doctype-decl", Boolean.TRUE);
         } catch (Throwable t) {  /* OK.  Not all parsers will support this attribute */}
         try {
-            factory.setAttribute("http://javax.xml.XMLConstants/feature/secure-processing",
-                    Boolean.TRUE);
+            factory.setAttribute("http://javax.xml.XMLConstants/feature/secure-processing", Boolean.TRUE);
         } catch (Throwable t) {  /* OK.  Not all parsers will support this attribute */ }
         try {
-            factory.setAttribute("http://apache.org/xml/features/nonvalidating/load-external-dtd",
-                    Boolean.FALSE);
+            factory.setAttribute("http://apache.org/xml/features/nonvalidating/load-external-dtd", Boolean.FALSE);
         } catch (Throwable t) {  /* OK.  Not all parsers will support this attribute */}
         try {
             factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
@@ -197,8 +187,7 @@ public class Utils {
      * @param schemaName The schema filename which should be used
      * @throws Exception
      */
-    public static Document validateXML(Document xml, String schemaName)
-            throws Exception {
+    public static Document validateXML(Document xml, String schemaName) throws Exception {
         return validateXML(getStringFromDocument(xml), schemaName);
     }
 
@@ -211,8 +200,7 @@ public class Utils {
      * @param schemaName The schema filename which should be used
      * @throws Exception
      */
-    public static Document validateXML(String xmlString, String schemaName, Boolean... debugMode)
-            throws Exception {
+    public static Document validateXML(String xmlString, String schemaName, Boolean... debugMode) throws Exception {
 
         try {
             String schemaFullPath = "schemas/" + schemaName;
@@ -244,8 +232,7 @@ public class Utils {
      * @param fingerprint      The fingerprint of the public cert
      * @return True if the sign is valid, false otherwise.
      */
-    public static boolean validateSign(Node signatureElement, Certificate cert, String... fingerprint)
-            throws Exception {
+    public static boolean validateSign(Node signatureElement, Certificate cert, String... fingerprint) throws Exception {
         boolean res;
         DOMValidateContext ctx = new DOMValidateContext(cert.getPublicKey(), signatureElement);
         XMLSignatureFactory sigF = XMLSignatureFactory.getInstance("DOM");
@@ -261,7 +248,6 @@ public class Utils {
         }
         return res;
     }
-
 
     /**
      * Function to load a String into a Document
@@ -303,8 +289,6 @@ public class Utils {
             return null;
         }
     }
-
-
 }
 
 

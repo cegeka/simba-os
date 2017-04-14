@@ -3,7 +3,7 @@
         <tr ng-repeat="parameter in parameters | orderBy:'name'">
             <td>{{parameter.name}}</td>
             <td>
-                <a href="#" editable-text="parameter.value" onaftersave="changeParameter(parameter)" onbeforesave="cacheCurrentValue(parameter.value)">{{ parameter.value }}</a>
+                <a href="#" class="parameterbox" editable-text="parameter.value" onaftersave="changeParameter(parameter)" onbeforesave="cacheCurrentValue(parameter.value)">{{ parameter.value }}</a>
             </td>
         </tr>
     </table>

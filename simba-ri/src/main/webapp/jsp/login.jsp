@@ -55,7 +55,7 @@
             </p>
             <% if (errorMessage != null) { %>
             <p class="error" id="errorMessage">
-                <fmt:message key="<%= "error." + ESAPI.encoder().encodeForHTML(errorMessage) %>"/>
+                <fmt:message key='<%= "error." + ESAPI.encoder().encodeForHTML(errorMessage) %>'/>
             </p>
             <% } %>
             <input type="submit" id="signIn" value="<fmt:message key="login.button"/>"

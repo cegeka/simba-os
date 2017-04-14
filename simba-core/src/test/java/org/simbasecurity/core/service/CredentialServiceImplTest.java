@@ -25,7 +25,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.Status;
 import org.simbasecurity.core.domain.User;
@@ -148,7 +148,7 @@ public class CredentialServiceImplTest {
         when(userWithExpiredPasswordButNotRequired.getDateOfLastPasswordChange()).thenReturn(longerThenChangeRateAgo);
         when(userWithValidPassword.getDateOfLastPasswordChange()).thenReturn(notLongerThenChangeRateAgo);
 
-        when(mockConfigurationService.getValue(ConfigurationParameter.PASSWORD_LIFE_TIME)).thenReturn(
+        when(mockConfigurationService.getValue(SimbaConfigurationParameter.PASSWORD_LIFE_TIME)).thenReturn(
                 PASSWORD_EXPIRATION_TIME);
         when(mockUserRepository.findAll()).thenReturn(
                 Arrays.asList(userWithExpiredPassword, userWithExpiredPasswordButNotRequired, userWithValidPassword));

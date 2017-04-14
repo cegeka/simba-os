@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.exception.SimbaException;
 
@@ -39,9 +39,9 @@ public class PasswordValidatorImplTest {
 
 	@Before
 	public void setupTheComplexityRules() {
-		when(configurationService.getValue(ConfigurationParameter.PASSWORD_MIN_LENGTH)).thenReturn(6);
-		when(configurationService.getValue(ConfigurationParameter.PASSWORD_MAX_LENGTH)).thenReturn(15);
-		when(configurationService.getValue(ConfigurationParameter.PASSWORD_VALID_CHARACTERS)).thenReturn("[\\x21-\\x7E]*");
+		when(configurationService.getValue(SimbaConfigurationParameter.PASSWORD_MIN_LENGTH)).thenReturn(6);
+		when(configurationService.getValue(SimbaConfigurationParameter.PASSWORD_MAX_LENGTH)).thenReturn(15);
+		when(configurationService.getValue(SimbaConfigurationParameter.PASSWORD_VALID_CHARACTERS)).thenReturn("[\\x21-\\x7E]*");
 
 		List<String> complexityRules = new ArrayList<String>();
 		complexityRules.add(".*[A-Z].*");
@@ -49,8 +49,8 @@ public class PasswordValidatorImplTest {
 		complexityRules.add(".*[\\W_].*");
 		complexityRules.add(".*[0-9].*");
 
-		when(configurationService.getValue(ConfigurationParameter.PASSWORD_COMPLEXITY_RULE)).thenReturn(complexityRules);
-		when(configurationService.getValue(ConfigurationParameter.PASSWORD_MINIMUM_COMPLEXITY)).thenReturn(3);
+		when(configurationService.getValue(SimbaConfigurationParameter.PASSWORD_COMPLEXITY_RULE)).thenReturn(complexityRules);
+		when(configurationService.getValue(SimbaConfigurationParameter.PASSWORD_MINIMUM_COMPLEXITY)).thenReturn(3);
 	}
 
 	@Test

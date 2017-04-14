@@ -2,21 +2,35 @@ package org.simbasecurity.core.saml;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SAMLResponseHandlerImplTest {
 
     @Test
     public void testIsLogoutResponse() throws Exception {
         SAMLResponseHandlerImpl handler = new SAMLResponseHandlerImpl(null, LOGOUT_RESPONSE, null);
-        assertTrue(handler.isLogoutResponse());
+        assertThat(handler.isLogoutResponse()).isTrue();
     }
 
     @Test
     public void testIsAuthenticationResponse() throws Exception {
         SAMLResponseHandlerImpl handler = new SAMLResponseHandlerImpl(null, AUTH_RESPONSE, null);
-        assertTrue(handler.isAuthenticationResponse());
+        assertThat(handler.isAuthenticationResponse()).isTrue();
     }
+
+    @Test
+    public void testGetMessageID_ReturnsIDFromAttributeOfRootElement() throws Exception {
+        SAMLResponseHandlerImpl handler = new SAMLResponseHandlerImpl(null, AUTH_RESPONSE, null);
+        assertThat(handler.getMessageID()).isEqualTo("_162f441d28cff78e3bb1d3c2bf3e48b5ed532605fd");
+    }
+
+    @Test
+    public void testGetIssueInstant_ReturnsIssueInstantFromAttributeOfRootElement() throws Exception {
+        SAMLResponseHandlerImpl handler = new SAMLResponseHandlerImpl(null, AUTH_RESPONSE, null);
+        String actual = handler.getIssueInstant();
+        assertThat(actual).isEqualTo("2008-05-27T07:49:23Z");
+    }
+
 
     private static final String AUTH_RESPONSE = "PHNhbWxwOlJlc3BvbnNlIHhtbG5zOnNhbWxwPSJ1cm46b2FzaXM6bmFtZXM6dGM6"
                     + "U0FNTDoyLjA6cHJvdG9jb2wiDQogICAgeG1sbnM6c2FtbD0idXJuOm9hc2lzOm5h"

@@ -18,7 +18,6 @@ package org.simbasecurity.core.service.manager.assembler;
 import org.simbasecurity.core.domain.AbstractVersionedEntity;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.service.manager.dto.UserDTO;
-import org.simbasecurity.core.service.validation.DTOValidator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,7 +44,7 @@ public final class UserDTOAssembler {
         userDTO.setSuccessURL(user.getSuccessURL());
         userDTO.setLanguage(user.getLanguage());
         userDTO.setChangePasswordOnNextLogon(user.isChangePasswordOnNextLogon());
-        DTOValidator.encodeForHTML(userDTO);
+//        DTOValidator.encodeForHTML(userDTO);
         return userDTO;
     }
 }

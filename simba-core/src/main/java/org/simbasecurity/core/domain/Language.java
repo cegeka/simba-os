@@ -24,10 +24,12 @@ public enum Language {
     fr_FR;
 
     public static Language fromISO639Code(String code) {
-        String lowerCaseCode = code.toLowerCase();
-        for (Language language : values()) {
-            if (language.name().toLowerCase().endsWith(lowerCaseCode)) {
-                return language;
+        if (code != null) {
+            String lowerCaseCode = code.toLowerCase();
+            for (Language language : values()) {
+                if (language.name().toLowerCase().endsWith(lowerCaseCode)) {
+                    return language;
+                }
             }
         }
         return null;

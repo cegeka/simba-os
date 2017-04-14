@@ -19,17 +19,16 @@ import org.simbasecurity.core.domain.*;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
-import java.util.ArrayList;
+import javax.persistence.TypedQuery;
 import java.util.Collection;
 import java.util.List;
 
 @Repository
 public class PolicyDatabaseRepository extends AbstractVersionedDatabaseRepository<Policy> implements PolicyRepository {
 
-    @SuppressWarnings("unchecked")
     public Policy findByName(String policyName) {
-        Query query = entityManager.createQuery("SELECT p FROM PolicyEntity p WHERE p.name = :policyName")
-                .setParameter("policyName", policyName);
+        TypedQuery<Policy> query = entityManager.createQuery("SELECT p FROM PolicyEntity p WHERE p.name = :policyName", Policy.class)
+                                                .setParameter("policyName", policyName);
         List<Policy> resultList = query.getResultList();
 
         if (resultList.size() == 0) {
@@ -41,46 +40,32 @@ public class PolicyDatabaseRepository extends AbstractVersionedDatabaseRepositor
         throw new IllegalStateException("Multiple policies found for policyname: '" + policyName + "'");
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Collection<Policy> findNotLinked(Role role) {
-        ArrayList<Policy> result = new ArrayList<Policy>();
-        Query query = entityManager.createQuery("SELECT p FROM PolicyEntity p ");
-        List<Policy> temp = (List<Policy>)query.getResultList();
-        for (Policy policy : temp) {
-            if(!policy.getRoles().contains(role)) {
-                result.add(policy);
-            }
-        }
-        return result;
-//        TODO: use implementation below when hibernate bug (HHH-8907) is fixed
-//        Query query = entityManager.createQuery(
-//                "SELECT p FROM PolicyEntity p " +
-//                        "WHERE :role not in " +
-//                "(p.roles) order by p.name")
-//                .setParameter("role", role);
-//        return query.getResultList();
+        TypedQuery<Policy> query = entityManager.createQuery("SELECT p FROM PolicyEntity p WHERE :role not in elements(p.roles) order by p.name", Policy.class)
+                                                .setParameter("role", role);
+        return query.getResultList();
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+    public Collection<Policy> findForRole(Role role) {
+        TypedQuery<Policy> query = entityManager.createQuery("SELECT p FROM PolicyEntity p WHERE :role in elements(p.roles) order by p.name", Policy.class)
+                                                .setParameter("role", role);
+        return query.getResultList();
+    }
+
     @Override
     public Collection<Policy> find(User user) {
-        Query query = entityManager.createQuery(
-                "SELECT DISTINCT policy " +
-                        "FROM PolicyEntity policy " +
-                        "JOIN policy.roles role JOIN role.users user " +
-                        "WHERE user=:user");
-
-        query.setParameter("user", user);
+        TypedQuery<Policy> query = entityManager.createQuery("SELECT DISTINCT policy FROM PolicyEntity policy JOIN policy.roles role JOIN role.users user WHERE user=:user", Policy.class)
+                                                .setParameter("user", user);
 
         return query.getResultList();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Policy find(Rule rule) {
-        Query query = entityManager.createQuery("SELECT r.policy FROM RuleEntity r WHERE r = :rule")
-                .setParameter("rule", rule);
+        TypedQuery<Policy> query = entityManager.createQuery("SELECT r.policy FROM RuleEntity r WHERE r = :rule", Policy.class)
+                                                .setParameter("rule", rule);
 
         List<Policy> optionalResult = query.getResultList();
         return optionalResult.size() > 0 ? optionalResult.get(0) : null;

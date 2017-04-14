@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.jasypt.digest.StringDigester;
 import org.simbasecurity.core.audit.AuditLogIntegrityMessageFactory;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,6 +112,6 @@ public class VerifyAuditLogIntegrityTask implements QuartzTask {
     }
 
     private boolean isAuditLogIntegrityEnabled() {
-        return (Boolean) configurationService.getValue(ConfigurationParameter.AUDIT_LOG_INTEGRITY_ENABLED);
+        return (Boolean) configurationService.getValue(SimbaConfigurationParameter.AUDIT_LOG_INTEGRITY_ENABLED);
     }
 }

@@ -1,7 +1,5 @@
 package org.simbasecurity.core.service.config;
 
-import java.util.EnumMap;
-
 import org.simbasecurity.core.config.ConfigurationStore;
 import org.simbasecurity.core.config.StoreType;
 import org.simbasecurity.core.config.store.DatabaseConfigurationStore;
@@ -9,6 +7,8 @@ import org.simbasecurity.core.config.store.QuartzConfigurationStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.EnumMap;
 
 @Configuration
 public class ConfigurationStoreConfiguration {

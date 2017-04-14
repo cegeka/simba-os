@@ -15,34 +15,51 @@
  */
 package org.simbasecurity.core.domain.repository;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
+import org.simbasecurity.core.domain.Role;
+import org.simbasecurity.core.domain.RoleEntity;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.UserEntity;
 import org.simbasecurity.test.PersistenceTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collection;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 public class UserDatabaseRepositoryTest extends PersistenceTestCase {
 
-	private static final String DUMMY_USER_NAME = "dummy";
-	private UserEntity user;
+    private static final String DUMMY_USER_NAME = "dummy";
+    private UserEntity user;
 
     @Autowired
     private UserDatabaseRepository userDatabaseRepository;
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         user = new UserEntity(DUMMY_USER_NAME);
-		persistAndRefresh(user);
-	}
+        persistAndRefresh(user);
+    }
 
-	@Test
-	public void test_findByName_success() {
-		 User result = userDatabaseRepository.findByName(DUMMY_USER_NAME);
-		 assertNotNull(result);
-		 assertEquals(DUMMY_USER_NAME, result.getUserName());
-	}
+    @Test
+    public void test_findByName_success() {
+        User result = userDatabaseRepository.findByName(DUMMY_USER_NAME);
+        assertNotNull(result);
+        assertEquals(DUMMY_USER_NAME, result.getUserName());
+    }
+
+    @Test
+    public void findForRole() {
+        Role role = new RoleEntity("aRole");
+        User otherUser = new UserEntity("otherUser");
+        persistAndRefresh(role, otherUser);
+        role.addUser(this.user);
+
+        Collection<User> result = userDatabaseRepository.findForRole(role);
+        assertThat(result).containsOnly(user);
+    }
 
 }

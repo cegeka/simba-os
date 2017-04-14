@@ -79,6 +79,7 @@ angular.module('SimbaApp')
                     $user.addRoles($scope.user, selectedUnlinkedRoles)
                         .success(function(){
                             $scope.initRoles();
+                            refreshSelectedUser();
                         })
                         .error(function(){
                             $error.showError('error.update.failed');
@@ -96,6 +97,10 @@ angular.module('SimbaApp')
 
     $scope.deleteRole = function(role) {
         $user.removeRole($scope.user, role)
+        .success(function() {
+            $scope.initRoles();
+            refreshSelectedUser();
+        })
         .error(function() {
             $error.showError('error.update.failed');
         });
@@ -103,10 +108,10 @@ angular.module('SimbaApp')
     
     var getTabs = function() {
         return [
-            {id: 'Data', title: $translate('updateuser.data'), active: true, url: 'views/modals/user/content/data.html', clickAction: function() {$scope.initData();}},
-            {id: 'Roles', title: $translate('updateuser.roles'),  active: false, url: 'views/modals/user/content/roles.html', clickAction: function() {$scope.initRoles();}},
-            {id: 'Groups', title: $translate('updateuser.groups'), active: false, url: 'views/modals/user/content/groups.html', clickAction: function() {$scope.initGroups();}},
-            {id: 'Policies', title: $translate('updateuser.policies'),  active: false, url: 'views/modals/user/content/policies.html', clickAction: function() {$scope.initPolicies();}}
+            {id: 'Data', title: 'updateuser.data', active: true, url: 'views/modals/user/content/data.html', clickAction: function() {$scope.initData();}},
+            {id: 'Roles', title: 'updateuser.roles',  active: false, url: 'views/modals/user/content/roles.html', clickAction: function() {$scope.initRoles();}},
+            {id: 'Groups', title: 'updateuser.groups', active: false, url: 'views/modals/user/content/groups.html', clickAction: function() {$scope.initGroups();}},
+            {id: 'Policies', title: 'updateuser.policies',  active: false, url: 'views/modals/user/content/policies.html', clickAction: function() {$scope.initPolicies();}}
         ];
     };
 
@@ -119,4 +124,13 @@ angular.module('SimbaApp')
         $scope.hideErrorMessage = function() {
             $error.hideError();
         };
+
+    var refreshSelectedUser = function () {
+        if (typeof $scope.user !== 'undefined') {
+            $user.refresh($scope.user)
+            .success(function (data) {
+                $scope.user = data;
+            });
+        }
+    }
   }]);

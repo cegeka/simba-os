@@ -26,6 +26,7 @@ import org.simbasecurity.test.util.ReflectionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -46,7 +47,7 @@ public class UserManagerServiceTest {
     @Mock private RoleRepository roleRepository;
     @Mock private UserRepository userRepository;
 
-    @Spy private EntityFilterService entityFilterService;
+    @Spy private EntityFilterService entityFilterService = new EntityFilterService(Optional.empty());
     @InjectMocks private UserManagerService service;
 
     @Mock private RoleDTO roleDTO1;
@@ -91,8 +92,15 @@ public class UserManagerServiceTest {
         when(userRepository.lookUp(userDTO2)).thenReturn(userEntity2);
         when(userRepository.lookUp(userDTO3)).thenReturn(userEntity3);
 
+        when(userRepository.findForRole(roleEntity1)).thenReturn(asList(userEntity1, userEntity3));
+        when(userRepository.findForRole(roleEntity2)).thenReturn(asList(userEntity2, userEntity3));
+
         when(roleRepository.lookUp(roleDTO1)).thenReturn(roleEntity1);
         when(roleRepository.lookUp(roleDTO2)).thenReturn(roleEntity2);
+
+        when(roleRepository.findForUser(userEntity1)).thenReturn(singletonList(roleEntity1));
+        when(roleRepository.findForUser(userEntity2)).thenReturn(singletonList(roleEntity2));
+        when(roleRepository.findForUser(userEntity3)).thenReturn(asList(roleEntity1, roleEntity2));
 
         when(roleRepository.findNotLinked(userEntity1)).thenReturn(singletonList(roleEntity2));
         when(roleRepository.findNotLinked(userEntity2)).thenReturn(singletonList(roleEntity1));

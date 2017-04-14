@@ -15,18 +15,15 @@
  */
 package org.simbasecurity.core.service.manager.dto;
 
-import org.simbasecurity.core.config.ConfigurationParameter;
-
-
 public final class ConfigurationParameterDTO {
 
-    private ConfigurationParameter name;
+    private String name;
     private Object value;
 
     public ConfigurationParameterDTO() {
     }
 
-    public ConfigurationParameterDTO(final ConfigurationParameter name, final Object value) {
+    public ConfigurationParameterDTO(final String name, final Object value) {
         setName(name);
         setValue(value);
     }
@@ -40,11 +37,11 @@ public final class ConfigurationParameterDTO {
         this.value = value;
     }
 
-    public void setName(final ConfigurationParameter name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
-    public ConfigurationParameter getName() {
+    public String getName() {
         return name;
     }
 }

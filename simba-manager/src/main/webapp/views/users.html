@@ -4,7 +4,7 @@
     <table>
         <tr>
             <th class="icon">
-                <a href="javascript:;" ng-evaluate-rule="manage-users,CREATE" ng-click="openAddUser()"><img src="resources/img/add.png" /></a>
+                <a href="javascript:;" ng-evaluate-rule="manage-users,CREATE" ng-click="openAddUser()"><img src="resources/img/add.png"/></a>
             </th>
             <th ng-repeat="header in headers">
                 <span>{{header|translate}}</span>
@@ -12,20 +12,23 @@
         </tr>
         <tr ng-repeat="user in users | filter:searchText | orderBy:'userName'">
             <td>
-                <a href="javascript:;" ng-click="openUserDetails(user)"><img class="icon" src="resources/img/search.png" /></a>
+                <a href="javascript:;" ng-click="openUserDetails(user)"><img class="icon" src="resources/img/search.png"/></a>
             </td>
             <td>
                 <span>{{user.userName}}</span>
             </td>
             <td>
-               <input type="checkbox" ng-checked="isUserInactive(user)" disabled="disabled" />
+                <input type="checkbox" ng-checked="isUserInactive(user)" disabled="disabled"/>
+            </td>
+            <td>
+                <input type="checkbox" ng-checked="isUserBlocked(user)" disabled="disabled"/>
             </td>
             <td>
                 <span>{{user.name}}</span>
             </td>
             <td>
-                <span>{{user.firstName}}</span> 
-            </td>    
+                <span>{{user.firstName}}</span>
+            </td>
         </tr>
     </table>
 </div>

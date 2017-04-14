@@ -136,4 +136,8 @@ public interface ChainContext extends Serializable {
     void setSAMLUser(SAMLUser samlUser);
 
     SAMLUser getSAMLUser();
+
+    boolean isLoginUsingEID();
+
+    String getSimbaEidSuccessUrl();
 }

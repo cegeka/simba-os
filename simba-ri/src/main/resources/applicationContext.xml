@@ -16,6 +16,8 @@
     <property name="level" value="INFO" />
   </bean>
 
+  <bean class="org.simbasecurity.core.audit.provider.SystemOutAuditLogProvider" />
+
   <import resource="classpath:jms/activemq-embedded/jmsContext.xml" />
   
   <!-- switch between the db of your choice here -->

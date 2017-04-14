@@ -1,8 +1,10 @@
 package org.simbasecurity.core.chain.eid;
 
+import org.simbasecurity.core.audit.Audit;
+import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.User;
@@ -25,6 +27,8 @@ public class CreateEIDUserCommand implements Command {
 
     @Autowired private UserService userService;
     @Autowired private ConfigurationService configurationService;
+    @Autowired private Audit audit;
+    @Autowired private AuditLogEventFactory auditLogFactory;
 
     @Override
     public State execute(ChainContext context) throws Exception {
@@ -32,25 +36,32 @@ public class CreateEIDUserCommand implements Command {
 
         User user = userService.findByName(samlUser.getInsz());
         if (user == null) {
-            List<String> roles = configurationService.getValue(ConfigurationParameter.DEFAULT_USER_ROLE);
+            List<String> roles = configurationService.getValue(SimbaConfigurationParameter.DEFAULT_USER_ROLE);
 
             user = new UserEntity(samlUser.getInsz());
             user.setName(samlUser.getLastname());
             user.setFirstName(samlUser.getFirstname());
-            user.setLanguage(Language.fromISO639Code(samlUser.getLanguage()));
+            user.setLanguage(getLanguageIfUnknownUseNL(samlUser));
             user.setPasswordChangeRequired(false);
             user.setChangePasswordOnNextLogon(false);
 
             userService.create(user, roles);
+            audit.log(auditLogFactory.createEventForEIDSAMLResponse(context, "New user for eid created with username [" + user.getUserName() + "]"));
         } else {
             user.setName(samlUser.getLastname());
             user.setFirstName(samlUser.getFirstname());
-            user.setLanguage(Language.fromISO639Code(samlUser.getLanguage()));
+            user.setLanguage(getLanguageIfUnknownUseNL(samlUser));
+            audit.log(auditLogFactory.createEventForEIDSAMLResponse(context, "Updated user with username [" + user.getUserName() + "] with new FAS data"));
         }
 
         context.setUserPrincipal(user.getUserName());
 
         return State.CONTINUE;
+    }
+
+    private Language getLanguageIfUnknownUseNL(SAMLUser samlUser) {
+        Language language = Language.fromISO639Code(samlUser.getLanguage());
+        return language == null ? Language.nl_NL : language;
     }
 
     @Override

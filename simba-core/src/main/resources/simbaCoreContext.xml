@@ -24,6 +24,7 @@
   </context:component-scan>
 
   <alias name="${simba.archiveSessionService}" alias="ArchiveSessionService"/>
+  <alias name="${simba.configurationParameterClassesList}" alias="ConfigurationParameterClassesList" />
 
   <context:property-placeholder location="classpath:simba.properties"/>
 

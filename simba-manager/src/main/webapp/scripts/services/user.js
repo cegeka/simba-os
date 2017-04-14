@@ -7,6 +7,9 @@ angular.module('SimbaApp')
             add: function(user) {
                 return $rest.post('user/create', user);
             },
+            addRest: function(username) {
+              return $rest.post('user/createRestUser', username);
+            },
             findByRole: function(role) {
                 return $rest.post('user/findByRole', role);
             },
@@ -39,6 +42,9 @@ angular.module('SimbaApp')
             },
             getSuccessUrls: function() {
                 return ['/dummyURL/'];
-            }
+            },
+            refresh: function(user) {
+                return $rest.post('user/refresh', user);
+            },
         };
     }]);

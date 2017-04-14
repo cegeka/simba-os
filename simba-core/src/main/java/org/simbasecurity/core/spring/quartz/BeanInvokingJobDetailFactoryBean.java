@@ -126,6 +126,7 @@ public class BeanInvokingJobDetailFactoryBean implements FactoryBean<JobDetail>,
                                    .withIdentity(new JobKey(name, this.group))
                                    .usingJobData("beanName", targetBeanName)
                                    .usingJobData("executionMethod", executionMethod)
+                                   .storeDurably()
                                    .build();
 
         postProcessJobDetail(this.jobDetail);
@@ -158,6 +159,7 @@ public class BeanInvokingJobDetailFactoryBean implements FactoryBean<JobDetail>,
      * Quartz Job implementation that invokes a specified method. Automatically
      * applied by MethodInvokingJobDetailFactoryBean.
      */
+    @PersistJobDataAfterExecution
     public static class BeanInvokingJob extends QuartzJobBean {
 
         private static final String APPLICATION_CONTEXT_KEY = "applicationContext";
@@ -223,6 +225,7 @@ public class BeanInvokingJobDetailFactoryBean implements FactoryBean<JobDetail>,
      * interface. Quartz checks whether or not jobs are stateful and if so,
      * won't let jobs interfere with each other.
      */
+    @PersistJobDataAfterExecution
     public static class StatefullBeanInvokingJob extends BeanInvokingJob implements StatefulJob {
 
         // No implementation, just an addition of the tag interface StatefulJob

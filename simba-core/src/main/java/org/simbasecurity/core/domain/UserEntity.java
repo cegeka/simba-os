@@ -36,7 +36,7 @@ import org.simbasecurity.core.util.SHA1PasswordEncryptorFactory;
 import javax.persistence.*;
 import java.util.*;
 
-import static org.simbasecurity.core.config.ConfigurationParameter.DEFAULT_PASSWORD;
+import static org.simbasecurity.core.config.SimbaConfigurationParameter.DEFAULT_PASSWORD;
 import static org.simbasecurity.core.domain.Status.INACTIVE;
 import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORDS_DONT_MATCH;
 import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORD_SAME_AS_OLD;

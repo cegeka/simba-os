@@ -47,8 +47,7 @@ public class AuthenticationFilterServiceImplTest extends LocatorTestCase {
 
     @Spy private AuditLogEventFactory auditLogEventFactory;
 
-    @InjectMocks
-    private AuthenticationFilterServiceImpl serviceImpl;
+    @InjectMocks private AuthenticationFilterServiceImpl serviceImpl;
 
     @Test
     public void testProcessRequest() throws Exception {
@@ -57,21 +56,18 @@ public class AuthenticationFilterServiceImplTest extends LocatorTestCase {
 
         ChainImpl authenticationChainMock = implantMockLocatingByNameOnly(ChainImpl.class, "authenticationChain");
 
-        serviceImpl.processRequest(new RequestData(null, null, null, null, null, null, false, false, false, false, false,
-                                                  null, null, "loginToken"), "authenticationChain");
+        serviceImpl.processRequest(new RequestData(null, null, null, null, null, null, false, false, false, false, false, null, null, "loginToken", null), "authenticationChain");
         verify(authenticationChainMock).execute(any(ChainContext.class));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testProcessRequest_InvalidChainCommand_throwsIllegalArgument() throws Exception {
-        serviceImpl.processRequest(new RequestData(null, null, null, null, null, null, false, false, false, false, false,
-                                                  null, null, "loginToken"), "blabla");
+        serviceImpl.processRequest(new RequestData(null, null, null, null, null, null, false, false, false, false, false, null, null, "loginToken", null), "blabla");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testProcessRequest_InvalidChainCommandNull_throwsIllegalArgument() throws Exception {
-        serviceImpl.processRequest(new RequestData(null, null, null, null, null, null, false, false, false, false, false,
-                                                  null, null, "loginToken"), null);
+        serviceImpl.processRequest(new RequestData(null, null, null, null, null, null, false, false, false, false, false, null, null, "loginToken", null), null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -82,8 +78,7 @@ public class AuthenticationFilterServiceImplTest extends LocatorTestCase {
     @Test
     public void testGetCurrentSession_NoTokenMappingProvided() {
         SSOToken ssoToken = mock(SSOToken.class);
-        RequestData requestData = new RequestData(null, null, null, null, ssoToken, null, false, false, false, false,
-                                                 false, null, null, null);
+        RequestData requestData = new RequestData(null, null, null, null, ssoToken, null, false, false, false, false, false, null, null, null, null);
 
         serviceImpl.getCurrentSession(requestData);
 
@@ -94,8 +89,8 @@ public class AuthenticationFilterServiceImplTest extends LocatorTestCase {
     public void testGetCurrentSession_TokenMappingProvided() {
         SSOToken ssoToken = mock(SSOToken.class);
         String tokenKey = UUID.randomUUID().toString();
-        RequestData requestData = new RequestData(Collections.<String, String>singletonMap(RequestConstants.SIMBA_SSO_TOKEN, tokenKey),
-                                                 null, null, null, null, null, false, false, true, false, false, null, null, null);
+        RequestData requestData = new RequestData(Collections.singletonMap(RequestConstants.SIMBA_SSO_TOKEN, tokenKey), null, null, null, null, null, false, false, true, false, false,
+                                                  null, null, null, null);
 
         when(ssoTokenMappingService.getSSOToken(tokenKey)).thenReturn(ssoToken);
 

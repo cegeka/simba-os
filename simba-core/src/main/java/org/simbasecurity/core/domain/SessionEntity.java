@@ -27,7 +27,7 @@ import javax.persistence.Table;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.simbasecurity.api.service.thrift.SSOToken;
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.locator.GlobalContext;
 
@@ -105,9 +105,9 @@ public class SessionEntity extends AbstractEntity implements Session {
     }
 
     private long getSessionTimeOutInMillis() {
-        Integer sessionTimeOut = getConfigurationService().getValue(ConfigurationParameter.SESSION_TIME_OUT);
+        Integer sessionTimeOut = getConfigurationService().getValue(SimbaConfigurationParameter.SESSION_TIME_OUT);
         return TimeUnit.MILLISECONDS.convert(sessionTimeOut,
-            ConfigurationParameter.SESSION_TIME_OUT.getTimeUnit());
+                                             SimbaConfigurationParameter.SESSION_TIME_OUT.getTimeUnit());
     }
 
     @Override

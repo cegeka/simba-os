@@ -30,70 +30,82 @@ import org.simbasecurity.common.request.RequestUtil;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.MalformedURLException;
+import java.io.IOException;
 
 public final class SimbaFilter implements Filter {
 
-	private String simbaURL;
-	private String simbaWebURL;
+    private String simbaURL;
+    private String simbaWebURL;
+    private String simbeEidSuccessUrl;
     private String authenticationChainName;
+    private String excludedUrl;
 
-	@Override
-	public void init(final FilterConfig filterConfig) throws ServletException {
-		simbaURL = SystemConfiguration.getSimbaServiceURL(filterConfig);
-		if (simbaURL == null) {
-			throw new ServletException("Simba URL has not been set. Check org.simbasecurity.client.filter params or system property ["
-					+ SystemConfiguration.SYS_PROP_SIMBA_INTERNAL_SERVICE_URL + "]");
-		}
+    @Override
+    public void init(final FilterConfig filterConfig) throws ServletException {
+        simbaURL = SystemConfiguration.getSimbaServiceURL(filterConfig);
+        if (simbaURL == null) {
+            throw new ServletException("Simba URL has not been set. Check org.simbasecurity.client.filter params or system property [" + SystemConfiguration.SYS_PROP_SIMBA_INTERNAL_SERVICE_URL + "]");
+        }
 
-		simbaWebURL = SystemConfiguration.getSimbaWebURL(filterConfig);
-		if (simbaWebURL == null) {
-			throw new ServletException("Simba web URL has not been set. Check org.simbasecurity.client.filter params or system property ["
-					+ SystemConfiguration.SYS_PROP_SIMBA_WEB_URL + "]");
-		}
+        simbaWebURL = SystemConfiguration.getSimbaWebURL(filterConfig);
+        if (simbaWebURL == null) {
+            throw new ServletException("Simba web URL has not been set. Check org.simbasecurity.client.filter params or system property [" + SystemConfiguration.SYS_PROP_SIMBA_WEB_URL + "]");
+        }
 
         authenticationChainName = SystemConfiguration.getAuthenticationChainName(filterConfig);
         if (authenticationChainName == null) {
             throw new ServletException("Simba authentication chain name has not been set. Check org.simbasecurity.client.filter params or system property ["
-                                       + SystemConfiguration.SYS_PROP_SIMBA_AUTHENTICATION_CHAIN_NAME + "]");
+                                       + SystemConfiguration.SYS_PROP_SIMBA_AUTHENTICATION_CHAIN_NAME
+                                       + "]");
         }
-		MakeCookieAction.setSecureCookiesEnabled(SystemConfiguration.getSecureCookiesEnabled(filterConfig));
-	}
 
-	@Override
-	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws ServletException,
-			MalformedURLException {
-		doFilter((HttpServletRequest) request, (HttpServletResponse) response, chain);
-	}
+        simbeEidSuccessUrl = SystemConfiguration.getSimbaEidSuccessUrl(filterConfig);
+        excludedUrl = SystemConfiguration.getExclusionContextPath(filterConfig);
 
-	private void doFilter(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain) throws ServletException,
-			MalformedURLException {
+        MakeCookieAction.setSecureCookiesEnabled(SystemConfiguration.getSecureCookiesEnabled(filterConfig));
+    }
 
-		RequestData requestData = RequestUtil.createRequestData(request, simbaWebURL);
+    @Override
+    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws ServletException, IOException {
+        doFilter((HttpServletRequest) request, (HttpServletResponse) response, chain);
+    }
 
-		FilterActionFactory actionFactory = new FilterActionFactory(request, response, chain);
+    private void doFilter(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain) throws ServletException, IOException {
+        if (isUrlExcluded(request)) {
+            chain.doFilter(request, response);
+            return;
+        }
+        RequestData requestData = RequestUtil.createRequestData(request, simbaWebURL, simbeEidSuccessUrl);
 
-		THttpClient tHttpClient = null;
-		try {
-			tHttpClient = new THttpClient(SimbaConfiguration.getSimbaAuthenticationURL());
-			TProtocol tProtocol = new TJSONProtocol(tHttpClient);
+        FilterActionFactory actionFactory = new FilterActionFactory(request, response, chain);
 
-			AuthenticationFilterService.Client authenticationClient = new AuthenticationFilterService.Client(tProtocol);
+        THttpClient tHttpClient = null;
+        try {
+            tHttpClient = new THttpClient(SimbaConfiguration.getSimbaAuthenticationURL());
+            TProtocol tProtocol = new TJSONProtocol(tHttpClient);
 
-			ActionDescriptor actionDescriptor = authenticationClient.processRequest(requestData, authenticationChainName);
-			actionFactory.execute(actionDescriptor);
-		} catch (Exception e) {
-			throw new ServletException(e);
-		} finally {
-			if (tHttpClient != null) {
-				tHttpClient.close();
-			}
-		}
-	}
+            AuthenticationFilterService.Client authenticationClient = new AuthenticationFilterService.Client(tProtocol);
 
-	@Override
-	public void destroy() {
-		// no need to release any resource
-	}
+            ActionDescriptor actionDescriptor = authenticationClient.processRequest(requestData, authenticationChainName);
+            actionFactory.execute(actionDescriptor);
+        } catch (Exception e) {
+            throw new ServletException(e);
+        } finally {
+            if (tHttpClient != null) {
+                tHttpClient.close();
+            }
+        }
+    }
 
+    @Override
+    public void destroy() {
+        // no need to release any resource
+    }
+
+    boolean isUrlExcluded(HttpServletRequest request) {
+        String cp = request.getContextPath();
+        String uri = request.getRequestURI();
+        String path = uri.substring(cp.length());
+        return path.equals(excludedUrl);
+    }
 }

@@ -15,7 +15,7 @@
  */
 package org.simbasecurity.core.service.cache;
 
-import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.event.EventService;
 import org.simbasecurity.core.event.SimbaEventType;
@@ -43,12 +43,12 @@ public class CacheServiceImpl implements CacheService {
 
     @Override
     public boolean isCacheEnabled() {
-        return (Boolean) configurationService.getValue(ConfigurationParameter.CACHING_ENABLED);
+        return (Boolean) configurationService.getValue(SimbaConfigurationParameter.CACHING_ENABLED);
     }
 
     @Override
     @Transactional
     public void setCacheEnabled(boolean isEnabled) {
-        configurationService.changeParameter(ConfigurationParameter.CACHING_ENABLED, isEnabled);
+        configurationService.changeParameter(SimbaConfigurationParameter.CACHING_ENABLED, isEnabled);
     }
 }

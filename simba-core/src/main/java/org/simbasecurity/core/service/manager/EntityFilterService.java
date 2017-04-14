@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -24,27 +25,28 @@ import java.util.function.Supplier;
  * @see PolicyManagerService
  * @see RoleManagerService
  * @see EntityFilter
+ *
+ * @since 3.0.0
  */
 @Service
 public class EntityFilterService {
 
-    @Autowired
     private List<EntityFilter> filters;
 
     private Predicate<Role> rolePredicate;
     private Predicate<Policy> policyPredicate;
     private Predicate<User> userPredicate;
 
+    @Autowired
+    public EntityFilterService(@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<List<EntityFilter>> filters) {
+        this.filters = filters.orElseGet(ArrayList::new);
+    }
+
     @PostConstruct
     public void initializePredicates() {
-        if (filters != null) {
-            rolePredicate = filters.stream().map(EntityFilter::rolePredicate).reduce(Predicate::and).orElse(r -> true);
-            policyPredicate = filters.stream().map(EntityFilter::policyPredicate).reduce(Predicate::and).orElse(p -> true);
-            userPredicate = filters.stream().map(EntityFilter::userPredicate).reduce(Predicate::and).orElse(u -> true);
-        } else {
-            rolePredicate = r -> true;
-            policyPredicate = p -> true;
-        }
+        rolePredicate = filters.stream().map(EntityFilter::rolePredicate).reduce(Predicate::and).orElse(r -> true);
+        policyPredicate = filters.stream().map(EntityFilter::policyPredicate).reduce(Predicate::and).orElse(p -> true);
+        userPredicate = filters.stream().map(EntityFilter::userPredicate).reduce(Predicate::and).orElse(u -> true);
     }
 
     public Collection<Role> filterRoles(Collection<Role> input) {

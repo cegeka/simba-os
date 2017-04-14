@@ -16,7 +16,7 @@ angular.module('SimbaApp')
 
        $scope.changeParameter = function(parameter) {
             $configuration.changeParameter(parameter,
-                undefined,
+                function() {},
                 function(){
                     $error.showError('error.update.failed');
                     parameter.value = $scope.currentValue;

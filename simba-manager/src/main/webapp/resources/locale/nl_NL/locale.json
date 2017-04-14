@@ -18,6 +18,7 @@
 "useroverview.name":"Naam",
 "useroverview.firstname":"Voornaam",
 "useroverview.active":"Inactief",
+"useroverview.blocked":"Geblokkeerd",
 
 "roleoverview.roles":"Rollen",
 "policyoverview.policies":"Policies",
@@ -86,6 +87,8 @@
 "user.inactivedate":"Datum inactief",
 "users.filter":"Filter gebruikers...",
 "users.filtered":"Gefilterd: Toont {0} record(s)",
+"users.add.rest.title":"REST",
+"users.add.webservices.title":"Webservices",
 
 "condition.wizard":"Condition Wizard",
 "condition.name":"Naam",
@@ -146,5 +149,12 @@
 "textboxpopup.cancel":"Annuleren",
 
 "create.role":"Rol Aanmaken",
-"create.policy":"Policy Aanmaken"
+"create.policy":"Policy Aanmaken",
+
+"idle.title":"U bent momenteel inactief!",
+"idle.message":"U zal worden afgemeld in ",
+"idle.message.2":" second(en).",
+
+"generated.password.title":"Gegenereerd wachtwoord",
+"generated.password.body":"Uw gegenereerd wachtwoord is het volgende: "
 }

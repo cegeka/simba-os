@@ -15,20 +15,21 @@
  */
 package org.simbasecurity.core.domain.validator;
 
-import static org.simbasecurity.core.config.ConfigurationParameter.*;
-import static org.simbasecurity.core.exception.SimbaMessageKey.*;
-
-import java.util.List;
-
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.exception.SimbaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
+import static org.simbasecurity.core.config.SimbaConfigurationParameter.*;
+import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORD_INVALID_COMPLEXITY;
+import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORD_INVALID_LENGTH;
+
 @Component
 public class PasswordValidatorImpl implements PasswordValidator {
 
-    @Autowired private ConfigurationService configurationService;
+    private ConfigurationService configurationService;
 
     public void validatePassword(String newPassword) throws SimbaException {
         if (!checkPasswordLength(newPassword)) {
@@ -66,5 +67,10 @@ public class PasswordValidatorImpl implements PasswordValidator {
             }
         }
         return complexity;
+    }
+
+    @Autowired
+    public void setConfigurationService(ConfigurationService configurationService) {
+        this.configurationService = configurationService;
     }
 }

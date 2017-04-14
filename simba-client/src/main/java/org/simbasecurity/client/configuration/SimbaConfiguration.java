@@ -15,6 +15,7 @@
  */
 package org.simbasecurity.client.configuration;
 
+import org.simbasecurity.common.config.SystemConfiguration;
 import org.simbasecurity.common.util.StringUtil;
 
 import java.net.*;
@@ -46,7 +47,7 @@ public class SimbaConfiguration {
     }
 
 	private static String getSimbaURL() {
-		String url = System.getProperty("simba.url");
+		String url = SystemConfiguration.getSimbaServiceURL();
 		if (StringUtil.isEmpty(url)) {
 			throw new IllegalArgumentException("Simba URL has not been set. Check system property [simba.url]");
 		}

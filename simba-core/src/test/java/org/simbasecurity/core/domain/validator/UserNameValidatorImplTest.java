@@ -26,7 +26,7 @@ import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.exception.SimbaException;
 
 import static org.mockito.Mockito.when;
-import static org.simbasecurity.core.config.ConfigurationParameter.*;
+import static org.simbasecurity.core.config.SimbaConfigurationParameter.*;
 
 public class UserNameValidatorImplTest {
 

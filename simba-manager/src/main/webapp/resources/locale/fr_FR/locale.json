@@ -18,6 +18,7 @@
 "useroverview.name":"Nom",
 "useroverview.firstname":"Prénom",
 "useroverview.active":"Inactive",
+"useroverview.blocked":"Bloqué",
 
 "roleoverview.roles":"Rôles",
 "policyoverview.policies":"Policies",
@@ -86,6 +87,8 @@
 "user.inactivedate":"Date inactive",
 "users.filter":"Filtre d'utilisateurs...",
 "users.filtered":"Filtré: Affiche {0} dossier(s)",
+"users.add.rest.title":"REST",
+"users.add.webservices.title":"Services web",
 
 "condition.wizard":"Condition Wizard",
 "condition.name":"Nom",
@@ -146,6 +149,13 @@
 "textboxpopup.cancel":"Annuler",
 
 "create.role":"Créer rôle",
-"create.policy":"Créer policy"
+"create.policy":"Créer policy",
+
+"idle.title":"Vous êtes actuellement inactif!",
+"idle.message":"Vous serez déconnecté dans ",
+"idle.message.2":" seconde(s).",
+
+"generated.password.title":"Mot de pass généré",
+"generated.password.body":"Votre mot de passe généré est: "
 
 }

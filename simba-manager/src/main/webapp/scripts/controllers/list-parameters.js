@@ -20,7 +20,7 @@ angular.module('SimbaApp')
        }
 
        $scope.addParameter = function(parameter) {
-           var textbox =  $simba_component.textbox('add.parameter');
+           var textbox =  $simba_component.textbox($translate('add.parameter'));
 
            textbox.result.then(function (value) {
                parameter.value.push(value);

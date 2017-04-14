@@ -125,7 +125,7 @@ angular.module('SimbaApp')
     };
 
     $scope.createPolicy = function() {
-        var textbox =  $simba_component.textbox('create.policy');
+        var textbox =  $simba_component.textbox($translate('create.policy'));
 
         textbox.result.then(function (name) {
             $policy.createPolicy(name).success(function(data) {

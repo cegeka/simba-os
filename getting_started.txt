@@ -83,4 +83,28 @@ After that you can add a profile for you OS in the parent pom.xml providing the 
   </activeProfiles>
 
 
+Making a Release
+=-=-=-=-=-=-=-=-=
+Making a Simba release, ie. deploying the artifacts to the Simba nexus repository relies on Maven.
+
+Making a SNAPSHOT release
+--------------------------
+To make a snapshot release run the maven goal:
+
+    mvn deploy
+
+this will build, test and package the local sources and publish these artifacts to the nexus snapshot repository.
+
+Making an OFFICIAL release
+---------------------------
+An official release is a multi-step process.
+
+    1. Run a build with tests, make sure it is successful
+    2. Commit and push all local changes
+    3. Run the maven goal: mvn release:prepare
+       This will prompt for the release version, SCM tag and next snapshot version. Afterward it will update the pom
+       files, push them to GitHub, create a tag on GitHub and prepare a release.properties file for next step.
+    4. Run the maven goal: mvn release:perform
+       This will perform the previously prepared release. This means uploading all artifacts to the nexus release
+       repository.
 

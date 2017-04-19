@@ -107,7 +107,7 @@ angular.module('SimbaApp')
     };
 
     $scope.createRole = function() {
-        var textbox =  $simba_component.textbox('create.role');
+        var textbox =  $simba_component.textbox($translate('create.role'));
 
         textbox.result.then(function (name) {
             $role.createRole(name).success(function(data) {

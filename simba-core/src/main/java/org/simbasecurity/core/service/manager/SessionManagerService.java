@@ -57,7 +57,7 @@ public class SessionManagerService {
 	@RequestMapping("remove")
 	@ResponseBody
 	public void remove(@RequestBody SessionDTO session) {
-		Session selectedSession = sessionRepository.lookUp(session);
+		Session selectedSession = sessionRepository.findBySSOToken(session.getSsoToken());
 		if (selectedSession.getUser().getUserName().equalsIgnoreCase(getCurrentUser().getUserName())) {
 			throw new IllegalArgumentException("You can't delete your own session!");
 		}

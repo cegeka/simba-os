@@ -15,19 +15,13 @@
  */
 package org.simbasecurity.core.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "SIMBA_EXCLUDED_RESOURCE")
@@ -36,7 +30,7 @@ public class ExcludedResourceEntity extends AbstractVersionedEntity implements E
     private static final long serialVersionUID = 1579583130782665494L;
 
     @Id
-    @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_EXCLUDED_RESOURCE")
     protected long id = 0;
     

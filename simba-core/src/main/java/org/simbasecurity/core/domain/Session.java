@@ -20,7 +20,7 @@ import org.simbasecurity.api.service.thrift.SSOToken;
 /**
  * @since 1.0
  */
-public interface Session extends Identifiable {
+public interface Session {
 
     /**
      * @return the {@link User} for this session.

@@ -15,10 +15,10 @@
  */
 package org.simbasecurity.core.domain.repository;
 
-import java.util.Collection;
-
 import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.core.domain.Session;
+
+import java.util.Collection;
 
 public interface SessionRepository extends AbstractRepository<Session> {
 
@@ -36,4 +36,11 @@ public interface SessionRepository extends AbstractRepository<Session> {
      * @return the session specified by given token
      */
     Session findBySSOToken(SSOToken ssoToken);
+
+    /**
+     * @param ssoToken the SSO token
+     * @return the session specified by the given token
+     */
+    Session findBySSOToken(String ssoToken);
+
 }

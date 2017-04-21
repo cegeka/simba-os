@@ -35,12 +35,11 @@ public final class SessionDTOAssembler {
 
     public static SessionDTO assemble(final Session session) {
         final SessionDTO sessionDTO = new SessionDTO();
-        sessionDTO.setId(session.getId());
         sessionDTO.setUserName(session.getUser().getUserName());
         sessionDTO.setClientIpAddress(session.getClientIpAddress());
         sessionDTO.setCreationTime(session.getCreationTime());
         sessionDTO.setLastAccessTime(session.getLastAccessTime());
-//        sessionDTO.setSsoToken(session.getSSOToken().getToken());
+        sessionDTO.setSsoToken(session.getSSOToken().getToken());
         return sessionDTO;
     }
 }

@@ -53,9 +53,8 @@ public class SessionDTOAssemblerTest extends LocatorTestCase {
         SessionDTO sessionData = SessionDTOAssembler.assemble(session);
 
         assertNotNull(sessionData);
-        assertEquals(0, sessionData.getId());
         assertEquals(user.getUserName(), sessionData.getUserName());
-//        assertEquals(ssoToken.getToken(), sessionData.getSsoToken());
+        assertEquals(ssoToken.getToken(), sessionData.getSsoToken());
         assertEquals(clientIpAddress, sessionData.getClientIpAddress());
         assertTrue(0 < sessionData.getCreationTime());
         assertNotNull(sessionData.getLastAccessTime());

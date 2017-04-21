@@ -15,36 +15,25 @@
  */
 package org.simbasecurity.core.domain;
 
-import java.util.concurrent.TimeUnit;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.simbasecurity.api.service.thrift.SSOToken;
-import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.locator.GlobalContext;
+
+import javax.persistence.*;
+import java.util.concurrent.TimeUnit;
 
 @Entity
 @Table(name = "SIMBA_SESSION")
-public class SessionEntity extends AbstractEntity implements Session {
-
-    private static final long serialVersionUID = 204956446414361204L;
+public class SessionEntity implements Session {
 
     @Id
-    @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.AUTO)
-    @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_SESSION")
-    protected long id = 0;
+    private String ssoToken;
 
     private long creationTime;
     private long lastAccessTime;
-    private String ssoToken;
 
     @ManyToOne(targetEntity = UserEntity.class, optional = false)
     private User user;
@@ -62,11 +51,6 @@ public class SessionEntity extends AbstractEntity implements Session {
         this.user = user;
         this.clientIpAddress = clientIpAddress;
         this.hostServerName = hostServerName;
-    }
-
-    @Override
-    public long getId() {
-        return id;
     }
 
     @Override
@@ -122,7 +106,6 @@ public class SessionEntity extends AbstractEntity implements Session {
     @Override
     public String toString() {
         ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
-        builder.append("id", id);
         builder.append("user", user);
         builder.append("SSO Token", ssoToken);
         builder.append("client IP", clientIpAddress);

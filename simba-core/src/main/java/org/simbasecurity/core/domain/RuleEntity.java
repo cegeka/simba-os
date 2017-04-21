@@ -15,21 +15,11 @@
  */
 package org.simbasecurity.core.domain;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "SIMBA_RULE")
@@ -40,7 +30,7 @@ public abstract class RuleEntity extends AbstractVersionedEntity implements Rule
     private static final long serialVersionUID = -7300017447485361764L;
 
     @Id
-    @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_RULE")
     protected long id = 0;
 

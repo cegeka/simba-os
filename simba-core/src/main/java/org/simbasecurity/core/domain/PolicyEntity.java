@@ -34,7 +34,7 @@ public class PolicyEntity extends AbstractVersionedEntity implements Policy {
     private static final long serialVersionUID = 552484022516217422L;
 
     @Id
-    @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_POLICY")
     protected long id = 0;
 

@@ -16,33 +16,22 @@
 package org.simbasecurity.core.domain;
 
 
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.locator.GlobalContext;
+
+import javax.persistence.*;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 
 @Entity
 @Table(name = "SIMBA_LOGIN_MAPPING")
-public class LoginMappingEntity extends AbstractEntity implements LoginMapping {
-
-	private static final long serialVersionUID = -1883973037440862067L;
+public class LoginMappingEntity implements LoginMapping {
 
     @Id
-    @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.AUTO)
-    @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_LOGIN_MAPPING")
-    protected long id = 0;
-	
 	private String token;
 	private String targetURL;
 	private long creationTime;
@@ -56,11 +45,6 @@ public class LoginMappingEntity extends AbstractEntity implements LoginMapping {
 		this.token = UUID.randomUUID().toString();
 		this.creationTime = System.currentTimeMillis();
 	}
-	
-    @Override
-    public long getId() {
-        return id;
-    }	
 	
 	public String getToken() {
 		return token;
@@ -77,7 +61,6 @@ public class LoginMappingEntity extends AbstractEntity implements LoginMapping {
 	@Override
     public String toString() {
         ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
-        builder.append("id", id);
         builder.append("Token", token);
         builder.append("targetURL", targetURL);
         builder.append("TimeStamp", creationTime);

@@ -15,14 +15,14 @@
  */
 package org.simbasecurity.core.domain.repository;
 
-import java.util.Collection;
+import org.simbasecurity.core.domain.Identifiable;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.Collection;
 
-import org.simbasecurity.core.domain.Identifiable;
-
-public abstract class AbstractDatabaseRepository<T extends Identifiable> {
+public abstract class AbstractDatabaseRepository<T> {
 
     @PersistenceContext
     protected EntityManager entityManager;

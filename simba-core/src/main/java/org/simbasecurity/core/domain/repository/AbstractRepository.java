@@ -15,11 +15,11 @@
  */
 package org.simbasecurity.core.domain.repository;
 
-import java.util.Collection;
-
 import org.simbasecurity.core.domain.Identifiable;
 
-public interface AbstractRepository<T extends Identifiable> {
+import java.util.Collection;
+
+public interface AbstractRepository<T> {
 
     Collection<T> findAll();
 

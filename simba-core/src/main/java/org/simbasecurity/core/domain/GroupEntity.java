@@ -12,7 +12,7 @@ public class GroupEntity extends AbstractVersionedEntity implements Group {
     private static final long serialVersionUID = 552484022516217422L;
 
     @Id
-    @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_GROUP")
     protected long id = 0;
 

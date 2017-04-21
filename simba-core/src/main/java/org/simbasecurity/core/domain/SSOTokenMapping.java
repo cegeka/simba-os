@@ -2,7 +2,7 @@ package org.simbasecurity.core.domain;
 
 import org.simbasecurity.api.service.thrift.SSOToken;
 
-public interface SSOTokenMapping extends Identifiable {
+public interface SSOTokenMapping {
     /**
      * @return the generated token.
      */

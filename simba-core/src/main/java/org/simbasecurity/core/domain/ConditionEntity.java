@@ -15,21 +15,10 @@
  */
 package org.simbasecurity.core.domain;
 
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
 import org.simbasecurity.core.service.AuthorizationRequestContext;
+
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -39,7 +28,7 @@ public abstract class ConditionEntity extends AbstractVersionedEntity implements
     private static final long serialVersionUID = -723660543552695800L;
 
     @Id
-    @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_CONDITION")
     protected long id = 0;
 

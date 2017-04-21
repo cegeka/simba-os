@@ -28,7 +28,7 @@ import org.springframework.stereotype.Repository;
 public class SessionDatabaseRepository extends AbstractDatabaseRepository<Session> implements SessionRepository {
 
     public void removeAllBut(SSOToken ssoToken) {
-        Query query = entityManager.createQuery("DELETE FROM SessionEntity s WHERE s.ssoToken != :ssoToken");
+        Query query = entityManager.createQuery("DELETE FROM SessionEntity s WHERE NOT s.ssoToken = :ssoToken");
         query.setParameter("ssoToken", ssoToken.getToken());
         query.executeUpdate();
     }
@@ -36,9 +36,13 @@ public class SessionDatabaseRepository extends AbstractDatabaseRepository<Sessio
     @SuppressWarnings("unchecked")
     @Override
     public Session findBySSOToken(SSOToken ssoToken) {
+        return findBySSOToken(ssoToken.getToken());
+    }
+
+    public Session findBySSOToken(String ssoToken) {
         Query query = entityManager.createQuery(
                 "SELECT s FROM SessionEntity s WHERE s.ssoToken = :ssoToken").setParameter(
-                "ssoToken", ssoToken.getToken());
+                "ssoToken", ssoToken);
         List<Session> resultList = query.getResultList();
 
         if (resultList.size() == 0) {
@@ -48,7 +52,6 @@ public class SessionDatabaseRepository extends AbstractDatabaseRepository<Sessio
         }
 
         throw new IllegalStateException("Multiple sessions found for token: '" + ssoToken + "'");
-
     }
 
     @Override

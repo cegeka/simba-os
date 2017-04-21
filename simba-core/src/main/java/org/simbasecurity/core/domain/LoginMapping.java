@@ -15,7 +15,7 @@
  */
 package org.simbasecurity.core.domain;
 
-public interface LoginMapping extends Identifiable {
+public interface LoginMapping {
 
     /**
      * @return the generated token.

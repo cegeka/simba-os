@@ -16,13 +16,13 @@
 package org.simbasecurity.core.service.manager.dto;
 
 
-public final class SessionDTO extends AbstractIdentifiableDTO {
+public final class SessionDTO {
 
+    private String ssoToken;
     private String userName;
     private String clientIpAddress;
     private long creationTime;
     private long lastAccessTime;
-//    private String ssoToken;
 
     public void setUserName(final String userName) {
         this.userName = userName;
@@ -56,5 +56,12 @@ public final class SessionDTO extends AbstractIdentifiableDTO {
         this.lastAccessTime = lastAccessTime;
     }
 
+    public String getSsoToken() {
+        return ssoToken;
+    }
+
+    public void setSsoToken(String ssoToken) {
+        this.ssoToken = ssoToken;
+    }
 }
 

@@ -34,7 +34,7 @@ public class RoleEntity extends AbstractVersionedEntity implements Role {
     private static final long serialVersionUID = 552484022516217422L;
 
     @Id
-    @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_ROLE")
     protected long id = 0;
 

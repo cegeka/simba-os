@@ -7,6 +7,7 @@
 "dashboard.policies":"Policies",
 "dashboard.groups":"Groups",
 
+"sessionoverview.ssotoken":"SSO Token",
 "sessionoverview.username":"Username",
 "sessionoverview.clientip":"IP address",
 "sessionoverview.creationtime":"Creation time",

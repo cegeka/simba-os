@@ -80,6 +80,7 @@ th span, td span {
 
 .largeSelect {
     width: 500px;
+    height: 300px !important;
 }
 /*
 *   Input styling

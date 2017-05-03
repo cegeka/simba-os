@@ -53,7 +53,6 @@ angular.module('SimbaApp')
             var getCreationType = function () {
                 for(var tabId in $scope.tabs){
                     var tab = $scope.tabs[tabId];
-                    console.log(tab);
                     if(tab.active){
                         return tab.id.toLowerCase();
                     }

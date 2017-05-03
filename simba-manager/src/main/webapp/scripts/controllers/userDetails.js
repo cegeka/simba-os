@@ -90,7 +90,7 @@ angular.module('SimbaApp')
         $user.findRolesNotLinked($scope.user)
             .success(function(data) {
 
-                var listbox = $simba_component.listbox('dashboard.roles', data, "name");
+                var listbox = $simba_component.listbox($translate('dashboard.roles'), data, "name");
 
                 listbox.result.then(function (selectedUnlinkedRoles) {
                     $user.addRoles($scope.user, selectedUnlinkedRoles)

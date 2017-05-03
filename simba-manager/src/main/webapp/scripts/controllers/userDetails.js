@@ -18,8 +18,8 @@
 'use strict';
 
 angular.module('SimbaApp')
-  .controller('UserDetailsCtrl', ['$scope', '$modalInstance', 'selectedUser', '$user', '$translate', '$error', '$simba_component', '$configuration',
-                        function ($scope, $modalInstance, selectedUser, $user, $translate, $error, $simba_component, $configuration) {
+  .controller('UserDetailsCtrl', ['$scope', '$modalInstance', 'selectedUser', '$user', '$translate', '$error', '$simba_component', '$configuration', '$log',
+                        function ($scope, $modalInstance, selectedUser, $user, $translate, $error, $simba_component, $configuration, $log) {
     $scope.tabs; 
     $scope.user;
     $scope.successUrls;

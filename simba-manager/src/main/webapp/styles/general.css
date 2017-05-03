@@ -78,6 +78,9 @@ th span, td span {
     height:250px; overflow:auto;
 }
 
+.largeSelect {
+    width: 500px;
+}
 /*
 *   Input styling
 */

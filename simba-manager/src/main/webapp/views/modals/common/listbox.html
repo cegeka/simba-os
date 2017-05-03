@@ -20,7 +20,7 @@
         {{ title }}
     </div>
     <div class="modal-body">
-        <select multiple ng-multiple="true" ng-model="selectedItems" ng-options="i.name for i in items" ng-change="selectionChanged(selectedItems)">
+        <select class="largeSelect" multiple ng-multiple="true" ng-model="selectedItems" ng-options="i.name for i in items" ng-change="selectionChanged(selectedItems)">
 
         </select>
     </div>

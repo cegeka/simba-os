@@ -20,7 +20,10 @@ angular.module('SimbaApp')
         function($translate) {
             return {
                 link: function (scope, element, attr) {
-                    var msg = $translate(attr.ngConfirmClick) || $translate('collectionmanager.confirmremove.text');
+                    var msg = attr.ngConfirmClick || 'collectionmanager.confirmremove.text';
+                   $translate(msg).then(function (translation) {
+                       msg = translation;
+                   });
                     var clickAction = attr.confirmAction;
                     element.bind('click', function(event) {
                         if(window.confirm(msg)) {

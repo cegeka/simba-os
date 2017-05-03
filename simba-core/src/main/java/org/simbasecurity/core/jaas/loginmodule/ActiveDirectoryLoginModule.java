@@ -119,7 +119,6 @@ public class ActiveDirectoryLoginModule extends SimbaLoginModule {
     private String searchFilter;
     private String securityLevel;
     private int searchScope;
-    private String userCN;
 
     public ActiveDirectoryLoginModule() {
         super();
@@ -170,29 +169,28 @@ public class ActiveDirectoryLoginModule extends SimbaLoginModule {
         }
     }
 
-    private void updateUserGroups(LdapContext ldapContext) {
+    private void updateUserGroups(LdapContext ldapContext, String userCN) {
         UserRepository userRepository = GlobalContext.locate(UserRepository.class);
         User user = userRepository.findByName(getUsername());
         if(user != null) {
             user.clearGroups();
             try {
-                addADGroupsToUser(ldapContext, user);
+                addADGroupsToUser(ldapContext, user, userCN);
             } catch(Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    protected void addADGroupsToUser(LdapContext ldapContext, User user) throws NamingException {
+    protected void addADGroupsToUser(LdapContext ldapContext, User user, String userCN) throws NamingException {
         SearchControls searchControls = new SearchControls();
         searchControls.setReturningAttributes(new String[] { "dn"});
         searchControls.setSearchScope(searchScope);
 
         GroupRepository groupRepository = GlobalContext.locate(GroupRepository.class);
-        Encoder encoder = DefaultEncoder.getInstance();
-        String filterGroups = encoder.encodeForLDAP("(&(member="+userCN+","+searchBase+")(objectcategory=group))");
+        String filterGroups = "(&(member="+userCN+","+searchBase+")(objectcategory=group))";
 
-        NamingEnumeration results = ldapContext.search(encoder.encodeForLDAP(searchBase), filterGroups, searchControls);
+        NamingEnumeration results = ldapContext.search(searchBase, filterGroups, searchControls);
         while (hasMoreResults(results)) {
             String groupCN = ((SearchResult) results.next()).getName();
             Group group = groupRepository.findByCN(groupCN);
@@ -213,7 +211,8 @@ public class ActiveDirectoryLoginModule extends SimbaLoginModule {
     @Override
     protected boolean verifyLoginData() throws FailedLoginException {
         String[] returnedAtts = {authenticationAttribute};
-        String requestSearchFilter = searchFilter.replaceAll("%USERNAME%", getUsername());
+        Encoder encoder = DefaultEncoder.getInstance();
+        String requestSearchFilter = searchFilter.replaceAll("%USERNAME%", encoder.encodeForLDAP(getUsername()));
 
         SearchControls searchCtls = new SearchControls();
         searchCtls.setReturningAttributes(returnedAtts);
@@ -224,12 +223,11 @@ public class ActiveDirectoryLoginModule extends SimbaLoginModule {
         debug("Verifying credentials for user: " + getUsername());
 
         boolean ldapUser = false;
-
+        String userCN = null;
         try {
             LdapContext ldapContext = getLdapContext(env);
             if (ldapContext != null) {
-                Encoder encoder = DefaultEncoder.getInstance();
-                NamingEnumeration<SearchResult> answer = ldapContext.search(encoder.encodeForLDAP(searchBase), encoder.encodeForLDAP(requestSearchFilter), searchCtls);
+                NamingEnumeration<SearchResult> answer = ldapContext.search(searchBase, requestSearchFilter, searchCtls);
 
                 while (!ldapUser && answer.hasMoreElements()) {
                     SearchResult sr = answer.next();
@@ -242,8 +240,9 @@ public class ActiveDirectoryLoginModule extends SimbaLoginModule {
                     }
                 }
                 debug("Authentication succeeded");
-                if(Boolean.TRUE.equals(GlobalContext.locate(ConfigurationService.class).getValue(SimbaConfigurationParameter.ENABLE_AD_GROUPS))) {
-                    updateUserGroups(ldapContext);
+                if(Boolean.TRUE.equals(GlobalContext.locate(ConfigurationService.class).getValue(SimbaConfigurationParameter.ENABLE_AD_GROUPS))
+                        && userCN != null) {
+                    updateUserGroups(ldapContext, userCN);
                 }
             }
             return ldapUser;
@@ -303,7 +302,7 @@ public class ActiveDirectoryLoginModule extends SimbaLoginModule {
         this.callbacks = callbacks;
     }
 
-    private LdapContext tryPrimaryContext(Hashtable<String, String> env) {
+    protected LdapContext tryPrimaryContext(Hashtable<String, String> env) {
         env.put(Context.PROVIDER_URL, "ldap://" + primaryServerHost + ":" + primaryServerPort);
         try {
             return new InitialLdapContext(env, null);
@@ -313,7 +312,7 @@ public class ActiveDirectoryLoginModule extends SimbaLoginModule {
         }
     }
 
-    private LdapContext trySecondaryContext(Hashtable<String, String> env) {
+    protected LdapContext trySecondaryContext(Hashtable<String, String> env) {
         debug("Trying secondary server...");
         env.put(Context.PROVIDER_URL, "ldap://" + secondaryServerHost + ":" + secondaryServerPort);
         try {

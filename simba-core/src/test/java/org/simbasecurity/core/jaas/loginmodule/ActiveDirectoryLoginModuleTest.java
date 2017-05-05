@@ -18,7 +18,6 @@
 package org.simbasecurity.core.jaas.loginmodule;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -27,9 +26,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.domain.User;
-import org.simbasecurity.core.domain.repository.GroupRepository;
-import org.simbasecurity.core.jaas.callbackhandler.ChainContextCallbackHandler;
 import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.locator.Locator;
 import org.simbasecurity.test.LocatorTestCase;
@@ -40,7 +36,6 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
 import javax.security.auth.Subject;
-import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,9 +43,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class ActiveDirectoryLoginModuleTest extends LocatorTestCase {
@@ -63,36 +56,6 @@ public class ActiveDirectoryLoginModuleTest extends LocatorTestCase {
         Locator locator = mock(Locator.class);
         GlobalContext.initialize(locator);
         when(locator.locate(ConfigurationService.class)).thenReturn(configurationService);
-    }
-
-    @Test
-    @Ignore
-    public void testVerifyLoginData_NoLDAPInjectionPossible() throws Exception {
-        ActiveDirectoryLoginModule module = new ActiveDirectoryLoginModule();
-        ChainContextCallbackHandler mockCallbackHandler = mock(ChainContextCallbackHandler.class);
-        mockCallbackHandler.handle(any(Callback[].class));
-        Subject subject = new Subject();
-        Map<String, String> options = new HashMap<>();
-        options.put("filter", "test%USERNAME%");
-        options.put("baseDN", "test*");
-        options.put("primaryServer", "localhost:8080");
-        LdapContext ldapContext = mock(LdapContext.class);
-        when(ldapContext.search(anyString(), anyString(), any(SearchControls.class))).thenReturn(mock(NamingEnumeration.class));
-        implantMock(GroupRepository.class);
-
-        module.initialize(subject, mockCallbackHandler, Collections.emptyMap(), options);
-        module.setUsername("*test");
-        module.setPassword("pass");
-        module.verifyLoginData();
-
-        module.addADGroupsToUser(ldapContext, mock(User.class), "");
-
-        ArgumentCaptor<String> captor1 = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<String> captor2 = ArgumentCaptor.forClass(String.class);
-        verify(ldapContext).search(captor1.capture(), captor2.capture(), any(SearchControls.class));
-
-        assertFalse("LDAP injection possible", captor1.getValue().contains("*"));
-        assertFalse("LDAP injection possible", captor2.getValue().contains("*"));
     }
 
     @Test

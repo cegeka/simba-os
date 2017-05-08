@@ -37,6 +37,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import static org.simbasecurity.common.constants.AuthenticationConstants.LOGIN_TOKEN;
+import static org.simbasecurity.common.constants.AuthenticationConstants.TARGET_URL;
 import static org.simbasecurity.common.request.RequestConstants.*;
 
 public final class RequestUtil {
@@ -131,15 +132,16 @@ public final class RequestUtil {
                                request.getMethod(), HOST_SERVER_NAME, getLoginToken(request), null);
     }
 
-    private static String resolveProtocol(final HttpServletRequest request) {
-        final String header = request.getHeader(HEADER_X_ORIGINAL_SCHEME);
-        final String requestURL = request.getRequestURL().toString();
+    private static String resolveProtocol(HttpServletRequest request) {
+        String header = request.getHeader(RequestConstants.HEADER_X_ORIGINAL_SCHEME);
 
-        if (isNotBlank(header) && header.equals(HTTPS)) {
-            return convertToHTTPS(requestURL);
-        } else {
-            return requestURL;
+        String requestURL = request.getRequestURL().toString();
+        String targetURL = request.getParameter(TARGET_URL);
+        if(targetURL != null){
+            requestURL = targetURL;
         }
+
+        return isNotBlank(header) && header.equals(HTTPS) ? convertToHTTPS(requestURL) : requestURL;
     }
 
     private static String convertToHTTPS(final String url) {

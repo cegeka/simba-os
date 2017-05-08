@@ -16,24 +16,23 @@
  */
 package org.simbasecurity.client.authorization.caching;
 
-import java.util.Map;
-
 import org.apache.thrift.TException;
 import org.simbasecurity.api.service.thrift.AuthorizationService;
 import org.simbasecurity.api.service.thrift.PolicyDecision;
 import org.simbasecurity.client.util.PolicyDecisionHelper;
 
+import java.util.Map;
+import java.util.function.Supplier;
+
 public class AuthorizationCachingServiceImpl implements AuthorizationService.Iface {
 
-    private static final String INVALIDATE_URL_AND_RESOURCE_CACHE = "Invalidate URL and resource cache";
+    private Supplier<AuthorizationService.Iface> authorizationServiceSupplier;
 
-    private AuthorizationService.Iface authorizationService;
+    private Map<AuthorizationKey, PolicyDecision> resourceRuleCache = new SoftHashMap<>();
+    private Map<AuthorizationKey, PolicyDecision> urlRuleCache = new SoftHashMap<>();
 
-    private Map<AuthorizationKey, PolicyDecision> resourceRuleCache = new SoftHashMap<AuthorizationKey, PolicyDecision>();
-    private Map<AuthorizationKey, PolicyDecision> urlRuleCache = new SoftHashMap<AuthorizationKey, PolicyDecision>();
-
-    public AuthorizationCachingServiceImpl(AuthorizationService.Iface authorizationService) {
-        this.authorizationService = authorizationService;
+    public AuthorizationCachingServiceImpl(Supplier<AuthorizationService.Iface> authorizationServiceSupplier) {
+        this.authorizationServiceSupplier = authorizationServiceSupplier;
     }
 
     @Override
@@ -44,7 +43,7 @@ public class AuthorizationCachingServiceImpl implements AuthorizationService.Ifa
         PolicyDecision policyDecision = resourceRuleCache.get(authorizationKey);
 
         if (policyDecision == null || PolicyDecisionHelper.isExpired(policyDecision)) {
-            policyDecision = authorizationService.isResourceRuleAllowed(username, resourcename, operation);
+            policyDecision = authorizationServiceSupplier.get().isResourceRuleAllowed(username, resourcename, operation);
             resourceRuleCache.put(authorizationKey, policyDecision);
         }
 
@@ -58,7 +57,7 @@ public class AuthorizationCachingServiceImpl implements AuthorizationService.Ifa
         PolicyDecision policyDecision = urlRuleCache.get(authorizationKey);
 
         if (policyDecision == null || PolicyDecisionHelper.isExpired(policyDecision)) {
-            policyDecision = authorizationService.isURLRuleAllowed(username, resourcename, method);
+            policyDecision = authorizationServiceSupplier.get().isURLRuleAllowed(username, resourcename, method);
             urlRuleCache.put(authorizationKey, policyDecision);
         }
 
@@ -77,7 +76,7 @@ public class AuthorizationCachingServiceImpl implements AuthorizationService.Ifa
 
     @Override
     public PolicyDecision isUserInRole(String username, String roleName) throws TException {
-        return authorizationService.isUserInRole(username, roleName);
+        return authorizationServiceSupplier.get().isUserInRole(username, roleName);
     }
 
     private void removeData(String userName, Map<AuthorizationKey, PolicyDecision> map) {

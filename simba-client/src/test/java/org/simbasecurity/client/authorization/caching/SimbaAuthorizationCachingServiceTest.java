@@ -16,9 +16,6 @@
  */
 package org.simbasecurity.client.authorization.caching;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +23,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.simbasecurity.api.service.thrift.AuthorizationService;
 import org.simbasecurity.api.service.thrift.PolicyDecision;
-import org.simbasecurity.client.authorization.caching.AuthorizationCachingServiceImpl;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SimbaAuthorizationCachingServiceTest {
@@ -43,7 +43,7 @@ public class SimbaAuthorizationCachingServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        cachingService = new AuthorizationCachingServiceImpl(authorizationServiceMock);
+        cachingService = new AuthorizationCachingServiceImpl(() -> authorizationServiceMock);
     }
 
     @Test

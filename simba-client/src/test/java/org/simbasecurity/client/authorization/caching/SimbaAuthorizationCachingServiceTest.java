@@ -16,11 +16,13 @@
  */
 package org.simbasecurity.client.authorization.caching;
 
+import org.apache.thrift.transport.TTransportException;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.simbasecurity.api.service.thrift.AuthorizationService;
 import org.simbasecurity.api.service.thrift.PolicyDecision;
 
@@ -28,8 +30,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
 public class SimbaAuthorizationCachingServiceTest {
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     private static final long EXPIRED_TIMESTAMP = System.currentTimeMillis() - 1000;
     private static final long VALID_TIMESTAMP = Long.MAX_VALUE;
@@ -39,11 +42,16 @@ public class SimbaAuthorizationCachingServiceTest {
     @Mock
     private AuthorizationService.Iface authorizationServiceMock;
 
-    private AuthorizationCachingServiceImpl cachingService;
+    private AuthorizationServiceClient cachingService;
 
     @Before
     public void setUp() throws Exception {
-        cachingService = new AuthorizationCachingServiceImpl(() -> authorizationServiceMock);
+        cachingService = new AuthorizationServiceClient() {
+            @Override
+            protected AuthorizationService.Iface getAuthorizationServiceClient() throws TTransportException {
+                return authorizationServiceMock;
+            }
+        };
     }
 
     @Test

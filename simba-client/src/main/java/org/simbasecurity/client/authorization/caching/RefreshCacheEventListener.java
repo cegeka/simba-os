@@ -28,9 +28,9 @@ import static org.simbasecurity.common.event.SimbaEventType.*;
 
 public class RefreshCacheEventListener implements MessageListener {
 
-    private AuthorizationCachingServiceImpl cachingService;
+    private AuthorizationServiceClient cachingService;
 
-    public RefreshCacheEventListener(AuthorizationCachingServiceImpl cachingService) {
+    public RefreshCacheEventListener(AuthorizationServiceClient cachingService) {
         this.cachingService = cachingService;
     }
 

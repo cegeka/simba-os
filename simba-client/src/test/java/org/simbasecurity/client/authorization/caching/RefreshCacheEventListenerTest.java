@@ -16,25 +16,27 @@
  */
 package org.simbasecurity.client.authorization.caching;
 
-import static org.mockito.Mockito.*;
-
-import javax.jms.ObjectMessage;
-
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.simbasecurity.common.event.SimbaEvent;
 import org.simbasecurity.common.event.SimbaEventType;
 
-@RunWith(MockitoJUnitRunner.class)
+import javax.jms.ObjectMessage;
+
+import static org.mockito.Mockito.*;
+
 public class RefreshCacheEventListenerTest {
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     private static final String USERNAME = "test";
 
     @Mock
-    private AuthorizationCachingServiceImpl service;
+    private AuthorizationServiceClient service;
 
     private RefreshCacheEventListener listener;
 

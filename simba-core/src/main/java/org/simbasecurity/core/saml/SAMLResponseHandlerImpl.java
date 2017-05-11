@@ -190,15 +190,18 @@ public class SAMLResponseHandlerImpl implements SAMLResponseHandler {
 
                 NodeList subjectConfirmationDataNodes = scn.getChildNodes();
                 for (int c = 0; c < subjectConfirmationDataNodes.getLength(); c++) {
-                    if (subjectConfirmationDataNodes.item(c).getLocalName().equals("SubjectConfirmationData")) {
+
+                    Node subjectConfirmationData = subjectConfirmationDataNodes.item(c);
+                    if (subjectConfirmationData.getNodeType() == Node.ELEMENT_NODE
+                        && subjectConfirmationData.getLocalName().equals("SubjectConfirmationData")) {
 
 //                      TODO: lenneh: bktis: currentUrl is http:// and the recipient is https://
-//                        Node recipient = subjectConfirmationDataNodes.item(c).getAttributes().getNamedItem("Recipient");
+//                        Node recipient = subjectConfirmationData.getAttributes().getNamedItem("Recipient");
 //                        if (recipient != null && !recipient.getNodeValue().equals(currentUrl)) {
 //                            validSubjectConfirmation = false;
 //                        }
 
-                        Node notOnOrAfter = subjectConfirmationDataNodes.item(c).getAttributes().getNamedItem("NotOnOrAfter");
+                        Node notOnOrAfter = subjectConfirmationData.getAttributes().getNamedItem("NotOnOrAfter");
                         if (notOnOrAfter != null) {
                             Calendar noa = javax.xml.bind.DatatypeConverter.parseDateTime(notOnOrAfter.getNodeValue());
                             if (now.equals(noa) || now.after(noa)) {
@@ -206,7 +209,7 @@ public class SAMLResponseHandlerImpl implements SAMLResponseHandler {
                             }
                         }
 
-                        Node notBefore = subjectConfirmationDataNodes.item(c).getAttributes().getNamedItem("NotBefore");
+                        Node notBefore = subjectConfirmationData.getAttributes().getNamedItem("NotBefore");
                         if (notBefore != null) {
                             Calendar nb = javax.xml.bind.DatatypeConverter.parseDateTime(notBefore.getNodeValue());
                             if (now.before(nb)) {

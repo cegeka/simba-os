@@ -17,33 +17,35 @@
 package org.simbasecurity.client.authorization.caching;
 
 import org.apache.thrift.TException;
+import org.apache.thrift.protocol.TJSONProtocol;
+import org.apache.thrift.protocol.TProtocol;
+import org.apache.thrift.transport.THttpClient;
+import org.apache.thrift.transport.TTransportException;
 import org.simbasecurity.api.service.thrift.AuthorizationService;
 import org.simbasecurity.api.service.thrift.PolicyDecision;
+import org.simbasecurity.client.configuration.SimbaConfiguration;
 import org.simbasecurity.client.util.PolicyDecisionHelper;
 
 import java.util.Map;
-import java.util.function.Supplier;
 
-public class AuthorizationCachingServiceImpl implements AuthorizationService.Iface {
-
-    private Supplier<AuthorizationService.Iface> authorizationServiceSupplier;
+/**
+ * A client for the Simba authorization service. The client encapsulates a authorization cache for performance
+ * reasons. The cache can be invalidated by calling the {@link #invalidate()} method to clear the entire cache,
+ * or the {@link #invalidate(String)} method, to clear the cache for a specific user name.
+ */
+public class AuthorizationServiceClient implements AuthorizationService.Iface {
 
     private Map<AuthorizationKey, PolicyDecision> resourceRuleCache = new SoftHashMap<>();
     private Map<AuthorizationKey, PolicyDecision> urlRuleCache = new SoftHashMap<>();
 
-    public AuthorizationCachingServiceImpl(Supplier<AuthorizationService.Iface> authorizationServiceSupplier) {
-        this.authorizationServiceSupplier = authorizationServiceSupplier;
-    }
-
     @Override
-    public PolicyDecision isResourceRuleAllowed(String username, String resourcename, String operation)
-    throws TException {
+    public PolicyDecision isResourceRuleAllowed(String username, String resourcename, String operation) throws TException {
         AuthorizationKey authorizationKey = new AuthorizationKey(username, resourcename, operation);
 
         PolicyDecision policyDecision = resourceRuleCache.get(authorizationKey);
 
         if (policyDecision == null || PolicyDecisionHelper.isExpired(policyDecision)) {
-            policyDecision = authorizationServiceSupplier.get().isResourceRuleAllowed(username, resourcename, operation);
+            policyDecision = getAuthorizationServiceClient().isResourceRuleAllowed(username, resourcename, operation);
             resourceRuleCache.put(authorizationKey, policyDecision);
         }
 
@@ -57,7 +59,7 @@ public class AuthorizationCachingServiceImpl implements AuthorizationService.Ifa
         PolicyDecision policyDecision = urlRuleCache.get(authorizationKey);
 
         if (policyDecision == null || PolicyDecisionHelper.isExpired(policyDecision)) {
-            policyDecision = authorizationServiceSupplier.get().isURLRuleAllowed(username, resourcename, method);
+            policyDecision = getAuthorizationServiceClient().isURLRuleAllowed(username, resourcename, method);
             urlRuleCache.put(authorizationKey, policyDecision);
         }
 
@@ -76,7 +78,7 @@ public class AuthorizationCachingServiceImpl implements AuthorizationService.Ifa
 
     @Override
     public PolicyDecision isUserInRole(String username, String roleName) throws TException {
-        return authorizationServiceSupplier.get().isUserInRole(username, roleName);
+        return getAuthorizationServiceClient().isUserInRole(username, roleName);
     }
 
     private void removeData(String userName, Map<AuthorizationKey, PolicyDecision> map) {
@@ -85,5 +87,11 @@ public class AuthorizationCachingServiceImpl implements AuthorizationService.Ifa
                 map.remove(key);
             }
         }
+    }
+
+    protected AuthorizationService.Iface getAuthorizationServiceClient() throws TTransportException {
+        THttpClient tHttpClient = new THttpClient(SimbaConfiguration.getSimbaAuthorizationURL());
+        TProtocol tProtocol = new TJSONProtocol(tHttpClient);
+        return new AuthorizationService.Client(tProtocol);
     }
 }

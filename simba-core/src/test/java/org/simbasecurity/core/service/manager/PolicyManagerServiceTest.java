@@ -71,8 +71,6 @@ public class PolicyManagerServiceTest {
     public void setup() {
         ReflectionUtil.setField(entityFilterService, "filters", filterServices);
 
-        entityFilterService.initializePredicates();
-
         policyEntity1.addRole(roleEntity1);
         policyEntity2.addRole(roleEntity2);
         policyEntity3.addRole(roleEntity1);

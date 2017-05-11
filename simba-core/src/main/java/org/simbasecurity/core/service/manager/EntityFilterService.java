@@ -23,13 +23,10 @@ import org.simbasecurity.core.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 /**
  * The EntityFilterService is used by the manager services to filter entity lists before returning them to the
@@ -50,54 +47,32 @@ public class EntityFilterService {
 
     private List<EntityFilter> filters;
 
-    private Predicate<Role> rolePredicate;
-    private Predicate<Policy> policyPredicate;
-    private Predicate<User> userPredicate;
-
     @Autowired
     public EntityFilterService(@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<List<EntityFilter>> filters) {
         this.filters = filters.orElseGet(ArrayList::new);
     }
 
-    @PostConstruct
-    public void initializePredicates() {
-        rolePredicate = filters.stream().map(EntityFilter::rolePredicate).reduce(Predicate::and).orElse(r -> true);
-        policyPredicate = filters.stream().map(EntityFilter::policyPredicate).reduce(Predicate::and).orElse(p -> true);
-        userPredicate = filters.stream().map(EntityFilter::userPredicate).reduce(Predicate::and).orElse(u -> true);
-    }
-
     public Collection<Role> filterRoles(Collection<Role> input) {
-        return input.stream()
-                    .filter(rolePredicate)
-                    .collect(new SameTypeCollectionSupplier<>(input.getClass()), Collection::add, Collection::addAll);
+        Collection<Role> result = input;
+        for (EntityFilter filter : filters) {
+            result = filter.filterRoles(result);
+        }
+        return result;
     }
 
     public Collection<Policy> filterPolicies(Collection<Policy> input) {
-        return input.stream()
-                    .filter(policyPredicate)
-                    .collect(new SameTypeCollectionSupplier<>(input.getClass()), Collection::add, Collection::addAll);
+        Collection<Policy> result = input;
+        for (EntityFilter filter : filters) {
+            result = filter.filterPolicies(result);
+        }
+        return result;
     }
 
     public Collection<User> filterUsers(Collection<User> input) {
-        return input.stream()
-                    .filter(userPredicate)
-                    .collect(new SameTypeCollectionSupplier<>(input.getClass()), Collection::add, Collection::addAll);
-    }
-
-    private static class SameTypeCollectionSupplier<T> implements Supplier<Collection<T>> {
-        private final Class<? extends Collection> aClass;
-
-        private SameTypeCollectionSupplier(Class<? extends Collection> aClass) {
-            this.aClass = aClass;
+        Collection<User> result = input;
+        for (EntityFilter filter : filters) {
+            result = filter.filterUsers(result);
         }
-
-        @Override
-        public Collection<T> get() {
-            try {
-                return aClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                return new ArrayList<>();
-            }
-        }
+        return result;
     }
 }

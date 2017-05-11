@@ -40,9 +40,10 @@ import org.simbasecurity.core.service.manager.dto.UserDTO;
 import org.simbasecurity.test.util.ReflectionUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -93,24 +94,22 @@ public class UserManagerServiceFilteringTest {
 
         filterServices.add(new EntityFilter() {
             @Override
-            public Predicate<Role> rolePredicate() {
-                return r -> r.getName().endsWith("-1");
+            public Collection<Role> filterRoles(Collection<Role> roles) {
+                return roles.stream().filter(r -> r.getName().endsWith("-1")).collect(Collectors.toList());
             }
 
             @Override
-            public Predicate<Policy> policyPredicate() {
-                return p -> p.getName().endsWith("-1");
+            public Collection<Policy> filterPolicies(Collection<Policy> policies) {
+                return policies.stream().filter(p -> p.getName().endsWith("-1")).collect(Collectors.toList());
             }
 
             @Override
-            public Predicate<User> userPredicate() {
-                return u -> u.getUserName().endsWith("-1");
+            public Collection<User> filterUsers(Collection<User> users) {
+                return users.stream().filter(u -> u.getUserName().endsWith("-1")).collect(Collectors.toList());
             }
         });
 
         ReflectionUtil.setField(entityFilterService, "filters", filterServices);
-
-        entityFilterService.initializePredicates();
 
         userEntity1.addRole(roleEntity1);
         userEntity2.addRole(roleEntity2);

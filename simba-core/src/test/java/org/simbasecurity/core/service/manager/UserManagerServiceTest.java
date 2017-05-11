@@ -94,8 +94,6 @@ public class UserManagerServiceTest {
 
         ReflectionUtil.setField(entityFilterService, "filters", filterServices);
 
-        entityFilterService.initializePredicates();
-
         userEntity1.addRole(roleEntity1);
         userEntity2.addRole(roleEntity2);
         userEntity3.addRoles(asList(roleEntity1, roleEntity2));

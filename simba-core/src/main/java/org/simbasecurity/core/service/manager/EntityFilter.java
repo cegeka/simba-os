@@ -21,33 +21,31 @@ import org.simbasecurity.core.domain.Policy;
 import org.simbasecurity.core.domain.Role;
 import org.simbasecurity.core.domain.User;
 
-import java.util.function.Predicate;
+import java.util.Collection;
 
 /**
  * This class allows the injection of custom filters in the {@link EntityFilterService}.
- * <p/>
- * If an EntityFilter should not require filtering on a specific entity, it can use:
- * <code>
- *     e -> true
- * </code>
- * as predicate to allow all entities to remain in the collection.
  *
  * @since 3.0.0
  */
 public interface EntityFilter {
 
     /**
-     * @return the predicate to use for filtering roles
+     * @param roles the collection to filter
+     * @return the filtered collection
      */
-    Predicate<Role> rolePredicate();
+    Collection<Role> filterRoles(Collection<Role> roles);
 
     /**
-     * @return the predicate to use for filtering policies
+     * @param policies the collection to filter
+     * @return the filtered collection
      */
-    Predicate<Policy> policyPredicate();
+    Collection<Policy> filterPolicies(Collection<Policy> policies);
 
     /**
-     * @return the predicate to use for filtering users
+     * @param users the collection to filter
+     * @return the filtered collection
      */
-    Predicate<User> userPredicate();
+    Collection<User> filterUsers(Collection<User> users);
+
 }

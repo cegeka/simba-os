@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -90,27 +90,24 @@ public class RoleManagerServiceFilteringTest {
         UserEntity userEntity1 = new UserEntity("user-1");
         UserEntity userEntity2 = new UserEntity("user-2");
 
-
         filterServices.add(new EntityFilter() {
             @Override
-            public Predicate<Role> rolePredicate() {
-                return r -> r.getName().endsWith("-1");
+            public Collection<Role> filterRoles(Collection<Role> roles) {
+                return roles.stream().filter(r -> r.getName().endsWith("-1")).collect(Collectors.toList());
             }
 
             @Override
-            public Predicate<Policy> policyPredicate() {
-                return p -> p.getName().endsWith("-1");
+            public Collection<Policy> filterPolicies(Collection<Policy> policies) {
+                return policies.stream().filter(p -> p.getName().endsWith("-1")).collect(Collectors.toList());
             }
 
             @Override
-            public Predicate<User> userPredicate() {
-                return u -> u.getUserName().endsWith("-1");
+            public Collection<User> filterUsers(Collection<User> users) {
+                return users.stream().filter(u -> u.getUserName().endsWith("-1")).collect(Collectors.toList());
             }
         });
 
         ReflectionUtil.setField(entityFilterService, "filters", filterServices);
-
-        entityFilterService.initializePredicates();
 
         roleEntity1.addPolicy(policyEntity1);
         roleEntity2.addPolicy(policyEntity2);

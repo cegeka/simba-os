@@ -48,6 +48,12 @@ public class SAMLResponseHandlerImplTest {
         assertThat(actual).isEqualTo("2008-05-27T07:49:23Z");
     }
 
+    @Test
+    public void getInResponseTo() throws Exception {
+        SAMLResponseHandlerImpl handler = new SAMLResponseHandlerImpl(null, AUTH_RESPONSE, null);
+        String actual = handler.getInResponseTo();
+        assertThat(actual).isEqualTo("ae0216740b5baa4b13c79ffdb2baa82572788fd9a3");
+    }
 
     private static final String AUTH_RESPONSE = "PHNhbWxwOlJlc3BvbnNlIHhtbG5zOnNhbWxwPSJ1cm46b2FzaXM6bmFtZXM6dGM6"
                     + "U0FNTDoyLjA6cHJvdG9jb2wiDQogICAgeG1sbnM6c2FtbD0idXJuOm9hc2lzOm5h"

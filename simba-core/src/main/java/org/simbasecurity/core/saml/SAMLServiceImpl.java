@@ -56,7 +56,7 @@ public class SAMLServiceImpl implements SAMLService {
         writer.writeStartElement("samlp", "AuthnRequest", NS_SAMLP);
         writer.writeNamespace("samlp", NS_SAMLP);
 
-        writer.writeAttribute("ID", authRequestId);
+        writer.writeAttribute("ID", "_" + authRequestId);
         writer.writeAttribute("Version", "2.0");
         writer.writeAttribute("IssueInstant", SAML_DATE_FORMAT.format(issueInstant));
         writer.writeAttribute("ForceAuthn", "false");
@@ -128,7 +128,7 @@ public class SAMLServiceImpl implements SAMLService {
         writer.writeStartElement("samlp", "LogoutRequest", NS_SAMLP);
         writer.writeNamespace("samlp", NS_SAMLP);
 
-        writer.writeAttribute("ID", logoutRequestId);
+        writer.writeAttribute("ID", "_" + logoutRequestId);
         writer.writeAttribute("Version", "2.0");
         writer.writeAttribute("IssueInstant", SAML_DATE_FORMAT.format(issueInstant));
 

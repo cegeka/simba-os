@@ -252,7 +252,7 @@ public class SAMLResponseHandlerImpl implements SAMLResponseHandler {
     @Override
     public String getInResponseTo() {
         return rootElement.hasAttribute("InResponseTo")
-            ? rootElement.getAttribute("InResponseTo")
+            ? rootElement.getAttribute("InResponseTo").substring(1)
             : null;
     }
 

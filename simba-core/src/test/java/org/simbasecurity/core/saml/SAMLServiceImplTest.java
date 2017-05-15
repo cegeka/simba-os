@@ -49,7 +49,7 @@ public class SAMLServiceImplTest {
     private static final String NAME_ID = "nid123456";
     private static final String SESSION_INDEX = "sid123456";
     private static final String LOGOUT_REQUEST = "<samlp:LogoutRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" " +
-                                                    "ID=\"" + REQUEST_ID + "\" " +
+                                                    "ID=\"_" + REQUEST_ID + "\" " +
                                                     "Version=\"2.0\" " +
                                                     "IssueInstant=\"" + SAML_DATE_FORMAT.format(ISSUE_INSTANT) + "\">" +
                                                     "<saml:Issuer xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">" +
@@ -67,7 +67,7 @@ public class SAMLServiceImplTest {
                                                 "</samlp:LogoutRequest>";
 
     private static final String AUTH_REQUEST = "<samlp:AuthnRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" " +
-                                                    "ID=\"" + REQUEST_ID + "\" " +
+                                                    "ID=\"_" + REQUEST_ID + "\" " +
                                                     "Version=\"2.0\" " +
                                                     "IssueInstant=\"" + SAML_DATE_FORMAT.format(ISSUE_INSTANT) + "\" " +
                                                     "ForceAuthn=\"false\" " +

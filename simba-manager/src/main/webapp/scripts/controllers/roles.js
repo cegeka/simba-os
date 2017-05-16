@@ -18,8 +18,8 @@
 'use strict';
 
 angular.module('SimbaApp')
-  .controller('RoleCtrl', ['$scope', '$modal', '$log', '$role', '$error', '$translate', '$simba_component',
-                  function ($scope, $modal, $log, $role, $error, $translate, $simba_component) {
+  .controller('RoleCtrl', ['$scope', '$modal', '$log', '$role', '$error', '$translate', '$simba_component', '$rootScope',
+                  function ($scope, $modal, $log, $role, $error, $translate, $simba_component, $rootScope) {
 
     $scope.roles =[];
     $scope.users =[];
@@ -27,9 +27,13 @@ angular.module('SimbaApp')
     $scope.selectedRole;
     
     $scope.init = function() {
+        $rootScope.loading++;
         $role.getAll().then(
             function(data) {
                 $scope.roles = data;
+            })
+            .finally(function () {
+                $rootScope.loading--;
             });
     };
 

@@ -83,7 +83,7 @@ public class UserManagerService {
     @RequestMapping("findAll")
     @ResponseBody
     public Collection<UserDTO> findAll() {
-        return UserDTOAssembler.assemble(filterService.filterUsers(userRepository.findAll()));
+        return UserDTOAssembler.assemble(filterService.filterUsers(userRepository.findAllOrderedByName()));
     }
 
     @RequestMapping("findByRole")

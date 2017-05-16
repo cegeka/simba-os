@@ -27,7 +27,7 @@
                 <span>{{header|translate}}</span>
             </th>
         </tr>
-        <tr ng-repeat="user in users | filter:searchText | orderBy:'userName'">
+        <tr ng-repeat="user in users | filter:{'userName': searchText}">
             <td>
                 <a href="javascript:;" ng-click="openUserDetails(user)"><img class="icon" src="resources/img/search.png"/></a>
             </td>

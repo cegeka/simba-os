@@ -60,6 +60,12 @@ public class UserDatabaseRepository extends AbstractVersionedDatabaseRepository<
     }
 
     @Override
+    public Collection<User> findAllOrderedByName() {
+        TypedQuery<User> query = entityManager.createQuery("SELECT user FROM UserEntity user order by user.userName", User.class);
+        return new ArrayList<>(query.getResultList());
+    }
+
+    @Override
     protected Class<? extends User> getEntityType() {
         return UserEntity.class;
     }

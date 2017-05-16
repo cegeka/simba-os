@@ -18,9 +18,10 @@
 'use strict';
 
 angular.module('SimbaApp')
-    .controller('MainCtrl', ['$scope', '$translate', '$translatePartialLoader', '$error', '$rule', 'Idle', '$modal', function ($scope, $translate, $translatePartialLoader, $error, $rule, Idle, $modal) {
+    .controller('MainCtrl', ['$scope', '$translate', '$translatePartialLoader', '$error', '$rule', 'Idle', '$modal', '$rootScope', function ($scope, $translate, $translatePartialLoader, $error, $rule, Idle, $modal, $rootScope) {
         $scope.tabs;
         $scope.error = $error.getError();
+        $rootScope.loading = 0;
 
         $scope.init = function () {
             $scope.tabs = getTabs();
@@ -33,6 +34,10 @@ angular.module('SimbaApp')
             $translatePartialLoader.addPart('locale');
             $translatePartialLoader.addPart('error');
             $translate.refresh();
+        };
+
+        $scope.isLoading = function () {
+            return $rootScope.loading > 0;
         };
 
         $scope.changeLanguage = function (language) {

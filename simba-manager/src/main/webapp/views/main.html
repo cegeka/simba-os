@@ -24,6 +24,7 @@
     <a href="?SimbaAction=SimbaLogoutAction" title="logout" id="logout"><img src="resources/img/logout.png" /></a>
     <select ng-model="selectedLanguage" ng-change="changeLanguage(selectedLanguage)" ng-options="l.value for l in languages" id="languageSelector">
     </select>
+    <p class="loading" ng-show="isLoading()">{{"loading.text"|translate}}</p>
     <tabset id="mainTabSet">
     <tab ng-repeat="tab in tabs" heading="{{tab.title|translate}}" active="tab.active" ng-hide="tab.hidden">
       <div id="tabContent" ng-include="tab.url">

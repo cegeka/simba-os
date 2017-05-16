@@ -102,6 +102,7 @@ public class UserManagerServiceTest {
         roleEntity2.addPolicy(policyEntity2);
 
         when(userRepository.findAll()).thenReturn(asList(userEntity1, userEntity2, userEntity3));
+        when(userRepository.findAllOrderedByName()).thenReturn(asList(userEntity1, userEntity2, userEntity3));
 
         when(userRepository.lookUp(userDTO1)).thenReturn(userEntity1);
         when(userRepository.lookUp(userDTO2)).thenReturn(userEntity2);

@@ -156,5 +156,8 @@
 "idle.message.2":" second(s).",
 
 "generated.password.title":"Generated password",
-"generated.password.body":"Your generated password is: "
+"generated.password.body":"Your generated password is: ",
+
+"loading.text":"Processing, but it takes some time."
+
 }

@@ -157,5 +157,7 @@
 "idle.message.2":" second(en).",
 
 "generated.password.title":"Gegenereerd wachtwoord",
-"generated.password.body":"Uw gegenereerd wachtwoord is het volgende: "
+"generated.password.body":"Uw gegenereerd wachtwoord is het volgende: ",
+
+"loading.text":"De verwerking is bezig, maar neemt enige tijd in beslag."
 }

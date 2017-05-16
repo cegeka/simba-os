@@ -157,6 +157,8 @@
 "idle.message.2":" seconde(s).",
 
 "generated.password.title":"Mot de pass généré",
-"generated.password.body":"Votre mot de passe généré est: "
+"generated.password.body":"Votre mot de passe généré est: ",
+
+"loading.text":"Votre demande est en cours de traitement et peut prendre un certain temps."
 
 }

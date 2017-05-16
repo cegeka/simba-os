@@ -18,11 +18,11 @@
 'use strict';
 
 angular.module('SimbaApp')
-  .controller('UserCtrl', ['$scope', '$modal', '$log', '$user', '$error', '$translate', function ($scope, $modal, $log, $user, $error, $translate) {
-    $scope.tabs;  
+  .controller('UserCtrl', ['$scope', '$modal', '$log', '$user', '$error', '$translate', '$timeout', '$rootScope', function ($scope, $modal, $log, $user, $error, $translate, $timeout, $rootScope) {
+    $scope.tabs;
     $scope.searchText = "";
     $scope.searchBoxPlaceholderText = "users.filter";
-    
+
     $scope.headers = [
       'useroverview.username',
       'useroverview.active',
@@ -30,16 +30,21 @@ angular.module('SimbaApp')
       'useroverview.name',
       'useroverview.firstname'
     ];
-    
+
     $scope.users =[];
-    
+
     $scope.init = function() {
+        $rootScope.loading++;
         $user.getAll().then(
-            function(data) {
+            function (data) {
                 $scope.users = data;
-            });
+            })
+            .finally(function () {
+                $rootScope.loading--;
+            }
+        );
     };
-    
+
     $scope.openUserDetails = function(selectedUser) {
         var modalInstance = $modal.open({
                                 templateUrl: 'views/modals/user/userDetailTemplate.html',
@@ -72,7 +77,7 @@ angular.module('SimbaApp')
                 });
         });
     };
-   
+
     $scope.openAddUser = function() {
         var modalInstance = $modal.open({
                                 templateUrl: 'views/modals/user/addUserTemplate.html',

@@ -63,4 +63,15 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
         assertThat(result).containsOnly(user);
     }
 
+    @Test
+    public void findAllOrderedByName() throws Exception {
+        User userB = new UserEntity("b");
+        User userC = new UserEntity("c");
+        User userA = new UserEntity("a");
+        persistAndRefresh(userB, userC, userA);
+
+        Collection<User> result = userDatabaseRepository.findAllOrderedByName();
+
+        assertThat(result).containsExactly(userA, userB, userC, user);
+    }
 }

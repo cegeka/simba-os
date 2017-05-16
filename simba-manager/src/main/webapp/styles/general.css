@@ -36,6 +36,10 @@ root {
     padding-top: 10px;
 }
 
+.searchButton {
+    margin-bottom: 10px;
+}
+
 /*
 *   Table styling
 */

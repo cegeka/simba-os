@@ -158,6 +158,7 @@
 "generated.password.title":"Generated password",
 "generated.password.body":"Your generated password is: ",
 
-"loading.text":"Processing, but it takes some time."
+"loading.text":"Processing, but it takes some time.",
+"find.users":"Search"
 
 }

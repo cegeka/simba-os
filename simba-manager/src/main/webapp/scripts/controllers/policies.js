@@ -27,13 +27,9 @@ angular.module('SimbaApp')
     $scope.selectedPolicy;
     
     $scope.init = function() {
-        $rootScope.loading++;
         $policy.getAll().then(
             function(data) {
                 $scope.policies = data;
-            })
-            .finally(function () {
-                $rootScope.loading--;
             });
     };
 

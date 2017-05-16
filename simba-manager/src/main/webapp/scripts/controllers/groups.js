@@ -27,13 +27,9 @@ angular.module('SimbaApp')
     $scope.selectedGroup;
     
     $scope.init = function() {
-        $rootScope.loading++;
         $group.getAll().then(
             function(data) {
                 $scope.groups = data;
-            })
-            .finally(function () {
-                $rootScope.loading--;
             });
     };
 

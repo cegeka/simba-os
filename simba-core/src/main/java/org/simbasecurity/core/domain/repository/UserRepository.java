@@ -40,4 +40,6 @@ public interface UserRepository extends AbstractVersionedRepository<User> {
     Collection<User> findForRole(Role role);
 
     Collection<User> findAllOrderedByName();
+
+    Collection<User> searchUsersOrderedByName(String searchText);
 }

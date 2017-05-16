@@ -49,6 +49,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class UserManagerServiceTest {
@@ -103,6 +104,7 @@ public class UserManagerServiceTest {
 
         when(userRepository.findAll()).thenReturn(asList(userEntity1, userEntity2, userEntity3));
         when(userRepository.findAllOrderedByName()).thenReturn(asList(userEntity1, userEntity2, userEntity3));
+        when(userRepository.searchUsersOrderedByName("1")).thenReturn(asList(userEntity1));
 
         when(userRepository.lookUp(userDTO1)).thenReturn(userEntity1);
         when(userRepository.lookUp(userDTO2)).thenReturn(userEntity2);
@@ -159,4 +161,12 @@ public class UserManagerServiceTest {
         assertThat(service.findPolicies(userDTO3)).extracting(PolicyDTO::getName).containsExactlyInAnyOrder("policy-1", "policy-2");
 
     }
+
+    @Test
+    public void search() throws Exception {
+        assertThat(service.search("1")).extracting(UserDTO::getUserName).containsExactly("user-1");
+        verify(userRepository).searchUsersOrderedByName("1");
+    }
+
+
 }

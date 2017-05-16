@@ -34,15 +34,29 @@ angular.module('SimbaApp')
     $scope.users =[];
 
     $scope.init = function() {
-        $rootScope.loading++;
-        $user.getAll().then(
-            function (data) {
-                $scope.users = data;
-            })
-            .finally(function () {
-                $rootScope.loading--;
-            }
-        );
+    };
+
+    $scope.findUsers = function () {
+      $rootScope.loading++;
+      if ($scope.searchText.length === 0) {
+          $user.getAll().then(
+              function (data) {
+                  $scope.users = data;
+              })
+              .finally(function () {
+                      $rootScope.loading--;
+                  }
+              );
+      } else {
+          $user.searchUsers($scope.searchText).success(
+              function (data) {
+                  $scope.users = data;
+              })
+              .finally(function () {
+                      $rootScope.loading--;
+                  }
+              );
+      }
     };
 
     $scope.openUserDetails = function(selectedUser) {

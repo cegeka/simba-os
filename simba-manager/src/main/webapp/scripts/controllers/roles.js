@@ -27,13 +27,9 @@ angular.module('SimbaApp')
     $scope.selectedRole;
     
     $scope.init = function() {
-        $rootScope.loading++;
         $role.getAll().then(
             function(data) {
                 $scope.roles = data;
-            })
-            .finally(function () {
-                $rootScope.loading--;
             });
     };
 

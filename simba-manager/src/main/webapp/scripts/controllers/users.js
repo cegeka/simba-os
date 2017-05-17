@@ -17,6 +17,8 @@
 
 'use strict';
 
+const VIEW_USER_SIZE = 100;
+
 angular.module('SimbaApp')
   .controller('UserCtrl', ['$scope', '$modal', '$log', '$user', '$error', '$translate', '$timeout', '$rootScope', function ($scope, $modal, $log, $user, $error, $translate, $timeout, $rootScope) {
     $scope.tabs;
@@ -32,26 +34,36 @@ angular.module('SimbaApp')
     ];
 
     $scope.users =[];
+    $scope.viewUsers = [];
 
     $scope.init = function() {
+    };
+
+    $scope.showMoreToggle = false;
+
+    $scope.showMoreUsers = function () {
+        $scope.showMoreToggle = false;
+        $scope.viewUsers = $scope.users;
+    };
+
+    $scope.assignQueriedUsers = function (data) {
+        $scope.users = data;
+        $scope.viewUsers = $scope.users.slice(0, VIEW_USER_SIZE);
+        $scope.showMoreToggle = $scope.users.length > VIEW_USER_SIZE;
     };
 
     $scope.findUsers = function () {
       $rootScope.loading++;
       if ($scope.searchText.length === 0) {
-          $user.getAll().then(
-              function (data) {
-                  $scope.users = data;
-              })
+          $user.getAll()
+              .then($scope.assignQueriedUsers)
               .finally(function () {
                       $rootScope.loading--;
                   }
               );
       } else {
-          $user.searchUsers($scope.searchText).success(
-              function (data) {
-                  $scope.users = data;
-              })
+          $user.searchUsers($scope.searchText)
+              .success($scope.assignQueriedUsers)
               .finally(function () {
                       $rootScope.loading--;
                   }

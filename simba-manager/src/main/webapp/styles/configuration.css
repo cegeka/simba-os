@@ -19,3 +19,15 @@
     display: block;
     min-height: 20px;
 }
+
+.simbaAccordionHeader {
+    font-size: 20px;
+}
+
+.simbaAccordionContent {
+    margin: 5px;
+}
+
+.simbaAccordion {
+    padding-top: 10px;
+}

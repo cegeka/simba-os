@@ -18,10 +18,7 @@ package org.simbasecurity.core.domain.repository;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.simbasecurity.core.domain.Role;
-import org.simbasecurity.core.domain.RoleEntity;
-import org.simbasecurity.core.domain.User;
-import org.simbasecurity.core.domain.UserEntity;
+import org.simbasecurity.core.domain.*;
 import org.simbasecurity.test.PersistenceTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -63,4 +60,40 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
         assertThat(result).containsOnly(user);
     }
 
+    @Test
+    public void findAllOrderedByName() throws Exception {
+        User userB = new UserEntity("b");
+        User userC = new UserEntity("c");
+        User userA = new UserEntity("a");
+        persistAndRefresh(userB, userC, userA);
+
+        Collection<User> result = userDatabaseRepository.findAllOrderedByName();
+
+        assertThat(result).containsExactly(userA, userB, userC, user);
+    }
+
+    @Test
+    public void searchUsersOrderedByName() throws Exception {
+        User userB = new UserEntity("banaan", "Jan", "Klaas", null, Language.en_US, Status.ACTIVE, false, false);
+        User userC = new UserEntity("citroen", "Piet", "Hein", null, Language.en_US, Status.ACTIVE, false, false);
+        User userA = new UserEntity("appel", "Kevin", "Nobin", null, Language.en_US, Status.ACTIVE, false, false);
+        persistAndRefresh(userB, userC, userA);
+
+        assertThat(userDatabaseRepository.searchUsersOrderedByName("a")).containsExactly(userA, userB);
+        assertThat(userDatabaseRepository.searchUsersOrderedByName("z")).isEmpty();
+        assertThat(userDatabaseRepository.searchUsersOrderedByName("")).containsExactly(userA, userB, userC, user);
+        assertThat(userDatabaseRepository.searchUsersOrderedByName("aa")).containsExactly(userB);
+        assertThat(userDatabaseRepository.searchUsersOrderedByName("v")).containsExactly(userA);
+        assertThat(userDatabaseRepository.searchUsersOrderedByName("s")).containsExactly(userB);
+    }
+
+    @Test
+    public void searchUsersOrderedByName_NotCaseSensitive() throws Exception {
+        User user = new UserEntity("banaan", "Jan", "Klaas", null, Language.en_US, Status.ACTIVE, false, false);
+        persistAndRefresh(user);
+
+        assertThat(userDatabaseRepository.searchUsersOrderedByName("j")).containsExactly(user);
+        assertThat(userDatabaseRepository.searchUsersOrderedByName("S")).containsExactly(user);
+        assertThat(userDatabaseRepository.searchUsersOrderedByName("B")).containsExactly(user);
+    }
 }

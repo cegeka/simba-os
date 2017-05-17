@@ -36,6 +36,15 @@ root {
     padding-top: 10px;
 }
 
+.searchButton {
+    margin-bottom: 10px;
+}
+
+.showMoreButton {
+    margin-top: 10px;
+    text-align: right;
+}
+
 /*
 *   Table styling
 */
@@ -85,8 +94,6 @@ th span, td span {
 /*
 *   Input styling
 */
-
-/* TODO Add styling for searchBox -> binoculars icon */
 
 .control-label {
     display: inline-block;

@@ -16,16 +16,15 @@
  */
 package org.simbasecurity.core.domain.repository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-
 import org.simbasecurity.core.domain.Role;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.UserEntity;
 import org.springframework.stereotype.Repository;
+
+import javax.persistence.TypedQuery;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Repository
 public class UserDatabaseRepository extends AbstractVersionedDatabaseRepository<User> implements UserRepository {
@@ -56,6 +55,20 @@ public class UserDatabaseRepository extends AbstractVersionedDatabaseRepository<
     public Collection<User> findForRole(Role role) {
         TypedQuery<User> query = entityManager.createQuery("SELECT user FROM UserEntity user WHERE :role in elements(user.roles) order by user.userName", User.class)
                                               .setParameter("role", role);
+        return new ArrayList<>(query.getResultList());
+    }
+
+    @Override
+    public Collection<User> findAllOrderedByName() {
+        TypedQuery<User> query = entityManager.createQuery("SELECT user FROM UserEntity user order by user.userName", User.class);
+        return new ArrayList<>(query.getResultList());
+    }
+
+    @Override
+    public Collection<User> searchUsersOrderedByName(String searchText) {
+        TypedQuery<User> query = entityManager.createQuery("SELECT user FROM UserEntity user WHERE UPPER(user.userName) like UPPER(:searchText) or UPPER(user.name) like UPPER(:searchText) or UPPER(user.firstName) like UPPER(:searchText) " +
+                "order by user.userName", User.class)
+                .setParameter("searchText", "%"+searchText+"%");
         return new ArrayList<>(query.getResultList());
     }
 

@@ -25,6 +25,13 @@ body {
     margin-bottom: 0;
 }
 
+.loading{
+    float: right;
+    margin: 0 5px 0 0;
+    padding: 4px 6px;
+    background: #C0E69A;
+}
+
 .hero-unit {
     font-size: 14px;
     font-weight: 200;

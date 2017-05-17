@@ -21,6 +21,10 @@ angular.module('SimbaApp')
             getAll: function() {
                 return $rest.get('user/findAll');
             },
+            searchUsers: function (searchText) {
+                console.log(searchText);
+                return $rest.post('user/search', searchText);
+            },
             add: function(user) {
                 return $rest.post('user/create', user);
             },

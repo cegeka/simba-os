@@ -27,14 +27,21 @@ angular.module('SimbaApp')
           $configuration.findListParameters().then(
               function(data) {
                   $scope.parameters = data;
+                  $scope.parameters.forEach(function (p) {
+                      p.visible = false;
+                  })
               });
+       };
+
+       $scope.toggleVisibility = function (param) {
+           param.visible = !param.visible;
        };
 
        $scope.deleteValueFromParameter = function(parameter, value) {
             var index = parameter.value.indexOf(value);
             parameter.value.splice(index,1);
             $scope.changeParameter(parameter);
-       }
+       };
 
        $scope.addParameter = function(parameter) {
            var textbox =  $simba_component.textbox($translate('add.parameter'));
@@ -49,11 +56,11 @@ angular.module('SimbaApp')
 
        $scope.changeParameter = function(parameter) {
             $configuration.changeListParameter(parameter,
-                undefined,
+                function () {},
                 function(){
                     $error.showError('error.update.failed');
-                    init();
+                    $scope.init();
                 });
-       }
+       };
 
 }]);

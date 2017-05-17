@@ -17,12 +17,14 @@
 
 'use strict';
 
+const VIEW_USER_SIZE = 100;
+
 angular.module('SimbaApp')
-  .controller('UserCtrl', ['$scope', '$modal', '$log', '$user', '$error', '$translate', function ($scope, $modal, $log, $user, $error, $translate) {
-    $scope.tabs;  
+  .controller('UserCtrl', ['$scope', '$modal', '$log', '$user', '$error', '$translate', '$timeout', '$rootScope', function ($scope, $modal, $log, $user, $error, $translate, $timeout, $rootScope) {
+    $scope.tabs;
     $scope.searchText = "";
     $scope.searchBoxPlaceholderText = "users.filter";
-    
+
     $scope.headers = [
       'useroverview.username',
       'useroverview.active',
@@ -30,16 +32,45 @@ angular.module('SimbaApp')
       'useroverview.name',
       'useroverview.firstname'
     ];
-    
+
     $scope.users =[];
-    
+    $scope.viewUsers = [];
+
     $scope.init = function() {
-        $user.getAll().then(
-            function(data) {
-                $scope.users = data;
-            });
     };
-    
+
+    $scope.showMoreToggle = false;
+
+    $scope.showMoreUsers = function () {
+        $scope.showMoreToggle = false;
+        $scope.viewUsers = $scope.users;
+    };
+
+    $scope.assignQueriedUsers = function (data) {
+        $scope.users = data;
+        $scope.viewUsers = $scope.users.slice(0, VIEW_USER_SIZE);
+        $scope.showMoreToggle = $scope.users.length > VIEW_USER_SIZE;
+    };
+
+    $scope.findUsers = function () {
+      $rootScope.loading++;
+      if ($scope.searchText.length === 0) {
+          $user.getAll()
+              .then($scope.assignQueriedUsers)
+              .finally(function () {
+                      $rootScope.loading--;
+                  }
+              );
+      } else {
+          $user.searchUsers($scope.searchText)
+              .success($scope.assignQueriedUsers)
+              .finally(function () {
+                      $rootScope.loading--;
+                  }
+              );
+      }
+    };
+
     $scope.openUserDetails = function(selectedUser) {
         var modalInstance = $modal.open({
                                 templateUrl: 'views/modals/user/userDetailTemplate.html',
@@ -72,7 +103,7 @@ angular.module('SimbaApp')
                 });
         });
     };
-   
+
     $scope.openAddUser = function() {
         var modalInstance = $modal.open({
                                 templateUrl: 'views/modals/user/addUserTemplate.html',

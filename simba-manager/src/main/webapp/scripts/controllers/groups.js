@@ -18,8 +18,8 @@
 'use strict';
 
 angular.module('SimbaApp')
-  .controller('GroupCtrl', ['$scope', '$modal', '$log', '$group', '$error', '$translate', '$simba_component',
-                  function ($scope, $modal, $log, $group, $error, $translate, $simba_component) {
+  .controller('GroupCtrl', ['$scope', '$modal', '$log', '$group', '$error', '$translate', '$simba_component', '$rootScope',
+                  function ($scope, $modal, $log, $group, $error, $translate, $simba_component, $rootScope) {
 
     $scope.groups =[];
     $scope.users =[];

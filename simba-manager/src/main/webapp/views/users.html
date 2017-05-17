@@ -17,6 +17,7 @@
 
 <div ng-controller="UserCtrl" ng-init="init()">
     <input class="searchBox" placeholder="{{searchBoxPlaceholderText|translate}}" type="text" ng-model="searchText">
+    <button class="btn btn-primary searchButton" ng-click="findUsers()">{{"find.users"|translate}}</button>
     <label class="label-info">{{resultMessage}}</label>
     <table>
         <tr>
@@ -27,7 +28,7 @@
                 <span>{{header|translate}}</span>
             </th>
         </tr>
-        <tr ng-repeat="user in users | filter:searchText | orderBy:'userName'">
+        <tr ng-repeat="user in viewUsers">
             <td>
                 <a href="javascript:;" ng-click="openUserDetails(user)"><img class="icon" src="resources/img/search.png"/></a>
             </td>
@@ -48,4 +49,7 @@
             </td>
         </tr>
     </table>
+    <div class="showMoreButton">
+        <button class="btn btn-primary" ng-click="showMoreUsers()" ng-show="showMoreToggle">{{"show.more"|translate}}</button>
+    </div>
 </div>

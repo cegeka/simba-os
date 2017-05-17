@@ -27,7 +27,14 @@ angular.module('SimbaApp')
           $configuration.findListParameters().then(
               function(data) {
                   $scope.parameters = data;
+                  $scope.parameters.forEach(function (p) {
+                      p.visible = false;
+                  })
               });
+       };
+
+       $scope.toggleVisibility = function (param) {
+           param.visible = !param.visible;
        };
 
        $scope.deleteValueFromParameter = function(parameter, value) {

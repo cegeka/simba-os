@@ -28,6 +28,7 @@ angular.module('SimbaApp')
         var tabs = [
             {id: 'UniqueParametersTab', title: 'configuration.parameters.unique', active: false,  resourceName: 'manage-configuration', operation: 'READ', url: 'views/unique-parameters.html'},
             {id: 'ListParametersTab', title: 'configuration.parameters.list', active: false,  resourceName: 'manage-configuration', operation: 'READ', url: 'views/list-parameters.html'},
+            {id: 'CacheTab', title: 'configuration.cache', active: false,  resourceName: 'manage-configuration', operation: 'READ', url: 'views/cache.html'}
         ];
 
         tabs.forEach(function(tab) {

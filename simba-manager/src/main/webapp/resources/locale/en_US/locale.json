@@ -133,5 +133,9 @@
   "loading.text": "Processing, but it takes some time.",
   "find.users": "Search",
   "show.more": "Show more",
-  "add.parameter": "Add parameter"
+  "add.parameter": "Add parameter",
+  "configuration.cache":"Cache",
+  "cache.enabled":"Enabled",
+  "cache.disabled":"Disabled",
+  "cache.state":"Cache state"
 }

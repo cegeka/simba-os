@@ -154,3 +154,7 @@ th span, td span {
 .selected {
     background-color:#666666;
 }
+
+.inlineParagraph {
+    display: inline-block;
+}

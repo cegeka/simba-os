@@ -15,23 +15,20 @@
  *
  */
 
-.parameterbox {
-    display: block;
-    min-height: 20px;
-}
-
-.simbaAccordionHeader {
-    font-size: 20px;
-}
-
-.simbaAccordionContent {
-    margin: 5px;
-}
-
-.simbaAccordion {
-    padding-top: 10px;
-}
-
-.cacheState {
-    margin: 30px 0 10px 0;
-}
+angular.module('SimbaApp')
+    .factory('$cache', ['$rest', function($rest) {
+        return {
+            refresh: function() {
+                return $rest.post('cache/refresh');
+            },
+            enable: function () {
+                return $rest.post('cache/enable');
+            },
+            disable: function () {
+                return $rest.post('cache/disable');
+            },
+            isEnabled: function () {
+                return $rest.post('cache/isEnabled');
+            }
+        };
+    }]);

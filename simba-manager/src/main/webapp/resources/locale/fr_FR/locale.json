@@ -133,5 +133,9 @@
   "loading.text": "Votre demande est en cours de traitement.",
   "find.users": "Rechercher",
   "show.more": "Afficher plus",
-  "add.parameter": "Ajouter un paramètre"
+  "add.parameter": "Ajouter un paramètre",
+  "configuration.cache":"Cache",
+  "cache.enabled":"Permis",
+  "cache.disabled":"Bloqué",
+  "cache.state":"Cache état"
 }

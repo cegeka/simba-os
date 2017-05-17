@@ -162,6 +162,10 @@
   "loading.text":"De verwerking is bezig, maar neemt enige tijd in beslag.",
   "find.users":"Zoeken",
   "show.more":"Meer tonen",
-  "add.parameter":"Parameter toevoegen"
+  "add.parameter":"Parameter toevoegen",
+  "configuration.cache":"Cache",
+  "cache.enabled":"Ingeschakeld",
+  "cache.disabled":"Uitgeschakeld",
+  "cache.state":"Cache status"
 
 }

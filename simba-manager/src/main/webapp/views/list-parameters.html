@@ -16,32 +16,30 @@
   -->
 
 <div ng-controller="ListParameterCtrl" ng-init="init()">
-    <div>
-        <div ng-repeat="parameter in parameters">
-            <div class="simbaAccordion">
-                <a href="javascript:;" class="clickable simbaAccordionHeader" ng-click="toggleVisibility(parameter)">{{parameter.name}}</a>
-                <div class="simbaAccordionContent" ng-show="parameter.visible">
+    <div ng-repeat="parameter in parameters">
+        <div class="simbaAccordion">
+            <a href="javascript:;" class="clickable simbaAccordionHeader" ng-click="toggleVisibility(parameter)">{{parameter.name}}</a>
+            <div class="simbaAccordionContent" ng-show="parameter.visible">
+                <table>
+                    <tr>
+                        <th class="icon"><a ng-evaluate-rule="manage-configuration,CREATE" href="javascript:;"
+                                            ng-click="addParameter(parameter)"><img
+                                src="resources/img/add.png"/></a>
+                        </th>
+                        <th>{{"configuration.parameters.title"|translate}}</th>
+                    </tr>
+                </table>
+                <div class="largeTable">
                     <table>
-                        <tr>
-                            <th class="icon"><a ng-evaluate-rule="manage-configuration,CREATE" href="javascript:;"
-                                                ng-click="addParameter(parameter)"><img
-                                    src="resources/img/add.png"/></a>
-                            </th>
-                            <th>{{"configuration.parameters.title"|translate}}</th>
+                        <tr ng-repeat="value in parameter.value | orderBy:'name'">
+                            <td class="icon"><a href="javascript:;" class="clickable"
+                                                ng-evaluate-rule="manage-configuration,DELETE"
+                                                ng-confirm-click="collectionmanager.confirmremove.text"
+                                                confirm-action="deleteValueFromParameter(parameter, value)"><img
+                                    src="resources/img/delete.png"/></a></td>
+                            <td>{{value}}</td>
                         </tr>
                     </table>
-                    <div class="largeTable">
-                        <table>
-                            <tr ng-repeat="value in parameter.value | orderBy:'name'">
-                                <td class="icon"><a href="javascript:;" class="clickable"
-                                                    ng-evaluate-rule="manage-configuration,DELETE"
-                                                    ng-confirm-click="collectionmanager.confirmremove.text"
-                                                    confirm-action="deleteValueFromParameter(parameter, value)"><img
-                                        src="resources/img/delete.png"/></a></td>
-                                <td>{{value}}</td>
-                            </tr>
-                        </table>
-                    </div>
                 </div>
             </div>
         </div>

@@ -110,7 +110,7 @@ angular.module('SimbaApp')
                                 controller: 'UserCreationCtrl',
                                 resolve: {
                                   selectedUser: function () {
-                                    return {};
+                                    return {language: "en_US", status: "ACTIVE"};
                                   }
                                 }
         });

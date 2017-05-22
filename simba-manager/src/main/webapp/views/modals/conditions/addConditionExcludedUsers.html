@@ -1,0 +1,25 @@
+<div ng-init="init()">
+    <div class="modal-header">
+        <p>{{"condition.wizard"|translate}} - {{"condition.exemptedusers"|translate}}</p>
+    </div>
+    <div class="modal-body">
+        <div ng-controller="UserCtrl" ng-init="init()">
+            <input class="searchBox" placeholder="{{'user.username'|translate}}" type="text" ng-model="searchText">
+            <button class="btn btn-primary searchButton" ng-click="findUsers()">{{"find.users"|translate}}</button>
+            <select class="largeSelect" multiple ng-multiple="true" ng-model="newCondition.excludedUsers"
+                    ng-options="user.userName for user in viewUsers">
+
+            </select>
+            <div class="showMoreButton">
+                <button class="btn btn-primary" ng-click="showMoreUsers()" ng-show="true">
+                    {{"show.more"|translate}}
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="next()"><span translate="wizard.buttons.next.label"></span></button>
+        <button class="btn btn-warning" ng-click="cancel()"><span translate="wizard.buttons.cancel.label"></span>
+        </button>
+    </div>
+</div>

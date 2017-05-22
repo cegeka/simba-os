@@ -28,7 +28,7 @@
                 </table>
                 <div class="largeTable">
                     <table>
-                        <tr ng-repeat="policy in policies | orderBy:'name'" ng-click="setSelected(policy.id)" >
+                        <tr ng-repeat="policy in policies" ng-click="setSelected(policy.id)" >
                             <td class="icon" ng-class="{selected: policy.id == selectedPolicy.id}">
                                 <a href="javascript:;" class="clickable" ng-evaluate-rule="manage-policies,DELETE" ng-confirm-click="collectionmanager.confirmremove.text" confirm-action="deletePolicy(policy)">
                                     <img src="resources/img/delete.png"/>

@@ -2,6 +2,7 @@
   "error.title": "An error has occured",
   "error.INVALID_START_CONDITION": "Invalid from expression. Please verify the cron syntax.",
   "error.INVALID_END_CONDITION": "Invalid to expression. Please verify the cron syntax.",
+  "error.CRONEXPRESSION": "Please verify the cron syntax.",
   "error.SYSTEM": "There was a system error. Please contact your system administrator.",
   "error.USERNAME_EMPTY": "Please fill in the username field.",
   "error.USERNAME_TOO_SHORT": "The specified username is too short. The username should be at least {0} characters long.",

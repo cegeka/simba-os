@@ -1,0 +1,15 @@
+<div ng-init="init()">
+    <div class="modal-header">
+        <p>{{"condition.wizard"|translate}} - {{"condition.policy.description"|translate}}</p>
+    </div>
+    <div class="modal-body">
+        <select class="largeSelect" multiple ng-multiple="true" ng-model="newCondition.policies"
+                ng-options="policy.name for policy in policies">
+        </select>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="next()"><span translate="wizard.buttons.next.label"></span></button>
+        <button class="btn btn-warning" ng-click="cancel()"><span translate="wizard.buttons.cancel.label"></span>
+        </button>
+    </div>
+</div>

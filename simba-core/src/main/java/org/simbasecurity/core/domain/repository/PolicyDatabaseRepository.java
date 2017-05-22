@@ -27,6 +27,12 @@ import java.util.List;
 @Repository
 public class PolicyDatabaseRepository extends AbstractVersionedDatabaseRepository<Policy> implements PolicyRepository {
 
+    @Override
+    public Collection<Policy> findAllOrderedByName() {
+        Query query = entityManager.createQuery("SELECT e FROM PolicyEntity e ORDER BY lower(e.name)");
+        return query.getResultList();
+    }
+
     public Policy findByName(String policyName) {
         TypedQuery<Policy> query = entityManager.createQuery("SELECT p FROM PolicyEntity p WHERE p.name = :policyName", Policy.class)
                                                 .setParameter("policyName", policyName);

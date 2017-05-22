@@ -78,6 +78,7 @@ public class PolicyManagerServiceTest {
 
         Collection<Policy> policies = asList(policyEntity1, policyEntity2, policyEntity3);
         when(policyRepository.findAll()).thenReturn(policies);
+        when(policyRepository.findAllOrderedByName()).thenReturn(policies);
 
         when(policyRepository.lookUp(policyDTO1)).thenReturn(policyEntity1);
         when(policyRepository.lookUp(policyDTO2)).thenReturn(policyEntity2);

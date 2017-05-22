@@ -64,7 +64,7 @@ public class PolicyManagerService {
     @RequestMapping("findAll")
     @ResponseBody
     public Collection<PolicyDTO> findAll() {
-        return assemble(filterService.filterPolicies(policyRepository.findAll()));
+        return assemble(filterService.filterPolicies(policyRepository.findAllOrderedByName()));
     }
 
     @RequestMapping("findRoles")

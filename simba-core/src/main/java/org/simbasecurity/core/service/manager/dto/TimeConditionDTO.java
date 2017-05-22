@@ -16,6 +16,10 @@
  */
 package org.simbasecurity.core.service.manager.dto;
 
+
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
+@JsonTypeName("condition.type.timecondition")
 public final class TimeConditionDTO extends ConditionDTO {
     private String startCondition;
     private String endCondition;

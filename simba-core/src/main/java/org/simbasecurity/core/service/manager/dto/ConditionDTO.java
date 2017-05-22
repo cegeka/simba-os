@@ -16,8 +16,14 @@
  */
 package org.simbasecurity.core.service.manager.dto;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-public class ConditionDTO extends AbstractVersionedDTO {
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value=TimeConditionDTO.class, name="condition.type.timecondition")
+})
+public abstract class ConditionDTO extends AbstractVersionedDTO {
 
     private String name;
 
@@ -28,6 +34,5 @@ public class ConditionDTO extends AbstractVersionedDTO {
     public final void setName(final String name) {
         this.name = name;
     }
-
 }
 

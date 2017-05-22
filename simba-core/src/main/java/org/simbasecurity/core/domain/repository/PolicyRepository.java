@@ -29,6 +29,7 @@ public interface PolicyRepository extends AbstractVersionedRepository<Policy> {
      * @return all stored roles
      */
     Collection<Policy> findAll();
+    Collection<Policy> findAllOrderedByName();
 
     /**
      * @param policyName the policy name

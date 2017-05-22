@@ -1,0 +1,22 @@
+<div ng-init="init()">
+    <div class="modal-header">
+        <p>{{"condition.wizard"|translate}} - {{"condition.properties"|translate}}</p>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="conditionName" class="col-form-label col-2">{{"condition.name"|translate}}</label>
+            <input id="conditionName" class="form-control" type="text" ng-model="newCondition.condition.name"/>
+        </div>
+        <div class="form-group">
+            <label for="conditionType" class="col-form-label col-2">{{"condition.type"|translate}}</label>
+            <select id="conditionType" ng-model="newCondition.condition.type" class="form-control">
+                <option value="condition.type.timecondition" selected>{{"condition.type.timecondition"|translate}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="next()"><span translate="wizard.buttons.next.label"></span></button>
+        <button class="btn btn-warning" ng-click="cancel()"><span translate="wizard.buttons.cancel.label"></span>
+        </button>
+    </div>
+</div>

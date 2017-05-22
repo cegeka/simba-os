@@ -137,5 +137,11 @@
   "configuration.cache":"Cache",
   "cache.enabled":"Enabled",
   "cache.disabled":"Disabled",
-  "cache.state":"Cache state"
+  "cache.state":"Cache state",
+  "wizard.buttons.next.label":"Next",
+  "wizard.buttons.previous.label":"Previous",
+  "wizard.buttons.cancel.label":"Cancel",
+  "wizard.buttons.finish.label":"Finish",
+  "wizard.step.summary.description":"Summary"
+
 }

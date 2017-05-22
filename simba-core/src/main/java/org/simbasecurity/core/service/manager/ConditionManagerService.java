@@ -26,9 +26,7 @@ import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.exception.SimbaMessageKey;
 import org.simbasecurity.core.service.manager.assembler.PolicyDTOAssembler;
 import org.simbasecurity.core.service.manager.assembler.UserDTOAssembler;
-import org.simbasecurity.core.service.manager.dto.ConditionDTO;
-import org.simbasecurity.core.service.manager.dto.PolicyDTO;
-import org.simbasecurity.core.service.manager.dto.UserDTO;
+import org.simbasecurity.core.service.manager.dto.*;
 import org.simbasecurity.core.spring.quartz.ExtendedCronExpression;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,13 +87,13 @@ public class ConditionManagerService {
 
     @RequestMapping("addOrUpdate")
     @ResponseBody
-    public ConditionDTO addOrUpdate(@RequestBody ConditionDTO condition, @RequestBody Collection<UserDTO> users, @RequestBody Collection<PolicyDTO> policies) {
-        final Condition attachedCondition = findOrCreate(condition);
+    public ConditionDTO addOrUpdate(@RequestBody ConditionWithPoliciesAndExcludedUsersDTO conditionWithPoliciesAndExcludedUsersDTO) {
+        final Condition attachedCondition = findOrCreate(conditionWithPoliciesAndExcludedUsersDTO.getCondition());
 
-        final Collection<User> attachedUsers = userRepository.refreshWithOptimisticLocking(users);
-        attachedCondition.setExemptedUsers(new HashSet<User>(attachedUsers));
+        final Collection<User> attachedUsers = userRepository.refreshWithOptimisticLocking(conditionWithPoliciesAndExcludedUsersDTO.getExcludedUsers());
+        attachedCondition.setExemptedUsers(new HashSet<>(attachedUsers));
 
-        final Collection<Policy> attachedPolicies = policyRepository.refreshWithOptimisticLocking(policies);
+        final Collection<Policy> attachedPolicies = policyRepository.refreshWithOptimisticLocking(conditionWithPoliciesAndExcludedUsersDTO.getPolicies());
         conditionRepository.updatePolicies(attachedCondition, attachedPolicies);
 
         conditionRepository.flush();
@@ -126,12 +124,12 @@ public class ConditionManagerService {
 
     @RequestMapping("validateTimeCondition")
     @ResponseBody
-    public boolean validateTimeCondition(@RequestBody String startCondition, @RequestBody String endCondition) {
-        if (!isExpressionValid(startCondition)) {
+    public boolean validateTimeCondition(@RequestBody TimeConditionDTO timeCondition) {
+        if (!isExpressionValid(timeCondition.getStartCondition())) {
             throw new SimbaException(SimbaMessageKey.INVALID_START_CONDITION);
         }
 
-        if (!isExpressionValid(endCondition)) {
+        if (!isExpressionValid(timeCondition.getEndCondition())) {
             throw new SimbaException(SimbaMessageKey.INVALID_END_CONDITION);
         }
 

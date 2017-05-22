@@ -1,0 +1,21 @@
+<div ng-init="init()">
+    <div class="modal-header">
+        <p>{{"condition.wizard"|translate}} - {{"wizard.step.summary.description"|translate}}</p>
+    </div>
+    <div class="modal-body">
+        <h4>{{"condition.properties"|translate}}</h4>
+        <p>{{"condition.name"|translate}}: {{newCondition.condition.name}}</p>
+        <p>{{"condition.type"|translate}}: {{newCondition.condition.type|translate}}</p>
+        <h4>{{"condition.time.configuration"|translate}}</h4>
+        <p>{{"condition.time.from"|translate}} {{newCondition.condition.startCondition}} {{"condition.time.to"|translate}} {{newCondition.condition.endCondition}}</p>
+        <h4>{{"condition.policy.selection"|translate}}</h4>
+        <p>{{getSelectedPolicies()}}</p>
+        <h4>{{"condition.exemptedusers"|translate}}</h4>
+        <p>{{getSelectedUsers()}}</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="next()"><span translate="wizard.buttons.next.label"></span></button>
+        <button class="btn btn-warning" ng-click="cancel()"><span translate="wizard.buttons.cancel.label"></span>
+        </button>
+    </div>
+</div>

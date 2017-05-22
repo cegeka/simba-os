@@ -166,6 +166,10 @@
   "configuration.cache":"Cache",
   "cache.enabled":"Ingeschakeld",
   "cache.disabled":"Uitgeschakeld",
-  "cache.state":"Cache status"
-
+  "cache.state":"Cache status",
+  "wizard.buttons.next.label":"Volgende",
+  "wizard.buttons.previous.label":"Vorige",
+  "wizard.buttons.cancel.label":"Annuleren",
+  "wizard.buttons.finish.label":"Einde",
+  "wizard.step.summary.description":"Samenvatting"
 }

@@ -18,8 +18,8 @@
 'use strict';
 
 angular.module('SimbaApp')
-    .controller('CacheCtrl', ['$scope', '$log', '$error', '$translate', '$configuration', '$cache',
-        function ($scope, $log, $error, $translate, $configuration, $cache) {
+    .controller('CacheCtrl', ['$scope', '$log', '$error', '$translate', '$cache',
+        function ($scope, $log, $error, $translate, $cache) {
 
             $scope.cacheEnabled = true;
 

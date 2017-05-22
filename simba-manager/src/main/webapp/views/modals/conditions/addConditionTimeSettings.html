@@ -1,0 +1,22 @@
+<div ng-init="init()">
+    <div class="modal-header">
+        <p>{{"condition.wizard"|translate}} - {{"condition.time.configuration"|translate}}</p>
+    </div>
+    <div class="modal-body">
+        <p class="error" ng-show="validation != null">{{validation|translate}}</p>
+        <div class="form-group">
+            <label class="col-form-label col-2" for="startCondition">{{"condition.time.from"|translate}}</label>
+            <input id="startCondition" class="form-control" type="text" ng-model="newCondition.condition.startCondition"/>
+        </div>
+        <div class="form-group">
+            <label class="col-form-label col-2" for="endCondition">{{"condition.time.to"|translate}}</label>
+            <input id="endCondition" class="form-control" type="text" ng-model="newCondition.condition.endCondition"/>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="validateTimeConditions()"><span
+                translate="wizard.buttons.next.label"></span></button>
+        <button class="btn btn-warning" ng-click="cancel()"><span translate="wizard.buttons.cancel.label"></span>
+        </button>
+    </div>
+</div>

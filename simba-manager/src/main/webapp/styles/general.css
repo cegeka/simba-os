@@ -158,3 +158,9 @@ th span, td span {
 .inlineParagraph {
     display: inline-block;
 }
+
+.col-2 {
+    min-width: 100px;
+    display: inline-block;
+    margin-right: 5px;
+}

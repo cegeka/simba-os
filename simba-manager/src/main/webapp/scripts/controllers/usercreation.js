@@ -23,6 +23,7 @@ angular.module('SimbaApp')
             $scope.tabs;
             $scope.user;
             $scope.successUrls;
+            $scope.changePassword = true;
             $scope.showEditButtons=true;
             $scope.error = $error.getError();
 

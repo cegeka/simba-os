@@ -16,10 +16,10 @@
  */
 package org.simbasecurity.common.constants;
 
+import org.simbasecurity.common.request.RequestConstants;
+
 import java.util.Arrays;
 import java.util.Collection;
-
-import org.simbasecurity.common.request.RequestConstants;
 
 public interface AuthenticationConstants extends RequestConstants {
     /**
@@ -55,6 +55,6 @@ public interface AuthenticationConstants extends RequestConstants {
 	 */
 	String LOGIN_TOKEN = "loginToken";
 	
-	Collection<String> SIMBA_INTERNALS_REQUEST_CONSTANTS = Arrays.asList(USERNAME, PASSWORD, LOGIN_TOKEN, SIMBA_ACTION_PARAMETER, SIMBA_SSO_TOKEN); 
+	Collection<String> SIMBA_INTERNALS_REQUEST_CONSTANTS = Arrays.asList(USERNAME, PASSWORD, LOGIN_TOKEN, SIMBA_ACTION_PARAMETER, SIMBA_SSO_TOKEN, SAML_RESPONSE);
 	
 }

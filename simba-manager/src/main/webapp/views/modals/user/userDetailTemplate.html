@@ -32,8 +32,7 @@
     </tabset>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" ng-evaluate-rule="manage-users,WRITE" ng-click="save()" ng-if="showEditButtons"><span translate="user.update"></span></button>
-    <button class="btn btn-secondary" ng-evaluate-rule="manage-users,WRITE" ng-click="resetPassword()" ng-if="showEditButtons"><span translate="user.resetpassword"></span></button>
+    <button class="btn btn-primary" ng-evaluate-rule="manage-users,WRITE" ng-click="save()" ng-show="showEditButtons"><span translate="user.update"></span></button>
     <button class="btn btn-warning" ng-click="cancel()"><span translate="user.close"></span></button>
   </div>
 </div>

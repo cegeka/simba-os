@@ -172,3 +172,18 @@ th span, td span {
     display: inline-block;
     margin-right: 5px;
 }
+
+.changePasswordSpan {
+    display: block;
+    width: 120px;
+    word-wrap: normal;
+    white-space: normal;
+}
+
+#changePasswordLabel {
+    vertical-align: middle;
+}
+
+#changepassword {
+    vertical-align: middle;
+}

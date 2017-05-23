@@ -76,12 +76,6 @@ angular.module('SimbaApp')
         $modalInstance.close($scope.user);
     };
 
-    $scope.resetPassword = function() {
-        $user.resetPassword($scope.user).then(function(data) {
-            $scope.user = data.data;
-        });
-    };
-
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
@@ -110,7 +104,7 @@ angular.module('SimbaApp')
             .error(function() {
                $error.showError('error.loading.data');
             });
-    }
+    };
 
     $scope.deleteRole = function(role) {
         $user.removeRole($scope.user, role)
@@ -121,7 +115,7 @@ angular.module('SimbaApp')
         .error(function() {
             $error.showError('error.update.failed');
         });
-    }
+    };
     
     var getTabs = function() {
         return [

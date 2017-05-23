@@ -69,7 +69,7 @@
   "user.language": "Langue",
   "user.status": "Etat",
   "user.successurl": "URL de succès",
-  "user.changepassword": "Changer mot de passe",
+  "user.changepassword": "Changer mot de passe chez prochaine connexion",
   "user.resetpassword": "Reset mot de passe",
   "user.inactivedate": "Date inactive",
   "users.filter": "Filtre d'utilisateurs...",

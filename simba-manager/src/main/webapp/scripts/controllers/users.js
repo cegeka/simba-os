@@ -86,6 +86,9 @@ angular.module('SimbaApp')
             $user.update(user)
                 .success(function(data) {
                     var i = $scope.users.indexOf(selectedUser);
+                    if(user.resetPassword) {
+                        $user.resetPassword(user);
+                    }
                     $scope.users[i] = data;
                 })
                 .error(function() {

@@ -94,6 +94,5 @@ angular.module('SimbaApp')
         KeepaliveProvider.interval(10);
     }])
     .run(['Idle', function (Idle) {
-        console.log("App started");
         Idle.watch();
     }]);

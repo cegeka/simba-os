@@ -86,7 +86,7 @@
   "user.changepassword":"Wijzig wachtwoord bij volgende login",
   "user.resetpassword":"Reset wachtwoord",
   "user.inactivedate":"Datum inactief",
-  "users.filter":"Filter gebruikers...",
+  "users.filter":"Zoek gebruikers...",
   "users.filtered":"Gefilterd: Toont {0} record(s)",
   "users.add.rest.title":"REST",
   "users.add.webservices.title":"Webservices",

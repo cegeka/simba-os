@@ -72,7 +72,7 @@
   "user.changepassword": "Change password on next login",
   "user.resetpassword": "Reset password",
   "user.inactivedate": "Date inactive",
-  "users.filter": "Filter users...",
+  "users.filter": "Search users...",
   "users.filtered": "Filtered: Showing {0} record(s)",
   "users.add.rest.title": "REST",
   "users.add.webservices.title": "Webservices",

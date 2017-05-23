@@ -20,7 +20,7 @@
     <button class="btn btn-primary searchButton" ng-click="findUsers()">{{"find.users"|translate}}</button>
     <label class="label-info">{{resultMessage}}</label>
     <table>
-        <tr>
+        <tr ng-show="viewUsers.length > 0">
             <th class="icon">
                 <a href="javascript:;" ng-evaluate-rule="manage-users,CREATE" ng-click="openAddUser()"><img src="resources/img/add.png"/></a>
             </th>

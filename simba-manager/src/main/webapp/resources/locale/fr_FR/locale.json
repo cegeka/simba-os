@@ -72,7 +72,7 @@
   "user.changepassword": "Changer mot de passe chez prochaine connexion",
   "user.resetpassword": "Reset mot de passe",
   "user.inactivedate": "Date inactive",
-  "users.filter": "Filtre d'utilisateurs...",
+  "users.filter": "Rechercher d'utilisateurs...",
   "users.filtered": "Filtré: Affiche {0} dossier(s)",
   "users.add.rest.title": "REST",
   "users.add.webservices.title": "Services web",

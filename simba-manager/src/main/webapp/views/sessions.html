@@ -16,7 +16,6 @@
   -->
 
 <div ng-controller="SessionCtrl" ng-init="init()">
-    <label class="label-info">{{resultMessage}}</label>
     <button class="btn btn-secondary" ng-evaluate-rule="manage-sessions,READ" ng-click="init()"><span translate="sessionoverview.reload"></span></button>
     <button class="btn btn-secondary" ng-evaluate-rule="manage-sessions,WRITE" ng-click="removeAllSessions()"><span translate="sessionoverview.removeall"></span></button>
 

@@ -18,7 +18,7 @@
 <div ng-controller="UserCtrl" ng-init="init()">
     <input class="searchBox" placeholder="{{searchBoxPlaceholderText|translate}}" type="text" ng-model="searchText" ng-keyup="$event.keyCode == 13 && findUsers()">
     <button class="btn btn-primary searchButton" ng-click="findUsers()">{{"find.users"|translate}}</button>
-    <label class="label-info">{{resultMessage}}</label>
+    <button class="btn btn-success searchButton" ng-click="openAddUser()">{{"newuserwizard.step1"|translate}}</button>
     <table>
         <tr ng-show="viewUsers.length > 0">
             <th class="icon">

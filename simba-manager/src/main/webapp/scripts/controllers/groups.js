@@ -45,7 +45,7 @@ angular.module('SimbaApp')
 
       $scope.openAddRole = function() {
           if($scope.selectedGroup==null) {
-              $error.showError($translate('error.no.group.selected'));
+              $error.showError('error.no.group.selected');
               return;
           }
 
@@ -64,7 +64,7 @@ angular.module('SimbaApp')
                               });
                           })
                           .error(function(){
-                              $error.showError($translate('error.update.failed'));
+                              $error.showError('error.update.failed');
                           });}, function () {
                       $log.info('Modal dismissed at: ' + new Date());
                   });
@@ -85,7 +85,7 @@ angular.module('SimbaApp')
             });
         })
         .error(function() {
-            $error.showError($translate('error.update.failed'));
+            $error.showError('error.update.failed');
         });
     }
 

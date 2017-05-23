@@ -45,7 +45,7 @@ angular.module('SimbaApp')
 
     $scope.openAddRole = function() {
         if($scope.selectedPolicy==null) {
-            $error.showError($translate('error.no.policy.selected'));
+            $error.showError('error.no.policy.selected');
             return;
         }
 
@@ -62,7 +62,7 @@ angular.module('SimbaApp')
                             refreshSelectedPolicy();
                         })
                         .error(function(){
-                            $error.showError($translate('error.update.failed'));
+                            $error.showError('error.update.failed');
                         });}, function () {
                     $log.info('Modal dismissed at: ' + new Date());
                 });
@@ -72,7 +72,7 @@ angular.module('SimbaApp')
 
       $scope.openAddRule = function() {
           if($scope.selectedPolicy==null) {
-              $error.showError($translate('error.no.policy.selected'));
+              $error.showError('error.no.policy.selected');
               return;
           }
 
@@ -89,7 +89,7 @@ angular.module('SimbaApp')
                               refreshSelectedPolicy();
                           })
                           .error(function(){
-                              $error.showError($translate('error.update.failed'));
+                              $error.showError('error.update.failed');
                           });}, function () {
                       $log.info('Modal dismissed at: ' + new Date());
                   });
@@ -113,7 +113,7 @@ angular.module('SimbaApp')
             refreshSelectedPolicy();
         })
         .error(function() {
-            $error.showError($translate('error.update.failed'));
+            $error.showError('error.update.failed');
         });
     }
 
@@ -125,7 +125,7 @@ angular.module('SimbaApp')
           refreshSelectedPolicy()
         })
         .error(function() {
-          $error.showError($translate('error.update.failed'));
+          $error.showError('error.update.failed');
         });
     }
 
@@ -137,7 +137,7 @@ angular.module('SimbaApp')
             refreshSelectedPolicy();
         })
         .error(function() {
-            $error.showError($translate('error.update.failed'));
+            $error.showError('error.update.failed');
         });
     };
 
@@ -150,7 +150,7 @@ angular.module('SimbaApp')
                         refreshSelectedPolicy();
                     })
                     .error(function() {
-                        $error.showError($translate('error.create.failed'));
+                        $error.showError('error.create.failed');
                     });
         }, function () {
             $log.info('Modal dismissed at: ' + new Date());

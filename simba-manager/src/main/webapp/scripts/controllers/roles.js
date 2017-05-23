@@ -45,7 +45,7 @@ angular.module('SimbaApp')
 
     $scope.openAddUser = function() {
         if($scope.selectedRole==null) {
-            $error.showError($translate('error.no.role.selected'));
+            $error.showError('error.no.role.selected');
             return;
         }
 
@@ -62,7 +62,7 @@ angular.module('SimbaApp')
                             });
                         })
                         .error(function(){
-                            $error.showError($translate('error.update.failed'));
+                            $error.showError('error.update.failed');
                         });}, function () {
                     $log.info('Modal dismissed at: ' + new Date());
                 });
@@ -75,7 +75,7 @@ angular.module('SimbaApp')
 
       $scope.openAddPolicy = function() {
           if($scope.selectedRole==null) {
-              $error.showError($translate('error.no.role.selected'));
+              $error.showError('error.no.role.selected');
               return;
           }
 
@@ -91,7 +91,7 @@ angular.module('SimbaApp')
                               });
                           })
                           .error(function(){
-                              $error.showError($translate('error.update.failed'));
+                              $error.showError('error.update.failed');
                           });}, function () {
                       $log.info('Modal dismissed at: ' + new Date());
                   });
@@ -109,7 +109,7 @@ angular.module('SimbaApp')
             });
         })
         .error(function() {
-            $error.showError($translate('error.update.failed'));
+            $error.showError('error.update.failed');
         });
     }
 
@@ -119,7 +119,7 @@ angular.module('SimbaApp')
             $scope.roles.splice(index,1);
         })
         .error(function() {
-            $error.showError($translate('error.update.failed'));
+            $error.showError('error.update.failed');
         });
     };
 
@@ -131,7 +131,7 @@ angular.module('SimbaApp')
                         $scope.roles.push(data);
                     })
                     .error(function() {
-                        $error.showError($translate('error.create.failed'));
+                        $error.showError('error.create.failed');
                     });
         }, function () {
             $log.info('Modal dismissed at: ' + new Date());
@@ -145,7 +145,7 @@ angular.module('SimbaApp')
             });
         })
         .error(function() {
-            $error.showError($translate('error.update.failed'));
+            $error.showError('error.update.failed');
         });
     }
 

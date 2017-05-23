@@ -113,7 +113,7 @@ angular.module('SimbaApp')
                                         $conditions.addOrUpdate(newCondition).then(function (condition) {
                                             $scope.conditions.push(condition.data);
                                         }).catch(function () {
-                                            $error.showError($translate('error.update.failed'));
+                                            $error.showError('error.update.failed');
                                         });
                                     });
                                 });

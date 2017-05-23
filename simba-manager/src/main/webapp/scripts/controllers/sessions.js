@@ -36,7 +36,7 @@ angular.module('SimbaApp')
             $scope.sessions.splice(index,1);
         })
         .error(function() {
-            $error.showError($translate('error.update.failed'));
+            $error.showError('error.update.failed');
         });
     };
 
@@ -45,9 +45,9 @@ angular.module('SimbaApp')
             $scope.init();
         })
         .catch(function() {
-            $error.showError($translate('error.update.failed'));
+            $error.showError('error.update.failed');
         });
-    }
+    };
 
     $scope.timeStampAsDate = function (UNIX_timestamp){
       var a = new Date(UNIX_timestamp);

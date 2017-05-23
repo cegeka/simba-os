@@ -24,5 +24,6 @@
   "error.no.role.selected": "An error occured: no role was selected.",
   "error.no.policy.selected": "An error occured: no policy was selected.",
   "error.loading.data": "An error occured while loading the data.",
-  "error.create.invalid.type": "An error occured while creating the user."
+  "error.create.invalid.type": "An error occured while creating the user.",
+  "error.cache.refresh.failed": "An error occurred while refreshing the cache."
 }

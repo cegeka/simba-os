@@ -23,6 +23,8 @@
   "error.refresh.failed": "An error occured while refreshing the data.",
   "error.no.role.selected": "Une erreur s'est produite: aucun rôle n'a été sélectionné.",
   "error.no.policy.selected": "Une erreur s'est produite: aucun policy n'a été sélectionné.",
-  "error.loading.data": "Er is een fout opgetreden bij het ophalen van de data.",
-  "error.create.invalid.type": "Une erreur s'est produite lors du créer l'utilisateur."
+  "error.loading.data": "Une erreur s'est produite lors du charger des données.",
+  "error.create.invalid.type": "Une erreur s'est produite lors du créer l'utilisateur.",
+  "error.cache.refresh.failed": "Une erreur s'est produite lors du actualiser le cache serveur."
+
 }

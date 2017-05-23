@@ -18,28 +18,58 @@
 'use strict';
 
 angular.module('SimbaApp')
-    .controller('CacheCtrl', ['$scope', '$log', '$error', '$translate', '$cache',
-        function ($scope, $log, $error, $translate, $cache) {
+    .controller('CacheCtrl', ['$scope', '$log', '$error', '$translate', '$cache', '$timeout',
+        function ($scope, $log, $error, $translate, $cache, $timeout) {
 
             $scope.cacheEnabled = true;
+            $scope.feedbackCounter = 0;
 
             $scope.init = function () {
                 $scope.retrieveCacheStatus();
             };
 
+            $scope.showFeedback = function (feedback) {
+                $translate(feedback).then(function (translation) {
+                    $scope.feedback = translation;
+                    $scope.feedbackCounter++;
+                });
+                $timeout(function () {
+                    $scope.feedbackCounter--;
+                    if($scope.feedbackCounter == 0){
+                        $scope.feedback = null;
+                    }
+                }, 3000);
+            };
+
             $scope.refreshCache = function () {
-                $cache.refresh();
+                $cache.refresh().then(function () {
+                    $scope.showFeedback('configuration.cache.refreshed');
+                }).catch(function () {
+                    $error.showError('error.cache.refresh.failed');
+                });
             };
 
             $scope.enableCache = function () {
                 if (!$scope.cacheEnabled) {
-                    $cache.enable();
+                    $cache.enable().then(function () {
+                        $scope.showFeedback('configuration.cache.set.enabled');
+                    }).catch(function () {
+                        $error.showError('error.update.failed');
+                    });
+                }else{
+                    $scope.showFeedback('configuration.cache.already.enabled');
                 }
             };
 
             $scope.disableCache = function () {
                 if ($scope.cacheEnabled) {
-                    $cache.disable();
+                    $cache.disable().then(function () {
+                        $scope.showFeedback('configuration.cache.set.disabled');
+                    }).catch(function () {
+                        $error.showError('error.update.failed');
+                    });
+                }else {
+                    $scope.showFeedback('configuration.cache.already.disabled');
                 }
             };
 

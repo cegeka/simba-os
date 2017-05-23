@@ -16,13 +16,17 @@
   -->
 
 <div ng-controller="CacheCtrl" ng-init="init()">
+    <div ng-show="feedbackCounter > 0">
+        <p class="success">{{feedback}}</p>
+    </div>
     <div class="cacheState">
-        <p class="inlineParagraph">{{"cache.state"|translate}}</p>
-        <div class="btn-group">
-            <button type="button" class="btn btn-secondary" ng-model="cacheEnabled" btn-radio="true" ng-click="enableCache()">{{"cache.enabled"|translate}}</button>\
-            <button type="button" class="btn btn-secondary" ng-model="cacheEnabled" btn-radio="false" ng-click="disableCache()">{{"cache.disabled"|translate}}</button>\
+        <label class="col-2" for="cacheButtons"><h4>{{"configuration.cache.status"|translate}}</h4></label>
+        <div class="btn-group" id="cacheButtons">
+            <button type="button" class="btn btn-secondary cacheButton" ng-model="cacheEnabled" btn-radio="true" ng-click="enableCache()">{{"configuration.cache.enabled"|translate}}</button>\
+            <button type="button" class="btn btn-secondary cacheButton" ng-model="cacheEnabled" btn-radio="false" ng-click="disableCache()">{{"configuration.cache.disabled"|translate}}</button>\
         </div>
     </div>
-    <button type="button" class="btn btn-primary" ng-click="refreshCache()">Renew cache</button>
+    <label class="col-2" for="cacheRefreshButton"></label>
+    <button type="button" id="cacheRefreshButton" class="btn btn-primary" ng-click="refreshCache()">{{"configuration.cache.refresh"|translate}}</button>
 
 </div>

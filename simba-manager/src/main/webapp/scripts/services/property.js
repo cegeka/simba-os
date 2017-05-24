@@ -16,34 +16,37 @@
  */
 
 angular.module('SimbaApp')
-    .factory('$property', ['$http', '$q', function($http, $q) {
+    .factory('$property', ['$http', '$q', function ($http, $q) {
         var simbaLocation = "";
         var managerLocation = "";
+
         function setManagerLocation() {
             var url = window.location.href;
             var arr = url.split("/");
             managerLocation = arr[0] + "//" + arr[2];
         }
-        function getUrl() {
-            if (window.location.href.indexOf("localhost") == -1) {
-                return "/simba-ventouris";
-            } else {
-                return "/simba-manager/simba-locator";
-            }
+
+        function isLocalhost() {
+            return window.location.href.indexOf("localhost") != -1;
         }
+
         return {
-            setSimbaLocation: function(successFunction) {
+            setSimbaLocation: function (successFunction) {
                 setManagerLocation();
-                $http({method: 'GET', url: managerLocation+ getUrl()}).
-                    success(function(data) {
-                      simbaLocation = data;
-                      successFunction();
-                    })
-                    .error(function() {
+                if (!isLocalhost()) {
+                    simbaLocation = managerLocation + "/simba-ventouris";
+                    successFunction();
+                } else {
+                    $http({method: 'GET', url: managerLocation + "/simba-manager/simba-locator"}).success(function (data) {
+                        simbaLocation = data;
                         successFunction();
-                    });
+                    })
+                        .error(function () {
+                            successFunction();
+                        });
+                }
             },
-            getSimbaLocation: function() {
+            getSimbaLocation: function () {
                 return simbaLocation;
             }
         };

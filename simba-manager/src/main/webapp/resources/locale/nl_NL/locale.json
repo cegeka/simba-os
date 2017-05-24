@@ -88,7 +88,7 @@
   "user.inactivedate":"Datum inactief",
   "users.filter":"Zoek gebruikers...",
   "users.filtered":"Gefilterd: Toont {0} record(s)",
-  "users.add.rest.title":"REST",
+  "users.add.rest.title":"REST gebruiker aanmaken",
   "users.add.webservices.title":"Webservices",
 
   "condition.wizard":"Condition Wizard",

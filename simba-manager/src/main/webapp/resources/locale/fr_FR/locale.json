@@ -74,7 +74,7 @@
   "user.inactivedate": "Date inactive",
   "users.filter": "Rechercher d'utilisateurs...",
   "users.filtered": "Filtré: Affiche {0} dossier(s)",
-  "users.add.rest.title": "REST",
+  "users.add.rest.title": "Créer nouvel utilisateur REST",
   "users.add.webservices.title": "Services web",
   "condition.wizard": "Condition Wizard",
   "condition.name": "Nom",

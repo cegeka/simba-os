@@ -1,0 +1,24 @@
+<div>
+    <table>
+        <tr>
+            <th class="icon"><a href="javascript:;" ng-evaluate-rule="manage-users,WRITE" ng-click="addRoleToUser()"><img src="resources/img/add.png" /></a></th>
+            <th>{{"dashboard.roles"|translate}}</th>
+        </tr>
+    </table>
+    <div class="largeTable">
+        <table>
+            <tr ng-repeat="role in userRoles | orderBy:'name'" >
+                <td class="icon">
+                    <a href="javascript:;" class="clickable"
+                       ng-evaluate-rule="manage-users,WRITE"
+                       ng-confirm-click="collectionmanager.confirmremove.text"
+                       confirm-action="deleteRole(role)">
+                        <img src="resources/img/delete.png"/>
+                    </a>
+                </td>
+                <td>{{role.name}}</td>
+            </tr>
+        </table>
+    </div>
+
+</div>

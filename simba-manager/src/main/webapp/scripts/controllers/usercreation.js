@@ -18,11 +18,13 @@
 'use strict';
 
 angular.module('SimbaApp')
-    .controller('UserCreationCtrl', ['$scope', '$modalInstance', 'selectedUser', '$user', '$translate', '$error', '$simba_component', '$configuration', '$rule',
-        function ($scope, $modalInstance, selectedUser, $user, $translate, $error, $simba_component, $configuration, $rule) {
+    .controller('UserCreationCtrl', ['$scope', '$modalInstance', 'selectedUser', '$user', '$translate', '$error', '$simba_component', '$configuration', '$rule', '$role',
+        function ($scope, $modalInstance, selectedUser, $user, $translate, $error, $simba_component, $configuration, $rule, $role) {
             $scope.tabs;
             $scope.user;
             $scope.successUrls;
+            $scope.userRoles = [];
+            $scope.userPolicies = [];
             $scope.changePassword = true;
             $scope.showEditButtons=true;
             $scope.error = $error.getError();
@@ -38,7 +40,7 @@ angular.module('SimbaApp')
             };
 
             $scope.save = function () {
-                $modalInstance.close({"type": getCreationType(), "data": $scope.user});
+                $modalInstance.close({"user": $scope.user, "roles": $scope.userRoles});
             };
 
             $scope.resetPassword = function() {
@@ -51,20 +53,11 @@ angular.module('SimbaApp')
                 $modalInstance.dismiss('cancel');
             };
 
-            var getCreationType = function () {
-                for(var tabId in $scope.tabs){
-                    var tab = $scope.tabs[tabId];
-                    if(tab.active){
-                        return tab.id.toLowerCase();
-                    }
-                }
-                return null;
-            };
-
             var getTabs = function() {
                 var tabs = [
-                    {id: 'Webservices', title: 'users.add.webservices.title', active: true, url: 'views/modals/user/addUserWebservices.html', clickAction: function() {$scope.initData();}},
-                    {id: 'REST', title: 'users.add.rest.title',  active: false, url: 'views/modals/user/addUserRest.html', resourceName: 'manage-configuration', operation: 'WRITE', clickAction: function() {}}
+                    {id: 'Gegevens', title: 'updateuser.data', active: true, url: 'views/modals/user/addUserData.html', clickAction: function() {$scope.initData();}},
+                    {id: 'Rollen', title: 'updateuser.roles', active: false, url: 'views/modals/user/addUserRoles.html', clickAction: function() {}},
+                    {id: 'Policies', title: 'updateuser.policies', active: false, url: 'views/modals/user/addUserPolicies.html', clickAction: function() {}}
                 ];
                 tabs.forEach(function (tab) {
                     if(typeof tab.resourceName !== 'undefined') {
@@ -91,5 +84,39 @@ angular.module('SimbaApp')
                             $scope.user = data;
                         });
                 }
-            }
+            };
+
+            $scope.addRoleToUser = function () {
+                $role.getAll().then(function(data) {
+                        data = data.filter(function (role) {
+                            return $scope.userRoles.map(function (linkedRole) {
+                                    return linkedRole.name;
+                                }).indexOf(role.name) == -1
+                        });
+                        var listbox = $simba_component.listbox($translate('dashboard.roles'), data, "name");
+
+                        listbox.result.then(function (roles) {
+                            $scope.userRoles = $scope.userRoles.concat(roles);
+                            updateUserPolicies();
+                        });
+                    })
+                    .catch(function() {
+                        $error.showError('error.loading.data');
+                    });
+            };
+
+            var updateUserPolicies = function () {
+                $scope.userPolicies = [];
+                $scope.userRoles.forEach(function (role) {
+                    $role.findPolicies(role).then(function (data) {
+                        $scope.userPolicies = $scope.userPolicies.concat(data);
+                    });
+                });
+            };
+
+            $scope.deleteRole = function (role) {
+                var i = $scope.userRoles.indexOf(role);
+                $scope.userRoles.splice(i, 1);
+                updateUserPolicies();
+            };
         }]);

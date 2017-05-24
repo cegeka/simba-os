@@ -19,6 +19,7 @@
     <input class="searchBox" placeholder="{{searchBoxPlaceholderText|translate}}" type="text" ng-model="searchText" ng-keyup="$event.keyCode == 13 && findUsers()">
     <button class="btn btn-primary searchButton" ng-click="findUsers()">{{"find.users"|translate}}</button>
     <button class="btn btn-success searchButton" ng-click="openAddUser()">{{"newuserwizard.step1"|translate}}</button>
+    <button class="btn btn-success searchButton" ng-click="openAddUserRest()">{{"users.add.rest.title"|translate}}</button>
     <table>
         <tr ng-show="viewUsers.length > 0">
             <th class="icon">
@@ -28,7 +29,7 @@
                 <span>{{header|translate}}</span>
             </th>
         </tr>
-        <tr ng-repeat="user in viewUsers">
+        <tr ng-repeat="user in viewUsers | orderBy: 'userName'">
             <td>
                 <a href="javascript:;" ng-click="openUserDetails(user)"><img class="icon" src="resources/img/search.png"/></a>
             </td>

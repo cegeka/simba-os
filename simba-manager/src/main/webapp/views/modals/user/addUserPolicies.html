@@ -15,20 +15,17 @@
   ~
   -->
 
-<div ng-init="init()">
-    <div class="modal-header">
-        <p translate="newuserwizard.step1"></p>
-    </div>
-    <div class="modal-body">
-        <div class="control">
-            <label class="control-label" for="username"><span translate="user.username"></span></label>
-            <input type="text" id="username" ng-model="user.userName" autofocus/>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="save()"><span translate="user.create"></span></button>
-        <button class="btn btn-warning" ng-click="cancel()"><span translate="user.close"></span></button>
+<div>
+    <table>
+        <tr>
+            <th>{{"dashboard.policies"|translate}}</th>
+        </tr>
+    </table>
+    <div class="largeTable">
+        <table>
+            <tr ng-repeat="policy in userPolicies | orderBy:'name'" >
+                <td>{{policy.name}}</td>
+            </tr>
+        </table>
     </div>
 </div>
-
-

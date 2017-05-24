@@ -74,7 +74,7 @@
   "user.inactivedate": "Date inactive",
   "users.filter": "Search users...",
   "users.filtered": "Filtered: Showing {0} record(s)",
-  "users.add.rest.title": "REST",
+  "users.add.rest.title": "Create REST user",
   "users.add.webservices.title": "Webservices",
   "condition.wizard": "Condition Wizard",
   "condition.name": "Name",

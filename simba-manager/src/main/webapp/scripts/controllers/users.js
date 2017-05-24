@@ -99,8 +99,9 @@ angular.module('SimbaApp')
             $log.info('Modal dismissed at: ' + new Date());
             $user.refresh(selectedUser)
                 .success(function(data) {
-                    var i = $scope.users.indexOf(selectedUser);
+                    var i = $scope.viewUsers.indexOf(selectedUser);
                     $scope.users[i] = data;
+                    $scope.viewUsers[i] = data;
                 })
                 .error(function() {
                     $error.showError('error.refresh.failed');
@@ -120,15 +121,34 @@ angular.module('SimbaApp')
         });
 
         modalInstance.result.then(function (addUserResult) {
-            if(addUserResult.type == 'webservices') {
-                addWebservicesUser(addUserResult.data);
-            }else if(addUserResult.type == 'rest'){
-                addRestUser(addUserResult.data);
-            }else{
-                $error.showError('error.create.invalid.type');
-            }
-        }, function () {
-            $log.info('Modal dismissed at: ' + new Date());
+            $user.add(addUserResult.user)
+                .success(function (data) {
+                    $scope.users.push(data);
+                    $scope.viewUsers.push(data);
+                    $user.addRoles(data, addUserResult.roles)
+                        .catch(function () {
+                            $error.showError('error.update.failed');
+                        });
+                })
+                .error(function () {
+                    $error.showError('error.create.failed');
+                });
+        });
+    };
+
+    $scope.openAddUserRest = function() {
+        var modalInstance = $modal.open({
+                                templateUrl: 'views/modals/user/addUserRest.html',
+                                controller: 'UserCreationCtrl',
+                                resolve: {
+                                  selectedUser: function () {
+                                    return {};
+                                  }
+                                }
+        });
+
+        modalInstance.result.then(function (addUserResult) {
+            addRestUser(addUserResult.user);
         });
     };
 
@@ -140,19 +160,10 @@ angular.module('SimbaApp')
         return user.status === 'BLOCKED';
     };
 
-    var addWebservicesUser = function (creationData) {
-        $user.add(creationData)
-            .success(function (data) {
-                $scope.users.push(data);
-            })
-            .error(function () {
-                $error.showError('error.create.failed');
-            });
-    }
-
     var addRestUser = function (creationData) {
         $user.addRest(creationData)
             .success(function (data) {
+                $scope.users.push(creationData);
                 $modal.open({
                     templateUrl: 'views/modals/user/generatedPasswordTemplate.html',
                     controller: 'GeneratedPasswordCtrl',
@@ -162,7 +173,6 @@ angular.module('SimbaApp')
                         }
                     }
                 });
-                $scope.users.push(creationData);
             })
             .error(function () {
                 $error.showError('error.create.failed');

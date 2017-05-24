@@ -85,11 +85,12 @@ angular.module('SimbaApp')
         modalInstance.result.then(function (user) {
             $user.update(user)
                 .success(function(data) {
-                    var i = $scope.users.indexOf(selectedUser);
                     if(user.resetPassword) {
                         $user.resetPassword(user);
                     }
+                    var i = $scope.viewUsers.indexOf(selectedUser);
                     $scope.users[i] = data;
+                    $scope.viewUsers[i] = data;
                 })
                 .error(function() {
                     $error.showError('error.update.failed');

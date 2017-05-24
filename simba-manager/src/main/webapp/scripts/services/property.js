@@ -24,10 +24,17 @@ angular.module('SimbaApp')
             var arr = url.split("/");
             managerLocation = arr[0] + "//" + arr[2];
         }
+        function getUrl() {
+            if (window.location.href.indexOf("localhost") == -1) {
+                return "/simba-ventouris";
+            } else {
+                return "/simba-manager/simba-locator";
+            }
+        }
         return {
             setSimbaLocation: function(successFunction) {
                 setManagerLocation();
-                $http({method: 'GET', url: managerLocation+'/simba-manager/simba-locator'}).
+                $http({method: 'GET', url: managerLocation+ getUrl()}).
                     success(function(data) {
                       simbaLocation = data;
                       successFunction();
@@ -40,6 +47,7 @@ angular.module('SimbaApp')
                 return simbaLocation;
             }
         };
+
     }]);
 
 

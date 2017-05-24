@@ -28,7 +28,7 @@
                     <table>
                         <tr ng-repeat="group in groups | orderBy:'name'" ng-click="setSelected(group.id)" >
                             <td class="clickable" ng-class="{selected: group.id == selectedGroup.id}">
-                                <span ng-click="selectGroup(group)" >{{group.name}}</span>
+                                <span ng-click="selectGroup(group)" class="groupButton">{{group.name}}</span>
                             </td>
                         </tr>
                     </table>

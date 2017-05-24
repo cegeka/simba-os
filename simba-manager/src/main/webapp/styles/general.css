@@ -160,7 +160,7 @@ th span, td span {
 }
 
 .selected {
-    background-color:#666666;
+    background-color:#B4B4B4;
 }
 
 .inlineParagraph {
@@ -186,4 +186,8 @@ th span, td span {
 
 #changepassword {
     vertical-align: middle;
+}
+
+.groupButton {
+    display: block;
 }

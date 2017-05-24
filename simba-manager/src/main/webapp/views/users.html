@@ -19,12 +19,10 @@
     <input class="searchBox" placeholder="{{searchBoxPlaceholderText|translate}}" type="text" ng-model="searchText" ng-keyup="$event.keyCode == 13 && findUsers()">
     <button class="btn btn-primary searchButton" ng-click="findUsers()">{{"find.users"|translate}}</button>
     <button class="btn btn-success searchButton" ng-click="openAddUser()">{{"newuserwizard.step1"|translate}}</button>
-    <button class="btn btn-success searchButton" ng-click="openAddUserRest()">{{"users.add.rest.title"|translate}}</button>
+    <button class="btn btn-success searchButton" ng-click="openAddUserRest()" ng-show="isConfigurationAdmin()">{{"users.add.rest.title"|translate}}</button>
     <table>
         <tr ng-show="viewUsers.length > 0">
-            <th class="icon">
-                <a href="javascript:;" ng-evaluate-rule="manage-users,CREATE" ng-click="openAddUser()"><img src="resources/img/add.png"/></a>
-            </th>
+            <th class="iconColumn"></th>
             <th ng-repeat="header in headers">
                 <span>{{header|translate}}</span>
             </th>
@@ -32,6 +30,7 @@
         <tr ng-repeat="user in viewUsers | orderBy: 'userName'">
             <td>
                 <a href="javascript:;" ng-click="openUserDetails(user)"><img class="icon" src="resources/img/search.png"/></a>
+                <a href="javascript:;" ng-click="copyUser(user)"><img class="icon" src="resources/img/copy.png" width="16px"/></a>
             </td>
             <td>
                 <span>{{user.userName}}</span>

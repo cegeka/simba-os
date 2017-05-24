@@ -20,7 +20,7 @@
 const VIEW_USER_SIZE = 100;
 
 angular.module('SimbaApp')
-  .controller('UserCtrl', ['$scope', '$modal', '$log', '$user', '$error', '$translate', '$timeout', '$rootScope', function ($scope, $modal, $log, $user, $error, $translate, $timeout, $rootScope) {
+  .controller('UserCtrl', ['$scope', '$modal', '$log', '$user', '$error', '$translate', '$timeout', '$rootScope', '$rule', function ($scope, $modal, $log, $user, $error, $translate, $timeout, $rootScope, $rule) {
     $scope.tabs;
     $scope.searchText = "";
     $scope.searchBoxPlaceholderText = "users.filter";
@@ -109,6 +109,39 @@ angular.module('SimbaApp')
         });
     };
 
+
+    $scope.copyUser = function (user) {
+        $user.findRoles(user).then(function (roles) {
+            var modalInstance = $modal.open({
+                templateUrl: 'views/modals/user/addUserTemplate.html',
+                controller: 'UserCreationCtrl',
+                resolve: {
+                    selectedUser: function () {
+                        return {language: user.language, status: user.status, successURL: user.successURL, changePassword: true};
+                    },
+                    roles: function () {
+                        return roles.data;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (addUserResult) {
+                console.log(addUserResult);
+                $user.add(addUserResult.user)
+                    .success(function (data) {
+                        $scope.users.push(data);
+                        $scope.viewUsers.push(data);
+                        $user.addRoles(data, addUserResult.roles)
+                            .catch(function () {
+                                $error.showError('error.update.failed');
+                            });
+                    })
+                    .error(function () {
+                        $error.showError('error.create.failed');
+                    });
+            });
+        });
+    };
     $scope.openAddUser = function() {
         var modalInstance = $modal.open({
                                 templateUrl: 'views/modals/user/addUserTemplate.html',
@@ -116,7 +149,10 @@ angular.module('SimbaApp')
                                 resolve: {
                                   selectedUser: function () {
                                     return {language: "en_US", status: "ACTIVE"};
-                                  }
+                                  },
+                                    roles: function () {
+                                        return [];
+                                    }
                                 }
         });
 
@@ -177,6 +213,10 @@ angular.module('SimbaApp')
             .error(function () {
                 $error.showError('error.create.failed');
             });
-    }
+    };
+
+    $scope.isConfigurationAdmin = function () {
+      return $rule.evaluateRule('manage-configuration', 'WRITE');
+    };
 
   }]);

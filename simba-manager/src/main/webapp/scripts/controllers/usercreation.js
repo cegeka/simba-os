@@ -18,12 +18,12 @@
 'use strict';
 
 angular.module('SimbaApp')
-    .controller('UserCreationCtrl', ['$scope', '$modalInstance', 'selectedUser', '$user', '$translate', '$error', '$simba_component', '$configuration', '$rule', '$role',
-        function ($scope, $modalInstance, selectedUser, $user, $translate, $error, $simba_component, $configuration, $rule, $role) {
+    .controller('UserCreationCtrl', ['$scope', '$modalInstance', 'selectedUser', '$user', '$translate', '$error', '$simba_component', '$configuration', '$rule', '$role', 'roles',
+        function ($scope, $modalInstance, selectedUser, $user, $translate, $error, $simba_component, $configuration, $rule, $role, roles) {
             $scope.tabs;
             $scope.user;
             $scope.successUrls;
-            $scope.userRoles = [];
+            $scope.userRoles;
             $scope.userPolicies = [];
             $scope.changePassword = true;
             $scope.showEditButtons=true;
@@ -32,11 +32,13 @@ angular.module('SimbaApp')
             $scope.initData = function() {
                 getSuccessUrls();
                 $scope.showEditButtons=true;
-            }
+            };
 
             $scope.init = function() {
                 $scope.tabs = getTabs();
                 $scope.user = selectedUser;
+                $scope.userRoles = roles;
+                updateUserPolicies();
             };
 
             $scope.save = function () {

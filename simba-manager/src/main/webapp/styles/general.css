@@ -191,3 +191,7 @@ th span, td span {
 .groupButton {
     display: block;
 }
+
+.iconColumn {
+    width: 36px;
+}

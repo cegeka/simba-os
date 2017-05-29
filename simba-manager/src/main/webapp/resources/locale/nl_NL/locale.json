@@ -82,6 +82,7 @@
   "user.password":"Wachtwoord",
   "user.language":"Taal",
   "user.status":"Status",
+  "user.copy": "Kopieer gebruiker",
   "user.successurl":"Succes URL",
   "user.changepassword":"Wijzig wachtwoord bij volgende login",
   "user.resetpassword":"Reset wachtwoord",

@@ -67,6 +67,7 @@
   "user.firstname": "Firstname",
   "user.password": "Password",
   "user.language": "Language",
+  "user.copy": "Copy user",
   "user.status": "Status",
   "user.successurl": "Success URL",
   "user.changepassword": "Change password on next login",

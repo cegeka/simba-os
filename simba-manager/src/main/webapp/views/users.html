@@ -29,8 +29,8 @@
         </tr>
         <tr ng-repeat="user in viewUsers | orderBy: 'userName'">
             <td>
-                <a href="javascript:;" ng-click="openUserDetails(user)"><img class="icon" src="resources/img/search.png"/></a>
-                <a href="javascript:;" ng-click="copyUser(user)"><img class="icon" src="resources/img/copy.png" width="16px"/></a>
+                <a href="javascript:;" ng-click="openUserDetails(user)" title="{{'userdetail.title'|translate}}"><img class="icon" src="resources/img/search.png"/></a>
+                <a href="javascript:;" ng-click="copyUser(user)" title="{{'user.copy'|translate}}"><img class="icon" src="resources/img/copy.png" width="16px"/></a>
             </td>
             <td>
                 <span>{{user.userName}}</span>

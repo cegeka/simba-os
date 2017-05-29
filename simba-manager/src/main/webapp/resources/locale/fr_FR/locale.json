@@ -68,6 +68,7 @@
   "user.password": "Mot de passe",
   "user.language": "Langue",
   "user.status": "Etat",
+  "user.copy": "Copier l'utilisateur",
   "user.successurl": "URL de succès",
   "user.changepassword": "Changer mot de passe chez prochaine connexion",
   "user.resetpassword": "Reset mot de passe",

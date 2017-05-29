@@ -168,7 +168,7 @@ th span, td span {
 }
 
 .col-2 {
-    min-width: 100px;
+    min-width: 120px;
     display: inline-block;
     margin-right: 5px;
 }

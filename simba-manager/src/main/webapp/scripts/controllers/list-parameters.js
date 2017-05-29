@@ -49,8 +49,6 @@ angular.module('SimbaApp')
            textbox.result.then(function (value) {
                parameter.value.push(value);
                $scope.changeParameter(parameter);
-           }, function () {
-               $log.info('Modal dismissed at: ' + new Date());
            });
        };
 

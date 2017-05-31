@@ -35,7 +35,16 @@ angular.module('SimbaApp')
                         data: requestBody,
                         headers:{'Content-Type':'application/json'}
                 });
+            },
+            newPost: function(url, requestBody) {
+                return $http({
+                    method: 'POST',
+                    url: '/simba-manager/rest/' + url,
+                    data: requestBody,
+                    headers:{'Content-Type':'application/json'}
+                });
             }
+
         };
     }]);
 

@@ -18,7 +18,6 @@ package org.simbasecurity.core.service.manager;
 
 import org.simbasecurity.api.service.thrift.AuthorizationService;
 import org.simbasecurity.api.service.thrift.SSOToken;
-import org.simbasecurity.common.util.StringUtil;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.*;
 import org.simbasecurity.core.domain.generator.PasswordGenerator;

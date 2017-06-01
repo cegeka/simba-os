@@ -16,22 +16,22 @@
  */
 package org.simbasecurity.core.domain.validator;
 
-import static org.apache.commons.lang.StringUtils.*;
-import static org.simbasecurity.core.config.SimbaConfigurationParameter.*;
-import static org.simbasecurity.core.exception.SimbaMessageKey.*;
-
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.Status;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.locator.GlobalContext;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.apache.commons.lang.StringUtils.isEmpty;
+import static org.simbasecurity.core.config.SimbaConfigurationParameter.*;
+import static org.simbasecurity.core.exception.SimbaMessageKey.*;
 
 @Component
 public class UserValidatorImpl implements UserValidator {
 
-	@Autowired private ConfigurationService configurationService;
+	@Autowired private ConfigurationServiceImpl configurationService;
 
 	@Override
 	public void validateUserName(String userName) {

@@ -20,12 +20,12 @@ import org.owasp.esapi.Encoder;
 import org.owasp.esapi.reference.DefaultEncoder;
 import org.simbasecurity.common.constants.AuthenticationConstants;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.Group;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.repository.GroupRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.locator.GlobalContext;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -240,7 +240,7 @@ public class ActiveDirectoryLoginModule extends SimbaLoginModule {
                     }
                 }
                 debug("Authentication succeeded");
-                if(Boolean.TRUE.equals(GlobalContext.locate(ConfigurationService.class).getValue(SimbaConfigurationParameter.ENABLE_AD_GROUPS))
+                if(Boolean.TRUE.equals(GlobalContext.locate(ConfigurationServiceImpl.class).getValue(SimbaConfigurationParameter.ENABLE_AD_GROUPS))
                         && userCN != null) {
                     updateUserGroups(ldapContext, userCN);
                 }

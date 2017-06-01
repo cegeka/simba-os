@@ -16,22 +16,22 @@
  */
 package org.simbasecurity.core.domain.validator;
 
-import static org.mockito.Mockito.*;
-import static org.simbasecurity.core.config.SimbaConfigurationParameter.*;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.exception.SimbaException;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+
+import static org.mockito.Mockito.when;
+import static org.simbasecurity.core.config.SimbaConfigurationParameter.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserValidatorImplTest {
 
-	@Mock private ConfigurationService mockConfigurationService;
+	@Mock private ConfigurationServiceImpl mockConfigurationService;
 
     @InjectMocks
 	private UserValidatorImpl validator;

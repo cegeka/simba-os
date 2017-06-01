@@ -19,13 +19,13 @@ package org.simbasecurity.core.service.manager.assembler;
 import org.junit.Before;
 import org.junit.Test;
 import org.simbasecurity.api.service.thrift.SSOToken;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.core.domain.SessionEntity;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.UserEntity;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 import org.simbasecurity.core.service.manager.dto.SessionDTO;
 import org.simbasecurity.test.LocatorTestCase;
 
@@ -39,7 +39,7 @@ public class SessionDTOAssemblerTest extends LocatorTestCase {
     @Before
     public void setup() {
         implantMock(UserValidator.class);
-        implantMock(ConfigurationService.class);
+        implantMock(ConfigurationServiceImpl.class);
         implantMock(PasswordValidator.class);
     }
 

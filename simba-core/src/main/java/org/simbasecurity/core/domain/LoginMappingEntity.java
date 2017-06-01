@@ -19,11 +19,13 @@ package org.simbasecurity.core.domain;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.locator.GlobalContext;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -78,7 +80,7 @@ public class LoginMappingEntity implements LoginMapping {
         return TimeUnit.MILLISECONDS.convert(maxElapsedTime, SimbaConfigurationParameter.MAX_LOGIN_ELAPSED_TIME.getTimeUnit());
 	}
 	
-	private ConfigurationService getConfigurationService() {
-		return GlobalContext.locate(ConfigurationService.class);
+	private ConfigurationServiceImpl getConfigurationService() {
+		return GlobalContext.locate(ConfigurationServiceImpl.class);
 	}
 }

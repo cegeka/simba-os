@@ -23,8 +23,8 @@ import static org.simbasecurity.core.service.ErrorSender.sendUnauthorizedError;
 import javax.servlet.http.HttpServletResponse;
 
 import org.simbasecurity.api.service.thrift.AuthorizationService;
+import org.simbasecurity.api.service.thrift.ConfigurationService;
 import org.simbasecurity.api.service.thrift.SSOToken;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.repository.SessionRepository;
@@ -59,7 +59,7 @@ public class UserService {
 	private SessionRepository sessionRepository;
 
 	@Autowired
-	private ConfigurationService configurationService;
+	private ConfigurationService.Iface configurationService;
 
 	@RequestMapping("changePassword")
 	@ResponseBody

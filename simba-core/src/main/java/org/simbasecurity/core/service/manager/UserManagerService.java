@@ -17,12 +17,13 @@
 package org.simbasecurity.core.service.manager;
 
 import org.simbasecurity.api.service.thrift.AuthorizationService;
+import org.simbasecurity.api.service.thrift.ConfigurationService;
 import org.simbasecurity.api.service.thrift.SSOToken;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.*;
 import org.simbasecurity.core.domain.generator.PasswordGenerator;
 import org.simbasecurity.core.domain.repository.*;
 import org.simbasecurity.core.exception.SimbaException;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 import org.simbasecurity.core.service.manager.assembler.*;
 import org.simbasecurity.core.service.manager.dto.*;
 import org.simbasecurity.core.service.manager.interceptor.ManagerSecurityInterceptor;
@@ -72,7 +73,7 @@ public class UserManagerService {
     private SessionRepository sessionRepository;
 
     @Autowired
-    private ConfigurationService configurationService;
+    private ConfigurationServiceImpl configurationService;
 
     @Autowired
     private EntityFilterService filterService;

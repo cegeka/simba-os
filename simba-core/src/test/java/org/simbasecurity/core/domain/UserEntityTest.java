@@ -16,28 +16,25 @@
  */
 package org.simbasecurity.core.domain;
 
-import static org.apache.commons.lang.time.DateUtils.truncate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORD_INVALID_LENGTH;
-
-import java.util.Calendar;
-import java.util.Date;
-
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 import org.simbasecurity.test.LocatorTestCase;
+
+import java.util.Calendar;
+import java.util.Date;
+
+import static org.apache.commons.lang.time.DateUtils.truncate;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORD_INVALID_LENGTH;
 
 public class UserEntityTest extends LocatorTestCase {
 	private static final String INVALID_PASSWORD = "invalidpassword";
@@ -56,7 +53,7 @@ public class UserEntityTest extends LocatorTestCase {
 
 		doThrow(new SimbaException(PASSWORD_INVALID_LENGTH)).when(mockPasswordValidator).validatePassword(INVALID_PASSWORD);
 
-		ConfigurationService configurationServiceMock = implantMock(ConfigurationService.class);
+		ConfigurationServiceImpl configurationServiceMock = implantMock(ConfigurationServiceImpl.class);
 		when(configurationServiceMock.getValue(SimbaConfigurationParameter.DEFAULT_PASSWORD)).thenReturn(DEFAULT_PASSWORD);
 
 		user = new UserEntity(USERNAME, null, null, null, Language.en_US, Status.ACTIVE, true, true);

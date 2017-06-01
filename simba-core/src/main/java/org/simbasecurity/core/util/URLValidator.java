@@ -17,17 +17,17 @@
 
 package org.simbasecurity.core.util;
 
-import static org.simbasecurity.core.config.SimbaConfigurationParameter.*;
-
 import org.apache.thrift.TException;
 import org.simbasecurity.api.service.thrift.AuthorizationService;
 import org.simbasecurity.common.config.SystemConfiguration;
 import org.simbasecurity.common.util.StringUtil;
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
-import org.simbasecurity.core.config.ConfigurationService;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.simbasecurity.core.config.SimbaConfigurationParameter.ACCESS_DENIED_URL;
 
 @Component
 public class URLValidator {
@@ -35,7 +35,7 @@ public class URLValidator {
     @Autowired private AuthorizationService.Iface authorizationService;
     @Autowired private Audit audit;
     @Autowired private AuditLogEventFactory auditLogFactory;
-    @Autowired private ConfigurationService configurationService;
+    @Autowired private ConfigurationServiceImpl configurationService;
 
     public String getValidatedURL(String url, String userName) {
         try {

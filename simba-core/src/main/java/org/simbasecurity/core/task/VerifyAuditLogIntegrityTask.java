@@ -16,20 +16,18 @@
  */
 package org.simbasecurity.core.task;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-
 import org.jasypt.digest.StringDigester;
 import org.simbasecurity.core.audit.AuditLogIntegrityMessageFactory;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.config.ConfigurationService;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class VerifyAuditLogIntegrityTask implements QuartzTask {
@@ -65,7 +63,7 @@ public class VerifyAuditLogIntegrityTask implements QuartzTask {
     private static final String SELECT_FROM_SIMBA_ARCHIVED_AUDIT_LOG = "SELECT * FROM SIMBA_ARCHIVED_AUDIT_LOG";
 
     @Autowired private JdbcTemplate jdbcTemplate;
-    @Autowired private ConfigurationService configurationService;
+    @Autowired private ConfigurationServiceImpl configurationService;
     @Autowired private StringDigester digester;
 
     @Override
@@ -90,25 +88,22 @@ public class VerifyAuditLogIntegrityTask implements QuartzTask {
     }
 
     private RowMapper<VerifyAuditLogEvent> getRowMapper() {
-        return new RowMapper<VerifyAuditLogEvent>() {
-            @Override
-            public VerifyAuditLogEvent mapRow(ResultSet rs, int rowNum) throws SQLException {
-                VerifyAuditLogEvent event = new VerifyAuditLogEvent();
-                event.setTimestamp(rs.getLong(TIME_STAMP));
-                event.setUserName(rs.getString(USERNAME));
-                event.setSsoToken(rs.getString(SSOTOKEN));
-                event.setRemoteIp(rs.getString(REMOTE_IP));
-                event.setMessage(rs.getString(MESSAGE));
-                event.setName(rs.getString(NAME));
-                event.setFirstName(rs.getString(FIRSTNAME));
-                event.setUserAgent(rs.getString(USERAGENT));
-                event.setHost(rs.getString(HOSTSERVERNAME));
-                event.setEventCategory(rs.getString(EVENTCATEGORY));
-                event.setDigest(rs.getString(DIGEST));
-                event.setRequestUrl(rs.getString(REQUESTURL));
-                event.setChainId(rs.getString(CHAINID));
-                return event;
-            }
+        return (rs, rowNum) -> {
+            VerifyAuditLogEvent event = new VerifyAuditLogEvent();
+            event.setTimestamp(rs.getLong(TIME_STAMP));
+            event.setUserName(rs.getString(USERNAME));
+            event.setSsoToken(rs.getString(SSOTOKEN));
+            event.setRemoteIp(rs.getString(REMOTE_IP));
+            event.setMessage(rs.getString(MESSAGE));
+            event.setName(rs.getString(NAME));
+            event.setFirstName(rs.getString(FIRSTNAME));
+            event.setUserAgent(rs.getString(USERAGENT));
+            event.setHost(rs.getString(HOSTSERVERNAME));
+            event.setEventCategory(rs.getString(EVENTCATEGORY));
+            event.setDigest(rs.getString(DIGEST));
+            event.setRequestUrl(rs.getString(REQUESTURL));
+            event.setChainId(rs.getString(CHAINID));
+            return event;
         };
     }
 

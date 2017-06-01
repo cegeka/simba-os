@@ -26,11 +26,11 @@ import org.apache.commons.pool.impl.StackObjectPool;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.password.ConfigurablePasswordEncryptor;
 import org.jasypt.util.password.PasswordEncryptor;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.locator.GlobalContext;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 import org.simbasecurity.core.util.PasswordEncryptorFactory;
 import org.simbasecurity.core.util.SHA1PasswordEncryptorFactory;
 
@@ -442,8 +442,7 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 	}
 
 	private String getDefaultPassword() {
-		ConfigurationService configurationService = GlobalContext.locate(ConfigurationService.class);
-		return configurationService.getValue(DEFAULT_PASSWORD);
+		return GlobalContext.locate(ConfigurationServiceImpl.class).getValue(DEFAULT_PASSWORD);
 	}
 
 }

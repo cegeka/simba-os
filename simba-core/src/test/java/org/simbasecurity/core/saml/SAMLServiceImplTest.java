@@ -25,7 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.config.ConfigurationService;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 
 import java.util.Date;
 
@@ -39,7 +39,7 @@ public class SAMLServiceImplTest {
 
     @InjectMocks private SAMLServiceImpl samlService;
 
-    @Mock private ConfigurationService configurationService;
+    @Mock private ConfigurationServiceImpl configurationService;
 
     private static final String ISSUER = "FedletTest1";
     private static final String ASSERTION_CONSUMER_SERVICE_URL = "https://sp2.iamdemo.be:443/fedlet/fedletapplication";

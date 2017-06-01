@@ -17,17 +17,14 @@
 
 package org.simbasecurity.core.chain;
 
-import org.simbasecurity.api.service.thrift.ActionDescriptor;
-import org.simbasecurity.api.service.thrift.ActionType;
-import org.simbasecurity.api.service.thrift.RequestData;
-import org.simbasecurity.api.service.thrift.SSOToken;
+import org.simbasecurity.api.service.thrift.*;
 import org.simbasecurity.core.chain.eid.SAMLUser;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.LoginMapping;
 import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.core.exception.SimbaMessageKey;
 import org.simbasecurity.core.service.LoginMappingService;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -60,7 +57,7 @@ public class ChainContextImpl implements ChainContext {
 
     private Session currentSession;
 
-    private final ConfigurationService configurationService;
+    private final ConfigurationServiceImpl configurationService;
     private final LoginMappingService loginMappingService;
 
     private long commandCounter = 0;
@@ -76,7 +73,7 @@ public class ChainContextImpl implements ChainContext {
      * @param session
      * @param configurationService
      */
-    public ChainContextImpl(RequestData requestWrapper, Session session, ConfigurationService configurationService, LoginMappingService loginMappingService) {
+    public ChainContextImpl(RequestData requestWrapper, Session session, ConfigurationServiceImpl configurationService, LoginMappingService loginMappingService) {
         this.requestData = requestWrapper;
         this.currentSession = session;
         this.configurationService = configurationService;

@@ -19,21 +19,21 @@ angular.module('SimbaApp')
     .factory('$configuration', ['$rest', function($rest) {
         return {
             getValue: function(parameter) {
-                return $rest.post('configuration/getValue', parameter);
+                return $rest.newPost('configuration/getValue', parameter);
             },
             findUniqueParameters: function() {
-                return $rest.get('configuration/findUniqueParameters');
+                return $rest.newGet('configuration/findUniqueParameters');
             },
             findListParameters: function() {
-                return $rest.get('configuration/findListParameters');
+                return $rest.newGet('configuration/findListParameters');
             },
             changeParameter: function(parameter, successCallback, errorCallback) {
-                return $rest.post('configuration/changeParameter', parameter)
+                return $rest.newPost('configuration/changeParameter', parameter)
                     .success(successCallback)
                     .error(errorCallback);
             },
             changeListParameter: function(parameter, successCallback, errorCallback) {
-                 return $rest.post('configuration/changeListParameter', parameter)
+                 return $rest.newPost('configuration/changeListParameter', parameter)
                     .success(successCallback)
                     .error(errorCallback);
             },

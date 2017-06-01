@@ -51,6 +51,10 @@ public class SimbaConfiguration {
         return normalize(getSimbaURL() + "/thrift/cacheService");
     }
 
+    public static String getConfigurationServiceURL() {
+        return normalize(getSimbaURL() + "/thrift/configurationService");
+    }
+
 	private static String getSimbaURL() {
 		String url = SystemConfiguration.getSimbaServiceURL();
 		if (StringUtil.isEmpty(url)) {
@@ -82,4 +86,5 @@ public class SimbaConfiguration {
 			return url;
 		}
 	}
+
 }

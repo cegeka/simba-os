@@ -23,11 +23,11 @@ import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.audit.AuditMessages;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.Status;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.exception.SimbaException;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +42,7 @@ import static org.simbasecurity.core.exception.SimbaMessageKey.USER_DOESNT_EXIST
 @Transactional(noRollbackFor = EncryptionOperationNotPossibleException.class)
 public class CredentialServiceImpl implements CredentialService {
 
-    @Autowired private ConfigurationService configurationService;
+    @Autowired private ConfigurationServiceImpl configurationService;
     @Autowired private UserRepository userRepository;
     @Autowired private Audit audit;
     @Autowired private AuditLogEventFactory auditLogEventFactory;

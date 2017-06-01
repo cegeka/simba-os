@@ -16,29 +16,30 @@
  */
 package org.simbasecurity.core.service.manager.assembler;
 
-import static org.junit.Assert.*;
-
-import java.util.Arrays;
-import java.util.Collection;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.Status;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.UserEntity;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 import org.simbasecurity.core.service.manager.dto.UserDTO;
 import org.simbasecurity.test.LocatorTestCase;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class UserDTOAssemblerTest extends LocatorTestCase {
 
     @Before
     public void setup() {
         implantMock(UserValidator.class);
-        implantMock(ConfigurationService.class);
+        implantMock(ConfigurationServiceImpl.class);
         implantMock(PasswordValidator.class);
     }
 

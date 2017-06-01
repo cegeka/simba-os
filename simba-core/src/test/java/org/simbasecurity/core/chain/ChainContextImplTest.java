@@ -27,10 +27,10 @@ import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.api.service.thrift.RequestData;
 import org.simbasecurity.api.service.thrift.SSOToken;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.LoginMapping;
 import org.simbasecurity.core.domain.LoginMappingEntity;
 import org.simbasecurity.core.service.LoginMappingService;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 
 import java.util.Collections;
 import java.util.Map;
@@ -63,7 +63,7 @@ public class ChainContextImplTest {
     private static final String USERNAME = "username";
 
     @Mock private RequestData requestDataMock;
-    @Mock private ConfigurationService configurationServiceMock;
+    @Mock private ConfigurationServiceImpl configurationServiceMock;
     @Mock private LoginMappingService loginMappingServiceMock;
 
     private ChainContextImpl chainContextImpl;

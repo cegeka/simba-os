@@ -265,3 +265,20 @@ service CacheService {
      */
     void setCacheEnabled(bool enable);
 }
+
+service ConfigurationService {
+
+    string getValue(1: string parameterName);
+
+    list<string> getListValue(1: string parameterName);
+
+    void changeParameter(1: string parameterName, 2: string value);
+
+    void changeListParameter(1: string parameterName, 2: list<string> values);
+
+    list<string> getConfigurationParameters();
+
+    list<string> getUniqueParameters();
+
+    list<string> getListParameters();
+}

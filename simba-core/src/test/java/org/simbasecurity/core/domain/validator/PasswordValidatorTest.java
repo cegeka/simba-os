@@ -16,11 +16,6 @@
  */
 package org.simbasecurity.core.domain.validator;
 
-import static org.mockito.Mockito.*;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,8 +23,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.exception.SimbaException;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PasswordValidatorTest {
@@ -40,7 +40,7 @@ public class PasswordValidatorTest {
     private static final Integer PASSWORD_MAX_LENGTH = 15;
     private static final Integer PASSWORD_MIN_LENGTH = 6;
 
-    @Mock private ConfigurationService configurationService;
+    @Mock private ConfigurationServiceImpl configurationService;
 
     @InjectMocks
     private PasswordValidatorImpl validator;

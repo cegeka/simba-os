@@ -20,7 +20,7 @@ package org.simbasecurity.core.saml;
 
 import org.apache.commons.codec.binary.Base64;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.config.ConfigurationService;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +43,7 @@ import static org.simbasecurity.core.saml.SAMLConstants.*;
 @Service("samlRequestService")
 public class SAMLServiceImpl implements SAMLService {
 
-    @Autowired private ConfigurationService configurationService;
+    @Autowired private ConfigurationServiceImpl configurationService;
 
 
     @Override

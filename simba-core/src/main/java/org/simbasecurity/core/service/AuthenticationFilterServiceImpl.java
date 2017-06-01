@@ -16,9 +16,6 @@
  */
 package org.simbasecurity.core.service;
 
-import static org.simbasecurity.common.request.RequestConstants.*;
-import static org.simbasecurity.core.locator.GlobalContext.*;
-
 import org.apache.thrift.TException;
 import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.AuthenticationFilterService;
@@ -27,17 +24,20 @@ import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.ChainContextImpl;
 import org.simbasecurity.core.chain.Command;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.Session;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
+import static org.simbasecurity.core.locator.GlobalContext.locate;
 
 @Service("authenticationFilterService")
 public class AuthenticationFilterServiceImpl implements AuthenticationFilterService.Iface {
 
     @Autowired private SessionService sessionService;
-    @Autowired private ConfigurationService configurationService;
+    @Autowired private ConfigurationServiceImpl configurationService;
     @Autowired private LoginMappingService loginMapping;
     @Autowired private SSOTokenMappingService ssoTokenMappingService;
 

@@ -18,9 +18,9 @@ package org.simbasecurity.core.service.cache;
 
 import org.simbasecurity.api.service.thrift.CacheService;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.event.EventService;
 import org.simbasecurity.core.event.SimbaEventType;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CacheServiceImpl implements CacheService.Iface {
 
     @Autowired private EventService eventService;
-    @Autowired private ConfigurationService configurationService;
+    @Autowired private ConfigurationServiceImpl configurationService;
 
     @Override
     public void refreshCacheIfEnabled() {

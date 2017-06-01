@@ -31,13 +31,13 @@ import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command.State;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.UserEntity;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.service.UserService;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 import org.simbasecurity.test.LocatorTestCase;
 
 import java.util.Collections;
@@ -58,7 +58,7 @@ public class CreateEIDUserCommandTest extends LocatorTestCase {
     private static final String NL = "nl";
 
     @Mock private UserService userServiceMock;
-    @Mock private ConfigurationService configurationServiceMock;
+    @Mock private ConfigurationServiceImpl configurationServiceMock;
 
     @Mock private ChainContext chainContextMock;
     @Mock private User userMock;
@@ -77,7 +77,7 @@ public class CreateEIDUserCommandTest extends LocatorTestCase {
         implantMock(UserValidator.class);
         implantMock(PasswordValidator.class);
 
-        implant(ConfigurationService.class, configurationServiceMock);
+        implant(ConfigurationServiceImpl.class, configurationServiceMock);
         when(configurationServiceMock.getValue(SimbaConfigurationParameter.DEFAULT_USER_ROLE)).thenReturn(Collections.singletonList("guest"));
     }
 

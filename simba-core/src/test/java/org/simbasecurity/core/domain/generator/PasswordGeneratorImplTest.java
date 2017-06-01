@@ -26,8 +26,8 @@ import org.junit.runners.Parameterized;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.domain.validator.PasswordValidatorImpl;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -47,7 +47,7 @@ public class PasswordGeneratorImplTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    private ConfigurationService configurationService;
+    private ConfigurationServiceImpl configurationService;
 
     private PasswordGeneratorImpl generator;
     private PasswordValidatorImpl validator;

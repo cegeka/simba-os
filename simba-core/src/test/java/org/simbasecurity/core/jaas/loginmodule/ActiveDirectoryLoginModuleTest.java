@@ -24,10 +24,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.locator.Locator;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 import org.simbasecurity.test.LocatorTestCase;
 
 import javax.naming.NamingEnumeration;
@@ -49,13 +49,13 @@ import static org.mockito.Mockito.*;
 public class ActiveDirectoryLoginModuleTest extends LocatorTestCase {
     @Rule public MockitoRule rule = MockitoJUnit.rule();
 
-    @Mock private ConfigurationService configurationService;
+    @Mock private ConfigurationServiceImpl configurationService;
 
     @Before
     public void setUp() {
         Locator locator = mock(Locator.class);
         GlobalContext.initialize(locator);
-        when(locator.locate(ConfigurationService.class)).thenReturn(configurationService);
+        when(locator.locate(ConfigurationServiceImpl.class)).thenReturn(configurationService);
     }
 
     @Test

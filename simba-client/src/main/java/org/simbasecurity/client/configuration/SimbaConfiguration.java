@@ -40,11 +40,11 @@ public class SimbaConfiguration {
 	}
 
 	public static String getSimbaAuthorizationURL() {
-        return normalize(getSimbaURL() + "/authorizationService");
+        return normalize(getSimbaURL() + "/thrift/authorizationService");
 	}
 
     public static String getSimbaAuthenticationURL() {
-        return normalize(getSimbaURL() + "/authenticationService");
+        return normalize(getSimbaURL() + "/thrift/authenticationFilterService");
     }
 
 	private static String getSimbaURL() {

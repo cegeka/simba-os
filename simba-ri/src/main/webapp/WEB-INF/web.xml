@@ -18,148 +18,138 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          id="WebApp_ID" version="2.5"
          metadata-complete="true">
-  <display-name>simba</display-name>
+    <display-name>simba</display-name>
 
-  <listener>
-    <listener-class>org.simbasecurity.core.spring.SimbaContextLoaderListener</listener-class>
-  </listener>
-  <listener>
-    <listener-class>org.simbasecurity.core.jaas.JaasConfigListener</listener-class>
-  </listener>
+    <listener>
+        <listener-class>org.simbasecurity.core.spring.SimbaContextLoaderListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.simbasecurity.core.jaas.JaasConfigListener</listener-class>
+    </listener>
 
-  <context-param>
-    <param-name>parentContextKey</param-name>
-    <param-value>simbaContext</param-value>
-  </context-param>
-  <context-param>
-    <description>Spring application contexts</description>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>classpath:doNotUseContext.xml</param-value>
-  </context-param>
+    <context-param>
+        <param-name>parentContextKey</param-name>
+        <param-value>simbaContext</param-value>
+    </context-param>
+    <context-param>
+        <description>Spring application contexts</description>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:doNotUseContext.xml</param-value>
+    </context-param>
 
-  <servlet>
-    <display-name>AuthenticationService</display-name>
-    <servlet-name>authenticationService</servlet-name>
-    <servlet-class>org.simbasecurity.core.service.thrift.AuthenticationServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>authenticationService</servlet-name>
-    <url-pattern>/authenticationService</url-pattern>
-  </servlet-mapping>
+    <servlet>
+        <display-name>Thrift Request Handler</display-name>
+        <servlet-name>thrift</servlet-name>
+        <servlet-class>org.simbasecurity.core.service.thrift.ThriftServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>thrift</servlet-name>
+        <url-pattern>/thrift/*</url-pattern>
+    </servlet-mapping>
 
-  <servlet>
-    <display-name>AuthorizationService</display-name>
-    <servlet-name>authorizationService</servlet-name>
-    <servlet-class>org.simbasecurity.core.service.thrift.AuthorizationServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>authorizationService</servlet-name>
-    <url-pattern>/authorizationService</url-pattern>
-  </servlet-mapping>
+    <!-- Performs authentication and authorization for http calls -->
+    <servlet>
+        <servlet-name>http-service</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>http-service</servlet-name>
+        <url-pattern>/http/*</url-pattern>
+    </servlet-mapping>
 
-  <!-- Performs authentication and authorization for http calls -->
-  <servlet>
-    <servlet-name>http-service</servlet-name>
-    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>http-service</servlet-name>
-    <url-pattern>/http/*</url-pattern>
-  </servlet-mapping>
+    <!-- Servlet for Manager REST -->
+    <servlet>
+        <servlet-name>manager</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>manager</servlet-name>
+        <url-pattern>/manager/*</url-pattern>
+    </servlet-mapping>
 
-  <!-- Servlet for Manager REST -->
-  <servlet>
-    <servlet-name>manager</servlet-name>
-    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>manager</servlet-name>
-    <url-pattern>/manager/*</url-pattern>
-  </servlet-mapping>
+    <filter>
+        <filter-name>CORS</filter-name>
+        <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
+        <!--
+           See http://software.dzhuvinov.com/cors-filter-configuration.html for more information on configuring the
+           CORS filter
+          -->
+        <init-param>
+            <param-name>cors.allowGenericHttpRequests</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>cors.allowOrigin</param-name>
+            <param-value>*</param-value><!-- insert the domain of your manager here! -->
+        </init-param>
+        <init-param>
+            <param-name>cors.allowSubdomains</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>cors.supportedMethods</param-name>
+            <param-value>GET, POST, HEAD, OPTIONS</param-value>
+        </init-param>
+        <init-param>
+            <param-name>cors.supportedHeaders</param-name>
+            <param-value>*</param-value>
+        </init-param>
+        <!--<init-param>-->
+        <!--<param-name>cors.exposedHeaders</param-name>-->
+        <!--<param-value></param-value>-->
+        <!--</init-param>-->
+        <init-param>
+            <param-name>cors.supportsCredentials</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>cors.maxAge</param-name>
+            <param-value>-1</param-value>
+        </init-param>
+        <init-param>
+            <param-name>cors.tagRequests</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </filter>
 
-  <filter>
-    <filter-name>CORS</filter-name>
-    <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
-    <!--
-       See http://software.dzhuvinov.com/cors-filter-configuration.html for more information on configuring the
-       CORS filter
-      -->
-    <init-param>
-      <param-name>cors.allowGenericHttpRequests</param-name>
-      <param-value>true</param-value>
-    </init-param>
-    <init-param>
-      <param-name>cors.allowOrigin</param-name>
-      <param-value>*</param-value><!-- insert the domain of your manager here! -->
-    </init-param>
-    <init-param>
-      <param-name>cors.allowSubdomains</param-name>
-      <param-value>true</param-value>
-    </init-param>
-    <init-param>
-      <param-name>cors.supportedMethods</param-name>
-      <param-value>GET, POST, HEAD, OPTIONS</param-value>
-    </init-param>
-    <init-param>
-      <param-name>cors.supportedHeaders</param-name>
-      <param-value>*</param-value>
-    </init-param>
-    <!--<init-param>-->
-      <!--<param-name>cors.exposedHeaders</param-name>-->
-      <!--<param-value></param-value>-->
-    <!--</init-param>-->
-    <init-param>
-      <param-name>cors.supportsCredentials</param-name>
-      <param-value>true</param-value>
-    </init-param>
-    <init-param>
-      <param-name>cors.maxAge</param-name>
-      <param-value>-1</param-value>
-    </init-param>
-    <init-param>
-      <param-name>cors.tagRequests</param-name>
-      <param-value>false</param-value>
-    </init-param>
-  </filter>
+    <filter-mapping>
+        <filter-name>CORS</filter-name>
+        <servlet-name>manager</servlet-name>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>CORS</filter-name>
+        <url-pattern>/authorizationService</url-pattern>
+    </filter-mapping>
 
-  <filter-mapping>
-    <filter-name>CORS</filter-name>
-    <servlet-name>manager</servlet-name>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>CORS</filter-name>
-    <url-pattern>/authorizationService</url-pattern>
-  </filter-mapping>
+    <!-- Jersey test -->
+    <servlet>
+        <servlet-name>jersey-servlet</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>org.simbasecurity.refimpl.rest.jersey.JerseyApplication</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
 
-  <!-- Jersey test -->
-  <servlet>
-    <servlet-name>jersey-servlet</servlet-name>
-    <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-    <init-param>
-      <param-name>javax.ws.rs.Application</param-name>
-      <param-value>org.simbasecurity.refimpl.rest.jersey.JerseyApplication</param-value>
-    </init-param>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
+    <servlet-mapping>
+        <servlet-name>jersey-servlet</servlet-name>
+        <url-pattern>/jersey/*</url-pattern>
+    </servlet-mapping>
 
-  <servlet-mapping>
-    <servlet-name>jersey-servlet</servlet-name>
-    <url-pattern>/jersey/*</url-pattern>
-  </servlet-mapping>
+    <welcome-file-list>
+        <welcome-file>/jsp/login.jsp</welcome-file>
+    </welcome-file-list>
 
-  <welcome-file-list>
-    <welcome-file>/jsp/login.jsp</welcome-file>
-  </welcome-file-list>
-
-  <error-page>
-    <error-code>500</error-code>
-    <location>/jsp/error.jsp</location>
-  </error-page>
-  <error-page>
-    <exception-type>java.lang.Exception</exception-type>
-    <location>/jsp/error.jsp</location>
-  </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/jsp/error.jsp</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.Exception</exception-type>
+        <location>/jsp/error.jsp</location>
+    </error-page>
 </web-app>

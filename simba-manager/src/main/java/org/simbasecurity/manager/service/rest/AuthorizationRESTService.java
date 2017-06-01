@@ -1,6 +1,21 @@
+/*
+ * Copyright 2013-2017 Simba Open Source
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package org.simbasecurity.manager.service.rest;
 
-import org.apache.thrift.TException;
 import org.simbasecurity.api.service.thrift.AuthorizationService;
 import org.simbasecurity.client.configuration.SimbaConfiguration;
 import org.simbasecurity.manager.service.rest.dto.PolicyDecisionDTO;
@@ -21,11 +36,7 @@ public class AuthorizationRESTService extends BaseRESTService<AuthorizationServi
     public PolicyDecisionDTO isResourceRuleAllowed(@JsonBody("username") String username,
                                                    @JsonBody("resourcename") String resourceName,
                                                    @JsonBody("operation") String operation) {
-        try {
-            return new PolicyDecisionDTO(getServiceClient().isResourceRuleAllowed(username, resourceName, operation));
-        } catch (TException e) {
-            throw new RuntimeException(e);
-        }
+        return new PolicyDecisionDTO($(() -> cl().isResourceRuleAllowed(username, resourceName, operation)));
     }
 
     @RequestMapping("isURLRuleAllowed")
@@ -33,21 +44,13 @@ public class AuthorizationRESTService extends BaseRESTService<AuthorizationServi
     public PolicyDecisionDTO isURLRuleAllowed(@JsonBody("username") String username,
                                               @JsonBody("url") String url,
                                               @JsonBody("method") String method) {
-        try {
-            return new PolicyDecisionDTO(getServiceClient().isURLRuleAllowed(username, url, method));
-        } catch (TException e) {
-            throw new RuntimeException(e);
-        }
+        return new PolicyDecisionDTO($(() -> cl().isURLRuleAllowed(username, url, method)));
     }
 
     @RequestMapping("isUserInRole")
     @ResponseBody
     public PolicyDecisionDTO isUserInRole(@JsonBody("username") String username,
                                           @JsonBody("rolename") String roleName) {
-        try {
-            return new PolicyDecisionDTO(getServiceClient().isUserInRole(username, roleName));
-        } catch (TException e) {
-            throw new RuntimeException(e);
-        }
+        return new PolicyDecisionDTO($(() -> cl().isUserInRole(username, roleName)));
     }
 }

@@ -27,6 +27,7 @@ import org.apache.thrift.transport.TIOStreamTransport;
 import org.apache.thrift.transport.TTransport;
 import org.simbasecurity.api.service.thrift.AuthenticationFilterService;
 import org.simbasecurity.api.service.thrift.AuthorizationService;
+import org.simbasecurity.api.service.thrift.CacheService;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.servlet.FrameworkServlet;
 
@@ -49,6 +50,7 @@ public class ThriftServlet extends FrameworkServlet {
     static {
         processorClassMap.put("authorizationService", AuthorizationService.Processor.class);
         processorClassMap.put("authenticationFilterService", AuthenticationFilterService.Processor.class);
+        processorClassMap.put("cacheService", CacheService.Processor.class);
     }
 
     private final Map<String, TProcessor> processorMap = new HashMap<>();

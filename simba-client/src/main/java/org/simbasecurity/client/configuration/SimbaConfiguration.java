@@ -47,6 +47,10 @@ public class SimbaConfiguration {
         return normalize(getSimbaURL() + "/thrift/authenticationFilterService");
     }
 
+    public static String getCacheServiceURL() {
+        return normalize(getSimbaURL() + "/thrift/cacheService");
+    }
+
 	private static String getSimbaURL() {
 		String url = SystemConfiguration.getSimbaServiceURL();
 		if (StringUtil.isEmpty(url)) {

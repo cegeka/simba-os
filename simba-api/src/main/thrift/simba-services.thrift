@@ -236,3 +236,32 @@ service AuthorizationService {
      */
     PolicyDecision isUserInRole(1: string username, 2: string roleName)
 }
+
+/**
+ * Service for managing the internal Simba caches.
+ */
+service CacheService {
+
+    /**
+     * Refresh the entire cache if it is enabled.
+     */
+    void refreshCacheIfEnabled();
+
+    /**
+     * Refresh the cache entries for the specified user, if it is enabled.
+     * @param username the name of the user
+     */
+    void refreshCacheForUserIfEnabled(1: string username);
+
+    /**
+     * Check if the internal cache is enabled.
+     * @return whether the cache is enabled; or not.
+     */
+    bool isCacheEnabled();
+
+    /**
+     * Enabled or disables the internal cache.
+     * @param enable whether the cache should be enabled; or not.
+     */
+    void setCacheEnabled(bool enable);
+}

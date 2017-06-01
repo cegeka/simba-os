@@ -16,6 +16,7 @@
  */
 package org.simbasecurity.core.service.cache;
 
+import org.simbasecurity.api.service.thrift.CacheService;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationService;
 import org.simbasecurity.core.event.EventService;
@@ -24,8 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
-public class CacheServiceImpl implements CacheService {
+@Service("cacheService")
+public class CacheServiceImpl implements CacheService.Iface {
 
     @Autowired private EventService eventService;
     @Autowired private ConfigurationService configurationService;
@@ -37,7 +38,7 @@ public class CacheServiceImpl implements CacheService {
     }
 
     @Override
-    public void refreshCacheIfEnabled(String userName) {
+    public void refreshCacheForUserIfEnabled(String userName) {
         eventService.publish(SimbaEventType.RULE_CHANGED);
         eventService.publish(SimbaEventType.USER_AUTHORIZATION_CHANGED, userName);
     }

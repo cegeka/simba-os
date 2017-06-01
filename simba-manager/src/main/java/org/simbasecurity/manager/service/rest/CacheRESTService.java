@@ -14,48 +14,43 @@
  * limitations under the License.
  *
  */
-package org.simbasecurity.core.service.manager;
+package org.simbasecurity.manager.service.rest;
 
-import org.simbasecurity.core.service.cache.CacheService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.simbasecurity.api.service.thrift.CacheService;
+import org.simbasecurity.client.configuration.SimbaConfiguration;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Transactional
 @Controller
 @RequestMapping("cache")
-public class CacheManagerService {
+public class CacheRESTService extends BaseRESTService<CacheService.Client> {
 
-    private CacheService cacheService;
-
-    @Autowired
-    public CacheManagerService(CacheService cacheService){
-        this.cacheService = cacheService;
+    public CacheRESTService() {
+        super(new CacheService.Client.Factory(), SimbaConfiguration.getCacheServiceURL());
     }
 
     @RequestMapping("refresh")
     @ResponseBody
     public void refreshCache() {
-        cacheService.refreshCacheIfEnabled();
+        $(() -> cl().refreshCacheIfEnabled());
     }
 
     @RequestMapping("enable")
     @ResponseBody
     public void enableCache() {
-        cacheService.setCacheEnabled(true);
+        $(() -> cl().setCacheEnabled(true));
     }
 
     @RequestMapping("isEnabled")
     @ResponseBody
     public boolean isCacheEnabled() {
-        return cacheService.isCacheEnabled();
+        return $(() -> cl().isCacheEnabled());
     }
 
     @RequestMapping("disable")
     @ResponseBody
     public void disableCache() {
-        cacheService.setCacheEnabled(false);
+        $(() -> cl().setCacheEnabled(false));
     }
 }

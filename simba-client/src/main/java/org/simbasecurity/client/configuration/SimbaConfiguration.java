@@ -55,7 +55,11 @@ public class SimbaConfiguration {
         return normalize(getSimbaURL() + "/thrift/configurationService");
     }
 
-	private static String getSimbaURL() {
+    public static String getSessionServiceURL() {
+        return normalize(getSimbaURL() + "/thrift/sessionService");
+    }
+
+    private static String getSimbaURL() {
 		String url = SystemConfiguration.getSimbaServiceURL();
 		if (StringUtil.isEmpty(url)) {
 			throw new IllegalArgumentException("Simba URL has not been set. Check system property [simba.url]");

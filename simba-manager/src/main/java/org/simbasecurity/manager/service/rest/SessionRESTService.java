@@ -14,68 +14,64 @@
  * limitations under the License.
  *
  */
-package org.simbasecurity.core.service.manager;
-
-import static org.simbasecurity.core.service.manager.assembler.SessionDTOAssembler.assemble;
-
-import java.util.Collection;
-
-import javax.servlet.http.HttpServletRequest;
+package org.simbasecurity.manager.service.rest;
 
 import org.simbasecurity.api.service.thrift.SSOToken;
+import org.simbasecurity.api.service.thrift.SessionService;
+import org.simbasecurity.client.configuration.SimbaConfiguration;
 import org.simbasecurity.common.request.RequestUtil;
-import org.simbasecurity.core.domain.Session;
-import org.simbasecurity.core.domain.repository.SessionRepository;
-import org.simbasecurity.core.service.manager.assembler.UserDTOAssembler;
-import org.simbasecurity.core.service.manager.dto.SessionDTO;
-import org.simbasecurity.core.service.manager.dto.UserDTO;
+import org.simbasecurity.manager.service.rest.assembler.SessionDTOAssembler;
+import org.simbasecurity.manager.service.rest.assembler.UserDTOAssembler;
+import org.simbasecurity.manager.service.rest.dto.SessionDTO;
+import org.simbasecurity.manager.service.rest.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Transactional
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
+
 @Controller
 @RequestMapping("session")
 @Scope("request")
-public class SessionManagerService {
+public class SessionRESTService extends BaseRESTService<SessionService.Client>{
+
+	private final HttpServletRequest request;
 
 	@Autowired
-	private SessionRepository sessionRepository;
-
-	@Autowired
-	private HttpServletRequest request;
+	public SessionRESTService(HttpServletRequest request) {
+		super(new SessionService.Client.Factory(), SimbaConfiguration.getSessionServiceURL());
+		this.request = request;
+	}
 
 	@ResponseBody
 	@RequestMapping("findAllActive")
 	public Collection<SessionDTO> findAllActive() {
-		return assemble(sessionRepository.findAllActive());
-	}
+        return SessionDTOAssembler.assemble($(() -> cl().findAllActive()));
+    }
 
 	@RequestMapping("remove")
 	@ResponseBody
 	public void remove(@RequestBody SessionDTO session) {
-		Session selectedSession = sessionRepository.findBySSOToken(session.getSsoToken());
-		if (selectedSession.getUser().getUserName().equalsIgnoreCase(getCurrentUser().getUserName())) {
-			throw new IllegalArgumentException("You can't delete your own session!");
-		}
-		sessionRepository.remove(selectedSession);
+		if (getSSOToken().getToken().equals(session.getSsoToken())) {
+            throw new IllegalArgumentException("You can't delete your own session!");
+        }
+        $(() -> cl().remove(session.getSsoToken()));
 	}
 
 	@RequestMapping("removeAllButMine")
 	@ResponseBody
 	public void removeAllButMine() {
-		sessionRepository.removeAllBut(getSSOToken());
+        $(() -> cl().removeAllBut(getSSOToken().getToken()));
 	}
 
 	@ResponseBody
 	@RequestMapping("getCurrentUser")
 	public UserDTO getCurrentUser() {
-		Session session = sessionRepository.findBySSOToken(getSSOToken());
-		return UserDTOAssembler.assemble(session.getUser());
+        return UserDTOAssembler.assemble($(() -> cl().getUserFor(getSSOToken().getToken())));
 	}
 
 	private SSOToken getSSOToken() {

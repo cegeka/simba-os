@@ -14,33 +14,31 @@
  * limitations under the License.
  *
  */
-package org.simbasecurity.core.service.manager.assembler;
+package org.simbasecurity.manager.service.rest.assembler;
 
-import org.simbasecurity.core.domain.Session;
-import org.simbasecurity.core.service.manager.dto.SessionDTO;
+import org.simbasecurity.api.service.thrift.SessionR;
+import org.simbasecurity.manager.service.rest.dto.SessionDTO;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public final class SessionDTOAssembler {
     private SessionDTOAssembler() {
     }
 
-    public static Collection<SessionDTO> assemble(final Collection<Session> sessions) {
-        final Collection<SessionDTO> sessionDTOs = new ArrayList<SessionDTO>(sessions.size());
-        for (Session session : sessions) {
-            sessionDTOs.add(assemble(session));
-        }
-        return sessionDTOs;
+    public static Collection<SessionDTO> assemble(Collection<SessionR> sessions) {
+        return sessions.stream()
+                       .map(SessionDTOAssembler::assemble)
+                       .collect(Collectors.toList());
     }
 
-    public static SessionDTO assemble(final Session session) {
+    public static SessionDTO assemble(SessionR session) {
         final SessionDTO sessionDTO = new SessionDTO();
-        sessionDTO.setUserName(session.getUser().getUserName());
+        sessionDTO.setUserName(session.getUserName());
         sessionDTO.setClientIpAddress(session.getClientIpAddress());
         sessionDTO.setCreationTime(session.getCreationTime());
         sessionDTO.setLastAccessTime(session.getLastAccessTime());
-        sessionDTO.setSsoToken(session.getSSOToken().getToken());
+        sessionDTO.setSsoToken(session.getSsoToken());
         return sessionDTO;
     }
 }

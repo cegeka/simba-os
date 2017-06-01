@@ -16,12 +16,10 @@
  */
 package org.simbasecurity.core.service;
 
-import static org.simbasecurity.core.audit.AuditMessages.SESSION_CREATED;
-
-import java.util.Collection;
-import java.util.UUID;
-
+import org.apache.thrift.TException;
 import org.simbasecurity.api.service.thrift.SSOToken;
+import org.simbasecurity.api.service.thrift.SessionR;
+import org.simbasecurity.api.service.thrift.UserR;
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.domain.Session;
@@ -29,14 +27,23 @@ import org.simbasecurity.core.domain.SessionEntity;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.repository.SessionRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
+import org.simbasecurity.core.service.thrift.SessionRAssembler;
+import org.simbasecurity.core.service.thrift.UserRAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static org.simbasecurity.core.audit.AuditMessages.SESSION_CREATED;
+
 @Transactional
-@Service
-public class SessionServiceImpl implements SessionService {
+@Service("sessionService")
+public class SessionServiceImpl implements SessionService, org.simbasecurity.api.service.thrift.SessionService.Iface {
 
 	@Autowired
 	private Audit audit;
@@ -51,6 +58,12 @@ public class SessionServiceImpl implements SessionService {
 	private ArchiveSessionService archiveSessionService;
 	@Autowired
 	private AuditLogEventFactory auditLogEventFactory;
+
+	@Autowired
+	private UserRAssembler userRAssembler;
+
+	@Autowired
+	private SessionRAssembler sessionRAssembler;
 
 	@Override
 	public Session createSession(String userName, String clientIpAddress, String hostServerName, String userAgent, String requestURL) {
@@ -101,4 +114,27 @@ public class SessionServiceImpl implements SessionService {
 		archiveSessionService.archive(session);
 	}
 
+	@Override
+	public List<SessionR> findAllActive() throws TException {
+        return sessionRepository.findAllActive()
+                                .stream()
+                                .map(s -> sessionRAssembler.assemble(s))
+                                .collect(Collectors.toList());
+	}
+
+	@Override
+	public void remove(String ssoToken) throws TException {
+		removeSession(getSession(new SSOToken(ssoToken)));
+	}
+
+	@Override
+	public void removeAllBut(String ssoToken) throws TException {
+		sessionRepository.removeAllBut(new SSOToken(ssoToken));
+	}
+
+	@Override
+	public UserR getUserFor(String ssoToken) throws TException {
+		User user = getSession(new SSOToken(ssoToken)).getUser();
+		return userRAssembler.assemble(user);
+	}
 }

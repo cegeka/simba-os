@@ -282,3 +282,33 @@ service ConfigurationService {
 
     list<string> getListParameters();
 }
+
+
+struct SessionR {
+    string ssoToken;
+    string userName;
+    string clientIpAddress;
+    i64 creationTime;
+    i64 lastAccessTime;
+}
+
+struct UserR {
+    i64 id;
+    i32 version;
+    string userName;
+    string name;
+    string firstName;
+    string inactiveDate;
+    string status;
+    string successURL;
+    string language;
+    bool mustChangePassword;
+    bool passwordChangeRequired;
+}
+
+service SessionService {
+    list<SessionR> findAllActive();
+    void remove(string ssoToken);
+    void removeAllBut(string ssoToken);
+    UserR getUserFor(string ssoToken);
+}

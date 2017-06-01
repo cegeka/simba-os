@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.simbasecurity.core.service.manager.dto;
+package org.simbasecurity.manager.service.rest.dto;
 
 
 public final class SessionDTO {

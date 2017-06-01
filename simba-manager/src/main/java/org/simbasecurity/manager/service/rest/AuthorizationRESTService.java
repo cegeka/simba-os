@@ -1,47 +1,40 @@
 package org.simbasecurity.manager.service.rest;
 
 import org.apache.thrift.TException;
-import org.apache.thrift.protocol.TJSONProtocol;
-import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.transport.THttpClient;
-import org.apache.thrift.transport.TTransportException;
 import org.simbasecurity.api.service.thrift.AuthorizationService;
-import org.simbasecurity.api.service.thrift.PolicyDecision;
-import org.simbasecurity.common.config.SystemConfiguration;
+import org.simbasecurity.client.configuration.SimbaConfiguration;
+import org.simbasecurity.manager.service.rest.dto.PolicyDecisionDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("authorization")
-public class AuthorizationRESTService implements AuthorizationService.Iface {
+public class AuthorizationRESTService extends BaseRESTService<AuthorizationService.Client> {
 
-    private AuthorizationService.Iface authentorizationService() throws TTransportException {
-        THttpClient tHttpClient = new THttpClient(SystemConfiguration.getSimbaServiceURL());
-        TProtocol tProtocol = new TJSONProtocol(tHttpClient);
-        return new AuthorizationService.Client(tProtocol);
+    public AuthorizationRESTService() {
+        super(new AuthorizationService.Client.Factory(), SimbaConfiguration.getSimbaAuthorizationURL());
     }
 
     @RequestMapping("isResourceRuleAllowed")
     @ResponseBody
-    public PolicyDecision isResourceRuleAllowed(@JsonBody("username") String username,
-                                                @JsonBody("resourcename") String resourceName,
-                                                @JsonBody("operation") String operation) {
-        return new PolicyDecision(true, Long.MAX_VALUE);
-//        try {
-//            return authentorizationService().isResourceRuleAllowed(username, resourceName, operation);
-//        } catch (TException e) {
-//            throw new RuntimeException(e);
-//        }
+    public PolicyDecisionDTO isResourceRuleAllowed(@JsonBody("username") String username,
+                                                   @JsonBody("resourcename") String resourceName,
+                                                   @JsonBody("operation") String operation) {
+        try {
+            return new PolicyDecisionDTO(getServiceClient().isResourceRuleAllowed(username, resourceName, operation));
+        } catch (TException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @RequestMapping("isURLRuleAllowed")
     @ResponseBody
-    public PolicyDecision isURLRuleAllowed(@JsonBody("username") String username,
-                                           @JsonBody("url") String url,
-                                           @JsonBody("method") String method) {
+    public PolicyDecisionDTO isURLRuleAllowed(@JsonBody("username") String username,
+                                              @JsonBody("url") String url,
+                                              @JsonBody("method") String method) {
         try {
-            return authentorizationService().isURLRuleAllowed(username, url, method);
+            return new PolicyDecisionDTO(getServiceClient().isURLRuleAllowed(username, url, method));
         } catch (TException e) {
             throw new RuntimeException(e);
         }
@@ -49,13 +42,12 @@ public class AuthorizationRESTService implements AuthorizationService.Iface {
 
     @RequestMapping("isUserInRole")
     @ResponseBody
-    public PolicyDecision isUserInRole(@JsonBody("username") String username,
-                                       @JsonBody("rolename") String roleName) {
+    public PolicyDecisionDTO isUserInRole(@JsonBody("username") String username,
+                                          @JsonBody("rolename") String roleName) {
         try {
-            return authentorizationService().isUserInRole(username, roleName);
+            return new PolicyDecisionDTO(getServiceClient().isUserInRole(username, roleName));
         } catch (TException e) {
             throw new RuntimeException(e);
         }
     }
-
 }

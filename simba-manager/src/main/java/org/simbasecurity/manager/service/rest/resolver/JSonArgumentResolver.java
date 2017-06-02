@@ -30,6 +30,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
+import java.nio.charset.Charset;
 import java.util.*;
 
 public class JSonArgumentResolver implements HandlerMethodArgumentResolver {
@@ -87,7 +88,7 @@ public class JSonArgumentResolver implements HandlerMethodArgumentResolver {
         String jsonBody = (String) servletRequest.getAttribute(JSON_REQUEST_BODY);
         if (jsonBody == null) {
             try {
-                String body = IOUtils.toString(servletRequest.getInputStream());
+                String body = IOUtils.toString(servletRequest.getInputStream(), Charset.defaultCharset());
                 servletRequest.setAttribute(JSON_REQUEST_BODY, body);
                 return body;
             } catch (IOException e) {

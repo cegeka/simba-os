@@ -14,22 +14,37 @@
  * limitations under the License.
  *
  */
-package org.simbasecurity.core.service.thrift;
 
-import org.simbasecurity.api.service.thrift.SessionR;
-import org.simbasecurity.core.domain.Session;
-import org.springframework.stereotype.Service;
+package org.simbasecurity.manager.service.rest.dto;
 
-@Service
-public class SessionRAssembler {
+public class RoleDTO {
 
-    public SessionR assemble(Session session) {
-        return new SessionR(
-            session.getSSOToken().getToken(),
-            session.getUser().getUserName(),
-            session.getClientIpAddress(),
-            session.getCreationTime(),
-            session.getLastAccessTime()
-        );
+    private long id;
+    private int version;
+    private String name;
+
+    public long getId() {
+        return id;
     }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

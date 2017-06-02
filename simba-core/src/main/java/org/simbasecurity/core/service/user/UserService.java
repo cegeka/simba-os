@@ -16,12 +16,6 @@
  */
 package org.simbasecurity.core.service.user;
 
-import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
-import static org.simbasecurity.core.service.ErrorSender.sendError;
-import static org.simbasecurity.core.service.ErrorSender.sendUnauthorizedError;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.simbasecurity.api.service.thrift.AuthorizationService;
 import org.simbasecurity.api.service.thrift.ConfigurationService;
 import org.simbasecurity.api.service.thrift.SSOToken;
@@ -33,19 +27,20 @@ import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.ErrorSender;
 import org.simbasecurity.core.service.manager.dto.ChangePasswordDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+
+import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
+import static org.simbasecurity.core.service.ErrorSender.sendError;
+import static org.simbasecurity.core.service.ErrorSender.sendUnauthorizedError;
 
 /**
  * Can be called via rest by the user itself, not the admin or manager.
  */
 @Transactional
-@Controller
+//@Controller
 @RequestMapping("myDetails")
 public class UserService {
 

@@ -17,7 +17,7 @@
 package org.simbasecurity.manager.service.rest.assembler;
 
 import org.junit.Test;
-import org.simbasecurity.api.service.thrift.SessionR;
+import org.simbasecurity.api.service.thrift.TSession;
 import org.simbasecurity.manager.service.rest.dto.SessionDTO;
 
 import java.util.Collection;
@@ -29,14 +29,14 @@ public class SessionDTOAssemblerTest {
 
     @Test
     public void testAssembleSingleSession() {
-        SessionR session = new SessionR();
+        TSession session = new TSession();
         session.setUserName("username");
         session.setSsoToken("token");
         session.setClientIpAddress("127.0.0.1");
         session.setCreationTime(12345L);
         session.setLastAccessTime(23456L);
 
-        SessionDTO sessionData = SessionDTOAssembler.assemble(session);
+        SessionDTO sessionData = DTOAssembler.assemble(session);
 
         assertThat(sessionData).isNotNull();
         assertThat(session.getUserName()).isEqualTo("username");
@@ -49,14 +49,14 @@ public class SessionDTOAssemblerTest {
     @Test
     public void testAssembleMultipleSessions() {
 
-        SessionR session = new SessionR();
+        TSession session = new TSession();
         session.setUserName("username");
         session.setSsoToken("token");
         session.setClientIpAddress("127.0.0.1");
         session.setCreationTime(12345L);
         session.setLastAccessTime(23456L);
 
-        Collection<SessionDTO> sessionDataList = SessionDTOAssembler.assemble(Collections.singletonList(session));
+        Collection<SessionDTO> sessionDataList = DTOAssembler.list(Collections.singletonList(session));
 
         assertThat(sessionDataList).extracting(SessionDTO::getUserName).containsExactly("username");
         assertThat(sessionDataList).extracting(SessionDTO::getSsoToken).containsExactly("token");

@@ -16,18 +16,15 @@
  */
 package org.simbasecurity.core.domain.condition;
 
-import java.text.ParseException;
-import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.hibernate.annotations.AccessType;
 import org.simbasecurity.core.domain.ConditionEntity;
 import org.simbasecurity.core.service.AuthorizationRequestContext;
 import org.simbasecurity.core.spring.quartz.ExtendedCronExpression;
+
+import javax.persistence.*;
+import java.text.ParseException;
+import java.util.Date;
+
+import static javax.persistence.AccessType.*;
 
 /**
  * Represents a sequence of time intervals. The condition is satisfied if the
@@ -46,7 +43,7 @@ import org.simbasecurity.core.spring.quartz.ExtendedCronExpression;
 @Entity
 @Table(name = "SIMBA_TIME_CONDITION")
 @PrimaryKeyJoinColumn(name = "CONDITION_ID")
-@AccessType("property")
+@Access(PROPERTY)
 public class TimeCondition extends ConditionEntity {
 
     private static final long serialVersionUID = 1812282413540572395L;

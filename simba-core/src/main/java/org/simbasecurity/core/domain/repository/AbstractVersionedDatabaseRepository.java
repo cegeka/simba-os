@@ -16,13 +16,13 @@
  */
 package org.simbasecurity.core.domain.repository;
 
-import static org.simbasecurity.core.exception.SimbaMessageKey.*;
+import org.simbasecurity.core.domain.Versionable;
+import org.simbasecurity.core.exception.SimbaException;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.simbasecurity.core.domain.Versionable;
-import org.simbasecurity.core.exception.SimbaException;
+import static org.simbasecurity.core.exception.SimbaMessageKey.OPTIMISTIC_LOCK;
 
 public abstract class AbstractVersionedDatabaseRepository<T extends Versionable> extends AbstractDatabaseRepository<T> {
 
@@ -33,6 +33,12 @@ public abstract class AbstractVersionedDatabaseRepository<T extends Versionable>
         }
 
         return refreshedCollection;
+    }
+
+    public T refreshWithOptimisticLocking(long id, int oldVersion) {
+        T refreshedEntity = lookUp(id);
+        checkOptimisticLocking(refreshedEntity, oldVersion);
+        return refreshedEntity;
     }
 
     public T refreshWithOptimisticLocking(Versionable detachedEntity) {
@@ -57,4 +63,11 @@ public abstract class AbstractVersionedDatabaseRepository<T extends Versionable>
             throw new SimbaException(OPTIMISTIC_LOCK);
         }
     }
+
+    private void checkOptimisticLocking(Versionable attachedEntity, int oldVersion) {
+        if (attachedEntity == null || oldVersion != attachedEntity.getVersion()) {
+            throw new SimbaException(OPTIMISTIC_LOCK);
+        }
+    }
+
 }

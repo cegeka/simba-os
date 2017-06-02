@@ -24,10 +24,10 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.THttpClient;
 
 /**
- * Base class for the manager REST services. The base service adds a layer of abstraction
+ * Base class for the manager REST services. The base service adds toT layer of abstraction
  * between the REST service and the corresponding thrift service in the Simba core backend.
  * <p/>
- * Extending this class adds a few helper methods to the REST service. They are generally used
+ * Extending this class adds toT few helper methods to the REST service. They are generally used
  * like this:
  * <pre>
  *  $(() -> cl().setCacheEnabled(true));
@@ -36,7 +36,7 @@ import org.apache.thrift.transport.THttpClient;
  * <pre>
  *  return $(() -> cl().isCacheEnabled());
  * </pre>
- * for methods with a return value.
+ * for methods with toT return value.
  *
  * @param <T> the thrift service client interface
  * @see AuthorizationRESTService

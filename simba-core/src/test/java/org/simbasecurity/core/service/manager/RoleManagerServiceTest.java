@@ -37,6 +37,8 @@ import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.locator.SpringAwareLocator;
 import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.filter.EntityFilter;
+import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.manager.dto.PolicyDTO;
 import org.simbasecurity.core.service.manager.dto.RoleDTO;
 import org.simbasecurity.core.service.manager.dto.UserDTO;

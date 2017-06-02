@@ -30,6 +30,8 @@ import org.simbasecurity.core.domain.PolicyEntity;
 import org.simbasecurity.core.domain.RoleEntity;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
+import org.simbasecurity.core.service.filter.EntityFilter;
+import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.manager.dto.PolicyDTO;
 import org.simbasecurity.core.service.manager.dto.RoleDTO;
 import org.simbasecurity.test.util.ReflectionUtil;

@@ -20,8 +20,7 @@ import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.api.service.thrift.SessionService;
 import org.simbasecurity.client.configuration.SimbaConfiguration;
 import org.simbasecurity.common.request.RequestUtil;
-import org.simbasecurity.manager.service.rest.assembler.SessionDTOAssembler;
-import org.simbasecurity.manager.service.rest.assembler.UserDTOAssembler;
+import org.simbasecurity.manager.service.rest.assembler.DTOAssembler;
 import org.simbasecurity.manager.service.rest.dto.SessionDTO;
 import org.simbasecurity.manager.service.rest.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +49,7 @@ public class SessionRESTService extends BaseRESTService<SessionService.Client>{
 	@ResponseBody
 	@RequestMapping("findAllActive")
 	public Collection<SessionDTO> findAllActive() {
-        return SessionDTOAssembler.assemble($(() -> cl().findAllActive()));
+        return DTOAssembler.list($(() -> cl().findAllActive()));
     }
 
 	@RequestMapping("remove")
@@ -71,7 +70,7 @@ public class SessionRESTService extends BaseRESTService<SessionService.Client>{
 	@ResponseBody
 	@RequestMapping("getCurrentUser")
 	public UserDTO getCurrentUser() {
-        return UserDTOAssembler.assemble($(() -> cl().getUserFor(getSSOToken().getToken())));
+        return DTOAssembler.assemble($(() -> cl().getUserFor(getSSOToken().getToken())));
 	}
 
 	private SSOToken getSSOToken() {

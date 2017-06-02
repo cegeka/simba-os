@@ -15,11 +15,13 @@
  *
  */
 
-package org.simbasecurity.core.service.manager;
+package org.simbasecurity.core.service.filter;
 
 import org.simbasecurity.core.domain.Policy;
 import org.simbasecurity.core.domain.Role;
 import org.simbasecurity.core.domain.User;
+import org.simbasecurity.core.service.manager.PolicyManagerService;
+import org.simbasecurity.core.service.manager.RoleManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +37,7 @@ import java.util.Optional;
  * When no {@link EntityFilter}'s are configured in the Spring context, no filtering to the entity collections is applied.
  * Multiple {@link EntityFilter} predicates are combined using the <code>and</code> operator.
  *
- * @see UserManagerService
+ * @see org.simbasecurity.core.service.UserServiceImpl
  * @see PolicyManagerService
  * @see RoleManagerService
  * @see EntityFilter

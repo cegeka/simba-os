@@ -18,8 +18,8 @@ package org.simbasecurity.core.service;
 
 import org.apache.thrift.TException;
 import org.simbasecurity.api.service.thrift.SSOToken;
-import org.simbasecurity.api.service.thrift.SessionR;
-import org.simbasecurity.api.service.thrift.UserR;
+import org.simbasecurity.api.service.thrift.TSession;
+import org.simbasecurity.api.service.thrift.TUser;
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.domain.Session;
@@ -27,8 +27,7 @@ import org.simbasecurity.core.domain.SessionEntity;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.repository.SessionRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
-import org.simbasecurity.core.service.thrift.SessionRAssembler;
-import org.simbasecurity.core.service.thrift.UserRAssembler;
+import org.simbasecurity.core.service.thrift.ThriftAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -37,7 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.simbasecurity.core.audit.AuditMessages.SESSION_CREATED;
 
@@ -60,10 +58,7 @@ public class SessionServiceImpl implements SessionService, org.simbasecurity.api
 	private AuditLogEventFactory auditLogEventFactory;
 
 	@Autowired
-	private UserRAssembler userRAssembler;
-
-	@Autowired
-	private SessionRAssembler sessionRAssembler;
+	private ThriftAssembler assembler;
 
 	@Override
 	public Session createSession(String userName, String clientIpAddress, String hostServerName, String userAgent, String requestURL) {
@@ -115,11 +110,8 @@ public class SessionServiceImpl implements SessionService, org.simbasecurity.api
 	}
 
 	@Override
-	public List<SessionR> findAllActive() throws TException {
-        return sessionRepository.findAllActive()
-                                .stream()
-                                .map(s -> sessionRAssembler.assemble(s))
-                                .collect(Collectors.toList());
+	public List<TSession> findAllActive() throws TException {
+		return assembler.list(sessionRepository.findAllActive());
 	}
 
 	@Override
@@ -133,8 +125,8 @@ public class SessionServiceImpl implements SessionService, org.simbasecurity.api
 	}
 
 	@Override
-	public UserR getUserFor(String ssoToken) throws TException {
+	public TUser getUserFor(String ssoToken) throws TException {
 		User user = getSession(new SSOToken(ssoToken)).getUser();
-		return userRAssembler.assemble(user);
+		return assembler.assemble(user);
 	}
 }

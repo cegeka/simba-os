@@ -23,6 +23,7 @@ import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
+import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.manager.assembler.PolicyDTOAssembler;
 import org.simbasecurity.core.service.manager.assembler.RoleAssembler;
 import org.simbasecurity.core.service.manager.assembler.RoleDTOAssembler;

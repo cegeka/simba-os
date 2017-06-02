@@ -50,7 +50,7 @@ public class BeanInvokingJobDetailFactoryBean implements FactoryBean<JobDetail>,
      * <p/>
      * Default is the bean name of this FactoryBean.
      *
-     * @see org.quartz.JobDetail#setName
+     * @see JobDetail#getJobBuilder()#setName
      */
     public void setName(String name) {
         this.name = name;
@@ -61,7 +61,7 @@ public class BeanInvokingJobDetailFactoryBean implements FactoryBean<JobDetail>,
      * <p/>
      * Default is the default group of the Scheduler.
      *
-     * @see org.quartz.JobDetail#setGroup
+     * @see JobDetail#getJobBuilder()#setGroup(String)
      * @see org.quartz.Scheduler#DEFAULT_GROUP
      */
     public void setGroup(String group) {
@@ -227,7 +227,8 @@ public class BeanInvokingJobDetailFactoryBean implements FactoryBean<JobDetail>,
      * won't let jobs interfere with each other.
      */
     @PersistJobDataAfterExecution
-    public static class StatefullBeanInvokingJob extends BeanInvokingJob implements StatefulJob {
+    @DisallowConcurrentExecution
+    public static class StatefullBeanInvokingJob extends BeanInvokingJob {
 
         // No implementation, just an addition of the tag interface StatefulJob
         // in order to allow stateful method invoking jobs.

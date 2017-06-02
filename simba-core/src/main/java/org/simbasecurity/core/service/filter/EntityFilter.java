@@ -15,7 +15,7 @@
  *
  */
 
-package org.simbasecurity.core.service.manager;
+package org.simbasecurity.core.service.filter;
 
 import org.simbasecurity.core.domain.Policy;
 import org.simbasecurity.core.domain.Role;

@@ -284,7 +284,7 @@ service ConfigurationService {
 }
 
 
-struct SessionR {
+struct TSession {
     string ssoToken;
     string userName;
     string clientIpAddress;
@@ -292,7 +292,7 @@ struct SessionR {
     i64 lastAccessTime;
 }
 
-struct UserR {
+struct TUser {
     i64 id;
     i32 version;
     string userName;
@@ -306,9 +306,52 @@ struct UserR {
     bool passwordChangeRequired;
 }
 
+struct TRole {
+    i64 id;
+    i32 version;
+    string name;
+}
+
+struct TPolicy {
+    i64 id;
+    i32 version;
+    string name;
+}
+
+struct TGroup {
+    i64 id;
+    i32 version;
+    string name;
+    string cn;
+}
+
 service SessionService {
-    list<SessionR> findAllActive();
+    list<TSession> findAllActive();
     void remove(string ssoToken);
     void removeAllBut(string ssoToken);
-    UserR getUserFor(string ssoToken);
+    TUser getUserFor(string ssoToken);
+}
+
+service UserService {
+    void addRoles(TUser user, set<TRole> roles);
+    TUser create(TUser user);
+    TUser createWithRoles(TUser user, list<string> roleNames);
+    TUser cloneUser(TUser user, string clonedUsername);
+
+    /**
+     * @return the generated password
+     */
+    string createRestUser(string username);
+    list<TUser> findByRole(TRole role);
+    list<TUser> findAll();
+    list<TGroup> findGroups(TUser user);
+    list<TPolicy> findPolicies(TUser user);
+    list<TRole> findRoles(TUser user);
+    list<TRole> findRolesNotLinked(TUser user);
+    TUser refresh(TUser user);
+
+    void removeRole(TUser user, TRole role);
+    TUser resetPassword(TUser user);
+    list<TUser> search(string searchText);
+    TUser update(TUser user);
 }

@@ -14,16 +14,37 @@
  * limitations under the License.
  *
  */
-package org.simbasecurity.core.domain.repository;
 
-import org.simbasecurity.core.domain.Versionable;
+package org.simbasecurity.manager.service.rest.dto;
 
-import java.util.Collection;
+public class PolicyDTO {
 
-public interface AbstractVersionedRepository<T extends Versionable> extends AbstractRepository<T> {
+    private long id;
+    private int version;
+    private String name;
 
-    T refreshWithOptimisticLocking(long id, int version);
-    T refreshWithOptimisticLocking(Versionable object);
+    public long getId() {
+        return id;
+    }
 
-    Collection<T> refreshWithOptimisticLocking(Collection<? extends Versionable> objects);
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

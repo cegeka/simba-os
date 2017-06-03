@@ -52,6 +52,7 @@ public class ThriftServlet extends FrameworkServlet {
         processorClassMap.put("configurationService", ConfigurationService.Processor.class);
         processorClassMap.put("sessionService", SessionService.Processor.class);
         processorClassMap.put("userService", UserService.Processor.class);
+        processorClassMap.put("groupService", GroupService.Processor.class);
     }
 
     private final Map<String, TProcessor> processorMap = new HashMap<>();

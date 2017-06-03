@@ -263,7 +263,7 @@ service CacheService {
      * Enabled or disables the internal cache.
      * @param enable whether the cache should be enabled; or not.
      */
-    void setCacheEnabled(bool enable);
+    void setCacheEnabled(1: bool enable);
 }
 
 service ConfigurationService {
@@ -285,73 +285,84 @@ service ConfigurationService {
 
 
 struct TSession {
-    string ssoToken;
-    string userName;
-    string clientIpAddress;
-    i64 creationTime;
-    i64 lastAccessTime;
+    1: string ssoToken;
+    2: string userName;
+    3: string clientIpAddress;
+    4: i64 creationTime;
+    5: i64 lastAccessTime;
 }
 
 struct TUser {
-    i64 id;
-    i32 version;
-    string userName;
-    string name;
-    string firstName;
-    string inactiveDate;
-    string status;
-    string successURL;
-    string language;
-    bool mustChangePassword;
-    bool passwordChangeRequired;
+    1: i64 id;
+    2: i32 version;
+    3: string userName;
+    4: string name;
+    5: string firstName;
+    6: string inactiveDate;
+    7: string status;
+    8: string successURL;
+    9: string language;
+    10: bool mustChangePassword;
+    11: bool passwordChangeRequired;
 }
 
 struct TRole {
-    i64 id;
-    i32 version;
-    string name;
+    1: i64 id;
+    2: i32 version;
+    3: string name;
 }
 
 struct TPolicy {
-    i64 id;
-    i32 version;
-    string name;
+    1: i64 id;
+    2: i32 version;
+    3: string name;
 }
 
 struct TGroup {
-    i64 id;
-    i32 version;
-    string name;
-    string cn;
+    1: i64 id;
+    2: i32 version;
+    3: string name;
+    4: string cn;
 }
 
 service SessionService {
     list<TSession> findAllActive();
-    void remove(string ssoToken);
-    void removeAllBut(string ssoToken);
-    TUser getUserFor(string ssoToken);
+    void remove(1: string ssoToken);
+    void removeAllBut(1: string ssoToken);
+    TUser getUserFor(1: string ssoToken);
 }
 
 service UserService {
-    void addRoles(TUser user, set<TRole> roles);
-    TUser create(TUser user);
-    TUser createWithRoles(TUser user, list<string> roleNames);
-    TUser cloneUser(TUser user, string clonedUsername);
+    void addRoles(1: TUser user, 2: set<TRole> roles);
+    TUser create(1: TUser user);
+    TUser createWithRoles(1: TUser user, 2: list<string> roleNames);
+    TUser cloneUser(1: TUser user, 2: string clonedUsername);
 
     /**
      * @return the generated password
      */
-    string createRestUser(string username);
-    list<TUser> findByRole(TRole role);
+    string createRestUser(1: string username);
+    list<TUser> findByRole(1: TRole role);
     list<TUser> findAll();
-    list<TGroup> findGroups(TUser user);
-    list<TPolicy> findPolicies(TUser user);
-    list<TRole> findRoles(TUser user);
-    list<TRole> findRolesNotLinked(TUser user);
-    TUser refresh(TUser user);
+    list<TGroup> findGroups(1: TUser user);
+    list<TPolicy> findPolicies(1: TUser user);
+    list<TRole> findRoles(1: TUser user);
+    list<TRole> findRolesNotLinked(1: TUser user);
+    TUser refresh(1: TUser user);
 
-    void removeRole(TUser user, TRole role);
-    TUser resetPassword(TUser user);
-    list<TUser> search(string searchText);
-    TUser update(TUser user);
+    void removeRole(1: TUser user, 2: TRole role);
+    TUser resetPassword(1: TUser user);
+    list<TUser> search(1: string searchText);
+    TUser update(1: TUser user);
+}
+
+service GroupService {
+    list<TGroup> findAll();
+    list<TRole> findRoles(1: TGroup group);
+    list<TRole> findRolesNotLinked(1: TGroup group);
+    list<TUser> findUsers(1: TGroup group);
+    void addRole(1: TGroup group, 2: TRole role);
+    void addRoles(1: TGroup group, 2: list<TRole> roles);
+    void removeRole(1: TGroup group, 2: TRole role);
+    TGroup refresh(1: TGroup group);
 }

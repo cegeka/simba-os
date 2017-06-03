@@ -63,6 +63,10 @@ public class SimbaConfiguration {
 		return normalize(getSimbaURL() + "/thrift/userService");
 	}
 
+	public static String getGroupServiceURL() {
+		return normalize(getSimbaURL() + "/thrift/groupService");
+	}
+
 	private static String getSimbaURL() {
 		String url = SystemConfiguration.getSimbaServiceURL();
 		if (StringUtil.isEmpty(url)) {

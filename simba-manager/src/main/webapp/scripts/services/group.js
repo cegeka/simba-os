@@ -19,7 +19,7 @@ angular.module('SimbaApp')
     .factory('$group', ['$rest', '$q', function($rest, $q) {
         function getDataForGroup(url, group) {
             var deferred = $q.defer();
-                $rest.post(url, group)
+                $rest.newPost(url, group)
             .success(function(data){
                     deferred.resolve(data);
             })
@@ -32,7 +32,7 @@ angular.module('SimbaApp')
 
         return {
             getAll: function() {
-               return $rest.get('group/findAll');
+               return $rest.newGet('group/findAll');
             },
             findRoles: function(group) {
                 return getDataForGroup('group/findRoles', group);
@@ -44,10 +44,10 @@ angular.module('SimbaApp')
                 return getDataForGroup('group/findUsers', group);
             },
             addRoles: function(group, roles) {
-                return $rest.post('group/addRoles', {"group": group, "roles": roles});
+                return $rest.newPost('group/addRoles', {"group": group, "roles": roles});
             },
             removeRole: function(group, role) {
-                return $rest.post('group/removeRole', {"group":group, "role":role});
+                return $rest.newPost('group/removeRole', {"group":group, "role":role});
             },
             refresh: function(group) {
                 return getDataForGroup('group/refresh', group);

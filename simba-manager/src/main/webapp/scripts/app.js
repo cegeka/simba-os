@@ -45,7 +45,7 @@ angular.module('SimbaApp', ['ui.bootstrap', 'pascalprecht.translate', 'ngRoute',
 
             function error(response) {
                 var status = response.status;
-                if (status == 401) {
+                if (status === 401) {
                     //AuthFactory.clearUser();
                     window.location = "/simba-manager/";
                     return;

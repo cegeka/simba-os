@@ -31,6 +31,7 @@ angular.module('SimbaApp', ['ui.bootstrap', 'pascalprecht.translate', 'ngRoute',
     .config(['$translateProvider', '$translatePartialLoaderProvider', function ($translateProvider, $translatePartialLoaderProvider) {
         $translateProvider.useLoader('$translatePartialLoader', {urlTemplate: '/simba-manager/resources/locale/{lang}/{part}.json'});
         $translateProvider.preferredLanguage('nl_NL');
+        $translateProvider.useSanitizeValueStrategy('escape');
     }])
     .config(['$httpProvider', function ($httpProvider) {
         $httpProvider.defaults.useXDomain = true;

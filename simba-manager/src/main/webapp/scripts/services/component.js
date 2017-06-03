@@ -19,7 +19,7 @@ angular.module('SimbaApp')
     .factory('$simba_component', ['$modal', '$translate', function($modal, $translate) {
         var checkUndefined = function(input) {
             return typeof input === 'undefined' ? '' : input;
-        }
+        };
 
         return {
             textbox: function(title, prefill) {

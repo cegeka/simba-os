@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.simbasecurity.core.service.manager.dto;
+package org.simbasecurity.manager.service.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -23,9 +23,27 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
         @JsonSubTypes.Type(value=TimeConditionDTO.class, name="condition.type.timecondition")
 })
-public abstract class ConditionDTO extends AbstractVersionedDTO {
+public abstract class ConditionDTO {
 
+    private long id;
+    private int version;
     private String name;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
     public final String getName() {
         return name;

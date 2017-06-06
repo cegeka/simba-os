@@ -67,6 +67,10 @@ public class SimbaConfiguration {
 		return normalize(getSimbaURL() + "/thrift/groupService");
 	}
 
+	public static String getConditionServiceURL() {
+		return normalize(getSimbaURL() + "/thrift/conditionService");
+	}
+
 	private static String getSimbaURL() {
 		String url = SystemConfiguration.getSimbaServiceURL();
 		if (StringUtil.isEmpty(url)) {
@@ -98,5 +102,4 @@ public class SimbaConfiguration {
 			return url;
 		}
 	}
-
 }

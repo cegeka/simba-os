@@ -29,6 +29,9 @@ ActionType = {
   'REDIRECT' : 4,
   'DO_FILTER_AND_SET_PRINCIPAL' : 5
 };
+TConditionType = {
+  'TIME' : 1
+};
 SSOToken = function(args) {
   this.token = null;
   if (args) {
@@ -1263,6 +1266,136 @@ TGroup.prototype.write = function(output) {
   if (this.cn !== null && this.cn !== undefined) {
     output.writeFieldBegin('cn', Thrift.Type.STRING, 4);
     output.writeString(this.cn);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+TCondition = function(args) {
+  this.id = null;
+  this.version = null;
+  this.name = null;
+  this.type = null;
+  this.startExpression = null;
+  this.endExpression = null;
+  if (args) {
+    if (args.id !== undefined && args.id !== null) {
+      this.id = args.id;
+    }
+    if (args.version !== undefined && args.version !== null) {
+      this.version = args.version;
+    }
+    if (args.name !== undefined && args.name !== null) {
+      this.name = args.name;
+    }
+    if (args.type !== undefined && args.type !== null) {
+      this.type = args.type;
+    }
+    if (args.startExpression !== undefined && args.startExpression !== null) {
+      this.startExpression = args.startExpression;
+    }
+    if (args.endExpression !== undefined && args.endExpression !== null) {
+      this.endExpression = args.endExpression;
+    }
+  }
+};
+TCondition.prototype = {};
+TCondition.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I64) {
+        this.id = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.I32) {
+        this.version = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.I32) {
+        this.type = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.STRING) {
+        this.startExpression = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 6:
+      if (ftype == Thrift.Type.STRING) {
+        this.endExpression = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TCondition.prototype.write = function(output) {
+  output.writeStructBegin('TCondition');
+  if (this.id !== null && this.id !== undefined) {
+    output.writeFieldBegin('id', Thrift.Type.I64, 1);
+    output.writeI64(this.id);
+    output.writeFieldEnd();
+  }
+  if (this.version !== null && this.version !== undefined) {
+    output.writeFieldBegin('version', Thrift.Type.I32, 2);
+    output.writeI32(this.version);
+    output.writeFieldEnd();
+  }
+  if (this.name !== null && this.name !== undefined) {
+    output.writeFieldBegin('name', Thrift.Type.STRING, 3);
+    output.writeString(this.name);
+    output.writeFieldEnd();
+  }
+  if (this.type !== null && this.type !== undefined) {
+    output.writeFieldBegin('type', Thrift.Type.I32, 4);
+    output.writeI32(this.type);
+    output.writeFieldEnd();
+  }
+  if (this.startExpression !== null && this.startExpression !== undefined) {
+    output.writeFieldBegin('startExpression', Thrift.Type.STRING, 5);
+    output.writeString(this.startExpression);
+    output.writeFieldEnd();
+  }
+  if (this.endExpression !== null && this.endExpression !== undefined) {
+    output.writeFieldBegin('endExpression', Thrift.Type.STRING, 6);
+    output.writeString(this.endExpression);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

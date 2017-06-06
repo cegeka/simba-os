@@ -366,3 +366,32 @@ service GroupService {
     void removeRole(1: TGroup group, 2: TRole role);
     TGroup refresh(1: TGroup group);
 }
+
+enum TConditionType {
+    TIME = 1
+}
+
+struct TCondition {
+    1: i64 id;
+    2: i32 version;
+    3: string name;
+    4: TConditionType type;
+    /**
+     * Used for TIME condition type
+     */
+    5: string startExpression;
+    /**
+     * Used for TIME condition type
+     */
+    6: string endExpression;
+}
+
+service ConditionService {
+    list<TCondition> findAll();
+    list<TPolicy> findPolicies(1: TCondition condition);
+    list<TUser> findExemptedUsers(1: TCondition condition);
+    TCondition refresh(TCondition condition);
+    TCondition addOrUpdate(1: TCondition condition, 2: list<TPolicy> policies, 3: list<TUser> excludedUsers);
+    void remove(1: TCondition condition);
+    bool validateTimeCondition(1: TCondition condition);
+}

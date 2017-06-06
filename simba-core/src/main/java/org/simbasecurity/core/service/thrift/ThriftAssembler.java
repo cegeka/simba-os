@@ -1,8 +1,25 @@
+/*
+ * Copyright 2013-2017 Simba Open Source
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package org.simbasecurity.core.service.thrift;
 
 import org.simbasecurity.api.service.thrift.*;
 import org.simbasecurity.common.util.ThriftDate;
 import org.simbasecurity.core.domain.*;
+import org.simbasecurity.core.domain.condition.TimeCondition;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -26,6 +43,8 @@ public class ThriftAssembler {
         classMappers.put(TPolicy.class, in -> this.assemble((TPolicy) in));
         classMappers.put(Group.class, in -> this.assemble((Group) in));
         classMappers.put(TGroup.class, in -> this.assemble((TGroup) in));
+        classMappers.put(Condition.class, in -> this.assemble((Condition) in));
+        classMappers.put(TCondition.class, in -> this.assemble((TCondition) in));
     }
 
     public <I, O> List<O> list(Collection<I> input) {
@@ -118,5 +137,26 @@ public class ThriftAssembler {
 
     public Group assemble(TGroup tGroup) {
         return new GroupEntity(tGroup.getName(), tGroup.getCn());
+    }
+
+    public TCondition assemble(Condition condition) {
+        if (condition instanceof TimeCondition) {
+            TimeCondition timeCondition = (TimeCondition) condition;
+            return new TCondition(timeCondition.getId(), timeCondition.getVersion(), timeCondition.getName(),
+                                  TConditionType.TIME, timeCondition.getStartCondition(), timeCondition.getEndCondition());
+        }
+        throw new IllegalArgumentException("Unknown type " + condition.getClass());
+    }
+
+    public Condition assemble(TCondition tCondition) {
+        if (tCondition.getType() == TConditionType.TIME) {
+            TimeCondition timeCondition = new TimeCondition(tCondition.getStartExpression(),
+                                                            tCondition.getEndExpression());
+            timeCondition.setName(tCondition.getName());
+
+            return timeCondition;
+        }
+
+        throw new IllegalArgumentException("Unknown type " + tCondition.getType());
     }
 }

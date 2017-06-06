@@ -1,3 +1,19 @@
+/*
+ * Copyright 2013-2017 Simba Open Source
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package org.simbasecurity.manager.service.rest.assembler;
 
 import org.simbasecurity.api.service.thrift.*;
@@ -22,6 +38,8 @@ public class DTOAssembler {
         classMappers.put(TPolicy.class, in -> DTOAssembler.assemble((TPolicy) in));
         classMappers.put(GroupDTO.class, in -> DTOAssembler.assemble((GroupDTO) in));
         classMappers.put(TGroup.class, in -> DTOAssembler.assemble((TGroup) in));
+        classMappers.put(TCondition.class, in -> DTOAssembler.assemble((TCondition) in));
+        classMappers.put(TimeConditionDTO.class, in -> DTOAssembler.assemble((TimeConditionDTO) in));
     }
 
     public static <I, O> List<O> list(Collection<I> input) {
@@ -134,4 +152,28 @@ public class DTOAssembler {
         groupDTO.setCn(tGroup.getCn());
         return groupDTO;
     }
+
+    public static TCondition assemble(ConditionDTO condition) {
+        if (condition instanceof TimeConditionDTO) {
+            return assemble((TimeConditionDTO) condition);
+        }
+        throw new IllegalArgumentException("Unknow type: " + condition.getClass());
+    }
+
+    public static TCondition assemble(TimeConditionDTO timeCondition) {
+        return new TCondition(timeCondition.getId(), timeCondition.getVersion(), timeCondition.getName(),
+                              TConditionType.TIME, timeCondition.getStartCondition(), timeCondition.getEndCondition());
+    }
+
+    public static TimeConditionDTO assemble(TCondition condition) {
+        final TimeConditionDTO conditionDTO = new TimeConditionDTO();
+        conditionDTO.setId(condition.getId());
+        conditionDTO.setVersion(condition.getVersion());
+        conditionDTO.setName(condition.getName());
+        conditionDTO.setStartCondition(condition.getStartExpression());
+        conditionDTO.setEndCondition(condition.getEndExpression());
+        return conditionDTO;
+    }
+
+
 }

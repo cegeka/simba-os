@@ -38,19 +38,19 @@ angular.module('SimbaApp')
 
     $scope.selectionChanged = function(selectedItems) {
         $scope.selectedItems = selectedItems;
-    }
+    };
 
     var initItems = function(items) {
         items.forEach(function(item) {
             $scope.items.push({"name": item[itemKey], "item":item});
         })
-    }
+    };
 
     var extractItems = function() {
         var items = [];
         $scope.selectedItems.forEach(function(item) {
             items.push(item.item);
-        })
+        });
 
         return items;
     }

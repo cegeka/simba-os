@@ -33,7 +33,7 @@ public class LoginMappingServiceImpl implements LoginMappingService {
 	
 	@Override
 	public LoginMapping createMapping(String targetURL) {
-		LoginMappingEntity mapping = new LoginMappingEntity(targetURL);
+		LoginMappingEntity mapping = LoginMappingEntity.create(targetURL);
 		mappingRepository.persist(mapping);
 		return mapping;
 	}

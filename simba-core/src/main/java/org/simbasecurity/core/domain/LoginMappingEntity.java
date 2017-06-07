@@ -22,6 +22,8 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -33,54 +35,71 @@ import java.util.concurrent.TimeUnit;
 @Entity
 @Table(name = "SIMBA_LOGIN_MAPPING")
 public class LoginMappingEntity implements LoginMapping {
+    private static final Logger LOG = LoggerFactory.getLogger(LoginMappingEntity.class);
+
+    static final int MAX_URL_LENGTH = 1024;
 
     @Id
-	private String token;
-	private String targetURL;
-	private long creationTime;
-	
-	public LoginMappingEntity() {
-	}
+    private String token;
+    private String targetURL;
+    private long creationTime;
 
-	public LoginMappingEntity(String targetURL) {
-		this.targetURL = targetURL;
+    public LoginMappingEntity() {
+    }
 
-		this.token = UUID.randomUUID().toString();
-		this.creationTime = System.currentTimeMillis();
-	}
-	
-	public String getToken() {
-		return token;
-	}
+    private LoginMappingEntity(String targetURL) {
+        this.targetURL = targetURL;
 
-	public String getTargetURL() {
-		return targetURL;
-	}
+        this.token = UUID.randomUUID().toString();
+        this.creationTime = System.currentTimeMillis();
+    }
 
-	public long getCreationTime() {
-		return creationTime;
-	}
+    public static LoginMappingEntity create(String targetURL) {
+        LoginMappingEntity entity = new LoginMappingEntity(targetURL);
+        entity.validate();
+        return entity;
+    }
 
-	@Override
+    private void validate() {
+        final String ERROR_PREFIX = "SIMBA-12899: Target URL is too large for LoginMappingEntity: {}";
+        if (targetURL != null && targetURL.length() > MAX_URL_LENGTH) {
+            LOG.error(ERROR_PREFIX, this);
+            targetURL = targetURL.substring(0, MAX_URL_LENGTH);
+        }
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public String getTargetURL() {
+        return targetURL;
+    }
+
+    public long getCreationTime() {
+        return creationTime;
+    }
+
+    @Override
     public String toString() {
         ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
         builder.append("Token", token);
         builder.append("targetURL", targetURL);
         builder.append("TimeStamp", creationTime);
-		return builder.toString();
+        return builder.toString();
     }
 
-	@Override
-	public boolean isExpired() {
-		return creationTime + getMaxLoginElapsedTime() < System.currentTimeMillis();
-	}
+    @Override
+    public boolean isExpired() {
+        return creationTime + getMaxLoginElapsedTime() < System.currentTimeMillis();
+    }
 
-	private long getMaxLoginElapsedTime() {
-		Integer maxElapsedTime = getConfigurationService().getValue(SimbaConfigurationParameter.MAX_LOGIN_ELAPSED_TIME);
+    private long getMaxLoginElapsedTime() {
+        Integer maxElapsedTime = getConfigurationService().getValue(SimbaConfigurationParameter.MAX_LOGIN_ELAPSED_TIME);
         return TimeUnit.MILLISECONDS.convert(maxElapsedTime, SimbaConfigurationParameter.MAX_LOGIN_ELAPSED_TIME.getTimeUnit());
-	}
-	
-	private ConfigurationServiceImpl getConfigurationService() {
-		return GlobalContext.locate(ConfigurationServiceImpl.class);
-	}
+    }
+
+    private ConfigurationServiceImpl getConfigurationService() {
+        return GlobalContext.locate(ConfigurationServiceImpl.class);
+    }
 }

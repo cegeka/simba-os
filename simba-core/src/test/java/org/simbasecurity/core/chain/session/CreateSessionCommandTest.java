@@ -92,7 +92,7 @@ public class CreateSessionCommandTest {
 
         when(contextMock.isLoginUsingJSP()).thenReturn(Boolean.TRUE);
 
-        LoginMapping loginMapping = new LoginMappingEntity(TARGET_URL);
+        LoginMapping loginMapping = LoginMappingEntity.create(TARGET_URL);
         when(contextMock.getLoginMapping()).thenReturn(loginMapping);
 
         when(ssoTokenMappingServiceMock.createMapping(SSO_TOKEN)).thenReturn(ssoTokenMappingMock);

@@ -105,7 +105,7 @@ public class ChainContextImplTest {
         when(requestDataMock.getLoginToken()).thenReturn(null);
         when(requestDataMock.getRequestParameters()).thenReturn(Collections.singletonMap(USERNAME, USERNAME));
 
-        LoginMapping loginMapping = new LoginMappingEntity(URL_APPLICATION);
+        LoginMapping loginMapping = LoginMappingEntity.create(URL_APPLICATION);
         when(loginMappingServiceMock.createMapping(URL_APPLICATION)).thenReturn(loginMapping);
 
         chainContextImpl.redirectToChangePasswordWithFilter();
@@ -131,7 +131,7 @@ public class ChainContextImplTest {
         SSOToken ssoToken = new SSOToken();
         when(requestDataMock.getSsoToken()).thenReturn(ssoToken);
 
-        LoginMapping loginMapping = new LoginMappingEntity(URL_APPLICATION);
+        LoginMapping loginMapping = LoginMappingEntity.create(URL_APPLICATION);
         when(loginMappingServiceMock.createMapping(URL_APPLICATION)).thenReturn(loginMapping);
 
         chainContextImpl.redirectToChangePasswordDirect();
@@ -171,7 +171,7 @@ public class ChainContextImplTest {
         when(requestDataMock.getRequestURL()).thenReturn(URL_APPLICATION);
         when(requestDataMock.getRequestParameters()).thenReturn(Collections.singletonMap(USERNAME, USERNAME));
 
-        LoginMapping loginMapping = new LoginMappingEntity(URL_APPLICATION);
+        LoginMapping loginMapping = LoginMappingEntity.create(URL_APPLICATION);
         when(loginMappingServiceMock.createMapping(URL_APPLICATION)).thenReturn(loginMapping);
 
         chainContextImpl.redirectToLogin();
@@ -199,7 +199,7 @@ public class ChainContextImplTest {
 
         when(configurationServiceMock.getValue(LOGIN_URL)).thenReturn(SIMBA_LOGIN_PAGE_URL);
 
-        LoginMapping loginMapping = new LoginMappingEntity(URL_APPLICATION);
+        LoginMapping loginMapping = LoginMappingEntity.create(URL_APPLICATION);
         when(loginMappingServiceMock.createMapping(URL_APPLICATION)).thenReturn(loginMapping);
 
         chainContextImpl.redirectWithCredentialError(LOGIN_FAILED);

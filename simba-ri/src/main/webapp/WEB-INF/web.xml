@@ -106,10 +106,6 @@
 
     <filter-mapping>
         <filter-name>CORS</filter-name>
-        <servlet-name>manager</servlet-name>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CORS</filter-name>
         <url-pattern>/authorizationService</url-pattern>
     </filter-mapping>
 

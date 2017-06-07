@@ -25,6 +25,7 @@ import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.api.service.thrift.AuthenticationFilterService;
 import org.simbasecurity.api.service.thrift.RequestData;
+import org.simbasecurity.client.configuration.SimbaConfiguration;
 import org.simbasecurity.common.config.SystemConfiguration;
 import org.simbasecurity.common.request.RequestUtil;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -36,7 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ManagerSecurityInterceptor implements HandlerInterceptor {
 
     private AuthenticationFilterService.Iface authenticationService() throws TTransportException {
-        THttpClient tHttpClient = new THttpClient(SystemConfiguration.getSimbaServiceURL());
+        THttpClient tHttpClient = new THttpClient(SimbaConfiguration.getSimbaAuthenticationURL());
         TProtocol tProtocol = new TJSONProtocol(tHttpClient);
         return new AuthenticationFilterService.Client(tProtocol);
     }

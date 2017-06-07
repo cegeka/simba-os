@@ -45,6 +45,7 @@ public class ThriftAssembler {
         classMappers.put(TGroup.class, in -> this.assemble((TGroup) in));
         classMappers.put(Condition.class, in -> this.assemble((Condition) in));
         classMappers.put(TCondition.class, in -> this.assemble((TCondition) in));
+        classMappers.put(Rule.class, in -> this.assemble((Rule) in));
     }
 
     public <I, O> List<O> list(Collection<I> input) {
@@ -159,4 +160,9 @@ public class ThriftAssembler {
 
         throw new IllegalArgumentException("Unknown type " + tCondition.getType());
     }
+
+    public TRule assemble(Rule rule) {
+        return new TRule(rule.getId(), rule.getVersion(), rule.getName(), rule.getResourceName());
+    }
+
 }

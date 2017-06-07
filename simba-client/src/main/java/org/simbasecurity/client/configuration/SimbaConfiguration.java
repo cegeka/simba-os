@@ -27,21 +27,21 @@ public class SimbaConfiguration {
     }
 
     public static String getSimbaLoginURL(String filteredBySecurityFilterRequestURL, String username, String password) {
-		return filteredBySecurityFilterRequestURL + "?SimbaAction=SimbaLoginAction&username=" + username + "&password="
-				+ password;
-	}
+        return filteredBySecurityFilterRequestURL + "?SimbaAction=SimbaLoginAction&username=" + username + "&password="
+               + password;
+    }
 
-	public static String getSimbaLogoutURL(String filteredBySecurityFilterRequestURL) {
-		return filteredBySecurityFilterRequestURL + "?SimbaAction=SimbaLogoutAction";
-	}
+    public static String getSimbaLogoutURL(String filteredBySecurityFilterRequestURL) {
+        return filteredBySecurityFilterRequestURL + "?SimbaAction=SimbaLogoutAction";
+    }
 
-	public static String getSimbaChangePasswordURL(String filteredBySecurityFilterRequestURL) {
-		return filteredBySecurityFilterRequestURL + "?SimbaAction=SimbaShowChangePasswordAction";
-	}
+    public static String getSimbaChangePasswordURL(String filteredBySecurityFilterRequestURL) {
+        return filteredBySecurityFilterRequestURL + "?SimbaAction=SimbaShowChangePasswordAction";
+    }
 
-	public static String getSimbaAuthorizationURL() {
+    public static String getSimbaAuthorizationURL() {
         return normalize(getSimbaURL() + "/thrift/authorizationService");
-	}
+    }
 
     public static String getSimbaAuthenticationURL() {
         return normalize(getSimbaURL() + "/thrift/authenticationFilterService");
@@ -55,51 +55,55 @@ public class SimbaConfiguration {
         return normalize(getSimbaURL() + "/thrift/configurationService");
     }
 
-	public static String getSessionServiceURL() {
+    public static String getSessionServiceURL() {
         return normalize(getSimbaURL() + "/thrift/sessionService");
     }
 
-	public static String getUserServiceURL() {
-		return normalize(getSimbaURL() + "/thrift/userService");
-	}
+    public static String getUserServiceURL() {
+        return normalize(getSimbaURL() + "/thrift/userService");
+    }
 
-	public static String getGroupServiceURL() {
-		return normalize(getSimbaURL() + "/thrift/groupService");
-	}
+    public static String getGroupServiceURL() {
+        return normalize(getSimbaURL() + "/thrift/groupService");
+    }
 
-	public static String getConditionServiceURL() {
-		return normalize(getSimbaURL() + "/thrift/conditionService");
-	}
+    public static String getConditionServiceURL() {
+        return normalize(getSimbaURL() + "/thrift/conditionService");
+    }
 
-	private static String getSimbaURL() {
-		String url = SystemConfiguration.getSimbaServiceURL();
-		if (StringUtil.isEmpty(url)) {
-			throw new IllegalArgumentException("Simba URL has not been set. Check system property [simba.url]");
-		}
+    public static String getPolicyServiceURL() {
+        return normalize(getSimbaURL() + "/thrift/policyService");
+    }
 
-		url = resolveLocalhostToHostname(url);
+    private static String getSimbaURL() {
+        String url = SystemConfiguration.getSimbaServiceURL();
+        if (StringUtil.isEmpty(url)) {
+            throw new IllegalArgumentException("Simba URL has not been set. Check system property [simba.url]");
+        }
 
-		return url;
-	}
+        url = resolveLocalhostToHostname(url);
 
-	private static String resolveLocalhostToHostname(String urlToResolve) {
-		String url = urlToResolve;
-		if (url.contains("{localhost}")) {
-			try {
-				url = url.replaceAll("\\{localhost\\}", InetAddress.getLocalHost().getCanonicalHostName());
-			} catch (UnknownHostException e) {
-				throw new RuntimeException(e.getMessage());
-			}
-		}
-		return url;
-	}
+        return url;
+    }
 
-	private static String normalize(String url) {
-		try {
-			URI uri = new URI(url);
-			return uri.normalize().toString();
-		} catch (URISyntaxException e) {
-			return url;
-		}
-	}
+    private static String resolveLocalhostToHostname(String urlToResolve) {
+        String url = urlToResolve;
+        if (url.contains("{localhost}")) {
+            try {
+                url = url.replaceAll("\\{localhost\\}", InetAddress.getLocalHost().getCanonicalHostName());
+            } catch (UnknownHostException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
+        return url;
+    }
+
+    private static String normalize(String url) {
+        try {
+            URI uri = new URI(url);
+            return uri.normalize().toString();
+        } catch (URISyntaxException e) {
+            return url;
+        }
+    }
 }

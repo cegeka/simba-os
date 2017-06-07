@@ -395,3 +395,25 @@ service ConditionService {
     void remove(1: TCondition condition);
     bool validateTimeCondition(1: TCondition condition);
 }
+
+struct TRule {
+    1: i64 id;
+    2: i32 version;
+    3: string name;
+    4: string resourceName;
+}
+
+service PolicyService {
+    list<TPolicy> findAll();
+    list<TRole> findRoles(1: TPolicy policy);
+    list<TRole> findRolesNotLinked(1: TPolicy policy);
+    void addRoles(1: TPolicy policy, 2: set<TRole> roles);
+    void removeRole(1: TPolicy policy, 2: TRole role);
+    void addRules(1: TPolicy policy, 2: set<TRule> rules);
+    list<TRule> findRules(1: TPolicy policy);
+    list<TRule> findRulesNotLinked(1: TPolicy policy);
+    void removeRule(1: TPolicy policy, 2: TRule rule);
+    TPolicy refresh(1: TPolicy policy);
+    TPolicy createPolicy(1: string policyName);
+    void deletePolicy(1: TPolicy policy);
+}

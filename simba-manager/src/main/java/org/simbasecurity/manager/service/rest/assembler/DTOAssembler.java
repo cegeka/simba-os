@@ -40,6 +40,8 @@ public class DTOAssembler {
         classMappers.put(TGroup.class, in -> DTOAssembler.assemble((TGroup) in));
         classMappers.put(TCondition.class, in -> DTOAssembler.assemble((TCondition) in));
         classMappers.put(TimeConditionDTO.class, in -> DTOAssembler.assemble((TimeConditionDTO) in));
+        classMappers.put(RuleDTO.class, in -> DTOAssembler.assemble((RuleDTO) in));
+        classMappers.put(TRule.class, in -> DTOAssembler.assemble((TRule) in));
     }
 
     public static <I, O> List<O> list(Collection<I> input) {
@@ -175,5 +177,17 @@ public class DTOAssembler {
         return conditionDTO;
     }
 
+    public static TRule assemble(RuleDTO rule) {
+        return new TRule(rule.getId(), rule.getVersion(), rule.getName(), rule.getResourceName());
+    }
+
+    public static RuleDTO assemble(TRule tRule) {
+        RuleDTO ruleDTO = new RuleDTO();
+        ruleDTO.setId(tRule.getId());
+        ruleDTO.setVersion(tRule.getVersion());
+        ruleDTO.setName(tRule.getName());
+        ruleDTO.setResourceName(tRule.getResourceName());
+        return ruleDTO;
+    }
 
 }

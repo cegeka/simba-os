@@ -20,7 +20,6 @@ package org.simbasecurity.core.service.filter;
 import org.simbasecurity.core.domain.Policy;
 import org.simbasecurity.core.domain.Role;
 import org.simbasecurity.core.domain.User;
-import org.simbasecurity.core.service.manager.PolicyManagerService;
 import org.simbasecurity.core.service.manager.RoleManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +37,7 @@ import java.util.Optional;
  * Multiple {@link EntityFilter} predicates are combined using the <code>and</code> operator.
  *
  * @see org.simbasecurity.core.service.UserServiceImpl
- * @see PolicyManagerService
+ * @see org.simbasecurity.core.service.PolicyServiceImpl
  * @see RoleManagerService
  * @see EntityFilter
  *

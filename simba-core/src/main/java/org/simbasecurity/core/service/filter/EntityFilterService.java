@@ -20,7 +20,6 @@ package org.simbasecurity.core.service.filter;
 import org.simbasecurity.core.domain.Policy;
 import org.simbasecurity.core.domain.Role;
 import org.simbasecurity.core.domain.User;
-import org.simbasecurity.core.service.manager.RoleManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +37,7 @@ import java.util.Optional;
  *
  * @see org.simbasecurity.core.service.UserServiceImpl
  * @see org.simbasecurity.core.service.PolicyServiceImpl
- * @see RoleManagerService
+ * @see org.simbasecurity.core.service.RoleServiceImpl
  * @see EntityFilter
  *
  * @since 3.0.0

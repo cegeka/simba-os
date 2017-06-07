@@ -19,7 +19,7 @@ angular.module('SimbaApp')
     .factory('$role', ['$rest', '$q', function($rest, $q) {
         function getDataForRole(url, role) {
             var deferred = $q.defer();
-                $rest.post(url, role)
+                $rest.newPost(url, role)
             .success(function(data){
                     deferred.resolve(data);
             })
@@ -39,7 +39,7 @@ angular.module('SimbaApp')
 
         return {
             getAll: function() {
-               return $rest.get('role/findAll');
+               return $rest.newGet('role/findAll');
             },
             findPolicies: function(role) {
                 return getDataForRole('role/findPolicies', role);
@@ -51,31 +51,31 @@ angular.module('SimbaApp')
                 return getDataForRole('role/findUsers', role);
             },
             findUsersNotLinked: function(role) {
-                return $rest.post('role/findUsersNotLinked', role);
+                return $rest.newPost('role/findUsersNotLinked', role);
             },
             addPolicy: function(role, policy) {
-                return $rest.post('role/addPolicy', {"role":role, "policy":policy});
+                return $rest.newPost('role/addPolicy', {"role":role, "policy":policy});
             },
             addPolicies: function(role, policies) {
-                return $rest.post('role/addPolicies', {"role": role, "policies": policies});
+                return $rest.newPost('role/addPolicies', {"role": role, "policies": policies});
             },
             removePolicy: function(role, policy) {
-                return $rest.post('role/removePolicy', {"role":role, "policy":policy});
+                return $rest.newPost('role/removePolicy', {"role":role, "policy":policy});
             },
             removeUser: function(user, role) {
-                return $rest.post('role/removeUser', {"user":user, "role":role});
+                return $rest.newPost('role/removeUser', {"user":user, "role":role});
             },
             addUsers: function(role, users) {
-                return $rest.post('role/addUsers', {"role":role, "users":users});
+                return $rest.newPost('role/addUsers', {"role":role, "users":users});
             },
             refresh: function(role) {
                 return getDataForRole('role/refresh', role);
             },
             createRole: function(name) {
-                return $rest.post('role/createRole', {"roleName":name});
+                return $rest.newPost('role/createRole', {"roleName":name});
             },
             deleteRole: function(role) {
-                return $rest.post('role/deleteRole', {"role":role});
+                return $rest.newPost('role/deleteRole', {"role":role});
             }
         };
     }]);

@@ -75,6 +75,10 @@ public class SimbaConfiguration {
         return normalize(getSimbaURL() + "/thrift/policyService");
     }
 
+    public static String getRoleServiceURL() {
+        return normalize(getSimbaURL() + "/thrift/roleService");
+    }
+
     private static String getSimbaURL() {
         String url = SystemConfiguration.getSimbaServiceURL();
         if (StringUtil.isEmpty(url)) {

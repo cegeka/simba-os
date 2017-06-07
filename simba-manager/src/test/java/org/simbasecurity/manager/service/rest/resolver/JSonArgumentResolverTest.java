@@ -1,27 +1,9 @@
-/*
- * Copyright 2013-2017 Simba Open Source
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-
-package org.simbasecurity.core.service.manager.web;
+package org.simbasecurity.manager.service.rest.resolver;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.simbasecurity.core.service.manager.dto.RoleDTO;
-import org.simbasecurity.core.service.manager.dto.UserDTO;
+import org.simbasecurity.manager.service.rest.JsonBody;
+import org.simbasecurity.manager.service.rest.dto.RoleDTO;
+import org.simbasecurity.manager.service.rest.dto.UserDTO;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
 
@@ -38,8 +20,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-@SuppressWarnings("unchecked")
 public class JSonArgumentResolverTest {
 
     private JSonArgumentResolver resolver = new JSonArgumentResolver();
@@ -179,4 +159,5 @@ public class JSonArgumentResolverTest {
         String message2 = "[{\"id\":6,\"version\":1,\"userName\":\"groupie\",\"name\":\"Groupie\",\"firstName\":\"Groupie\",\"inactiveDate\":null,\"status\":\"ACTIVE\",\"successURL\":null,\"language\":\"nl_NL\",\"passwordChangeRequired\":false,\"changePasswordOnNextLogon\":false}]";
         resolver.resolveArgument(methodParameter(List.class, UserDTO.class), null, nativeWebRequest(message2), null);
     }
+
 }

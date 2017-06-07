@@ -15,7 +15,7 @@
  *
  */
 
-package org.simbasecurity.core.service.manager;
+package org.simbasecurity.core.service;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -25,7 +25,13 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.simbasecurity.core.domain.*;
+import org.simbasecurity.api.service.thrift.TPolicy;
+import org.simbasecurity.api.service.thrift.TRole;
+import org.simbasecurity.api.service.thrift.TUser;
+import org.simbasecurity.core.domain.PolicyEntity;
+import org.simbasecurity.core.domain.Role;
+import org.simbasecurity.core.domain.RoleEntity;
+import org.simbasecurity.core.domain.UserEntity;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
@@ -36,16 +42,13 @@ import org.simbasecurity.core.locator.SpringAwareLocator;
 import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 import org.simbasecurity.core.service.filter.EntityFilter;
 import org.simbasecurity.core.service.filter.EntityFilterService;
-import org.simbasecurity.core.service.manager.dto.PolicyDTO;
-import org.simbasecurity.core.service.manager.dto.RoleDTO;
-import org.simbasecurity.core.service.manager.dto.UserDTO;
+import org.simbasecurity.core.service.thrift.ThriftAssembler;
 import org.simbasecurity.test.util.ReflectionUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -53,12 +56,11 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-public class RoleManagerServiceFilteringTest {
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
+public class RoleServiceImplTest {
 
-    @Mock
-    private SpringAwareLocator locator;
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
+
+    @Mock private SpringAwareLocator locator;
     @Mock private UserValidator userValidator;
     @Mock private PasswordValidator passwordValidator;
     @Mock private ConfigurationServiceImpl configurationService;
@@ -68,11 +70,13 @@ public class RoleManagerServiceFilteringTest {
     @Mock private UserRepository userRepository;
 
     @Spy private EntityFilterService entityFilterService = new EntityFilterService(Optional.empty());
-    @InjectMocks private RoleManagerService roleManagerService;
+    @Spy private ThriftAssembler assembler = new ThriftAssembler();
 
-    @Mock private RoleDTO roleDTO1;
-    @Mock private RoleDTO roleDTO2;
-    @Mock private RoleDTO roleDTO3;
+    @InjectMocks private RoleServiceImpl roleService;
+
+    @Mock private TRole tRole01;
+    @Mock private TRole tRole02;
+    @Mock private TRole tRole03;
 
     private PolicyEntity policyEntity1 = new PolicyEntity("policy-1");
     private PolicyEntity policyEntity2 = new PolicyEntity("policy-2");
@@ -92,24 +96,11 @@ public class RoleManagerServiceFilteringTest {
         UserEntity userEntity1 = new UserEntity("user-1");
         UserEntity userEntity2 = new UserEntity("user-2");
 
-        filterServices.add(new EntityFilter() {
-            @Override
-            public Collection<Role> filterRoles(Collection<Role> roles) {
-                return roles.stream().filter(r -> r.getName().endsWith("-1")).collect(Collectors.toList());
-            }
-
-            @Override
-            public Collection<Policy> filterPolicies(Collection<Policy> policies) {
-                return policies.stream().filter(p -> p.getName().endsWith("-1")).collect(Collectors.toList());
-            }
-
-            @Override
-            public Collection<User> filterUsers(Collection<User> users) {
-                return users.stream().filter(u -> u.getUserName().endsWith("-1")).collect(Collectors.toList());
-            }
-        });
-
         ReflectionUtil.setField(entityFilterService, "filters", filterServices);
+
+        when(tRole01.getId()).thenReturn(1L);
+        when(tRole02.getId()).thenReturn(2L);
+        when(tRole03.getId()).thenReturn(3L);
 
         roleEntity1.addPolicy(policyEntity1);
         roleEntity2.addPolicy(policyEntity2);
@@ -124,9 +115,9 @@ public class RoleManagerServiceFilteringTest {
         Collection<Role> roles = asList(roleEntity1, roleEntity2, roleEntity3);
         when(roleRepository.findAll()).thenReturn(roles);
 
-        when(roleRepository.lookUp(roleDTO1)).thenReturn(roleEntity1);
-        when(roleRepository.lookUp(roleDTO2)).thenReturn(roleEntity2);
-        when(roleRepository.lookUp(roleDTO3)).thenReturn(roleEntity3);
+        when(roleRepository.lookUp(1)).thenReturn(roleEntity1);
+        when(roleRepository.lookUp(2)).thenReturn(roleEntity2);
+        when(roleRepository.lookUp(3)).thenReturn(roleEntity3);
 
         when(policyRepository.findNotLinked(roleEntity1)).thenReturn(singletonList(policyEntity2));
         when(policyRepository.findNotLinked(roleEntity2)).thenReturn(singletonList(policyEntity1));
@@ -147,34 +138,34 @@ public class RoleManagerServiceFilteringTest {
 
     @Test
     public void findAll() throws Exception {
-        assertThat(roleManagerService.findAll()).extracting(RoleDTO::getName).containsExactlyInAnyOrder("role-1");
+        assertThat(roleService.findAll()).extracting(TRole::getName).containsExactlyInAnyOrder("role-1", "role-2", "role-3");
     }
 
     @Test
     public void findPolicies() throws Exception {
-        assertThat(roleManagerService.findPolicies(roleDTO1)).extracting(PolicyDTO::getName).containsExactly("policy-1");
-        assertThat(roleManagerService.findPolicies(roleDTO2)).extracting(PolicyDTO::getName).isEmpty();
-        assertThat(roleManagerService.findPolicies(roleDTO3)).extracting(PolicyDTO::getName).containsExactly("policy-1");
+        assertThat(roleService.findPolicies(tRole01)).extracting(TPolicy::getName).containsExactly("policy-1");
+        assertThat(roleService.findPolicies(tRole02)).extracting(TPolicy::getName).containsExactly("policy-2");
+        assertThat(roleService.findPolicies(tRole03)).extracting(TPolicy::getName).containsExactly("policy-1", "policy-2");
     }
 
     @Test
     public void findPoliciesNotLinked() throws Exception {
-        assertThat(roleManagerService.findPoliciesNotLinked(roleDTO1)).extracting(PolicyDTO::getName).isEmpty();
-        assertThat(roleManagerService.findPoliciesNotLinked(roleDTO2)).extracting(PolicyDTO::getName).containsExactly("policy-1");
-        assertThat(roleManagerService.findPoliciesNotLinked(roleDTO3)).extracting(PolicyDTO::getName).isEmpty();
+        assertThat(roleService.findPoliciesNotLinked(tRole01)).extracting(TPolicy::getName).containsExactly("policy-2");
+        assertThat(roleService.findPoliciesNotLinked(tRole02)).extracting(TPolicy::getName).containsExactly("policy-1");
+        assertThat(roleService.findPoliciesNotLinked(tRole03)).extracting(TPolicy::getName).isEmpty();
     }
 
     @Test
     public void findUsers() throws Exception {
-        assertThat(roleManagerService.findUsers(roleDTO1)).extracting(UserDTO::getUserName).containsExactly("user-1");
-        assertThat(roleManagerService.findUsers(roleDTO2)).extracting(UserDTO::getUserName).isEmpty();
-        assertThat(roleManagerService.findUsers(roleDTO3)).extracting(UserDTO::getUserName).containsExactly("user-1");
+        assertThat(roleService.findUsers(tRole01)).extracting(TUser::getUserName).containsExactly("user-1");
+        assertThat(roleService.findUsers(tRole02)).extracting(TUser::getUserName).containsExactly("user-2");
+        assertThat(roleService.findUsers(tRole03)).extracting(TUser::getUserName).containsExactly("user-1", "user-2");
     }
 
     @Test
     public void findUsersNotLinked() throws Exception {
-        assertThat(roleManagerService.findUsersNotLinked(roleDTO1)).extracting(UserDTO::getUserName).isEmpty();
-        assertThat(roleManagerService.findUsersNotLinked(roleDTO2)).extracting(UserDTO::getUserName).containsExactly("user-1");
-        assertThat(roleManagerService.findUsersNotLinked(roleDTO3)).extracting(UserDTO::getUserName).isEmpty();
+        assertThat(roleService.findUsersNotLinked(tRole01)).extracting(TUser::getUserName).containsExactly("user-2");
+        assertThat(roleService.findUsersNotLinked(tRole02)).extracting(TUser::getUserName).containsExactly("user-1");
+        assertThat(roleService.findUsersNotLinked(tRole03)).extracting(TUser::getUserName).isEmpty();
     }
 }

@@ -46,15 +46,16 @@ public class ThriftServlet extends FrameworkServlet {
     private static final Map<String, Class<? extends TBaseProcessor>> processorClassMap = new HashMap<>();
 
     static {
-        processorClassMap.put("authorizationService", AuthorizationService.Processor.class);
         processorClassMap.put("authenticationFilterService", AuthenticationFilterService.Processor.class);
+        processorClassMap.put("authorizationService", AuthorizationService.Processor.class);
         processorClassMap.put("cacheService", CacheService.Processor.class);
+        processorClassMap.put("conditionService", ConditionService.Processor.class);
         processorClassMap.put("configurationService", ConfigurationService.Processor.class);
+        processorClassMap.put("groupService", GroupService.Processor.class);
+        processorClassMap.put("policyService", PolicyService.Processor.class);
+        processorClassMap.put("roleService", RoleService.Processor.class);
         processorClassMap.put("sessionService", SessionService.Processor.class);
         processorClassMap.put("userService", UserService.Processor.class);
-        processorClassMap.put("groupService", GroupService.Processor.class);
-        processorClassMap.put("conditionService", ConditionService.Processor.class);
-        processorClassMap.put("policyService", PolicyService.Processor.class);
     }
 
     private final Map<String, TProcessor> processorMap = new HashMap<>();

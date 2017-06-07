@@ -417,3 +417,19 @@ service PolicyService {
     TPolicy createPolicy(1: string policyName);
     void deletePolicy(1: TPolicy policy);
 }
+
+service RoleService {
+    list<TRole> findAll();
+    list<TPolicy> findPolicies(1: TRole role);
+    list<TPolicy> findPoliciesNotLinked(1: TRole role);
+    list<TUser> findUsers(1: TRole role);
+    list<TUser> findUsersNotLinked(1: TRole role);
+    void addPolicy(1: TRole role, 2: TPolicy policy);
+    void addPolicies(1: TRole role, 2: list<TPolicy> policies);
+    void removePolicy(1: TRole role, 2: TPolicy policy);
+    void removeUser(1: TUser user, 2: TRole role);
+    void addUsers(1: TRole role, 2: list<TUser> users);
+    TRole refresh(1: TRole role);
+    TRole createRole(1: string roleName);
+    void deleteRole(1: TRole role);
+}

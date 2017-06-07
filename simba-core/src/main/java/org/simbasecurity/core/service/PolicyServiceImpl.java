@@ -7,13 +7,13 @@ import org.simbasecurity.api.service.thrift.TPolicy;
 import org.simbasecurity.api.service.thrift.TRole;
 import org.simbasecurity.api.service.thrift.TRule;
 import org.simbasecurity.core.domain.Policy;
+import org.simbasecurity.core.domain.PolicyEntity;
 import org.simbasecurity.core.domain.Role;
 import org.simbasecurity.core.domain.Rule;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.RuleRepository;
 import org.simbasecurity.core.service.filter.EntityFilterService;
-import org.simbasecurity.core.service.manager.assembler.PolicyAssembler;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
 import org.simbasecurity.core.service.validation.DTOValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,7 +121,7 @@ public class PolicyServiceImpl implements PolicyService.Iface {
             if (roleRepository.findByName(policyName) != null) {
                 throw new IllegalArgumentException("Policy with name " + policyName + " already exists");
             }
-            Policy newPolicy = PolicyAssembler.createPolicy(policyName);
+            Policy newPolicy = new PolicyEntity(policyName);
             policyRepository.persist(newPolicy);
             return assembler.assemble(newPolicy);
         } catch (ValidationException e) {

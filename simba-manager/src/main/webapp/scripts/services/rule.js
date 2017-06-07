@@ -16,7 +16,7 @@
  */
 
 angular.module('SimbaApp')
-    .factory('$rule', ['$session', '$property', '$rest', function($session, $property, $rest) {
+    .factory('$rule', ['$session', '$rest', function($session, $rest) {
         var rules = {};
 
         return {
@@ -26,14 +26,7 @@ angular.module('SimbaApp')
                     return rules[key];
                 }
 
-                // var transport = new Thrift.Transport($property.getSimbaLocation() + '/authorizationService');
-                // var protocol  = new Thrift.Protocol(transport);
-                //
-                // var client = new AuthorizationServiceClient(protocol);
-
-                // rules[key] = client.isResourceRuleAllowed($session.getCurrentUserName(), resourceName, operation).allowed;
-
-                rules[key] = $rest.newPost('authorization/isResourceRuleAllowed', {"username": $session.getCurrentUserName(), "resourcename": resourceName, "operation": operation});
+                rules[key] = $rest.post('authorization/isResourceRuleAllowed', {"username": $session.getCurrentUserName(), "resourcename": resourceName, "operation": operation});
                 return rules[key];
             }
         };

@@ -20,19 +20,19 @@
 angular.module('SimbaApp')
   .controller('UserDetailsCtrl', ['$scope', '$modalInstance', 'selectedUser', '$user', '$translate', '$error', '$simba_component', '$configuration', '$log',
                         function ($scope, $modalInstance, selectedUser, $user, $translate, $error, $simba_component, $configuration, $log) {
-    $scope.tabs; 
+    $scope.tabs;
     $scope.user;
     $scope.successUrls;
     $scope.userRoles;
     $scope.userPolicies;
-    $scope.userGroups
+    $scope.userGroups;
     $scope.showEditButtons=true;
     $scope.error = $error.getError();
 
     $scope.initData = function() {
         getSuccessUrls();
         $scope.showEditButtons=true;
-    }
+    };
 
     $scope.init = function() {
         $scope.tabs = getTabs();
@@ -48,7 +48,7 @@ angular.module('SimbaApp')
                 $error.showError('error.loading.data');
             });
         $scope.showEditButtons=false;
-    }
+    };
 
     $scope.initPolicies = function() {
       $user.findPolicies($scope.user)
@@ -59,7 +59,7 @@ angular.module('SimbaApp')
               $error.showError('error.loading.data');
           });
       $scope.showEditButtons=false;
-    }
+    };
 
     $scope.initGroups = function() {
       $user.findGroups($scope.user)
@@ -70,7 +70,7 @@ angular.module('SimbaApp')
               $error.showError('error.loading.data');
           });
       $scope.showEditButtons=false;
-    }
+    };
     
     $scope.save = function () {
         $modalInstance.close($scope.user);
@@ -127,7 +127,7 @@ angular.module('SimbaApp')
     };
 
     var getSuccessUrls = function() {
-        $configuration.getValue('SUCCESS_URL').success(function(data) {
+        $configuration.getListValue('SUCCESS_URL').success(function(data) {
             $scope.successUrls=data;
         });
     };

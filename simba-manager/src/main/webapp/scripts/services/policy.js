@@ -19,7 +19,7 @@ angular.module('SimbaApp')
     .factory('$policy', ['$rest', '$q', function($rest, $q) {
         function getDataForPolicy(url, policy) {
             var deferred = $q.defer();
-                $rest.newPost(url, policy)
+                $rest.post(url, policy)
             .success(function(data){
                     deferred.resolve(data);
             })
@@ -31,7 +31,7 @@ angular.module('SimbaApp')
 
         return {
             getAll: function() {
-               return $rest.newGet('policy/findAll');
+               return $rest.get('policy/findAll');
             },
             findRoles: function(policy) {
                 return getDataForPolicy('policy/findRoles', policy);
@@ -46,25 +46,25 @@ angular.module('SimbaApp')
                 return getDataForPolicy('policy/findRulesNotLinked', policy);
             },
             addRoles: function(policy, roles) {
-                return $rest.newPost('policy/addRoles', {"policy": policy, "roles": roles});
+                return $rest.post('policy/addRoles', {"policy": policy, "roles": roles});
             },
             removeRole: function(role, policy) {
-                return $rest.newPost('policy/removeRole', {"role":role, "policy":policy});
+                return $rest.post('policy/removeRole', {"role":role, "policy":policy});
             },
             removeRule: function(rule, policy) {
-                return $rest.newPost('policy/removeRule', {"rule":rule, "policy":policy});
+                return $rest.post('policy/removeRule', {"rule":rule, "policy":policy});
             },
             addRules: function(policy, rules) {
-                return $rest.newPost('policy/addRules', {"policy":policy, "rules":rules});
+                return $rest.post('policy/addRules', {"policy":policy, "rules":rules});
             },
             refresh: function(policy) {
                 return getDataForPolicy('policy/refresh', policy);
             },
             createPolicy: function(name) {
-                return $rest.newPost('policy/create', name);
+                return $rest.post('policy/create', name);
             },
             deletePolicy: function(policy) {
-                return $rest.newPost('policy/delete', {"policy":policy});
+                return $rest.post('policy/delete', {"policy":policy});
             }
         };
     }]);

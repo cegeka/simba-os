@@ -19,16 +19,16 @@ angular.module('SimbaApp')
     .factory('$cache', ['$rest', function($rest) {
         return {
             refresh: function() {
-                return $rest.newPost('cache/refresh');
+                return $rest.post('cache/refresh');
             },
             enable: function () {
-                return $rest.newPost('cache/enable');
+                return $rest.post('cache/enable');
             },
             disable: function () {
-                return $rest.newPost('cache/disable');
+                return $rest.post('cache/disable');
             },
             isEnabled: function () {
-                return $rest.newPost('cache/isEnabled');
+                return $rest.post('cache/isEnabled');
             }
         };
     }]);

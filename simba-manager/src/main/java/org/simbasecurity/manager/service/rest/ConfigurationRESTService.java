@@ -53,11 +53,16 @@ public class ConfigurationRESTService extends BaseRESTService<ConfigurationServi
                              .collect(Collectors.toList());
     }
 
-    @SuppressWarnings("unchecked")
     @RequestMapping("getValue")
     @ResponseBody
     public String getValue(@RequestBody String parameter) {
         return $(() -> cl().getValue(parameter));
+    }
+
+    @RequestMapping("getListValue")
+    @ResponseBody
+    public List<String> getListValue(@RequestBody String parameter) {
+        return $(() -> cl().getListValue(parameter));
     }
 
     @RequestMapping("changeParameter")

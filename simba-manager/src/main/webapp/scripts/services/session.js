@@ -20,7 +20,7 @@ angular.module('SimbaApp')
         var currentUserName = "";
         return {
             getCurrentUser: function() {
-                return $rest.newGet('session/getCurrentUser');
+                return $rest.get('session/getCurrentUser');
             },
             setCurrentUserName: function(userName) {
                 currentUserName = userName;
@@ -29,13 +29,13 @@ angular.module('SimbaApp')
                 return currentUserName;
             },
             findAllActive : function() {
-                return $rest.newGet('session/findAllActive');
+                return $rest.get('session/findAllActive');
             },
             removeAllButMine : function() {
-                return $rest.newGet('session/removeAllButMine');
+                return $rest.get('session/removeAllButMine');
             },
             remove : function(session) {
-                return $rest.newPost('session/remove', session);
+                return $rest.post('session/remove', session);
             }
         };
     }]);

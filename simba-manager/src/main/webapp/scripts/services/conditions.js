@@ -19,25 +19,25 @@ angular.module('SimbaApp')
     .factory('$conditions', ['$rest', function($rest) {
         return {
             findAll: function() {
-                return $rest.newPost('condition/findAll');
+                return $rest.post('condition/findAll');
             },
             findPolicies: function (condition) {
-                return $rest.newPost('condition/findPolicies', condition);
+                return $rest.post('condition/findPolicies', condition);
             },
             findUsers: function (condition) {
-                return $rest.newPost('condition/findExemptedUsers', condition);
+                return $rest.post('condition/findExemptedUsers', condition);
             },
             refresh: function (condition) {
-                return $rest.newPost('condition/refresh', condition);
+                return $rest.post('condition/refresh', condition);
             },
             addOrUpdate: function (conditionWithUsersAndPolicies) {
-                return $rest.newPost('condition/addOrUpdate', conditionWithUsersAndPolicies);
+                return $rest.post('condition/addOrUpdate', conditionWithUsersAndPolicies);
             },
             remove: function (condition) {
-                return $rest.newPost('condition/remove', condition);
+                return $rest.post('condition/remove', condition);
             },
             validateTimeCondition: function (timeConditions) {
-                return $rest.newPost('condition/validateTimeCondition', timeConditions);
+                return $rest.post('condition/validateTimeCondition', timeConditions);
             }
         };
     }]);

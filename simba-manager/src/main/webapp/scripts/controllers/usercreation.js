@@ -70,7 +70,7 @@ angular.module('SimbaApp')
             };
 
             var getSuccessUrls = function() {
-                $configuration.getValue('SUCCESS_URL').success(function(data) {
+                $configuration.getListValue('SUCCESS_URL').success(function(data) {
                     $scope.successUrls=data;
                 });
             };

@@ -23,7 +23,10 @@ import org.simbasecurity.api.service.thrift.TRole;
 import org.simbasecurity.api.service.thrift.TUser;
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
-import org.simbasecurity.core.domain.*;
+import org.simbasecurity.core.domain.Language;
+import org.simbasecurity.core.domain.Role;
+import org.simbasecurity.core.domain.Status;
+import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.generator.PasswordGenerator;
 import org.simbasecurity.core.domain.repository.GroupRepository;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
@@ -104,12 +107,12 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
 
     public List<TRole> findRoles(TUser user) {
         return assembler.list(
-                filterService.filterRoles(roleRepository.findForUser(userRepository.lookUp(assembler.assemble(user)))));
+                filterService.filterRoles(roleRepository.findForUser(userRepository.findByName(user.getUserName()))));
     }
 
     public List<TRole> findRolesNotLinked(TUser user) {
         return assembler.list(filterService.filterRoles(
-                roleRepository.findNotLinked(userRepository.lookUp(assembler.assemble(user)))));
+                roleRepository.findNotLinked(userRepository.findByName(user.getUserName()))));
     }
 
     public void removeRole(TUser user, TRole role) {
@@ -131,7 +134,7 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
 
     public List<TPolicy> findPolicies(TUser user) {
         return assembler.list(
-                filterService.filterPolicies(policyRepository.find(userRepository.lookUp(assembler.assemble(user)))));
+                filterService.filterPolicies(policyRepository.find(userRepository.findByName(user.getUserName()))));
     }
 
     public List<TGroup> findGroups(TUser user) {

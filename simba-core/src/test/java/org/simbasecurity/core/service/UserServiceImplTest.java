@@ -28,7 +28,10 @@ import org.mockito.junit.MockitoRule;
 import org.simbasecurity.api.service.thrift.TPolicy;
 import org.simbasecurity.api.service.thrift.TRole;
 import org.simbasecurity.api.service.thrift.TUser;
-import org.simbasecurity.core.domain.*;
+import org.simbasecurity.core.domain.PolicyEntity;
+import org.simbasecurity.core.domain.Role;
+import org.simbasecurity.core.domain.RoleEntity;
+import org.simbasecurity.core.domain.UserEntity;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
@@ -109,18 +112,9 @@ public class UserServiceImplTest {
         when(userRepository.findAllOrderedByName()).thenReturn(asList(userEntity1, userEntity2, userEntity3));
         when(userRepository.searchUsersOrderedByName("1")).thenReturn(asList(userEntity1));
 
-        when(userRepository.lookUp(any(UserEntity.class))).thenAnswer(invocation -> {
-            User user = invocation.getArgument(0);
-            switch (user.getUserName()) {
-                case "user-1":
-                    return userEntity1;
-                case "user-2":
-                    return userEntity2;
-                case "user-3":
-                    return userEntity3;
-            }
-            return null;
-        });
+        when(userRepository.findByName("user-1")).thenReturn(userEntity1);
+        when(userRepository.findByName("user-2")).thenReturn(userEntity2);
+        when(userRepository.findByName("user-3")).thenReturn(userEntity3);
 
         when(userRepository.findForRole(roleEntity1)).thenReturn(asList(userEntity1, userEntity3));
         when(userRepository.findForRole(roleEntity2)).thenReturn(asList(userEntity2, userEntity3));

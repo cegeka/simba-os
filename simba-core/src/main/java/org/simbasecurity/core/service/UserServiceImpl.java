@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
     }
 
     public TUser resetPassword(TUser user) {
-        User attachedUser = userRepository.refreshWithOptimisticLocking(user.getId(), user.getVersion());
+        User attachedUser = userRepository.refreshWithOptimisticLocking(user.getUserName(), user.getVersion());
         attachedUser.resetPassword();
         userRepository.flush();
         return assembler.assemble(attachedUser);

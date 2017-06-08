@@ -42,4 +42,6 @@ public interface UserRepository extends AbstractVersionedRepository<User> {
     Collection<User> findAllOrderedByName();
 
     Collection<User> searchUsersOrderedByName(String searchText);
+
+    User refreshWithOptimisticLocking(String username, int version);
 }

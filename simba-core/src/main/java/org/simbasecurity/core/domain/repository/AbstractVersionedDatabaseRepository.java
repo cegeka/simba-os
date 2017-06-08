@@ -64,7 +64,7 @@ public abstract class AbstractVersionedDatabaseRepository<T extends Versionable>
         }
     }
 
-    private void checkOptimisticLocking(Versionable attachedEntity, int oldVersion) {
+    protected void checkOptimisticLocking(Versionable attachedEntity, int oldVersion) {
         if (attachedEntity == null || oldVersion != attachedEntity.getVersion()) {
             throw new SimbaException(OPTIMISTIC_LOCK);
         }

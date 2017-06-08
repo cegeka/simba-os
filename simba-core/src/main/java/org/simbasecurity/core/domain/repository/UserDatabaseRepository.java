@@ -73,6 +73,13 @@ public class UserDatabaseRepository extends AbstractVersionedDatabaseRepository<
     }
 
     @Override
+    public User refreshWithOptimisticLocking(String username, int version) {
+        User user = findByName(username);
+        checkOptimisticLocking(user, version);
+        return user;
+    }
+
+    @Override
     protected Class<? extends User> getEntityType() {
         return UserEntity.class;
     }

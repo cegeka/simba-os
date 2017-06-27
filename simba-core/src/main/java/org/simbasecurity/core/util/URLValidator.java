@@ -23,7 +23,7 @@ import org.simbasecurity.common.config.SystemConfiguration;
 import org.simbasecurity.common.util.StringUtil;
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +35,7 @@ public class URLValidator {
     @Autowired private AuthorizationService.Iface authorizationService;
     @Autowired private Audit audit;
     @Autowired private AuditLogEventFactory auditLogFactory;
-    @Autowired private ConfigurationServiceImpl configurationService;
+    @Autowired private CoreConfigurationService configurationService;
 
     public String getValidatedURL(String url, String userName) {
         try {

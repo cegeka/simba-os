@@ -19,7 +19,7 @@ package org.simbasecurity.core.domain.generator;
 
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.exception.SimbaException;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +40,7 @@ import static org.simbasecurity.core.config.SimbaConfigurationParameter.*;
 @Component
 public class PasswordGeneratorImpl implements PasswordGenerator {
 
-    private ConfigurationServiceImpl configurationService;
+    private CoreConfigurationService configurationService;
     private PasswordValidator passwordValidator;
 
     private final Random random;
@@ -105,7 +105,7 @@ public class PasswordGeneratorImpl implements PasswordGenerator {
     }
 
     @Autowired
-    public void setConfigurationService(ConfigurationServiceImpl configurationService) {
+    public void setConfigurationService(CoreConfigurationService configurationService) {
         this.configurationService = configurationService;
     }
 

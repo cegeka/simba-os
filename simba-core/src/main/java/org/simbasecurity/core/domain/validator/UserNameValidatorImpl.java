@@ -17,7 +17,7 @@
 package org.simbasecurity.core.domain.validator;
 
 import org.simbasecurity.core.exception.SimbaException;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +28,12 @@ import static org.simbasecurity.core.exception.SimbaMessageKey.*;
 @Component
 public class UserNameValidatorImpl implements UserNameValidator {
 
-	@Autowired private ConfigurationServiceImpl configurationService;
+	private final CoreConfigurationService configurationService;
+
+	@Autowired
+	public UserNameValidatorImpl(CoreConfigurationService configurationService) {
+		this.configurationService = configurationService;
+	}
 
 	@Override
 	public void validateUserName(String userName) {

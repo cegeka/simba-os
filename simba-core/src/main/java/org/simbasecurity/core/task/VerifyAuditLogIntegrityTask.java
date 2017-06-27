@@ -19,7 +19,7 @@ package org.simbasecurity.core.task;
 import org.jasypt.digest.StringDigester;
 import org.simbasecurity.core.audit.AuditLogIntegrityMessageFactory;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +63,7 @@ public class VerifyAuditLogIntegrityTask implements QuartzTask {
     private static final String SELECT_FROM_SIMBA_ARCHIVED_AUDIT_LOG = "SELECT * FROM SIMBA_ARCHIVED_AUDIT_LOG";
 
     @Autowired private JdbcTemplate jdbcTemplate;
-    @Autowired private ConfigurationServiceImpl configurationService;
+    @Autowired private CoreConfigurationService configurationService;
     @Autowired private StringDigester digester;
 
     @Override

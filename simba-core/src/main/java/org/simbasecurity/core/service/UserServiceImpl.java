@@ -33,7 +33,7 @@ import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.exception.SimbaException;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
     @Autowired private AuditLogEventFactory eventFactory;
 
     @Autowired private EntityFilterService filterService;
-    @Autowired private ConfigurationServiceImpl configurationService;
+    @Autowired private CoreConfigurationService configurationService;
 
     @Autowired private ThriftAssembler assembler;
     @Autowired private PasswordGenerator passwordGenerator;

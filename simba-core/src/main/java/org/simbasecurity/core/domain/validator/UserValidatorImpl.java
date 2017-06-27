@@ -19,8 +19,9 @@ package org.simbasecurity.core.domain.validator;
 import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.Status;
 import org.simbasecurity.core.exception.SimbaException;
+import org.simbasecurity.core.exception.SimbaMessageKey;
 import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,79 +32,64 @@ import static org.simbasecurity.core.exception.SimbaMessageKey.*;
 @Component
 public class UserValidatorImpl implements UserValidator {
 
-	@Autowired private ConfigurationServiceImpl configurationService;
+    private final CoreConfigurationService configurationService;
 
-	@Override
-	public void validateUserName(String userName) {
-		UserNameValidator userNameValidator = GlobalContext.locate(UserNameValidator.class);
-		userNameValidator.validateUserName(userName);
-	}
+    @Autowired
+    public UserValidatorImpl(CoreConfigurationService configurationService) {
+        this.configurationService = configurationService;
+    }
 
-	@Override
-	public void validateFirstName(String firstName) {
+    @Override
+    public void validateUserName(String userName) {
+        UserNameValidator userNameValidator = GlobalContext.locate(UserNameValidator.class);
+        userNameValidator.validateUserName(userName);
+    }
 
-		if (isEmpty(firstName)) {
-			return;
-		}
+    @SuppressWarnings("MethodWithTooManyParameters")
+    private void validate(String name, int minLength, int maxLength, SimbaMessageKey toShortMessageKey,
+                          SimbaMessageKey toLongMessageKey) {
+        if (isEmpty(name)) return;
+        if (name.length() < minLength) throw new SimbaException(toShortMessageKey, String.valueOf(minLength));
+        if (name.length() > maxLength) throw new SimbaException(toLongMessageKey, String.valueOf(maxLength));
+    }
 
-		Integer minLength = configurationService.getValue(FIRSTNAME_MIN_LENGTH);
+    @Override
+    public void validateFirstName(String firstName) {
+        validate(firstName, configurationService.getValue(FIRSTNAME_MIN_LENGTH),
+                configurationService.getValue(FIRSTNAME_MAX_LENGTH), FIRSTNAME_TOO_SHORT, FIRSTNAME_TOO_LONG);
+    }
 
-		if (firstName.length() < minLength) {
-			throw new SimbaException(FIRSTNAME_TOO_SHORT, minLength.toString());
-		}
+    @Override
+    public void validateName(String name) {
+        validate(name, configurationService.getValue(LASTNAME_MIN_LENGTH),
+                configurationService.getValue(LASTNAME_MAX_LENGTH), NAME_TOO_SHORT, NAME_TOO_LONG);
+    }
 
-		Integer maxLength = configurationService.getValue(FIRSTNAME_MAX_LENGTH);
+    @Override
+    public void validateSuccessURL(String successURL) {
+        if (isEmpty(successURL)) {
+            return;
+        }
 
-		if (firstName.length() > maxLength) {
-			throw new SimbaException(FIRSTNAME_TOO_LONG, maxLength.toString());
-		}
-	}
+        Integer maxLength = configurationService.getValue(SUCCESSURL_MAX_LENGTH);
 
-	@Override
-	public void validateName(String name) {
+        if (successURL.length() > maxLength) {
+            throw new SimbaException(SUCCESSURL_TOO_LONG, maxLength.toString());
+        }
+    }
 
-		if (isEmpty(name)) {
-			return;
-		}
+    @Override
+    public void validateLanguage(Language language) {
+        if (language == null) {
+            throw new SimbaException(LANGUAGE_EMPTY);
+        }
+    }
 
-		Integer minLength = configurationService.getValue(LASTNAME_MIN_LENGTH);
-
-		if (name.length() < minLength) {
-			throw new SimbaException(NAME_TOO_SHORT, minLength.toString());
-		}
-
-		Integer maxLength = configurationService.getValue(LASTNAME_MAX_LENGTH);
-
-		if (name.length() > maxLength) {
-			throw new SimbaException(NAME_TOO_LONG, maxLength.toString());
-		}
-	}
-
-	@Override
-	public void validateSuccessURL(String successURL) {
-		if (isEmpty(successURL)) {
-			return;
-		}
-
-		Integer maxLength = configurationService.getValue(SUCCESSURL_MAX_LENGTH);
-
-		if (successURL.length() > maxLength) {
-			throw new SimbaException(SUCCESSURL_TOO_LONG, maxLength.toString());
-		}
-	}
-
-	@Override
-	public void validateLanguage(Language language) {
-		if (language == null) {
-			throw new SimbaException(LANGUAGE_EMPTY);
-		}
-	}
-
-	@Override
-	public void validateStatus(Status status) {
-		if (status == null) {
-			throw new SimbaException(STATUS_EMPTY);
-		}
-	}
+    @Override
+    public void validateStatus(Status status) {
+        if (status == null) {
+            throw new SimbaException(STATUS_EMPTY);
+        }
+    }
 
 }

@@ -25,7 +25,7 @@ import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.ChainContextImpl;
 import org.simbasecurity.core.chain.Command;
 import org.simbasecurity.core.domain.Session;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +37,7 @@ import static org.simbasecurity.core.locator.GlobalContext.locate;
 public class AuthenticationFilterServiceImpl implements AuthenticationFilterService.Iface {
 
     @Autowired private SessionService sessionService;
-    @Autowired private ConfigurationServiceImpl configurationService;
+    @Autowired private CoreConfigurationService configurationService;
     @Autowired private LoginMappingService loginMapping;
     @Autowired private SSOTokenMappingService ssoTokenMappingService;
 

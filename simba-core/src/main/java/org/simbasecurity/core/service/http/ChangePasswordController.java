@@ -30,6 +30,7 @@ import org.simbasecurity.core.chain.ChainContextImpl;
 import org.simbasecurity.core.service.LoginMappingService;
 import org.simbasecurity.core.service.SessionService;
 import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -47,7 +48,7 @@ public class ChangePasswordController implements Controller {
     private SessionService sessionService;
     
     @Autowired
-    private ConfigurationServiceImpl configurationService;
+    private CoreConfigurationService configurationService;
     
     @Autowired
     private LoginMappingService loginMappingService;

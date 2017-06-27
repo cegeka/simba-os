@@ -17,7 +17,6 @@
 package org.simbasecurity.core.service.config;
 
 import org.apache.thrift.TException;
-import org.simbasecurity.api.service.thrift.ConfigurationService;
 import org.simbasecurity.core.config.ConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationStore;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
@@ -41,7 +40,7 @@ import static org.simbasecurity.core.event.SimbaEventType.CONFIG_PARAM_CHANGED;
 
 @Transactional
 @Service("configurationService")
-public class ConfigurationServiceImpl implements ConfigurationService.Iface, SimbaEventListener {
+public class ConfigurationServiceImpl implements CoreConfigurationService, SimbaEventListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConfigurationServiceImpl.class);
 
@@ -133,6 +132,7 @@ public class ConfigurationServiceImpl implements ConfigurationService.Iface, Sim
                                       .findFirst();
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T getValue(ConfigurationParameter parameter) {
         if (configurationCache.containsKey(parameter)) {
@@ -165,6 +165,7 @@ public class ConfigurationServiceImpl implements ConfigurationService.Iface, Sim
         return value;
     }
 
+    @Override
     public <T> void changeParameter(ConfigurationParameter parameter, T value) {
         T oldValue = changeValue(parameter, value);
         eventService.publish(SimbaEventType.CONFIG_PARAM_CHANGED, parameter.getName(), oldValue, value);

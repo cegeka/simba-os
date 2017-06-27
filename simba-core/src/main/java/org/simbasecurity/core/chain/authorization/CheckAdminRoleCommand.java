@@ -24,7 +24,7 @@ import org.simbasecurity.core.audit.AuditMessages;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,7 +41,7 @@ public class CheckAdminRoleCommand implements Command {
 	private AuditLogEventFactory auditLogFactory;
 
 	@Autowired
-	private ConfigurationServiceImpl configurationService;
+	private CoreConfigurationService configurationService;
 
 	@Override
 	public State execute(ChainContext context) throws Exception {

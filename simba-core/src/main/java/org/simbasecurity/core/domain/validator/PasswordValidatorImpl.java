@@ -17,7 +17,7 @@
 package org.simbasecurity.core.domain.validator;
 
 import org.simbasecurity.core.exception.SimbaException;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +30,7 @@ import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORD_INVALID_
 @Component
 public class PasswordValidatorImpl implements PasswordValidator {
 
-    private ConfigurationServiceImpl configurationService;
+    private CoreConfigurationService configurationService;
 
     public void validatePassword(String newPassword) throws SimbaException {
         if (!checkPasswordLength(newPassword)) {
@@ -71,7 +71,7 @@ public class PasswordValidatorImpl implements PasswordValidator {
     }
 
     @Autowired
-    public void setConfigurationService(ConfigurationServiceImpl configurationService) {
+    public void setConfigurationService(CoreConfigurationService configurationService) {
         this.configurationService = configurationService;
     }
 }

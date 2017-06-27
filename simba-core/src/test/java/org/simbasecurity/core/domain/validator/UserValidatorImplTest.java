@@ -16,25 +16,38 @@
  */
 package org.simbasecurity.core.domain.validator;
 
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.simbasecurity.core.exception.SimbaException;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 
 import static org.mockito.Mockito.when;
 import static org.simbasecurity.core.config.SimbaConfigurationParameter.*;
 
-@RunWith(MockitoJUnitRunner.class)
 public class UserValidatorImplTest {
 
-	@Mock private ConfigurationServiceImpl mockConfigurationService;
+	@Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+	@Mock private CoreConfigurationService mockConfigurationService;
 
     @InjectMocks
 	private UserValidatorImpl validator;
+
+    @Before
+    public void setUpConfigurationService() {
+        when(mockConfigurationService.getValue(FIRSTNAME_MIN_LENGTH)).thenReturn(3);
+        when(mockConfigurationService.getValue(FIRSTNAME_MAX_LENGTH)).thenReturn(5);
+
+        when(mockConfigurationService.getValue(LASTNAME_MIN_LENGTH)).thenReturn(3);
+        when(mockConfigurationService.getValue(LASTNAME_MAX_LENGTH)).thenReturn(5);
+
+        when(mockConfigurationService.getValue(SUCCESSURL_MAX_LENGTH)).thenReturn(5);
+    }
 
 	@Test
 	public void validateFirstName_firstNameNull() {
@@ -43,21 +56,16 @@ public class UserValidatorImplTest {
 
 	@Test
 	public void validateFirstName_firstNameEmptyString() {
-		validator.validateFirstName("");
+        validator.validateFirstName("");
 	}
 
 	@Test(expected = SimbaException.class)
 	public void validateFirstName_firstNameTooShort() {
-		Mockito.when(mockConfigurationService.getValue(FIRSTNAME_MIN_LENGTH)).thenReturn(3);
-
 		validator.validateFirstName("Fi");
 	}
 
 	@Test(expected = SimbaException.class)
 	public void validateFirstName_firstNameTooLong() {
-		when(mockConfigurationService.getValue(FIRSTNAME_MIN_LENGTH)).thenReturn(3);
-		when(mockConfigurationService.getValue(FIRSTNAME_MAX_LENGTH)).thenReturn(5);
-
 		validator.validateFirstName("Firstn");
 	}
 
@@ -73,16 +81,11 @@ public class UserValidatorImplTest {
 
 	@Test(expected = SimbaException.class)
 	public void validateLastName_lastNameTooShort() {
-		Mockito.when(mockConfigurationService.getValue(LASTNAME_MIN_LENGTH)).thenReturn(3);
-
 		validator.validateName("La");
 	}
 
 	@Test(expected = SimbaException.class)
 	public void validateLastName_lastnameTooLong() {
-		when(mockConfigurationService.getValue(LASTNAME_MIN_LENGTH)).thenReturn(3);
-		when(mockConfigurationService.getValue(LASTNAME_MAX_LENGTH)).thenReturn(5);
-
 		validator.validateName("Lastna");
 	}
 
@@ -98,8 +101,6 @@ public class UserValidatorImplTest {
 
 	@Test(expected = SimbaException.class)
 	public void validateSuccessURL_successURLTooLong() {
-		when(mockConfigurationService.getValue(SUCCESSURL_MAX_LENGTH)).thenReturn(5);
-
 		validator.validateSuccessURL("SuccessURL");
 	}
 

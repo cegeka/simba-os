@@ -16,64 +16,58 @@
  */
 package org.simbasecurity.manager.service.rest;
 
-import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.api.service.thrift.SessionService;
 import org.simbasecurity.client.configuration.SimbaConfiguration;
-import org.simbasecurity.common.request.RequestUtil;
 import org.simbasecurity.manager.service.rest.assembler.DTOAssembler;
 import org.simbasecurity.manager.service.rest.dto.SessionDTO;
 import org.simbasecurity.manager.service.rest.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
+
+import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
 
 @Controller
 @RequestMapping("session")
 @Scope("request")
 public class SessionRESTService extends BaseRESTService<SessionService.Client>{
 
-	private final HttpServletRequest request;
 
-	@Autowired
-	public SessionRESTService(HttpServletRequest request) {
+	public SessionRESTService() {
 		super(new SessionService.Client.Factory(), SimbaConfiguration.getSessionServiceURL());
-		this.request = request;
 	}
 
 	@ResponseBody
 	@RequestMapping("findAllActive")
-	public Collection<SessionDTO> findAllActive() {
-        return DTOAssembler.list($(() -> cl().findAllActive()));
+	public Collection<SessionDTO> findAllActive(@CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return DTOAssembler.list($(() -> cl(ssoToken).findAllActive()));
     }
 
 	@RequestMapping("remove")
 	@ResponseBody
-	public void remove(@RequestBody SessionDTO session) {
-		if (getSSOToken().getToken().equals(session.getSsoToken())) {
+	public void remove(@RequestBody SessionDTO session,
+					   @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+		if (ssoToken.equals(session.getSsoToken())) {
             throw new IllegalArgumentException("You can't delete your own session!");
         }
-        $(() -> cl().remove(session.getSsoToken()));
+        $(() -> cl(ssoToken).remove(session.getSsoToken()));
 	}
 
 	@RequestMapping("removeAllButMine")
 	@ResponseBody
-	public void removeAllButMine() {
-        $(() -> cl().removeAllBut(getSSOToken().getToken()));
+	public void removeAllButMine(@CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        $(() -> cl(ssoToken).removeAllBut(ssoToken));
 	}
 
 	@ResponseBody
 	@RequestMapping("getCurrentUser")
-	public UserDTO getCurrentUser() {
-        return DTOAssembler.assemble($(() -> cl().getUserFor(getSSOToken().getToken())));
-	}
-
-	private SSOToken getSSOToken() {
-		return RequestUtil.getSsoTokenThatShouldBePresent(request);
+	public UserDTO getCurrentUser(@CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return DTOAssembler.assemble($(() -> cl(ssoToken).getUserFor(ssoToken)));
 	}
 }

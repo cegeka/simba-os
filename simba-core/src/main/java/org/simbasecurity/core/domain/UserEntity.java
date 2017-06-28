@@ -30,7 +30,7 @@ import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.util.PasswordEncryptorFactory;
 import org.simbasecurity.core.util.SHA1PasswordEncryptorFactory;
 
@@ -442,7 +442,7 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 	}
 
 	private String getDefaultPassword() {
-		return GlobalContext.locate(ConfigurationServiceImpl.class).getValue(DEFAULT_PASSWORD);
+		return GlobalContext.locate(CoreConfigurationService.class).getValue(DEFAULT_PASSWORD);
 	}
 
 }

@@ -37,6 +37,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ThriftServlet extends FrameworkServlet {
@@ -82,6 +83,7 @@ public class ThriftServlet extends FrameworkServlet {
         return tProcessor;
     }
 
+    @SuppressWarnings("unchecked")
     private Constructor<? extends TBaseProcessor<?>> findConstructor(String serviceName) throws NoSuchMethodException {
         Class<?> type = ClassUtils.getUserClass(getWebApplicationContext().getType(serviceName));
         Constructor<? extends TBaseProcessor<?>> constructor = null;
@@ -90,9 +92,10 @@ public class ThriftServlet extends FrameworkServlet {
         } catch (NoSuchMethodException ignore) {
         }
         if (constructor == null) {
-            for (Class<?> aClass : type.getInterfaces()) {
+            List<Class<?>> allInterfaces = org.apache.commons.lang.ClassUtils.getAllInterfaces(type);
+            for (Class<?> anInterface : allInterfaces) {
                 try {
-                    constructor = getProcessorClass(serviceName).getConstructor(aClass);
+                    constructor = getProcessorClass(serviceName).getConstructor(anInterface);
                     break;
                 } catch (NoSuchMethodException ignore) {
                 }

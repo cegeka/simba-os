@@ -39,7 +39,7 @@ import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.locator.SpringAwareLocator;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.filter.EntityFilter;
 import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
@@ -64,7 +64,7 @@ public class UserServiceImplTest {
     @Mock private SpringAwareLocator locator;
     @Mock private UserValidator userValidator;
     @Mock private PasswordValidator passwordValidator;
-    @Mock private ConfigurationServiceImpl configurationService;
+    @Mock private CoreConfigurationService configurationService;
 
     @Mock private PolicyRepository policyRepository;
     @Mock private RoleRepository roleRepository;
@@ -93,7 +93,7 @@ public class UserServiceImplTest {
         GlobalContext.initialize(locator);
         when(locator.locate(UserValidator.class)).thenReturn(userValidator);
         when(locator.locate(PasswordValidator.class)).thenReturn(passwordValidator);
-        when(locator.locate(ConfigurationServiceImpl.class)).thenReturn(configurationService);
+        when(locator.locate(CoreConfigurationService.class)).thenReturn(configurationService);
 
         UserEntity userEntity1 = new UserEntity("user-1");
         UserEntity userEntity2 = new UserEntity("user-2");

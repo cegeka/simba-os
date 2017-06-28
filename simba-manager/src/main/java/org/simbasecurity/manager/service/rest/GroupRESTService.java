@@ -22,6 +22,7 @@ import org.simbasecurity.manager.service.rest.dto.GroupDTO;
 import org.simbasecurity.manager.service.rest.dto.RoleDTO;
 import org.simbasecurity.manager.service.rest.dto.UserDTO;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Collection;
 import java.util.List;
 
+import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
 import static org.simbasecurity.manager.service.rest.assembler.DTOAssembler.assemble;
 import static org.simbasecurity.manager.service.rest.assembler.DTOAssembler.list;
 
@@ -42,50 +44,57 @@ public class GroupRESTService extends BaseRESTService<GroupService.Client> {
 
     @RequestMapping("findAll")
     @ResponseBody
-    public Collection<GroupDTO> findAll() {
-        return list($(() -> cl().findAll()));
+    public Collection<GroupDTO> findAll(@CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return list($(() -> cl(ssoToken).findAll()));
     }
 
     @RequestMapping("findRoles")
     @ResponseBody
-    public Collection<RoleDTO> findRoles(@RequestBody GroupDTO group) {
-        return list($(() -> cl().findRoles(assemble(group))));
+    public Collection<RoleDTO> findRoles(@RequestBody GroupDTO group,
+                                         @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return list($(() -> cl(ssoToken).findRoles(assemble(group))));
     }
 
     @RequestMapping("findRolesNotLinked")
     @ResponseBody
-    public Collection<RoleDTO> findRolesNotLinked(@RequestBody GroupDTO group) {
-        return list($(() -> cl().findRolesNotLinked(assemble(group))));
+    public Collection<RoleDTO> findRolesNotLinked(@RequestBody GroupDTO group,
+                                                  @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return list($(() -> cl(ssoToken).findRolesNotLinked(assemble(group))));
     }
 
     @RequestMapping("findUsers")
     @ResponseBody
-    public Collection<UserDTO> findUsers(@RequestBody GroupDTO group) {
-        return list($(() -> cl().findUsers(assemble(group))));
+    public Collection<UserDTO> findUsers(@RequestBody GroupDTO group,
+                                         @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return list($(() -> cl(ssoToken).findUsers(assemble(group))));
     }
 
     @RequestMapping("addRole")
     @ResponseBody
-    public void addRole(@JsonBody("group") GroupDTO group, @JsonBody("role") RoleDTO role) {
-        $(() -> cl().addRole(assemble(group), assemble(role)));
+    public void addRole(@JsonBody("group") GroupDTO group, @JsonBody("role") RoleDTO role,
+                        @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        $(() -> cl(ssoToken).addRole(assemble(group), assemble(role)));
     }
 
     @RequestMapping("addRoles")
     @ResponseBody
-    public void addRoles(@JsonBody("group") GroupDTO group, @JsonBody("roles") List<RoleDTO> roles) {
-        $(() -> cl().addRoles(assemble(group), list(roles)));
+    public void addRoles(@JsonBody("group") GroupDTO group, @JsonBody("roles") List<RoleDTO> roles,
+                         @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        $(() -> cl(ssoToken).addRoles(assemble(group), list(roles)));
     }
 
     @RequestMapping("removeRole")
     @ResponseBody
-    public void removeRole(@JsonBody("group") GroupDTO group, @JsonBody("role") RoleDTO role) {
-        $(() -> cl().removeRole(assemble(group), assemble(role)));
+    public void removeRole(@JsonBody("group") GroupDTO group, @JsonBody("role") RoleDTO role,
+                           @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        $(() -> cl(ssoToken).removeRole(assemble(group), assemble(role)));
     }
 
     @RequestMapping("refresh")
     @ResponseBody
-    public GroupDTO refresh(@RequestBody GroupDTO group) {
-        return assemble($(() -> cl().refresh(assemble(group))));
+    public GroupDTO refresh(@RequestBody GroupDTO group,
+                            @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return assemble($(() -> cl(ssoToken).refresh(assemble(group))));
     }
 
 }

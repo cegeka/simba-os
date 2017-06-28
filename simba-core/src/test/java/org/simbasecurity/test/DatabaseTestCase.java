@@ -21,7 +21,7 @@ import org.junit.runner.RunWith;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -36,14 +36,14 @@ import static org.mockito.Mockito.when;
 @Rollback
 public abstract class DatabaseTestCase extends LocatorTestCase {
 
-    protected ConfigurationServiceImpl configurationServiceMock;
+    protected CoreConfigurationService configurationServiceMock;
 
     @Before
     public void setUpCommonLocatables() {
         implantMock(UserValidator.class);
         implantMock(PasswordValidator.class);
 
-        configurationServiceMock = implantMock(ConfigurationServiceImpl.class);
+        configurationServiceMock = implantMock(CoreConfigurationService.class);
         when(configurationServiceMock.getValue(SimbaConfigurationParameter.DEFAULT_PASSWORD)).thenReturn("aPassword");
     }
 }

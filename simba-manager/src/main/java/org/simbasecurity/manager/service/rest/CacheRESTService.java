@@ -19,8 +19,11 @@ package org.simbasecurity.manager.service.rest;
 import org.simbasecurity.api.service.thrift.CacheService;
 import org.simbasecurity.client.configuration.SimbaConfiguration;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
 
 @Controller
 @RequestMapping("cache")
@@ -32,25 +35,25 @@ public class CacheRESTService extends BaseRESTService<CacheService.Client> {
 
     @RequestMapping("refresh")
     @ResponseBody
-    public void refreshCache() {
-        $(() -> cl().refreshCacheIfEnabled());
+    public void refreshCache(@CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        $(() -> cl(ssoToken).refreshCacheIfEnabled());
     }
 
     @RequestMapping("enable")
     @ResponseBody
-    public void enableCache() {
-        $(() -> cl().setCacheEnabled(true));
+    public void enableCache(@CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        $(() -> cl(ssoToken).setCacheEnabled(true));
     }
 
     @RequestMapping("isEnabled")
     @ResponseBody
-    public boolean isCacheEnabled() {
-        return $(() -> cl().isCacheEnabled());
+    public boolean isCacheEnabled(@CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return $(() -> cl(ssoToken).isCacheEnabled());
     }
 
     @RequestMapping("disable")
     @ResponseBody
-    public void disableCache() {
-        $(() -> cl().setCacheEnabled(false));
+    public void disableCache(@CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        $(() -> cl(ssoToken).setCacheEnabled(false));
     }
 }

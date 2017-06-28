@@ -22,7 +22,7 @@ import org.simbasecurity.core.audit.AuditLogIntegrityMessageFactory;
 import org.simbasecurity.core.audit.AuditLogLevel;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Propagation;
@@ -80,7 +80,7 @@ public class DatabaseAuditLogProvider implements AuditLogProvider {
     }
 
     private boolean isAuditLogIntegrityEnabled() {
-        return GlobalContext.locate(ConfigurationServiceImpl.class).<Boolean>getValue(SimbaConfigurationParameter.AUDIT_LOG_INTEGRITY_ENABLED);
+        return GlobalContext.locate(CoreConfigurationService.class).<Boolean>getValue(SimbaConfigurationParameter.AUDIT_LOG_INTEGRITY_ENABLED);
     }
 
     void setJdbcTemplate(JdbcTemplate jdbcTemplate) {

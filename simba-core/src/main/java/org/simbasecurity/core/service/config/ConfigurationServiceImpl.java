@@ -42,7 +42,7 @@ import static org.simbasecurity.core.event.SimbaEventType.CONFIG_PARAM_CHANGED;
 @Service("configurationService")
 public class ConfigurationServiceImpl implements CoreConfigurationService, SimbaEventListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ConfigurationServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CoreConfigurationService.class);
 
     @Qualifier("storeTypes")
     @Autowired

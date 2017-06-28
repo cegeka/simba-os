@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,7 +99,7 @@ public class LoginMappingEntity implements LoginMapping {
         return TimeUnit.MILLISECONDS.convert(maxElapsedTime, SimbaConfigurationParameter.MAX_LOGIN_ELAPSED_TIME.getTimeUnit());
     }
 
-    private ConfigurationServiceImpl getConfigurationService() {
-        return GlobalContext.locate(ConfigurationServiceImpl.class);
+    private CoreConfigurationService getConfigurationService() {
+        return GlobalContext.locate(CoreConfigurationService.class);
     }
 }

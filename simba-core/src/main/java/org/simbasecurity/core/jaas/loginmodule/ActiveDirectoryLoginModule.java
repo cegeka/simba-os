@@ -25,7 +25,7 @@ import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.repository.GroupRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -240,7 +240,7 @@ public class ActiveDirectoryLoginModule extends SimbaLoginModule {
                     }
                 }
                 debug("Authentication succeeded");
-                if(Boolean.TRUE.equals(GlobalContext.locate(ConfigurationServiceImpl.class).getValue(SimbaConfigurationParameter.ENABLE_AD_GROUPS))
+                if(Boolean.TRUE.equals(GlobalContext.locate(CoreConfigurationService.class).getValue(SimbaConfigurationParameter.ENABLE_AD_GROUPS))
                         && userCN != null) {
                     updateUserGroups(ldapContext, userCN);
                 }

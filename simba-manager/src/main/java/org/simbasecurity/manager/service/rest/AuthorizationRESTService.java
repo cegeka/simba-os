@@ -20,8 +20,11 @@ import org.simbasecurity.api.service.thrift.AuthorizationService;
 import org.simbasecurity.client.configuration.SimbaConfiguration;
 import org.simbasecurity.manager.service.rest.dto.PolicyDecisionDTO;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
 
 @Controller
 @RequestMapping("authorization")
@@ -35,22 +38,25 @@ public class AuthorizationRESTService extends BaseRESTService<AuthorizationServi
     @ResponseBody
     public PolicyDecisionDTO isResourceRuleAllowed(@JsonBody("username") String username,
                                                    @JsonBody("resourcename") String resourceName,
-                                                   @JsonBody("operation") String operation) {
-        return new PolicyDecisionDTO($(() -> cl().isResourceRuleAllowed(username, resourceName, operation)));
+                                                   @JsonBody("operation") String operation,
+                                                   @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return new PolicyDecisionDTO($(() -> cl(ssoToken).isResourceRuleAllowed(username, resourceName, operation)));
     }
 
     @RequestMapping("isURLRuleAllowed")
     @ResponseBody
     public PolicyDecisionDTO isURLRuleAllowed(@JsonBody("username") String username,
                                               @JsonBody("url") String url,
-                                              @JsonBody("method") String method) {
-        return new PolicyDecisionDTO($(() -> cl().isURLRuleAllowed(username, url, method)));
+                                              @JsonBody("method") String method,
+                                              @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return new PolicyDecisionDTO($(() -> cl(ssoToken).isURLRuleAllowed(username, url, method)));
     }
 
     @RequestMapping("isUserInRole")
     @ResponseBody
     public PolicyDecisionDTO isUserInRole(@JsonBody("username") String username,
-                                          @JsonBody("rolename") String roleName) {
-        return new PolicyDecisionDTO($(() -> cl().isUserInRole(username, roleName)));
+                                          @JsonBody("rolename") String roleName,
+                                          @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return new PolicyDecisionDTO($(() -> cl(ssoToken).isUserInRole(username, roleName)));
     }
 }

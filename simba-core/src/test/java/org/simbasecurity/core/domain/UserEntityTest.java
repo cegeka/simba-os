@@ -24,7 +24,7 @@ import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.test.LocatorTestCase;
 
 import java.util.Calendar;
@@ -53,7 +53,7 @@ public class UserEntityTest extends LocatorTestCase {
 
 		doThrow(new SimbaException(PASSWORD_INVALID_LENGTH)).when(mockPasswordValidator).validatePassword(INVALID_PASSWORD);
 
-		ConfigurationServiceImpl configurationServiceMock = implantMock(ConfigurationServiceImpl.class);
+		CoreConfigurationService configurationServiceMock = implantMock(CoreConfigurationService.class);
 		when(configurationServiceMock.getValue(SimbaConfigurationParameter.DEFAULT_PASSWORD)).thenReturn(DEFAULT_PASSWORD);
 
 		user = new UserEntity(USERNAME, null, null, null, Language.en_US, Status.ACTIVE, true, true);

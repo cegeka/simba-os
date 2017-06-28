@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -103,8 +103,8 @@ public class SessionEntity implements Session {
         return hostServerName;
     }
 
-    private ConfigurationServiceImpl getConfigurationService() {
-        return GlobalContext.locate(ConfigurationServiceImpl.class);
+    private CoreConfigurationService getConfigurationService() {
+        return GlobalContext.locate(CoreConfigurationService.class);
     }
 
     @Override

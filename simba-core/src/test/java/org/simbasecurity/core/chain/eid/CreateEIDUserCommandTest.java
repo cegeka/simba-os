@@ -37,13 +37,14 @@ import org.simbasecurity.core.domain.UserEntity;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.service.UserService;
-import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.test.LocatorTestCase;
 
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -58,7 +59,7 @@ public class CreateEIDUserCommandTest extends LocatorTestCase {
     private static final String NL = "nl";
 
     @Mock private UserService userServiceMock;
-    @Mock private ConfigurationServiceImpl configurationServiceMock;
+    @Mock private CoreConfigurationService configurationServiceMock;
 
     @Mock private ChainContext chainContextMock;
     @Mock private User userMock;
@@ -77,7 +78,7 @@ public class CreateEIDUserCommandTest extends LocatorTestCase {
         implantMock(UserValidator.class);
         implantMock(PasswordValidator.class);
 
-        implant(ConfigurationServiceImpl.class, configurationServiceMock);
+        implant(CoreConfigurationService.class, configurationServiceMock);
         when(configurationServiceMock.getValue(SimbaConfigurationParameter.DEFAULT_USER_ROLE)).thenReturn(Collections.singletonList("guest"));
     }
 

@@ -20,6 +20,7 @@ import org.simbasecurity.api.service.thrift.ConfigurationService;
 import org.simbasecurity.client.configuration.SimbaConfiguration;
 import org.simbasecurity.manager.service.rest.dto.ConfigurationParameterDTO;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,52 +29,58 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
+
 @Controller
 @RequestMapping("configuration")
 public class ConfigurationRESTService extends BaseRESTService<ConfigurationService.Client> {
 
-    ConfigurationRESTService() {
+    public ConfigurationRESTService() {
         super(new ConfigurationService.Client.Factory(), SimbaConfiguration.getConfigurationServiceURL());
     }
 
     @RequestMapping("findUniqueParameters")
     @ResponseBody
-    public Collection<ConfigurationParameterDTO> findUniqueParameters() {
-        List<String> parameterNames = $(() -> cl().getUniqueParameters());
+    public Collection<ConfigurationParameterDTO> findUniqueParameters(@CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        List<String> parameterNames = $(() -> cl(ssoToken).getUniqueParameters());
 
-        return parameterNames.stream().map(n -> new ConfigurationParameterDTO(n, getValue(n))).collect(Collectors.toList());
+        return parameterNames.stream().map(n -> new ConfigurationParameterDTO(n, getValue(n, ssoToken))).collect(Collectors.toList());
     }
 
     @RequestMapping("findListParameters")
     @ResponseBody
-    public Collection<ConfigurationParameterDTO> findListParameters() {
-        List<String> parameterNames = $(() -> cl().getListParameters());
+    public Collection<ConfigurationParameterDTO> findListParameters(@CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        List<String> parameterNames = $(() -> cl(ssoToken).getListParameters());
         return parameterNames.stream()
-                             .map(n -> new ConfigurationParameterDTO(n, $(() -> cl().getListValue(n))))
+                             .map(n -> new ConfigurationParameterDTO(n, $(() -> cl(ssoToken).getListValue(n))))
                              .collect(Collectors.toList());
     }
 
     @RequestMapping("getValue")
     @ResponseBody
-    public String getValue(@RequestBody String parameter) {
-        return $(() -> cl().getValue(parameter));
+    public String getValue(@RequestBody String parameter,
+                           @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return $(() -> cl(ssoToken).getValue(parameter));
     }
 
     @RequestMapping("getListValue")
     @ResponseBody
-    public List<String> getListValue(@RequestBody String parameter) {
-        return $(() -> cl().getListValue(parameter));
+    public List<String> getListValue(@RequestBody String parameter,
+                                     @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return $(() -> cl(ssoToken).getListValue(parameter));
     }
 
     @RequestMapping("changeParameter")
     @ResponseBody
-    public void changeParameter(@JsonBody("name") String name, @JsonBody("value") String value) {
-        $(() -> cl().changeParameter(name, value));
+    public void changeParameter(@JsonBody("name") String name, @JsonBody("value") String value,
+                                @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        $(() -> cl(ssoToken).changeParameter(name, value));
     }
 
     @RequestMapping("changeListParameter")
     @ResponseBody
-    public void changeListParameter(@JsonBody("name") String name, @JsonBody("value") List<String> values) {
-        $(() -> cl().changeListParameter(name, values));
+    public void changeListParameter(@JsonBody("name") String name, @JsonBody("value") List<String> values,
+                                    @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        $(() -> cl(ssoToken).changeListParameter(name, values));
     }
 }

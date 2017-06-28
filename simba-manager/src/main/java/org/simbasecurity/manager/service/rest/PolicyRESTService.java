@@ -22,6 +22,7 @@ import org.simbasecurity.manager.service.rest.dto.PolicyDTO;
 import org.simbasecurity.manager.service.rest.dto.RoleDTO;
 import org.simbasecurity.manager.service.rest.dto.RuleDTO;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Collection;
 import java.util.Set;
 
+import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
 import static org.simbasecurity.manager.service.rest.assembler.DTOAssembler.*;
 
 @Controller
@@ -41,73 +43,84 @@ public class PolicyRESTService extends BaseRESTService<PolicyService.Client> {
 
     @RequestMapping("findAll")
     @ResponseBody
-    public Collection<PolicyDTO> findAll() {
-        return list($(() -> cl().findAll()));
+    public Collection<PolicyDTO> findAll(@CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return list($(() -> cl(ssoToken).findAll()));
     }
 
     @RequestMapping("findRoles")
     @ResponseBody
-    public Collection<RoleDTO> findRoles(@RequestBody PolicyDTO policy) {
-        return list($(() -> cl().findRoles(assemble(policy))));
+    public Collection<RoleDTO> findRoles(@RequestBody PolicyDTO policy,
+                                         @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return list($(() -> cl(ssoToken).findRoles(assemble(policy))));
     }
 
     @RequestMapping("findRolesNotLinked")
     @ResponseBody
-    public Collection<RoleDTO> findRolesNotLinked(@RequestBody PolicyDTO policy) {
-        return list($(() -> cl().findRolesNotLinked(assemble(policy))));
+    public Collection<RoleDTO> findRolesNotLinked(@RequestBody PolicyDTO policy,
+                                                  @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return list($(() -> cl(ssoToken).findRolesNotLinked(assemble(policy))));
     }
 
     @RequestMapping("addRoles")
     @ResponseBody
-    public void addRoles(@JsonBody("policy") PolicyDTO policy, @JsonBody("roles") Set<RoleDTO> roles) {
-        $(() -> cl().addRoles(assemble(policy), set(roles)));
+    public void addRoles(@JsonBody("policy") PolicyDTO policy, @JsonBody("roles") Set<RoleDTO> roles,
+                         @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        $(() -> cl(ssoToken).addRoles(assemble(policy), set(roles)));
     }
 
     @RequestMapping("removeRole")
     @ResponseBody
-    public void removeRole(@JsonBody("policy") PolicyDTO policy, @JsonBody("role") RoleDTO role) {
-        $(() -> cl().removeRole(assemble(policy), assemble(role)));
+    public void removeRole(@JsonBody("policy") PolicyDTO policy, @JsonBody("role") RoleDTO role,
+                           @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        $(() -> cl(ssoToken).removeRole(assemble(policy), assemble(role)));
     }
 
     @RequestMapping("addRules")
     @ResponseBody
-    public void addRules(@JsonBody("policy") PolicyDTO policy, @JsonBody("rules") Set<RuleDTO> rules) {
-        $(() -> cl().addRules(assemble(policy), set(rules)));
+    public void addRules(@JsonBody("policy") PolicyDTO policy, @JsonBody("rules") Set<RuleDTO> rules,
+                         @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        $(() -> cl(ssoToken).addRules(assemble(policy), set(rules)));
     }
 
     @RequestMapping("findRules")
     @ResponseBody
-    public Collection<RuleDTO> findRules(@RequestBody PolicyDTO policy) {
-        return list($(() -> cl().findRules(assemble(policy))));
+    public Collection<RuleDTO> findRules(@RequestBody PolicyDTO policy,
+                                         @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return list($(() -> cl(ssoToken).findRules(assemble(policy))));
     }
 
     @RequestMapping("findRulesNotLinked")
     @ResponseBody
-    public Collection<RuleDTO> findRulesNotLinked(@RequestBody PolicyDTO policy) {
-        return list($(() -> cl().findRulesNotLinked(assemble(policy))));
+    public Collection<RuleDTO> findRulesNotLinked(@RequestBody PolicyDTO policy,
+                                                  @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return list($(() -> cl(ssoToken).findRulesNotLinked(assemble(policy))));
     }
 
     @RequestMapping("removeRule")
     @ResponseBody
-    public void removeRule(@JsonBody("policy") PolicyDTO policy, @JsonBody("rule") RuleDTO rule) {
-        $(() -> cl().removeRule(assemble(policy), assemble(rule)));
+    public void removeRule(@JsonBody("policy") PolicyDTO policy, @JsonBody("rule") RuleDTO rule,
+                           @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        $(() -> cl(ssoToken).removeRule(assemble(policy), assemble(rule)));
     }
 
     @RequestMapping("refresh")
     @ResponseBody
-    public PolicyDTO refresh(@RequestBody PolicyDTO policy) {
-        return assemble($(() -> cl().refresh(assemble(policy))));
+    public PolicyDTO refresh(@RequestBody PolicyDTO policy,
+                             @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return assemble($(() -> cl(ssoToken).refresh(assemble(policy))));
     }
 
     @RequestMapping("create")
     @ResponseBody
-    public PolicyDTO createPolicy(@RequestBody String policyName) {
-        return assemble($(() -> cl().createPolicy(policyName)));
+    public PolicyDTO createPolicy(@RequestBody String policyName,
+                                  @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        return assemble($(() -> cl(ssoToken).createPolicy(policyName)));
     }
 
     @RequestMapping("delete")
     @ResponseBody
-    public void deletePolicy(@JsonBody("policy") PolicyDTO policy) {
-        $(() -> cl().deletePolicy(assemble(policy)));
+    public void deletePolicy(@JsonBody("policy") PolicyDTO policy,
+                             @CookieValue(value = SIMBA_SSO_TOKEN, required = false) String ssoToken) {
+        $(() -> cl(ssoToken).deletePolicy(assemble(policy)));
     }
 }

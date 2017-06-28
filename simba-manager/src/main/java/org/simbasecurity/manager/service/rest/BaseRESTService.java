@@ -23,6 +23,8 @@ import org.apache.thrift.protocol.TJSONProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.THttpClient;
 
+import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
+
 /**
  * Base class for the manager REST services. The base service adds toT layer of abstraction
  * between the REST service and the corresponding thrift service in the Simba core backend.
@@ -53,8 +55,9 @@ abstract class BaseRESTService<T extends TServiceClient> {
         this.serviceURL = serviceURL;
     }
 
-    T cl() throws TException {
+    T cl(String ssoToken) throws TException {
         THttpClient tHttpClient = new THttpClient(serviceURL);
+        tHttpClient.setCustomHeader("Cookie", SIMBA_SSO_TOKEN + "=" + ssoToken);
         TProtocol tProtocol = new TJSONProtocol(tHttpClient);
         return clientFactory.getClient(tProtocol);
     }

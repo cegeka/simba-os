@@ -25,6 +25,7 @@ import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.api.service.thrift.AuthenticationFilterService;
 import org.simbasecurity.api.service.thrift.RequestData;
+import org.simbasecurity.client.configuration.SimbaConfiguration;
 import org.simbasecurity.common.config.SystemConfiguration;
 import org.simbasecurity.common.constants.AuthenticationConstants;
 import org.simbasecurity.common.request.RequestUtil;
@@ -62,7 +63,7 @@ public class JerseyBasicAuthenticationFilter implements ContainerRequestFilter {
 
         THttpClient tHttpClient = null;
         try {
-            tHttpClient = new THttpClient(simbaWebURL + "/authenticationService");
+            tHttpClient = new THttpClient(SimbaConfiguration.getSimbaAuthenticationURL());
             TProtocol tProtocol = new TJSONProtocol(tHttpClient);
 
             AuthenticationFilterService.Client authenticationClient = new AuthenticationFilterService.Client(tProtocol);

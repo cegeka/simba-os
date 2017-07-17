@@ -36,7 +36,7 @@ public class PolicyEntity extends AbstractVersionedEntity implements Policy {
 
     @Id
     @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_POLICY")
+    @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_POLICY", allocationSize = 1)
     protected long id = 0;
 
     @Column(unique = true)

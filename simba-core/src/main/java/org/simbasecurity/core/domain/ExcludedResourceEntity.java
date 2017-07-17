@@ -32,7 +32,7 @@ public class ExcludedResourceEntity extends AbstractVersionedEntity implements E
 
     @Id
     @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_EXCLUDED_RESOURCE")
+    @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_EXCLUDED_RESOURCE", allocationSize = 1)
     protected long id = 0;
     
     @Column(unique = true)

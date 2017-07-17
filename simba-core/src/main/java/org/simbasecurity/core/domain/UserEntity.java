@@ -68,7 +68,7 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 
 	@Id
 	@GeneratedValue(generator = "simbaSequence", strategy = GenerationType.SEQUENCE)
-	@SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_USER")
+	@SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_USER", allocationSize = 1)
 	protected long id = 0;
 
 	@Column(unique = true)

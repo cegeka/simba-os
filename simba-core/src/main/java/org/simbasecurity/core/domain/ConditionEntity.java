@@ -30,7 +30,7 @@ public abstract class ConditionEntity extends AbstractVersionedEntity implements
 
     @Id
     @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_CONDITION")
+    @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_CONDITION", allocationSize = 1)
     protected long id = 0;
 
     private String name;

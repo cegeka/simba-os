@@ -36,7 +36,7 @@ public class RoleEntity extends AbstractVersionedEntity implements Role {
 
     @Id
     @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_ROLE")
+    @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_ROLE", allocationSize = 1)
     protected long id = 0;
 
     @Column(unique = true)

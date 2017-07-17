@@ -30,7 +30,7 @@ public class GroupEntity extends AbstractVersionedEntity implements Group {
 
     @Id
     @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_GROUP")
+    @SequenceGenerator(name = "simbaSequence", sequenceName = "SEQ_SIMBA_GROUP", allocationSize = 1)
     protected long id = 0;
 
     @ManyToMany(targetEntity = UserEntity.class, mappedBy = "groups")

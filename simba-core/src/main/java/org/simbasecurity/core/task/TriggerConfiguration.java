@@ -55,7 +55,7 @@ public class TriggerConfiguration {
 
     @Bean(initMethod = "afterPropertiesSet")
     public SimpleTriggerFactoryBean cleanUpAuditLogTrigger() throws ParseException {
-        return createSimpleTrigger(cleanUpAuditLogJobDetail, TimeUnit.MINUTES.toMillis(5));
+        return createSimpleTrigger(cleanUpAuditLogJobDetail, TimeUnit.HOURS.toMillis(1));
     }
 
     @Bean(initMethod = "afterPropertiesSet")

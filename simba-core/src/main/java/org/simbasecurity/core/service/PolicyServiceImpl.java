@@ -6,6 +6,7 @@ import org.simbasecurity.api.service.thrift.PolicyService;
 import org.simbasecurity.api.service.thrift.TPolicy;
 import org.simbasecurity.api.service.thrift.TRole;
 import org.simbasecurity.api.service.thrift.TRule;
+import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.domain.Policy;
 import org.simbasecurity.core.domain.PolicyEntity;
 import org.simbasecurity.core.domain.Role;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.simbasecurity.common.util.StringUtil.join;
+
 @Transactional
 @Service("policyService")
 public class PolicyServiceImpl implements PolicyService.Iface {
@@ -33,16 +36,18 @@ public class PolicyServiceImpl implements PolicyService.Iface {
     private final RuleRepository ruleRepository;
     private final EntityFilterService filterService;
     private final ThriftAssembler assembler;
+    private final ManagementAudit audit;
 
     @Autowired
     public PolicyServiceImpl(PolicyRepository policyRepository, RoleRepository roleRepository,
                              RuleRepository ruleRepository, EntityFilterService filterService,
-                             ThriftAssembler assembler) {
+                             ThriftAssembler assembler, ManagementAudit audit) {
         this.policyRepository = policyRepository;
         this.roleRepository = roleRepository;
         this.ruleRepository = ruleRepository;
         this.filterService = filterService;
         this.assembler = assembler;
+        this.audit = audit;
     }
 
     @Override
@@ -70,6 +75,8 @@ public class PolicyServiceImpl implements PolicyService.Iface {
                                        .map(r -> roleRepository.refreshWithOptimisticLocking(r.getId(), r.getVersion()))
                                        .collect(Collectors.toSet());
 
+        audit.log("Roles ''{0}'' added to policy ''{1}''", join(attachedRoles, Role::getName), attachedPolicy.getName());
+
         attachedPolicy.addRoles(attachedRoles);
     }
 
@@ -77,6 +84,8 @@ public class PolicyServiceImpl implements PolicyService.Iface {
     public void removeRole(TPolicy policy, TRole role) throws TException {
         Policy attachedPolicy = policyRepository.refreshWithOptimisticLocking(policy.getId(), policy.getVersion());
         Role attachedRole = roleRepository.refreshWithOptimisticLocking(role.getId(), role.getVersion());
+
+        audit.log("Role ''{0}'' removed from policy ''{1}''", attachedRole.getName(), attachedPolicy.getName());
 
         attachedPolicy.removeRole(attachedRole);
     }
@@ -87,6 +96,8 @@ public class PolicyServiceImpl implements PolicyService.Iface {
         Set<Rule> attachedRules = rules.stream()
                                        .map(r -> ruleRepository.refreshWithOptimisticLocking(r.getId(), r.getVersion()))
                                        .collect(Collectors.toSet());
+
+        audit.log("Rules ''{0}'' added to policy ''{1}''", join(attachedRules, Rule::getName), attachedPolicy.getName());
 
         attachedPolicy.addRules(attachedRules);
     }
@@ -106,6 +117,8 @@ public class PolicyServiceImpl implements PolicyService.Iface {
         Policy attachedPolicy = policyRepository.refreshWithOptimisticLocking(policy.getId(), policy.getVersion());
         Rule attachedRule = ruleRepository.refreshWithOptimisticLocking(rule.getId(), rule.getVersion());
 
+        audit.log("Rule ''{0}'' removed from ''{1}''", attachedRule.getName(), attachedPolicy.getName());
+
         attachedPolicy.removeRule(attachedRule);
     }
 
@@ -123,6 +136,9 @@ public class PolicyServiceImpl implements PolicyService.Iface {
             }
             Policy newPolicy = new PolicyEntity(policyName);
             policyRepository.persist(newPolicy);
+
+            audit.log("Policy ''{0}'' created", policyName);
+
             return assembler.assemble(newPolicy);
         } catch (ValidationException e) {
             throw new IllegalArgumentException(e);
@@ -132,6 +148,9 @@ public class PolicyServiceImpl implements PolicyService.Iface {
     @Override
     public void deletePolicy(TPolicy policy) throws TException {
         Policy policyToRemove = policyRepository.lookUp(policy.getId());
+
+        audit.log("Policy ''{0}'' removed", policyToRemove.getName());
+
         policyRepository.remove(policyToRemove);
     }
 }

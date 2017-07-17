@@ -23,6 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.config.ConfigurationStore;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.StoreType;
@@ -48,6 +49,7 @@ public class ConfigurationServiceImplTest {
     @Mock private ConfigurationStore databaseStore;
     @Mock private ConfigurationStore quartzStore;
     @Mock private EventService eventService;
+    @Mock private ManagementAudit managementAudit;
 
     @InjectMocks
     private ConfigurationServiceImpl configService;

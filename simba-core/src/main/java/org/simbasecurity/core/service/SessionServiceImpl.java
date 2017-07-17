@@ -22,6 +22,7 @@ import org.simbasecurity.api.service.thrift.TSession;
 import org.simbasecurity.api.service.thrift.TUser;
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
+import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.core.domain.SessionEntity;
 import org.simbasecurity.core.domain.User;
@@ -43,22 +44,18 @@ import static org.simbasecurity.core.audit.AuditMessages.SESSION_CREATED;
 @Service("sessionService")
 public class SessionServiceImpl implements SessionService, org.simbasecurity.api.service.thrift.SessionService.Iface {
 
-	@Autowired
-	private Audit audit;
+	@Autowired private Audit audit;
 
-	@Autowired
-	private UserRepository userRepository;
-	@Autowired
-	private SessionRepository sessionRepository;
+	@Autowired private UserRepository userRepository;
+	@Autowired private SessionRepository sessionRepository;
 
 	@Qualifier("ArchiveSessionService")
-	@Autowired
-	private ArchiveSessionService archiveSessionService;
-	@Autowired
-	private AuditLogEventFactory auditLogEventFactory;
+	@Autowired private ArchiveSessionService archiveSessionService;
+	@Autowired private AuditLogEventFactory auditLogEventFactory;
 
-	@Autowired
-	private ThriftAssembler assembler;
+	@Autowired private ThriftAssembler assembler;
+
+	@Autowired private ManagementAudit managementAudit;
 
 	@Override
 	public Session createSession(String userName, String clientIpAddress, String hostServerName, String userAgent, String requestURL) {
@@ -117,12 +114,17 @@ public class SessionServiceImpl implements SessionService, org.simbasecurity.api
 	@Override
 	public void remove(String ssoToken) throws TException {
 		removeSession(getSession(new SSOToken(ssoToken)));
+
+		managementAudit.log("Session with token ''{0}'' removed.", ssoToken);
+
 	}
 
 	@Override
 	public void removeAllBut(String ssoToken) throws TException {
 		sessionRepository.removeAllBut(new SSOToken(ssoToken));
-	}
+
+        managementAudit.log("Removed all sessions");
+    }
 
 	@Override
 	public TUser getUserFor(String ssoToken) throws TException {

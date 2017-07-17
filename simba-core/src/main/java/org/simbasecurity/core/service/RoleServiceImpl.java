@@ -5,6 +5,7 @@ import org.simbasecurity.api.service.thrift.RoleService;
 import org.simbasecurity.api.service.thrift.TPolicy;
 import org.simbasecurity.api.service.thrift.TRole;
 import org.simbasecurity.api.service.thrift.TUser;
+import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.domain.Policy;
 import org.simbasecurity.core.domain.Role;
 import org.simbasecurity.core.domain.RoleEntity;
@@ -21,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
+import static org.simbasecurity.common.util.StringUtil.join;
 
 @Transactional
 @Service("roleService")
@@ -32,16 +35,18 @@ public class RoleServiceImpl implements RoleService.Iface {
     private final UserRepository userRepository;
     private final EntityFilterService filterService;
     private final ThriftAssembler assembler;
+    private final ManagementAudit managementAudit;
 
     @Autowired
     public RoleServiceImpl(RoleRepository roleRepository, PolicyRepository policyRepository,
                            UserRepository userRepository, EntityFilterService filterService,
-                           ThriftAssembler assembler) {
+                           ThriftAssembler assembler, ManagementAudit managementAudit) {
         this.roleRepository = roleRepository;
         this.policyRepository = policyRepository;
         this.userRepository = userRepository;
         this.filterService = filterService;
         this.assembler = assembler;
+        this.managementAudit = managementAudit;
     }
 
     public List<TRole> findAll() {
@@ -75,6 +80,8 @@ public class RoleServiceImpl implements RoleService.Iface {
 
         attachedRole.addPolicy(attachedPolicy);
 
+        managementAudit.log("Policy ''{0}'' added to role ''{1}''", attachedPolicy.getName(), attachedRole.getName());
+
         roleRepository.persist(attachedRole);
     }
 
@@ -82,9 +89,12 @@ public class RoleServiceImpl implements RoleService.Iface {
         Role attachedRole = roleRepository.refreshWithOptimisticLocking(role.getId(), role.getVersion());
         Set<Policy> attachedPolicies = policies.stream()
                                                .map(p -> policyRepository.refreshWithOptimisticLocking(p.getId(), p.getVersion()))
-                                               .collect(Collectors.toSet());
+                                               .collect(toSet());
 
         attachedRole.addPolicies(attachedPolicies);
+
+        managementAudit.log("Policies ''{0}'' added to role ''{1}''", join(attachedPolicies, Policy::getName), attachedRole.getName());
+
         roleRepository.persist(attachedRole);
     }
 
@@ -94,6 +104,9 @@ public class RoleServiceImpl implements RoleService.Iface {
 
         attachedRole.removePolicy(attachedPolicy);
 
+        managementAudit.log("Policy ''{0}'' removed from role ''{1}''", attachedPolicy.getName(), attachedRole.getName());
+
+
         roleRepository.persist(attachedRole);
     }
 
@@ -102,6 +115,8 @@ public class RoleServiceImpl implements RoleService.Iface {
         User attachedUser = userRepository.refreshWithOptimisticLocking(user.getId(), user.getVersion());
         attachedRole.removeUser(attachedUser);
 
+        managementAudit.log("User ''{0}'' removed from role ''{1}''", attachedUser.getUserName(), attachedRole.getName());
+
         roleRepository.persist(attachedRole);
     }
 
@@ -109,9 +124,11 @@ public class RoleServiceImpl implements RoleService.Iface {
         Role attachedRole = roleRepository.refreshWithOptimisticLocking(role.getId(), role.getVersion());
         Set<User> attachedUsers = users.stream()
                                        .map(p -> userRepository.refreshWithOptimisticLocking(p.getId(), p.getVersion()))
-                                       .collect(Collectors.toSet());
+                                       .collect(toSet());
 
         attachedRole.addUsers(attachedUsers);
+
+        managementAudit.log("Users ''{0}'' removed from role ''{1}''", join(attachedUsers, User::getUserName), attachedRole.getName());
 
         roleRepository.persist(attachedRole);
     }
@@ -128,6 +145,9 @@ public class RoleServiceImpl implements RoleService.Iface {
             }
             Role newRole = new RoleEntity(roleName);
             roleRepository.persist(newRole);
+
+            managementAudit.log("Role ''{0}'' created", roleName);
+
             return assembler.assemble(newRole);
         } catch (ValidationException e) {
             throw new IllegalArgumentException(e);
@@ -136,6 +156,7 @@ public class RoleServiceImpl implements RoleService.Iface {
 
     public void deleteRole(TRole role) {
         Role roleToDelete = roleRepository.lookUp(role.getId());
+        managementAudit.log("Role ''{0}'' deleted", roleToDelete.getName());
         roleRepository.remove(roleToDelete);
     }
 }

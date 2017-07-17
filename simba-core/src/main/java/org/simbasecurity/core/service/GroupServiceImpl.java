@@ -20,6 +20,7 @@ import org.simbasecurity.api.service.thrift.GroupService;
 import org.simbasecurity.api.service.thrift.TGroup;
 import org.simbasecurity.api.service.thrift.TRole;
 import org.simbasecurity.api.service.thrift.TUser;
+import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.domain.Group;
 import org.simbasecurity.core.domain.Role;
 import org.simbasecurity.core.domain.repository.GroupRepository;
@@ -33,6 +34,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.simbasecurity.common.util.StringUtil.join;
+
 @Transactional
 @Service("groupService")
 public class GroupServiceImpl implements GroupService.Iface {
@@ -40,13 +43,15 @@ public class GroupServiceImpl implements GroupService.Iface {
     private final GroupRepository groupRepository;
     private final RoleRepository roleRepository;
     private final ThriftAssembler assembler;
+    private final ManagementAudit audit;
 
     @Autowired
     public GroupServiceImpl(GroupRepository groupRepository, RoleRepository roleRepository,
-                            ThriftAssembler assembler) {
+                            ThriftAssembler assembler, ManagementAudit audit) {
         this.groupRepository = groupRepository;
         this.roleRepository = roleRepository;
         this.assembler = assembler;
+        this.audit = audit;
     }
 
     public List<TGroup> findAll() {
@@ -69,6 +74,8 @@ public class GroupServiceImpl implements GroupService.Iface {
         Role attachedRole = roleRepository.refreshWithOptimisticLocking(role.getId(), role.getVersion());
         Group attachedGroup = groupRepository.refreshWithOptimisticLocking(group.getId(), group.getVersion());
 
+        audit.log("Role ''{0}'' added to group ''{1}''", attachedRole.getName(), attachedGroup.getName());
+
         attachedGroup.addRole(attachedRole);
     }
 
@@ -79,12 +86,16 @@ public class GroupServiceImpl implements GroupService.Iface {
                                                                                                     r.getVersion()))
                                               .collect(Collectors.toList());
 
+        audit.log("Roles ''{0}'' added to group ''{1}''", join(attachedRoles, Role::getName));
+
         attachedGroup.addRoles(attachedRoles);
     }
 
     public void removeRole(TGroup group, TRole role) {
         Role attachedRole = roleRepository.refreshWithOptimisticLocking(role.getId(), role.getVersion());
         Group attachedGroup = groupRepository.refreshWithOptimisticLocking(group.getId(), group.getVersion());
+
+        audit.log("Role ''{0}'' removed from group ''{1}''", attachedRole.getName(), attachedGroup.getName());
 
         attachedGroup.removeRole(attachedRole);
     }

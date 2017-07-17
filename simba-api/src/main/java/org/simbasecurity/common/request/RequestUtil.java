@@ -238,7 +238,7 @@ public final class RequestUtil {
         return token;
     }
 
-    private static Cookie getSSOCookie(final HttpServletRequest request) {
+    public static Cookie getSSOCookie(final HttpServletRequest request) {
         final Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (final Cookie cookie : cookies) {

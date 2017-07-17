@@ -17,6 +17,7 @@
 package org.simbasecurity.core.service.config;
 
 import org.apache.thrift.TException;
+import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.config.ConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationStore;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
@@ -36,6 +37,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.simbasecurity.common.util.StringUtil.join;
 import static org.simbasecurity.core.event.SimbaEventType.CONFIG_PARAM_CHANGED;
 
 @Transactional
@@ -45,13 +47,13 @@ public class ConfigurationServiceImpl implements CoreConfigurationService, Simba
     private static final Logger LOG = LoggerFactory.getLogger(CoreConfigurationService.class);
 
     @Qualifier("storeTypes")
-    @Autowired
-    private EnumMap<StoreType, ConfigurationStore> stores;
+    @Autowired private EnumMap<StoreType, ConfigurationStore> stores;
     @Autowired private EventService eventService;
 
     @Qualifier("ConfigurationParameterClassesList")
-    @Autowired
-    private List<Class<? extends ConfigurationParameter>> configurationParameterClasses;
+    @Autowired private List<Class<? extends ConfigurationParameter>> configurationParameterClasses;
+
+    @Autowired private ManagementAudit managementAudit;
 
     private List<ConfigurationParameter> configurationParameters;
     private List<String> configurationParameterNames;
@@ -182,6 +184,8 @@ public class ConfigurationServiceImpl implements CoreConfigurationService, Simba
             String newValue = parameter.convertToString(value);
             String oldValueString = store.setValue(parameter, newValue);
             oldValue = parameter.convertToType(oldValueString);
+            managementAudit.log("Configuration for ''{0}'' changed from ''{1}'' to ''{2}''",
+                    parameter.getName(), oldValueString, newValue);
         } else {
             List<T> list = (List<T>) value;
             List<String> valueList = new ArrayList<>(list.size());
@@ -199,6 +203,8 @@ public class ConfigurationServiceImpl implements CoreConfigurationService, Simba
             }
 
             oldValue = (T) resultList;
+            managementAudit.log("Configuration for ''{0}'' changed from ''{1}'' to ''{2}''",
+                    parameter.getName(), join(oldValueList, s -> s), join(valueList, s -> s));
         }
 
         LOG.debug("Changed parameter '{}' from '{}' to '{}'", parameter, oldValue, value);

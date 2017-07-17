@@ -16,11 +16,11 @@
  */
 package org.simbasecurity.core.audit.provider;
 
+import org.simbasecurity.core.audit.AuditLogEvent;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.simbasecurity.core.audit.AuditLogEvent;
 
 public class SystemOutAuditLogProvider implements AuditLogProvider {
 
@@ -31,6 +31,7 @@ public class SystemOutAuditLogProvider implements AuditLogProvider {
         Date date = new Date(event.getTimestamp());
         String dateString = DF.format(date);
 
-        System.out.printf("%s - %-20s - %-15s - %s - %s%n", dateString, event.getUsername(), event.getRemoteIP(), event.getSSOTokenString(), event.getMessage());
+        System.out.printf("%s - %-24s - %-20s - %-15s - %s - %s%n", dateString, event.getCategory(),
+                event.getUsername(), event.getRemoteIP(), event.getSSOTokenString(), event.getMessage());
     }
 }

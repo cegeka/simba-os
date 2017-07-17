@@ -26,6 +26,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
+import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.Status;
 import org.simbasecurity.core.domain.User;
@@ -56,18 +57,14 @@ public class CredentialServiceImplTest {
 
     private static final int PASSWORD_EXPIRATION_TIME = 90;
 
-    @Mock
-    private UserRepository mockUserRepository;
-    @Mock
-    private ConfigurationServiceImpl mockConfigurationService;
-    @Mock
-    private Audit mockAudit;
+    @Mock private UserRepository mockUserRepository;
+    @Mock private ConfigurationServiceImpl mockConfigurationService;
+    @Mock private Audit mockAudit;
+    @Mock private ManagementAudit managementAudit;
 
-    @Spy
-    private AuditLogEventFactory auditLogEventFactory;
+    @Spy private AuditLogEventFactory auditLogEventFactory;
 
-    @InjectMocks
-    private CredentialServiceImpl credentialService;
+    @InjectMocks private CredentialServiceImpl credentialService;
 
     @Test
     public void testChangePasswordAuthorized() {

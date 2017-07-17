@@ -21,8 +21,7 @@ import org.simbasecurity.api.service.thrift.TGroup;
 import org.simbasecurity.api.service.thrift.TPolicy;
 import org.simbasecurity.api.service.thrift.TRole;
 import org.simbasecurity.api.service.thrift.TUser;
-import org.simbasecurity.core.audit.Audit;
-import org.simbasecurity.core.audit.AuditLogEventFactory;
+import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.Role;
 import org.simbasecurity.core.domain.Status;
@@ -46,6 +45,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.simbasecurity.common.util.StringUtil.join;
 import static org.simbasecurity.core.config.SimbaConfigurationParameter.PASSWORD_CHANGE_REQUIRED;
 import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS;
 
@@ -53,13 +53,11 @@ import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXIS
 @Service("userService")
 public class UserServiceImpl implements UserService, org.simbasecurity.api.service.thrift.UserService.Iface {
 
-    @Autowired private Audit audit;
+    @Autowired private ManagementAudit managementAudit;
     @Autowired private UserRepository userRepository;
     @Autowired private RoleRepository roleRepository;
     @Autowired private PolicyRepository policyRepository;
     @Autowired private GroupRepository groupRepository;
-
-    @Autowired private AuditLogEventFactory eventFactory;
 
     @Autowired private EntityFilterService filterService;
     @Autowired private CoreConfigurationService configurationService;
@@ -83,7 +81,8 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
 
         User newUser = userRepository.persist(user);
 
-        audit.log(eventFactory.createEventForSession(user.getUserName(), null, "", "User created"));
+        managementAudit.log("User ''{0}'' created", user.getUserName());
+
         return newUser;
     }
 
@@ -119,6 +118,8 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
         User attachedUser = userRepository.refreshWithOptimisticLocking(user.getId(), user.getVersion());
         Role attachedRole = roleRepository.refreshWithOptimisticLocking(role.getId(), role.getVersion());
 
+        managementAudit.log("Role ''{0}'' removed from user ''{1}''", attachedRole.getName(), attachedUser.getUserName());
+
         attachedUser.removeRole(attachedRole);
     }
 
@@ -128,6 +129,8 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
                 roles.stream()
                      .map(r -> roleRepository.refreshWithOptimisticLocking(r.getId(), r.getVersion()))
                      .collect(Collectors.toList());
+
+        managementAudit.log("Roles ''{0}'' added to user ''{1}''", join(attachedRoles, Role::getName), attachedUser.getUserName());
 
         attachedUser.addRoles(attachedRoles);
     }
@@ -145,11 +148,16 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
         User attachedUser = userRepository.refreshWithOptimisticLocking(user.getUserName(), user.getVersion());
         attachedUser.resetPassword();
         userRepository.flush();
+
+        managementAudit.log("Password for user ''{0}'' resetted", attachedUser.getUserName());
+
         return assembler.assemble(attachedUser);
     }
 
     @Override
     public TUser create(TUser user) throws TException {
+        managementAudit.log("User ''{0}'' created", user.getUserName());
+
         return assembler.assemble(createUser(user));
     }
 
@@ -160,6 +168,9 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
                  .map(n -> roleRepository.findByName(n))
                  .filter(Objects::nonNull)
                  .forEach(newUser::addRole);
+
+        managementAudit.log("User ''{0}'' created with roles ''{1}''", newUser.getUserName(), join(roleNames, r -> r));
+
         return assembler.assemble(newUser);
     }
 
@@ -168,6 +179,9 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
         Set<Role> roles = userRepository.findByName(clonedUsername).getRoles();
         User newUser = createUser(user);
         newUser.addRoles(roles);
+
+        managementAudit.log("User ''{0}'' created as clone of ''{1}''", newUser.getUserName(), clonedUsername);
+
         return assembler.assemble(newUser);
     }
 
@@ -181,6 +195,9 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
         User attachedUser = userRepository.persist(newUser);
         String password = passwordGenerator.generatePassword();
         attachedUser.changePassword(password, password);
+
+        managementAudit.log("REST User ''{0}'' created", username);
+
         return password;
     }
 
@@ -198,14 +215,35 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
     @Override
     public TUser update(TUser user) throws TException {
         User attachedUser = userRepository.refreshWithOptimisticLocking(user.getId(), user.getVersion());
+
+        logUserPropertyChange(user, attachedUser.getFirstName(), user.getFirstName(), "first name");
         attachedUser.setFirstName(user.getFirstName());
+
+        logUserPropertyChange(user, attachedUser.getName(), user.getName(), "name");
         attachedUser.setName(user.getName());
+
+        logUserPropertyChange(user, String.valueOf(attachedUser.getLanguage()), user.getLanguage(), "language");
         attachedUser.setLanguage(Language.valueOf(user.getLanguage()));
+
+        logUserPropertyChange(user, attachedUser.isChangePasswordOnNextLogon(), user.isMustChangePassword(), "password must change");
         attachedUser.setChangePasswordOnNextLogon(user.isMustChangePassword());
+
+        logUserPropertyChange(user, attachedUser.getStatus().name(), user.getStatus(), "status");
         attachedUser.setStatus(Status.valueOf(user.getStatus()));
+
+        logUserPropertyChange(user, attachedUser.getSuccessURL(), user.getSuccessURL(), "success URL");
         attachedUser.setSuccessURL(user.getSuccessURL());
+
         userRepository.flush();
+
         return assembler.assemble(attachedUser);
+    }
+
+    private void logUserPropertyChange(TUser user, Object oldValue, Object newValue, String property) {
+        if (!Objects.equals(oldValue, newValue)) {
+            managementAudit.log("User ''{0}'' {3} has changed from ''{1}'' to ''{2}''", user.getUserName(),
+                    oldValue, newValue, property);
+        }
     }
 
     @Override

@@ -22,6 +22,7 @@ import org.jasypt.util.password.PasswordEncryptor;
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.audit.AuditMessages;
+import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.Status;
 import org.simbasecurity.core.domain.User;
@@ -46,6 +47,7 @@ public class CredentialServiceImpl implements CredentialService {
     @Autowired private UserRepository userRepository;
     @Autowired private Audit audit;
     @Autowired private AuditLogEventFactory auditLogEventFactory;
+    @Autowired private ManagementAudit managementAudit;
 
     @Override
     public boolean checkCredentials(String username, String password) {
@@ -77,6 +79,8 @@ public class CredentialServiceImpl implements CredentialService {
     public void resetInvalidLoginCount(String userName) {
         User user = findUser(userName);
         user.resetInvalidLoginCount();
+
+        managementAudit.log("Invalid login count resetted for user ''{0}''", userName);
     }
 
     @Override
@@ -136,6 +140,9 @@ public class CredentialServiceImpl implements CredentialService {
     @Override
     public boolean changePasswordAuthorized(String userName, String oldPassword, String newPassword) {
         User user = findUser(userName);
+
+        managementAudit.log("Password changed for user ''{0}''", userName);
+
         return user.changePasswordAuthorized(oldPassword, newPassword);
     }
 
@@ -144,6 +151,9 @@ public class CredentialServiceImpl implements CredentialService {
         User user = findUser(userName);
         user.setPasswordChangeRequired(false);
         user.setChangePasswordOnNextLogon(false);
+
+        managementAudit.log("Password changed for user ''{0}''. Password expire disabled.", userName);
+
         return user.changePasswordAuthorized(oldPassword, newPassword);
     }
 
@@ -152,6 +162,8 @@ public class CredentialServiceImpl implements CredentialService {
     public void changePassword(String userName, String newPassword, String newPasswordConfirmation) {
         User user = findUser(userName);
         user.changePassword(newPassword, newPasswordConfirmation);
+
+        managementAudit.log("Password changed for user ''{0}''", userName);
     }
 
     @Override

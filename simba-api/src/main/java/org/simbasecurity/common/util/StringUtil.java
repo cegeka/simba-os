@@ -16,6 +16,10 @@
  */
 package org.simbasecurity.common.util;
 
+import java.util.Collection;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 public final class StringUtil {
 
     public static final String EMPTY = "";
@@ -40,5 +44,14 @@ public final class StringUtil {
             return EMPTY;
         }
         return input.substring(pos + separator.length());
+    }
+
+    public static <T> String join(Collection<T> collection, Function<? super T, String> mapper) {
+        return join(collection, mapper, ", ");
+    }
+
+    public static <T> String join(Collection<T> collection, Function<? super T, String> mapper, String delimiter) {
+        if (collection == null) return "<null>";
+        return collection.stream().map(mapper).collect(Collectors.joining(delimiter));
     }
 }

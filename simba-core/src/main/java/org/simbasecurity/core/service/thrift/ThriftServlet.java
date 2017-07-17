@@ -26,10 +26,12 @@ import org.apache.thrift.protocol.TProtocolFactory;
 import org.apache.thrift.transport.TIOStreamTransport;
 import org.apache.thrift.transport.TTransport;
 import org.simbasecurity.api.service.thrift.*;
+import org.simbasecurity.common.request.RequestUtil;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.servlet.FrameworkServlet;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -114,6 +116,8 @@ public class ThriftServlet extends FrameworkServlet {
         TTransport inTransport;
         TTransport outTransport;
 
+        String ssoToken = getSsoToken(request);
+        if (ssoToken != null) ThriftTokenAccess.set(ssoToken);
         try {
             response.setContentType("application/x-thrift");
 
@@ -131,11 +135,18 @@ public class ThriftServlet extends FrameworkServlet {
             out.flush();
         } catch (TException te) {
             throw new ServletException(te);
+        } finally {
+            ThriftTokenAccess.clean();
         }
     }
 
     private String getRequestedServiceName(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         return requestURI.substring(requestURI.lastIndexOf('/') + 1);
+    }
+
+    private String getSsoToken(HttpServletRequest request) {
+        Cookie cookie = RequestUtil.getSSOCookie(request);
+        return cookie == null ? null : cookie.getValue();
     }
 }

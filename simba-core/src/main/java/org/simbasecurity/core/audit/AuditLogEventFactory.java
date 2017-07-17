@@ -118,5 +118,12 @@ public class AuditLogEventFactory {
 	public AuditLogEvent createEventForEIDSAMLResponse(ChainContext context, String message) {
 		return createAuditLogEvent(AuditLogEventCategory.AUTH_EID_SAML_RESPONSE, context, message);
 	}
+
+	public AuditLogEvent createEventForManagement(String username, SSOToken ssoToken, String message) {
+		AuditLogEvent auditLogEvent =
+				new AuditLogEvent(MANAGEMENT, username, ssoToken, null, message, null, null, null, null, null, null);
+		auditLogEvent.markAuditLogToBeArchived();
+		return auditLogEvent;
+	}
 }
 

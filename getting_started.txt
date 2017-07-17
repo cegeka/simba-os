@@ -107,4 +107,8 @@ An official release is a multi-step process.
     4. Run the maven goal: mvn release:perform
        This will perform the previously prepared release. This means uploading all artifacts to the nexus release
        repository.
-
+    5. Go to https://github.com/cegeka/simba-os/releases and draft a new release. Choose the correct existing tag
+       for the release. Use "Release x.y.z" as release title and describe the changes. Do not forget to mention
+       the earliest compatible version for the api and the client. If there are no breaking changes in current release
+       these can be copied from the previous release. Check the "pre-release" checkbox if current release is not
+       production ready.

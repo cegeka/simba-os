@@ -18,8 +18,8 @@
 'use strict';
 
 angular.module('SimbaApp')
-    .controller('UserCreationCtrl', ['$scope', '$modalInstance', 'selectedUser', '$user', '$translate', '$error', '$simba_component', '$configuration', '$rule', '$role', 'roles',
-        function ($scope, $modalInstance, selectedUser, $user, $translate, $error, $simba_component, $configuration, $rule, $role, roles) {
+    .controller('UserCreationCtrl', ['$scope', '$modalInstance', 'selectedUser', '$user', '$translate', '$error', '$simba_component', '$configuration', '$rule', '$role', 'roles','$filter',
+        function ($scope, $modalInstance, selectedUser, $user, $translate, $error, $simba_component, $configuration, $rule, $role, roles, $filter) {
             $scope.tabs;
             $scope.user;
             $scope.successUrls;
@@ -95,7 +95,10 @@ angular.module('SimbaApp')
                                     return linkedRole.name;
                                 }).indexOf(role.name) == -1
                         });
-                        var listbox = $simba_component.listbox($translate('dashboard.roles'), data, "name");
+
+                        data = $filter('orderBy')(data, 'name');
+
+                        var listbox = $simba_component.listbox($translate('dashboard.roles'), data, "name", "name");
 
                         listbox.result.then(function (roles) {
                             $scope.userRoles = $scope.userRoles.concat(roles);

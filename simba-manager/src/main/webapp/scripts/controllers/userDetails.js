@@ -84,6 +84,8 @@ angular.module('SimbaApp')
         $user.findRolesNotLinked($scope.user)
             .success(function(data) {
 
+                data = $filter('orderBy')(data, 'name');
+
                 var listbox = $simba_component.listbox($translate('dashboard.roles'), data, "name");
 
                 listbox.result.then(function (selectedUnlinkedRoles) {

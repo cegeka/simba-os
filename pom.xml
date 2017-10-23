@@ -162,7 +162,7 @@
     <repositories>
         <repository>
             <id>nexus</id>
-            <url>http://nexus.cegeka.be/content/groups/public</url>
+            <url>http://nexus.cegeka.be/nexus/content/groups/public</url>
             <releases>
                 <enabled>true</enabled>
             </releases>

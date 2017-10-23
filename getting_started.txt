@@ -104,9 +104,10 @@ An official release is a multi-step process.
     3. Run the maven goal: mvn release:prepare
        This will prompt for the release version, SCM tag and next snapshot version. Afterward it will update the pom
        files, push them to GitHub, create a tag on GitHub and prepare a release.properties file for next step.
-    4. Run the maven goal: mvn release:perform
+    4. Run the maven goal: mvn release:perform -DuseReleaseProfile=false
        This will perform the previously prepared release. This means uploading all artifacts to the nexus release
        repository.
+       The -DuseReleaseProfile=false argument is needed because otherwhise the maven-javadoc-plugin will cause trouble
     5. Go to https://github.com/cegeka/simba-os/releases and draft a new release. Choose the correct existing tag
        for the release. Use "Release x.y.z" as release title and describe the changes. Do not forget to mention
        the earliest compatible version for the api and the client. If there are no breaking changes in current release

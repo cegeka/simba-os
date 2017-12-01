@@ -36,9 +36,11 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/simba-login")
 public class LoginController implements Controller {
 
+    private SimbaWebUrlResolver simbaWebUrlResolver = new SimbaWebUrlResolver();
+
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        RequestData requestData = RequestUtil.createRequestData(request, resolveSimbaWebURL(request));
+        RequestData requestData = RequestUtil.createRequestData(request, simbaWebUrlResolver.resolveSimbaWebURL(request));
 
 
         AuthenticationFilterService.Iface authenticationFilterService = GlobalContext.locate(AuthenticationFilterService.Iface.class, "authenticationFilterService");
@@ -59,19 +61,6 @@ public class LoginController implements Controller {
         response.addHeader("Set-Cookie", RequestConstants.SIMBA_SSO_TOKEN + "=" + actionDescriptor.getSsoToken().getToken() + "; HttpOnly; Path=/");
     }
 
-    private String resolveSimbaWebURL(HttpServletRequest request) throws ServletException {
-        String url = SystemConfiguration.getSimbaWebURL();
 
-        if (url == null) {
-            url = reconstructSimbaWebURL(request);
-        }
-
-        return url;
-    }
-
-    private String reconstructSimbaWebURL(HttpServletRequest request) {
-        return request.getScheme() + "://" + request.getServerName()
-                + (request.getServerPort() != 80 ? ":" + request.getServerPort() : "") + request.getContextPath();
-    }
 
 }

@@ -197,3 +197,14 @@ form input.text:focus {
 #block5 {
     background-color: #ffd336;
 }
+
+.button-link {
+    background:none;
+    border:none;
+    color:red;
+    cursor: pointer;
+}
+
+.p-without-label {
+    margin-left: 130px;
+}

@@ -64,6 +64,11 @@
             <input type="hidden" name="loginToken" value="<%= ESAPI.encoder().encodeForHTML(token) %>"/>
             <% } %>
         </form>
+        <form name="resetPassword" method="get" action="/simba/jsp/reset-password.jsp">
+            <p class="p-without-label">
+                <button class="button-link"><fmt:message key='reset.password.link'/></button>
+            </p>
+        </form>
     </div>
 </div>
 <div id="blocks">

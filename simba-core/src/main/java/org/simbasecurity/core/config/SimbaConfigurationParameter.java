@@ -86,6 +86,11 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
     PASSWORD_CHANGED_URL(DATABASE, true, StringType.class, "/jsp/changepassword.jsp"),
 
     /**
+     * Parameter for configuring the URL to the password reset page.
+     */
+    PASSWORD_RESET_URL(DATABASE, true, StringType.class, "/jsp/reset-password.jsp"),
+
+    /**
      * Parameter for configuring the URL to the access denied page.
      */
     ACCESS_DENIED_URL(DATABASE, true, StringType.class, "/jsp/access-denied.jsp"),

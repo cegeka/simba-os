@@ -54,6 +54,7 @@ public class ChainContextImplTest {
     private static final String SIMBA_LOGIN_PAGE_URL = "login_url";
     private static final String SIMBA_CHANGEPASSWORD_PAGE_URL = "/jsp/changepassword.jsp";
     private static final String SIMBA_PASSWORD_CHANGED_URL = "/jsp/passwordchanged.jsp";
+    private static final String SIMBA_PASSWORD_RESET_URL = "/jsp/password-reset.jsp";
 
     private static final String SIMBA_WEB_URL = "http://simba_web_url/simbaContextRoot/";
     private static final String REQUEST_URL = "http://localhost:8080/simba/http/simba-change-pwd";
@@ -164,6 +165,20 @@ public class ChainContextImplTest {
         assertTrue(actionTypes.contains(ADD_PARAMETER_TO_TARGET));
         assertTrue(actionTypes.contains(REDIRECT));
         assertEquals(SIMBA_WEB_URL + SIMBA_PASSWORD_CHANGED_URL, actionDescriptor.getRedirectURL());
+    }
+
+    @Test
+    public void redirectToPasswordReset(){
+        when(configurationServiceMock.getValue(PASSWORD_RESET_URL)).thenReturn(SIMBA_PASSWORD_RESET_URL);
+
+        chainContextImpl.redirectToPasswordReset();
+
+        ActionDescriptor actionDescriptor = chainContextImpl.getActionDescriptor();
+        Set<ActionType> actionTypes = actionDescriptor.getActionTypes();
+        assertEquals(2, actionTypes.size());
+        assertTrue(actionTypes.contains(ADD_PARAMETER_TO_TARGET));
+        assertTrue(actionTypes.contains(REDIRECT));
+        assertEquals(SIMBA_WEB_URL + SIMBA_PASSWORD_RESET_URL, actionDescriptor.getRedirectURL());
     }
 
     @Test

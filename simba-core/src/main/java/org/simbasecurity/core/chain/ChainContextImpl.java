@@ -17,6 +17,7 @@
 
 package org.simbasecurity.core.chain;
 
+import com.google.common.collect.Maps;
 import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.api.service.thrift.RequestData;
@@ -36,6 +37,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
+import static com.google.common.collect.Maps.newHashMap;
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.simbasecurity.common.constants.AuthenticationConstants.*;
 import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
@@ -252,6 +254,12 @@ public class ChainContextImpl implements ChainContext {
     public void redirectToPasswordChanged(){
         String passwordChangedURL = configurationService.getValue(SimbaConfigurationParameter.PASSWORD_CHANGED_URL);
         redirectWithParameters(getSimbaWebURL() + passwordChangedURL, new HashMap<>());
+    }
+
+    public void redirectToPasswordReset(){
+        HashMap<String, String> parameters = newHashMap();
+        parameters.put("resetSuccessfull", "true");
+        redirectWithParameters(getSimbaWebURL() + configurationService.getValue(PASSWORD_RESET_URL), parameters);
     }
 
     public void redirectWhenLoginTokenExpired(){

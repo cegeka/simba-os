@@ -56,6 +56,14 @@
     </property>
   </bean>
 
+  <bean id="resetPasswordChain" class="org.simbasecurity.core.chain.ChainImpl">
+    <property name="commands">
+      <list>
+        <ref bean="resetPasswordCommand" />
+      </list>
+    </property>
+  </bean>
+
   <bean id="sessionChain" class="org.simbasecurity.core.chain.ChainImpl">
     <property name="commands">
       <list>

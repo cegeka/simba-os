@@ -98,6 +98,8 @@ public interface ChainContext extends Serializable {
 
     void redirectToPasswordChanged();
 
+    void redirectToPasswordReset();
+
     void redirectToLogin();
 
     void redirectToLogout();

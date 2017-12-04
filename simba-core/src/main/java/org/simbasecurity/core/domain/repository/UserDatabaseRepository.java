@@ -19,6 +19,7 @@ package org.simbasecurity.core.domain.repository;
 import org.simbasecurity.core.domain.Role;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.UserEntity;
+import org.simbasecurity.core.domain.user.EmailAddress;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.TypedQuery;
@@ -77,6 +78,21 @@ public class UserDatabaseRepository extends AbstractVersionedDatabaseRepository<
         User user = findByName(username);
         checkOptimisticLocking(user, version);
         return user;
+    }
+
+    @Override
+    public User findByEmail(EmailAddress email) {
+        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM UserEntity u WHERE u.email = :email", User.class)
+                .setParameter("email", email);
+        List<User> resultList = query.getResultList();
+
+        if (resultList.size() == 0) {
+            return null;
+        } else if (resultList.size() == 1) {
+            return resultList.get(0);
+        }
+
+        throw new IllegalStateException("Multiple users found for email: '" + email + "'");
     }
 
     @Override

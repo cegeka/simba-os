@@ -59,7 +59,7 @@
   <bean id="resetPasswordChain" class="org.simbasecurity.core.chain.ChainImpl">
     <property name="commands">
       <list>
-        <ref bean="sendEmailCommand" />
+        <ref bean="resetPasswordCommand" />
       </list>
     </property>
   </bean>

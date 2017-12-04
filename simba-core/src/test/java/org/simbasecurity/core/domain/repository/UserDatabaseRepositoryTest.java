@@ -16,9 +16,11 @@
  */
 package org.simbasecurity.core.domain.repository;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.simbasecurity.core.domain.*;
+import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.test.PersistenceTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,6 +29,8 @@ import java.util.Collection;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
+import static org.simbasecurity.core.domain.user.EmailAddress.email;
 
 public class UserDatabaseRepositoryTest extends PersistenceTestCase {
 
@@ -95,5 +99,17 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
         assertThat(userDatabaseRepository.searchUsersOrderedByName("j")).containsExactly(user);
         assertThat(userDatabaseRepository.searchUsersOrderedByName("S")).containsExactly(user);
         assertThat(userDatabaseRepository.searchUsersOrderedByName("B")).containsExactly(user);
+    }
+
+    @Test
+    public void findUserByMail_WillReturnUser_IfPresentInDatabase() throws Exception {
+        EmailAddress email = email("bruce@wayneindustries.com");
+
+        User expectedUser = aDefaultUser().withEmail(email).build();
+        persistAndRefresh(expectedUser);
+
+        User user = userDatabaseRepository.findByEmail(email);
+
+        Assertions.assertThat(user).isEqualTo(expectedUser);
     }
 }

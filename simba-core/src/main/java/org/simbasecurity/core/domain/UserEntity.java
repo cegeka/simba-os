@@ -26,6 +26,7 @@ import org.apache.commons.pool.impl.StackObjectPool;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.password.ConfigurablePasswordEncryptor;
 import org.jasypt.util.password.PasswordEncryptor;
+import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
@@ -102,6 +103,9 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 
 	@Enumerated(EnumType.STRING)
 	private Language language;
+
+	@Embedded
+	private EmailAddress email;
 
 	@ManyToMany(targetEntity = RoleEntity.class)
 	@JoinTable(name = "SIMBA_USER_ROLE", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
@@ -445,4 +449,12 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 		return GlobalContext.locate(CoreConfigurationService.class).getValue(DEFAULT_PASSWORD);
 	}
 
+    public void setEmail(EmailAddress email) {
+        this.email = email;
+    }
+
+    @Override
+    public EmailAddress getEmail() {
+        return email;
+    }
 }

@@ -27,6 +27,7 @@ import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.Status;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.repository.UserRepository;
+import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,8 +180,8 @@ public class CredentialServiceImpl implements CredentialService {
     }
 
     @Override
-    public Optional<User> findUserByMail(String email) {
-        throw new RuntimeException("NYI dude");
+    public Optional<User> findUserByMail(EmailAddress email) {
+        return Optional.ofNullable(userRepository.findByEmail(email));
     }
 
     private User findUser(String userName) {

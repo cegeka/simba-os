@@ -16,6 +16,8 @@
  */
 package org.simbasecurity.core.chain;
 
+import com.google.common.collect.Maps;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,13 +36,17 @@ import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
+import static com.google.common.collect.Maps.newHashMap;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.simbasecurity.api.service.thrift.ActionType.ADD_PARAMETER_TO_TARGET;
 import static org.simbasecurity.api.service.thrift.ActionType.REDIRECT;
+import static org.simbasecurity.common.constants.AuthenticationConstants.EMAIL;
 import static org.simbasecurity.common.constants.AuthenticationConstants.ERROR_MESSAGE;
 import static org.simbasecurity.common.constants.AuthenticationConstants.LOGIN_TOKEN;
 import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
@@ -231,5 +237,29 @@ public class ChainContextImplTest {
         assertTrue(parameterMap.containsKey(ERROR_MESSAGE));
         assertTrue(parameterMap.containsKey(LOGIN_TOKEN));
         Mockito.verify(loginMappingServiceMock).createMapping(URL_APPLICATION);
+    }
+
+    @Test
+    public void getEmailWillReturnEmailIfPresentInRequestParameters(){
+        when(requestDataMock.getRequestParameters()).thenReturn(Collections.singletonMap(EMAIL, "someEmail"));
+
+        Optional<String> email = chainContextImpl.getEmail();
+
+        assertThat(email).contains("someEmail");
+    }
+
+    @Test
+    public void getEmailWillReturnEmptyIfNotPresentInRequestParameters(){
+        when(requestDataMock.getRequestParameters()).thenReturn(newHashMap());
+        assertThat(chainContextImpl.getEmail()).isEmpty();
+
+        when(requestDataMock.getRequestParameters()).thenReturn(Collections.singletonMap(USERNAME, "someEmail"));
+        assertThat(chainContextImpl.getEmail()).isEmpty();
+
+        when(requestDataMock.getRequestParameters()).thenReturn(Collections.singletonMap(EMAIL, null));
+        assertThat(chainContextImpl.getEmail()).isEmpty();
+
+        when(requestDataMock.getRequestParameters()).thenReturn(Collections.singletonMap(EMAIL, ""));
+        assertThat(chainContextImpl.getEmail()).isEmpty();
     }
 }

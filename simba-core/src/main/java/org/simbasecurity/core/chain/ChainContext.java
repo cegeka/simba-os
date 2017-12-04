@@ -26,6 +26,7 @@ import org.simbasecurity.core.exception.SimbaMessageKey;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * A ChainContext represents the state information that is accessed and manipulated by the execution
@@ -89,6 +90,8 @@ public interface ChainContext extends Serializable {
     String getSimbaWebURL();
 
     String getUserName();
+
+    Optional<String> getEmail();
 
     void setUserPrincipal(String userName);
 

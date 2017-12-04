@@ -22,6 +22,7 @@ import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.api.service.thrift.RequestData;
 import org.simbasecurity.api.service.thrift.SSOToken;
+import org.simbasecurity.common.util.StringUtil;
 import org.simbasecurity.core.chain.eid.SAMLUser;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.LoginMapping;
@@ -31,17 +32,15 @@ import org.simbasecurity.core.service.LoginMappingService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.UUID;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.simbasecurity.common.constants.AuthenticationConstants.*;
 import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
 import static org.simbasecurity.common.request.RequestUtil.addParametersToUrlAndFilterInternalParameters;
+import static org.simbasecurity.common.util.StringUtil.isEmpty;
 import static org.simbasecurity.core.config.SimbaConfigurationParameter.*;
 import static org.simbasecurity.core.exception.SimbaMessageKey.ACCESS_DENIED;
 import static org.simbasecurity.core.exception.SimbaMessageKey.LOGIN_TIME_EXPIRED;
@@ -331,6 +330,11 @@ public class ChainContextImpl implements ChainContext {
         }
 
         return userName;
+    }
+
+    @Override
+    public Optional<String> getEmail() {
+        return Optional.ofNullable(!isEmpty(getRequestParameter(EMAIL)) ? getRequestParameter(EMAIL) : null);
     }
 
     @Override

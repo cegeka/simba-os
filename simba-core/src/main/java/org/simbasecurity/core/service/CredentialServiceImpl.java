@@ -36,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Optional;
 
 import static org.simbasecurity.core.exception.SimbaMessageKey.USER_DOESNT_EXISTS;
 
@@ -175,6 +176,11 @@ public class CredentialServiceImpl implements CredentialService {
     @Override
     public String getPasswordHash(String username) {
         return findUser(username).getPasswordHash();
+    }
+
+    @Override
+    public Optional<User> findUserByMail(String email) {
+        throw new RuntimeException("NYI dude");
     }
 
     private User findUser(String userName) {

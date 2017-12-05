@@ -18,11 +18,12 @@ public class ResetPasswordService {
     @Autowired
     private TokenGenerator tokenGenerator;
     @Autowired
-    private UrlGenerator urlGenerator;
+    private LinkGenerator linkGenerator;
 
     public void sendMessage(User user) {
         Token token = tokenGenerator.generateToken(user);
-        URL link = urlGenerator.generateResetPasswordUrl(user, token);
+        URL link = linkGenerator.generateResetPasswordLink(token);
+        System.out.println(link);
         mailService.sendMail(user.getEmail(), link);
     }
 

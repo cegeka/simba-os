@@ -10,7 +10,7 @@ import org.simbasecurity.core.domain.communication.token.Token;
 import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.service.communication.mail.MailService;
 import org.simbasecurity.core.service.communication.mail.ResetPasswordService;
-import org.simbasecurity.core.service.communication.mail.UrlGenerator;
+import org.simbasecurity.core.service.communication.mail.LinkGenerator;
 import org.simbasecurity.core.service.communication.token.TokenGenerator;
 
 import java.net.URL;
@@ -24,7 +24,7 @@ import static org.simbasecurity.core.domain.user.EmailAddress.email;
 public class ResetPasswordServiceTest {
 
     @Mock
-    private UrlGenerator urlGeneratorMock;
+    private LinkGenerator linkGeneratorMock;
     @Mock
     private TokenGenerator tokenGeneratorMock;
     @Mock
@@ -42,7 +42,7 @@ public class ResetPasswordServiceTest {
         Token token = Token.generateToken();
         when(tokenGeneratorMock.generateToken(user)).thenReturn(token);
         URL link = new URL("http://www.google.com");
-        when(urlGeneratorMock.generateResetPasswordUrl(user, token)).thenReturn(link);
+        when(linkGeneratorMock.generateResetPasswordLink(token)).thenReturn(link);
 
         resetPasswordService.sendMessage(user);
 

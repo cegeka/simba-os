@@ -19,6 +19,10 @@ public class Token {
         return new Token(UUID.randomUUID().toString());
     }
 
+    public String asString() {
+        return internalRepresentation;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

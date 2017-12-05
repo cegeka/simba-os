@@ -7,6 +7,11 @@ Simba itself is generic and can be customized for
 your project. Many features are customizable e.g. you can design your own 
 authentication chain easy and fast. 
 
+## Contributing
+First of all, thanks for contributing!
+
+Please read all the things in [CONTRIBUTE.md](CONTRIBUTE.md)!
+
 ## HSQL setup
 The test database has been setup with 'Simba3D' as password for all users
 The users are:

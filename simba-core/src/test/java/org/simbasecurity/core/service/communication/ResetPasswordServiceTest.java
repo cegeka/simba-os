@@ -9,7 +9,6 @@ import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.communication.token.Token;
 import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.service.communication.mail.MailService;
-import org.simbasecurity.core.service.communication.mail.ResetPasswordService;
 import org.simbasecurity.core.service.communication.mail.LinkGenerator;
 import org.simbasecurity.core.service.communication.token.TokenGenerator;
 

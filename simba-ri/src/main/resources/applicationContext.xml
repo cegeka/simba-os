@@ -22,6 +22,7 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
   <context:component-scan base-package="org.simbasecurity.refimpl" />
+  <context:property-placeholder location="simba.properties"/>
 
   <bean name="standardAuditLogProvider" class="org.simbasecurity.core.audit.provider.DatabaseAuditLogProvider">
     <property name="databaseTable" value="SIMBA_AUDIT_LOG" />
@@ -31,6 +32,24 @@
   <bean name="archivedAuditLogProvider" class="org.simbasecurity.core.audit.provider.DatabaseAuditLogProvider">
     <property name="databaseTable" value="SIMBA_ARCHIVED_AUDIT_LOG" />
     <property name="level" value="INFO" />
+  </bean>
+
+  <bean class="org.simbasecurity.core.service.communication.mail.SmtpMailService">
+    <constructor-arg name="javaMailSender">
+      <bean class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${simba.smtp.host}"/>
+        <property name="port" value="${simba.smtp.port}"/>
+        <property name="javaMailProperties">
+          <map>
+            <entry key="mail.transport.protocol" value="${mail.transport.protocol}"/>
+            <entry key="mail.smtp.auth" value="${mail.smtp.auth}"/>
+            <entry key="mail.smtp.starttls.enable" value="${mail.smtp.starttls.enable}"/>
+            <entry key="mail.debug" value="${mail.debug}"/>
+          </map>
+        </property>
+      </bean>
+    </constructor-arg>
+    <constructor-arg name="mailFromAddress" value="${simba.smtp.mail.from}"/>
   </bean>
 
   <bean class="org.simbasecurity.core.audit.provider.SystemOutAuditLogProvider" />

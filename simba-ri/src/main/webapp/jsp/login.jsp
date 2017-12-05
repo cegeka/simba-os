@@ -58,8 +58,7 @@
                 <fmt:message key='<%= "error." + ESAPI.encoder().encodeForHTML(errorMessage) %>'/>
             </p>
             <% } %>
-            <input type="submit" id="signIn" value="<fmt:message key="login.button"/>"
-                   style="cursor:pointer; cursor:hand;"/>
+            <input type="submit" id="signIn" value="<fmt:message key="login.button"/>" class="button-submit"/>
             <% if (token != null) { %>
             <input type="hidden" name="loginToken" value="<%= ESAPI.encoder().encodeForHTML(token) %>"/>
             <% } %>

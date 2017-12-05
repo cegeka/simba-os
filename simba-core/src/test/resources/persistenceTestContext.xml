@@ -76,4 +76,6 @@
       </list>
     </property>
   </bean>
+
+  <bean class="org.simbasecurity.core.service.communication.mail.MailServiceStub"/>
 </beans>

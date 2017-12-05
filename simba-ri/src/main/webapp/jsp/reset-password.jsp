@@ -41,9 +41,12 @@
                 <label for="email"><fmt:message key="email"/></label>
                 <span class="input"><input type="email" name="email" id="email" class="text"/></span>
             </p>
+            <p>
+                <input type="submit" value="<fmt:message key="reset.password.button"/>" class="button-submit" />
+            </p>
         </form>
         <% if (resetSuccessfull != null) { %>
-        <p id="successMessage">
+        <p id="successMessage" class="p-top-space">
             <fmt:message key="reset.password.successfull"/>
         </p>
         <% } %>

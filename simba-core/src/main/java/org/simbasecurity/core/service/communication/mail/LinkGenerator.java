@@ -20,7 +20,7 @@ public class LinkGenerator {
         try {
             return uri.toURL();
         } catch (MalformedURLException e) {
-            throw new RuntimeException(String.format("%s is not a correctly formed URL.", uri));
+            throw new RuntimeException(String.format("%s is not a correctly formed URL because %s", uri, e.getCause()));
         }
     }
 

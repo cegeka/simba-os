@@ -34,6 +34,7 @@ public class ResetPasswordCommand implements Command {
 
     @Override
     public boolean postProcess(ChainContext context, Exception exception) {
-        return false;
+        context.redirectToPasswordReset();
+        return true;
     }
 }

@@ -80,8 +80,7 @@ public class SAMLServiceImplTest {
                                                     "<samlp:NameIDPolicy " +
                                                         "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:transient\" " +
                                                         "SPNameQualifier=\"" + ISSUER + "\" " +
-                                                        "AllowCreate=\"true\">" +
-                                                    "</samlp:NameIDPolicy>" +
+                                                        "AllowCreate=\"true\"/>" +
                                                     "<samlp:RequestedAuthnContext xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" " +
                                                         "Comparison=\"exact\">" +
                                                         "<saml:AuthnContextClassRef xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">" +

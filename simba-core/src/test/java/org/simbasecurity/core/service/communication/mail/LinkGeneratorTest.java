@@ -38,5 +38,6 @@ public class LinkGeneratorTest {
         assertThat(url.getPort()).isEqualTo(simbaUrl.getPort());
         assertThat(url.getQuery()).isEqualTo(String.format("token=%s", token.asString()));
         assertThat(url.getPath()).isEqualTo("/simba/simba-new-pwd");
+        assertThat(url.toString()).isEqualTo(String.format("http://www.simba.be/simba/simba-new-pwd?token=%s", token.asString()));
     }
 }

@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.logging.Logger;
 
 import static org.simbasecurity.core.domain.communication.token.UserToken.userToken;
 
 @Service
 public class TokenGenerator {
 
+    private static final Logger logger = Logger.getLogger(TokenGenerator.class.getName());
     private UserTokenRepository userTokenRepository;
 
     @Autowired
@@ -29,6 +31,7 @@ public class TokenGenerator {
         } else {
             userTokenRepository.persist(userToken(token, user.getId()));
         }
+        logger.info("Token generated");
         return token;
     }
 }

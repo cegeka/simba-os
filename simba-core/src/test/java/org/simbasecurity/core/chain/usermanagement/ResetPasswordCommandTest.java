@@ -10,7 +10,7 @@ import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.service.CredentialService;
-import org.simbasecurity.core.service.communication.mail.ResetPasswordService;
+import org.simbasecurity.core.service.communication.ResetPasswordService;
 
 import java.util.Optional;
 

@@ -53,7 +53,7 @@ simba-os/simba-ri> $ mvn clean war
 This will also compile `simba-core` and `simba-client` components.
 
 ### Automatic DBScript execution
-Some components come with database scripts that to get run automatically on application startup. Automatic run is configured in the respective `persistenceContext.xml` file.
+Some components come with database scripts that are run automatically on application startup. Automatic run is configured in the respective `persistenceContext.xml` file.
 
 * [simba-core/.../create_db.sql](simba-core/src/main/resources/db/hsqldb-embedded/scripts/create_db.sql)
 * [simba-core/.../insert_parameters.sql](simba-core/src/main/resources/db/hsqldb-embedded/scripts/insert_parameters.sql)

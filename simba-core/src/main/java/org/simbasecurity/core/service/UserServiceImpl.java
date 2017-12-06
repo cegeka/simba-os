@@ -208,11 +208,11 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
 
     private User createUser(TUser user) {
         if (userRepository.findByName(user.getUserName()) != null) {
-            throw new SimbaException(USER_ALREADY_EXISTS, user.getUserName());
+            throw new SimbaException(USER_ALREADY_EXISTS, String.format("User already exists with username: %s",user.getUserName()));
         }
 
         if (userRepository.findByEmail(email(user.getEmail())) != null){
-            throw new SimbaException(USER_ALREADY_EXISTS_WITH_EMAIL, user.getEmail());
+            throw new SimbaException(USER_ALREADY_EXISTS_WITH_EMAIL, String.format("User already exists with email: %s",user.getEmail()));
         }
 
         Boolean passwordChangeRequired = configurationService.getValue(PASSWORD_CHANGE_REQUIRED);

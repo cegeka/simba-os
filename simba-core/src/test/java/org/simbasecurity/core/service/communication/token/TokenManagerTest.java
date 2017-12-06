@@ -13,23 +13,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 import static org.simbasecurity.core.domain.communication.token.UserToken.userToken;
 
-public class TokenGeneratorTest extends PersistenceTestCase {
+public class TokenManagerTest extends PersistenceTestCase {
 
     @Autowired
     private UserTokenRepository userTokenRepository;
 
-    private TokenGenerator tokenGenerator;
+    private UserTokenService tokenManager;
 
     @Before
     public void setUp() throws Exception {
-        tokenGenerator = new TokenGenerator(userTokenRepository);
+        tokenManager = new UserTokenService(userTokenRepository);
     }
 
     @Test
     public void generateToken_NoTokenExists_GeneratesANewTokenForTheGivenUserAndPersistsItForTheGivenUser() throws Exception {
         User user = aDefaultUser().build();
 
-        Token token = tokenGenerator.generateToken(user);
+        Token token = tokenManager.generateToken(user);
 
         assertThat(userTokenRepository.findAll()).extracting(UserToken::getToken).containsExactly(token);
     }
@@ -40,7 +40,7 @@ public class TokenGeneratorTest extends PersistenceTestCase {
         UserToken userToken = userToken(Token.generateToken(), user.getId());
         persistAndRefresh(userToken);
 
-        Token token = tokenGenerator.generateToken(user);
+        Token token = tokenManager.generateToken(user);
 
         assertThat(userTokenRepository.findAll()).extracting(UserToken::getToken).containsExactly(token);
     }

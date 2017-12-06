@@ -26,6 +26,7 @@ public class LinkGenerator {
 
     private URI buildResetPasswordURI(Token token) {
             return UriBuilder.fromPath(getSimbaWebURL())
+                    .path("http")
                     .path(SIMBA_NEW_PWD_PATH)
                     .queryParam("token", token.asString())
                     .build();

@@ -7,14 +7,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.communication.token.Token;
 import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.service.communication.mail.MailService;
 import org.simbasecurity.core.service.communication.mail.LinkGenerator;
 import org.simbasecurity.core.service.communication.mail.template.TemplateService;
-import org.simbasecurity.core.service.communication.token.TokenGenerator;
+import org.simbasecurity.core.service.communication.token.UserTokenService;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.net.URL;
@@ -34,7 +33,7 @@ public class ResetPasswordServiceTest {
     @Mock
     private LinkGenerator linkGeneratorMock;
     @Mock
-    private TokenGenerator tokenGeneratorMock;
+    private UserTokenService tokenManagerMock;
     @Mock
     private TemplateService templateService;
 
@@ -55,7 +54,7 @@ public class ResetPasswordServiceTest {
                 .withLanguage(en_US)
                 .build();
         Token token = Token.generateToken();
-        when(tokenGeneratorMock.generateToken(user)).thenReturn(token);
+        when(tokenManagerMock.generateToken(user)).thenReturn(token);
         URL link = new URL("http://www.google.com");
         when(linkGeneratorMock.generateResetPasswordLink(token)).thenReturn(link);
         when(templateService.createMailBody("someTemplate.vm", en_US, ImmutableMap.of("link", link.toString()))).thenReturn("someBody");

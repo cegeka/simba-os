@@ -143,6 +143,13 @@ form span.input {
     margin: 0 0 15px 0;
 }
 
+form span.span-text {
+    display: block;
+    margin: 0 0 15px 0;
+    font: 14px Helvetica, Arial, Verdana, sans-serif;
+    letter-spacing: -1px;
+}
+
 form p.error {
     display: block;
     -moz-border-radius: 5px;

@@ -796,6 +796,7 @@ TUser = function(args) {
   this.language = null;
   this.mustChangePassword = null;
   this.passwordChangeRequired = null;
+  this.email = null;
   if (args) {
     if (args.id !== undefined && args.id !== null) {
       this.id = args.id;
@@ -829,6 +830,9 @@ TUser = function(args) {
     }
     if (args.passwordChangeRequired !== undefined && args.passwordChangeRequired !== null) {
       this.passwordChangeRequired = args.passwordChangeRequired;
+    }
+    if (args.email !== undefined && args.email !== null) {
+      this.email = args.email;
     }
   }
 };
@@ -923,6 +927,13 @@ TUser.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 12:
+      if (ftype == Thrift.Type.STRING) {
+        this.email = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -987,6 +998,11 @@ TUser.prototype.write = function(output) {
   if (this.passwordChangeRequired !== null && this.passwordChangeRequired !== undefined) {
     output.writeFieldBegin('passwordChangeRequired', Thrift.Type.BOOL, 11);
     output.writeBool(this.passwordChangeRequired);
+    output.writeFieldEnd();
+  }
+  if (this.email !== null && this.email !== undefined) {
+    output.writeFieldBegin('email', Thrift.Type.STRING, 12);
+    output.writeString(this.email);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

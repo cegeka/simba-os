@@ -69,6 +69,7 @@
   "user.language": "Language",
   "user.copy": "Copy user",
   "user.status": "Status",
+  "user.email": "E-mail",
   "user.successurl": "Success URL",
   "user.changepassword": "Change password on next login",
   "user.resetpassword": "Reset password",

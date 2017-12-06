@@ -120,15 +120,25 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 	@OrderBy("name")
 	private Set<Group> groups = new HashSet<Group>();
 
-	public UserEntity() {
+	protected UserEntity() {
 	}
 
-	public UserEntity(String userName) {
-		this(userName, null, null, null, Language.en_US, Status.ACTIVE, true, true);
+	public static UserEntity eidUser(String userName, String firstName, String name, Language language) {
+		return new UserEntity(userName, firstName, name, null, language, Status.ACTIVE, false, false, null);
 	}
 
-	public UserEntity(String userName, String firstName, String name, String successURL, Language language, Status status,
-			boolean changePasswordOnNextLogon, boolean passwordChangeRequired) {
+	public static UserEntity restUser(String userName, String firstName, String name, String successURL, Language language, Status status,
+									  boolean changePasswordOnNextLogon, boolean passwordChangeRequired){
+		return new UserEntity(userName, firstName, name, successURL, language, status, changePasswordOnNextLogon, passwordChangeRequired, null);
+	}
+
+	public static UserEntity user(String userName, String firstName, String name, String successURL, Language language, Status status,
+								  boolean changePasswordOnNextLogon, boolean passwordChangeRequired, EmailAddress email) {
+		return new UserEntity(userName, firstName, name, successURL, language, status, changePasswordOnNextLogon, passwordChangeRequired, email);
+	}
+
+	private UserEntity(String userName, String firstName, String name, String successURL, Language language, Status status,
+			boolean changePasswordOnNextLogon, boolean passwordChangeRequired, EmailAddress email) {
 		setUserName(userName);
 		setPassword(getDefaultPassword());
 		setFirstName(firstName);
@@ -138,6 +148,7 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 		setStatus(status);
 		setChangePasswordOnNextLogon(changePasswordOnNextLogon);
 		setPasswordChangeRequired(passwordChangeRequired);
+		setEmail(email);
 	}
 
 	@Override

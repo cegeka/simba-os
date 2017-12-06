@@ -27,6 +27,8 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import static org.simbasecurity.core.domain.user.EmailAddress.email;
+
 @Service
 @SuppressWarnings("unchecked")
 public class ThriftAssembler {
@@ -89,12 +91,27 @@ public class ThriftAssembler {
                 user.getSuccessURL(),
                 user.getLanguage() == null ? null : user.getLanguage().name(),
                 user.isChangePasswordOnNextLogon(),
-                user.isChangePasswordOnNextLogon()
+                user.isChangePasswordOnNextLogon(),
+                (user.getEmail() != null) ? user.getEmail().asString() : null
         );
     }
 
     public User assemble(TUser tUser) {
-        return new UserEntity(
+        return UserEntity.user(
+                tUser.getUserName(),
+                tUser.getFirstName(),
+                tUser.getName(),
+                tUser.getSuccessURL(),
+                tUser.getLanguage() == null ? null : Language.valueOf(tUser.getLanguage()),
+                tUser.getStatus() == null ? null : Status.valueOf(tUser.getStatus()),
+                tUser.isMustChangePassword(),
+                tUser.isPasswordChangeRequired(),
+                email(tUser.getEmail())
+        );
+    }
+
+    public User assembleRestUser(TUser tUser) {
+        return UserEntity.restUser(
                 tUser.getUserName(),
                 tUser.getFirstName(),
                 tUser.getName(),

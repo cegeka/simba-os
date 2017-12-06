@@ -94,9 +94,9 @@ public class UserServiceImplFilteringTest {
         when(locator.locate(PasswordValidator.class)).thenReturn(passwordValidator);
         when(locator.locate(CoreConfigurationService.class)).thenReturn(configurationService);
 
-        UserEntity userEntity1 = new UserEntity("user-1");
-        UserEntity userEntity2 = new UserEntity("user-2");
-        UserEntity userEntity3 = new UserEntity("user-3");
+        User userEntity1 = UserTestBuilder.aDefaultUser().withUserName("user-1").build();
+        User userEntity2 = UserTestBuilder.aDefaultUser().withUserName("user-2").build();
+        User userEntity3 = UserTestBuilder.aDefaultUser().withUserName("user-3").build();
 
         filterServices.add(new EntityFilter() {
             @Override

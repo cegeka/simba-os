@@ -256,4 +256,6 @@ public interface User extends Versionable {
 	boolean hasRole(String roleName);
 
     EmailAddress getEmail();
+
+    void setEmail(EmailAddress email);
 }

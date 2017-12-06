@@ -28,10 +28,7 @@ import org.mockito.junit.MockitoRule;
 import org.simbasecurity.api.service.thrift.TPolicy;
 import org.simbasecurity.api.service.thrift.TRole;
 import org.simbasecurity.api.service.thrift.TUser;
-import org.simbasecurity.core.domain.PolicyEntity;
-import org.simbasecurity.core.domain.Role;
-import org.simbasecurity.core.domain.RoleEntity;
-import org.simbasecurity.core.domain.UserEntity;
+import org.simbasecurity.core.domain.*;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
@@ -95,9 +92,9 @@ public class UserServiceImplTest {
         when(locator.locate(PasswordValidator.class)).thenReturn(passwordValidator);
         when(locator.locate(CoreConfigurationService.class)).thenReturn(configurationService);
 
-        UserEntity userEntity1 = new UserEntity("user-1");
-        UserEntity userEntity2 = new UserEntity("user-2");
-        UserEntity userEntity3 = new UserEntity("user-3");
+        User userEntity1 = UserTestBuilder.aDefaultUser().withUserName("user-1").build();
+        User userEntity2 = UserTestBuilder.aDefaultUser().withUserName("user-2").build();
+        User userEntity3 = UserTestBuilder.aDefaultUser().withUserName("user-3").build();
 
         ReflectionUtil.setField(entityFilterService, "filters", filterServices);
 

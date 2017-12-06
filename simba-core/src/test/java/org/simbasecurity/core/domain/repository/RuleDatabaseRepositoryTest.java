@@ -23,19 +23,7 @@ import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.simbasecurity.core.domain.Group;
-import org.simbasecurity.core.domain.GroupEntity;
-import org.simbasecurity.core.domain.Policy;
-import org.simbasecurity.core.domain.PolicyEntity;
-import org.simbasecurity.core.domain.ResourceRule;
-import org.simbasecurity.core.domain.ResourceRuleEntity;
-import org.simbasecurity.core.domain.Role;
-import org.simbasecurity.core.domain.RoleEntity;
-import org.simbasecurity.core.domain.Rule;
-import org.simbasecurity.core.domain.URLRule;
-import org.simbasecurity.core.domain.URLRuleEntity;
-import org.simbasecurity.core.domain.User;
-import org.simbasecurity.core.domain.UserEntity;
+import org.simbasecurity.core.domain.*;
 import org.simbasecurity.test.PersistenceTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -57,7 +45,7 @@ public class RuleDatabaseRepositoryTest extends PersistenceTestCase {
 
     @Before
     public void setUp() {
-        UserEntity user = new UserEntity(USER_NAME);
+        User user = UserTestBuilder.aDefaultUser().withUserName(USER_NAME).build();
         RoleEntity role = new RoleEntity(ROLE_NAME);
         policy = new PolicyEntity(POLICY_NAME);
         resourceRuleEntity = new ResourceRuleEntity(RESOURCE_RULE_NAME);
@@ -70,7 +58,6 @@ public class RuleDatabaseRepositoryTest extends PersistenceTestCase {
         role.addPolicy(policy);
         user.addRole(role);
     }
-
 
 
     @Test
@@ -137,7 +124,7 @@ public class RuleDatabaseRepositoryTest extends PersistenceTestCase {
     }
 
     private ResourceRule setupWithGroups() {
-        User user = new UserEntity(USER_VIA_GROUP);
+        User user = UserTestBuilder.aDefaultUser().withUserName(USER_VIA_GROUP).build();
         Role role = new RoleEntity("role2");
         Group group = new GroupEntity("groupName", "cn");
         Policy policy = new PolicyEntity("policy2");

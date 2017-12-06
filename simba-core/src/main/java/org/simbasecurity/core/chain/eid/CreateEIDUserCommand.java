@@ -55,12 +55,7 @@ public class CreateEIDUserCommand implements Command {
         if (user == null) {
             List<String> roles = configurationService.getValue(SimbaConfigurationParameter.DEFAULT_USER_ROLE);
 
-            user = new UserEntity(samlUser.getInsz());
-            user.setName(samlUser.getLastname());
-            user.setFirstName(samlUser.getFirstname());
-            user.setLanguage(getLanguageIfUnknownUseNL(samlUser));
-            user.setPasswordChangeRequired(false);
-            user.setChangePasswordOnNextLogon(false);
+            user = UserEntity.eidUser(samlUser.getInsz(), samlUser.getFirstname(),samlUser.getLastname(), getLanguageIfUnknownUseNL(samlUser));
 
             userService.create(user, roles);
             audit.log(auditLogFactory.createEventForEIDSAMLResponse(context, "New user for eid created with username [" + user.getUserName() + "]"));

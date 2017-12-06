@@ -36,12 +36,24 @@ public class UserTestBuilder {
 
     public static UserTestBuilder aDefaultUser() {
         return aUser()
-                .withPassword("iamthebatman")
                 .withName("Wayne")
                 .withFirstName("bruce")
                 .withEmail("bruce@wayneindustries.com")
+                .withPassword("iamthebatman")
                 .withDateOfLastPasswordChange(new Date())
+                .withStatus(Status.ACTIVE)
+                .withPasswordChangeRequired(true)
+                .withChangePasswordOnNextLogon(true)
+                .withLanguage(Language.en_US)
                 ;
+    }
+
+    /**
+     * Use this build method if you NEED a UserEntity that does all of the validations.
+     * Note that you'll need to set up your test with e.g. <code>implantMock(UserValidator.class)</code>
+     */
+    public User buildWithValidation() {
+        return UserEntity.user(userName,firstName,name,successURL,language,status,changePasswordOnNextLogon,passwordChangeRequired,email);
     }
 
     public User build() {

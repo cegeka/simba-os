@@ -6,14 +6,15 @@ import javax.persistence.Embeddable;
 public class EmailAddress {
     private String email;
 
-    protected EmailAddress(){}
+    protected EmailAddress() {
+    }
 
     private EmailAddress(String email) {
         this.email = email;
     }
 
-    public static EmailAddress email(String email){
-        if(!email.contains("\u0040")){
+    public static EmailAddress email(String email) {
+        if (!email.contains("\u0040")) {
             throw new RuntimeException(String.format("%s is not a valid email address", email));
         }
         return new EmailAddress(email);

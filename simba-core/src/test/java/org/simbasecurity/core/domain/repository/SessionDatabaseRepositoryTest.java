@@ -23,6 +23,7 @@ import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.core.domain.SessionEntity;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.UserEntity;
+import org.simbasecurity.core.domain.UserTestBuilder;
 import org.simbasecurity.test.PersistenceTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,7 +34,7 @@ public class SessionDatabaseRepositoryTest extends PersistenceTestCase {
 
     @Test
     public void canFindBySSOToken() throws Exception {
-        User user = new UserEntity("jos");
+        User user = UserTestBuilder.aDefaultUser().build();
         SSOToken ssoToken = new SSOToken("eenSsoTokentje");
         SessionEntity session = new SessionEntity(user, ssoToken, "127.0.0.1", "192.168.1.1");
 

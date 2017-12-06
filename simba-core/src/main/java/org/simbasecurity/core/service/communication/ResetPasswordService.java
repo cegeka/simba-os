@@ -3,6 +3,7 @@ package org.simbasecurity.core.service.communication;
 import com.google.common.collect.ImmutableMap;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.communication.token.Token;
 import org.simbasecurity.core.service.communication.mail.LinkGenerator;
@@ -52,11 +53,11 @@ public class ResetPasswordService {
                 .from(email(resetPasswordFromAddress))
                 .to(user.getEmail())
                 .subject(RESET_PASSWORD_SUBJECT)
-                .body(createBody(link.toString()));
+                .body(createBody(user.getLanguage(), link.toString()));
     }
 
-    private String createBody(String link){
-        return templateService.createMailBody(resetPasswordMailTemplate, ImmutableMap.of("link", link));
+    private String createBody(Language language, String link){
+        return templateService.createMailBody(resetPasswordMailTemplate, language, ImmutableMap.of("link", link));
     }
 
 }

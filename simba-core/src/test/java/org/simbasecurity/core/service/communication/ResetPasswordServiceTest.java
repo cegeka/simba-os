@@ -1,13 +1,13 @@
 package org.simbasecurity.core.service.communication;
 
 import com.google.common.collect.ImmutableMap;
-import org.apache.velocity.VelocityContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.communication.token.Token;
 import org.simbasecurity.core.domain.user.EmailAddress;
@@ -21,6 +21,7 @@ import java.net.URL;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.simbasecurity.core.domain.Language.en_US;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 import static org.simbasecurity.core.domain.user.EmailAddress.email;
 import static org.simbasecurity.core.service.communication.mail.Mail.mail;
@@ -51,12 +52,13 @@ public class ResetPasswordServiceTest {
         EmailAddress email = email("something@mail.com");
         User user = aDefaultUser()
                 .withEmail(email)
+                .withLanguage(en_US)
                 .build();
         Token token = Token.generateToken();
         when(tokenGeneratorMock.generateToken(user)).thenReturn(token);
         URL link = new URL("http://www.google.com");
         when(linkGeneratorMock.generateResetPasswordLink(token)).thenReturn(link);
-        when(templateService.createMailBody("someTemplate.vm", ImmutableMap.of("link", link.toString()))).thenReturn("someBody");
+        when(templateService.createMailBody("someTemplate.vm", en_US, ImmutableMap.of("link", link.toString()))).thenReturn("someBody");
 
         resetPasswordService.sendMessage(user);
 

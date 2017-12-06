@@ -43,13 +43,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.simbasecurity.common.util.StringUtil.join;
 import static org.simbasecurity.core.config.SimbaConfigurationParameter.PASSWORD_CHANGE_REQUIRED;
 import static org.simbasecurity.core.domain.user.EmailAddress.email;
 import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS;
+import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS_WITH_EMAIL;
 
 @Transactional
 @Service("userService")
@@ -160,12 +160,12 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
     public TUser create(TUser user) throws TException {
         managementAudit.log("User ''{0}'' created", user.getUserName());
 
-        return assembler.assemble(createUser(user, this::assembleUser));
+        return assembler.assemble(createUser(user));
     }
 
     @Override
     public TUser createWithRoles(TUser user, List<String> roleNames) throws TException {
-        User newUser = createUser(user, this::assembleUser);
+        User newUser = createUser(user);
         roleNames.stream()
                  .map(n -> roleRepository.findByName(n))
                  .filter(Objects::nonNull)
@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
     @Override
     public TUser cloneUser(TUser user, String clonedUsername) throws TException {
         Set<Role> roles = userRepository.findByName(clonedUsername).getRoles();
-        User newUser = createUser(user, this::assembleUser);
+        User newUser = createUser(user);
         newUser.addRoles(roles);
 
         managementAudit.log("User ''{0}'' created as clone of ''{1}''", newUser.getUserName(), clonedUsername);
@@ -195,7 +195,7 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
                 .setLanguage(Language.nl_NL.name())
                 .setStatus(Status.ACTIVE.name());
 
-        User newUser = createUser(temporaryTUser, this::assembleRestUser);
+        User newUser = createRestUser(temporaryTUser);
 
         User attachedUser = userRepository.persist(newUser);
         String password = passwordGenerator.generatePassword();
@@ -206,15 +206,27 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
         return password;
     }
 
-    private User createUser(TUser user, Function<TUser, User> assemblyFn) {
+    private User createUser(TUser user) {
         if (userRepository.findByName(user.getUserName()) != null) {
             throw new SimbaException(USER_ALREADY_EXISTS, user.getUserName());
+        }
+
+        if (userRepository.findByEmail(email(user.getEmail())) != null){
+            throw new SimbaException(USER_ALREADY_EXISTS_WITH_EMAIL, user.getEmail());
         }
 
         Boolean passwordChangeRequired = configurationService.getValue(PASSWORD_CHANGE_REQUIRED);
         user.setPasswordChangeRequired(passwordChangeRequired);
 
-        return userRepository.persist(assemblyFn.apply(user));
+        return userRepository.persist(assembleUser(user));
+    }
+
+    private User createRestUser(TUser user) {
+        if (userRepository.findByName(user.getUserName()) != null) {
+            throw new SimbaException(USER_ALREADY_EXISTS, user.getUserName());
+        }
+
+        return userRepository.persist(assembleRestUser(user));
     }
 
     private User assembleUser(TUser user) {

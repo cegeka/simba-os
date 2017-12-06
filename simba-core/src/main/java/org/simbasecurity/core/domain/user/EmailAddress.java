@@ -1,9 +1,16 @@
 package org.simbasecurity.core.domain.user;
 
+import org.simbasecurity.common.util.StringUtil;
+import org.simbasecurity.core.exception.SimbaException;
+import org.simbasecurity.core.exception.SimbaMessageKey;
+
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class EmailAddress {
+
+    private static final String EMAIL_PATTERN = "^\\w+[\\w_\\.\\-]*@[\\w_\\-]+\\.[\\w_\\.\\-]+$";
+
     private String email;
 
     protected EmailAddress() {
@@ -14,8 +21,11 @@ public class EmailAddress {
     }
 
     public static EmailAddress email(String email) {
-        if (!email.contains("\u0040")) {
-            throw new RuntimeException(String.format("%s is not a valid email address", email));
+        if(StringUtil.isEmpty(email)){
+            throw new SimbaException(SimbaMessageKey.EMAIL_ADDRESS_REQUIRED);
+        }
+        if(!email.matches(EMAIL_PATTERN)) {
+            throw new SimbaException(SimbaMessageKey.EMAIL_ADDRESS_INVALID, String.format("%s is not a valid email address", email));
         }
         return new EmailAddress(email);
     }

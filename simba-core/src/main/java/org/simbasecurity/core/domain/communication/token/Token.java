@@ -23,6 +23,10 @@ public class Token {
         return internalRepresentation;
     }
 
+    public static Token fromString(String tokenAsString) {
+        return new Token(tokenAsString);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

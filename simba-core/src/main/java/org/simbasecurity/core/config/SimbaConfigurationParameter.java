@@ -90,6 +90,9 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
      */
     PASSWORD_RESET_URL(DATABASE, true, StringType.class, "/jsp/reset-password.jsp"),
 
+
+    PASSWORD_INVALID_TOKEN_URL(DATABASE, true, StringType.class, "/jsp/password-invalid-token.jsp"),
+
     /**
      * Parameter for configuring the URL to the access denied page.
      */

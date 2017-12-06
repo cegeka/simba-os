@@ -36,6 +36,8 @@ public interface AuthenticationConstants extends RequestConstants {
 
     String EMAIL = "email";
 
+    String TOKEN = "token";
+
     String NEW_PASSWORD_CONFIRMATION = "newpasswordconfirmation";
 
     /**

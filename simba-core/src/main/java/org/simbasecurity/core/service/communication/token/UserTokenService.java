@@ -13,13 +13,13 @@ import java.util.logging.Logger;
 import static org.simbasecurity.core.domain.communication.token.UserToken.userToken;
 
 @Service
-public class TokenGenerator {
+public class UserTokenService {
 
-    private static final Logger logger = Logger.getLogger(TokenGenerator.class.getName());
+    private static final Logger logger = Logger.getLogger(UserTokenService.class.getName());
     private UserTokenRepository userTokenRepository;
 
     @Autowired
-    public TokenGenerator(UserTokenRepository userTokenRepository) {
+    public UserTokenService(UserTokenRepository userTokenRepository) {
         this.userTokenRepository = userTokenRepository;
     }
 
@@ -33,5 +33,9 @@ public class TokenGenerator {
         }
         logger.info("Token generated");
         return token;
+    }
+
+    public Optional<User> getUserForToken(Token someUUID) {
+        return Optional.empty();
     }
 }

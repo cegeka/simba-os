@@ -22,7 +22,6 @@ import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.api.service.thrift.RequestData;
 import org.simbasecurity.api.service.thrift.SSOToken;
-import org.simbasecurity.common.util.StringUtil;
 import org.simbasecurity.core.chain.eid.SAMLUser;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.LoginMapping;
@@ -378,5 +377,15 @@ public class ChainContextImpl implements ChainContext {
     @Override
     public String getSimbaEidSuccessUrl() {
         return requestData.getSimbaEidSuccessUrl();
+    }
+
+    @Override
+    public Optional<String> getToken() {
+        return Optional.ofNullable(!isEmpty(getRequestParameter(TOKEN)) ? getRequestParameter(TOKEN) : null);
+    }
+
+    @Override
+    public void redirectToWrongToken() {
+        redirectWithParameters(getSimbaWebURL() + configurationService.getValue(PASSWORD_INVALID_TOKEN_URL), newHashMap());
     }
 }

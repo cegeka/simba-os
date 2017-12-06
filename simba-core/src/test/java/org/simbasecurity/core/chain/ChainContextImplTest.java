@@ -46,9 +46,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.simbasecurity.api.service.thrift.ActionType.ADD_PARAMETER_TO_TARGET;
 import static org.simbasecurity.api.service.thrift.ActionType.REDIRECT;
-import static org.simbasecurity.common.constants.AuthenticationConstants.EMAIL;
-import static org.simbasecurity.common.constants.AuthenticationConstants.ERROR_MESSAGE;
-import static org.simbasecurity.common.constants.AuthenticationConstants.LOGIN_TOKEN;
+import static org.simbasecurity.common.constants.AuthenticationConstants.*;
 import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
 import static org.simbasecurity.core.config.SimbaConfigurationParameter.*;
 import static org.simbasecurity.core.exception.SimbaMessageKey.LOGIN_FAILED;
@@ -61,6 +59,8 @@ public class ChainContextImplTest {
     private static final String SIMBA_CHANGEPASSWORD_PAGE_URL = "/jsp/changepassword.jsp";
     private static final String SIMBA_PASSWORD_CHANGED_URL = "/jsp/passwordchanged.jsp";
     private static final String SIMBA_PASSWORD_RESET_URL = "/jsp/password-reset.jsp";
+
+    private static final String SIMBA_PASSWORD_INVALID_URL = "/jsp/password-invalid-token.jsp";
 
     private static final String SIMBA_WEB_URL = "http://simba_web_url/simbaContextRoot/";
     private static final String REQUEST_URL = "http://localhost:8080/simba/http/simba-change-pwd";
@@ -261,5 +261,43 @@ public class ChainContextImplTest {
 
         when(requestDataMock.getRequestParameters()).thenReturn(Collections.singletonMap(EMAIL, ""));
         assertThat(chainContextImpl.getEmail()).isEmpty();
+    }
+
+    @Test
+    public void getTokenWillReturnTokenIfPresentInRequestParameters() throws Exception {
+        when(requestDataMock.getRequestParameters()).thenReturn(Collections.singletonMap(TOKEN, "someToken"));
+
+        Optional<String> token = chainContextImpl.getToken();
+
+        assertThat(token).contains("someToken");
+    }
+
+    @Test
+    public void getTokenWillReturnEmptyIfNotPresentInRequestParameters(){
+        when(requestDataMock.getRequestParameters()).thenReturn(newHashMap());
+        assertThat(chainContextImpl.getToken()).isEmpty();
+
+        when(requestDataMock.getRequestParameters()).thenReturn(Collections.singletonMap(USERNAME, "someToken"));
+        assertThat(chainContextImpl.getToken()).isEmpty();
+
+        when(requestDataMock.getRequestParameters()).thenReturn(Collections.singletonMap(TOKEN, null));
+        assertThat(chainContextImpl.getToken()).isEmpty();
+
+        when(requestDataMock.getRequestParameters()).thenReturn(Collections.singletonMap(TOKEN, ""));
+        assertThat(chainContextImpl.getToken()).isEmpty();
+    }
+
+    @Test
+    public void redirectToWrongToken(){
+        when(configurationServiceMock.getValue(PASSWORD_INVALID_TOKEN_URL)).thenReturn(SIMBA_PASSWORD_INVALID_URL);
+
+        chainContextImpl.redirectToWrongToken();
+
+        ActionDescriptor actionDescriptor = chainContextImpl.getActionDescriptor();
+        Set<ActionType> actionTypes = actionDescriptor.getActionTypes();
+        assertEquals(2, actionTypes.size());
+        assertTrue(actionTypes.contains(REDIRECT));
+        assertTrue(actionTypes.contains(ADD_PARAMETER_TO_TARGET));
+        assertEquals(SIMBA_WEB_URL + SIMBA_PASSWORD_INVALID_URL, actionDescriptor.getRedirectURL());
     }
 }

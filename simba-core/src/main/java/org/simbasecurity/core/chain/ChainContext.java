@@ -146,4 +146,8 @@ public interface ChainContext extends Serializable {
     boolean isLoginUsingEID();
 
     String getSimbaEidSuccessUrl();
+
+    Optional<String> getToken();
+
+    void redirectToWrongToken();
 }

@@ -64,6 +64,16 @@
     </property>
   </bean>
 
+  <bean id="newPasswordChain" class="org.simbasecurity.core.chain.ChainImpl">
+    <property name="commands">
+      <list>
+        <ref bean="checkTokenCommand" />
+        <ref bean="checkNewPasswordCommand" />
+        <ref bean="changePasswordCommand" />
+      </list>
+    </property>
+  </bean>
+
   <bean id="emailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
   </bean>
 

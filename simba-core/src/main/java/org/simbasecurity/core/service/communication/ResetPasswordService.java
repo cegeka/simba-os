@@ -1,8 +1,6 @@
 package org.simbasecurity.core.service.communication;
 
 import com.google.common.collect.ImmutableMap;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
 import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.communication.token.Token;
@@ -10,13 +8,12 @@ import org.simbasecurity.core.service.communication.mail.LinkGenerator;
 import org.simbasecurity.core.service.communication.mail.Mail;
 import org.simbasecurity.core.service.communication.mail.MailService;
 import org.simbasecurity.core.service.communication.mail.template.TemplateService;
-import org.simbasecurity.core.service.communication.token.TokenGenerator;
+import org.simbasecurity.core.service.communication.token.UserTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.StringWriter;
 import java.net.URL;
 
 import static org.simbasecurity.core.domain.user.EmailAddress.email;
@@ -31,7 +28,7 @@ public class ResetPasswordService {
     @Autowired
     private MailService mailService;
     @Autowired
-    private TokenGenerator tokenGenerator;
+    private UserTokenService tokenManager;
     @Autowired
     private LinkGenerator linkGenerator;
     @Autowired
@@ -43,7 +40,7 @@ public class ResetPasswordService {
     private String resetPasswordMailTemplate;
 
     public void sendMessage(User user) {
-        Token token = tokenGenerator.generateToken(user);
+        Token token = tokenManager.generateToken(user);
         URL link = linkGenerator.generateResetPasswordLink(token);
         mailService.sendMail(createMail(user, link));
     }

@@ -1,5 +1,6 @@
 package org.simbasecurity.core.domain.repository.communication.token;
 
+import org.simbasecurity.core.domain.communication.token.Token;
 import org.simbasecurity.core.domain.communication.token.UserToken;
 import org.simbasecurity.core.domain.repository.AbstractVersionedDatabaseRepository;
 import org.springframework.stereotype.Repository;
@@ -18,6 +19,13 @@ public class UserTokenRepository extends AbstractVersionedDatabaseRepository<Use
     public Optional<UserToken> findByUserId(long userId) {
         TypedQuery<UserToken> query = entityManager.createQuery("SELECT ut FROM UserToken ut WHERE ut.userId = :userId", UserToken.class)
                 .setParameter("userId", userId);
+
+        return query.getResultList().stream().findFirst();
+    }
+
+    public Optional<UserToken> findByToken(Token token) {
+        TypedQuery<UserToken> query = entityManager.createQuery("SELECT ut FROM UserToken ut WHERE ut.token = :token", UserToken.class)
+                .setParameter("token", token);
 
         return query.getResultList().stream().findFirst();
     }

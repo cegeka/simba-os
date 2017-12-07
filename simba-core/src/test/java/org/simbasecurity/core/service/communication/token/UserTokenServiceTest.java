@@ -1,35 +1,43 @@
 package org.simbasecurity.core.service.communication.token;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.simbasecurity.core.domain.User;
+import org.simbasecurity.core.domain.UserTestBuilder;
 import org.simbasecurity.core.domain.communication.token.Token;
 import org.simbasecurity.core.domain.communication.token.UserToken;
+import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.domain.repository.communication.token.UserTokenRepository;
 import org.simbasecurity.test.PersistenceTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 import static org.simbasecurity.core.domain.communication.token.UserToken.userToken;
 
-public class TokenManagerTest extends PersistenceTestCase {
+public class UserTokenServiceTest extends PersistenceTestCase {
 
     @Autowired
     private UserTokenRepository userTokenRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    private UserTokenService tokenManager;
+    private UserTokenService userTokenService;
 
     @Before
     public void setUp() throws Exception {
-        tokenManager = new UserTokenService(userTokenRepository);
+        userTokenService = new UserTokenService(userTokenRepository, userRepository);
     }
 
     @Test
     public void generateToken_NoTokenExists_GeneratesANewTokenForTheGivenUserAndPersistsItForTheGivenUser() throws Exception {
         User user = aDefaultUser().build();
 
-        Token token = tokenManager.generateToken(user);
+        Token token = userTokenService.generateToken(user);
 
         assertThat(userTokenRepository.findAll()).extracting(UserToken::getToken).containsExactly(token);
     }
@@ -40,8 +48,22 @@ public class TokenManagerTest extends PersistenceTestCase {
         UserToken userToken = userToken(Token.generateToken(), user.getId());
         persistAndRefresh(userToken);
 
-        Token token = tokenManager.generateToken(user);
+        Token token = userTokenService.generateToken(user);
 
         assertThat(userTokenRepository.findAll()).extracting(UserToken::getToken).containsExactly(token);
+    }
+
+    @Test
+    public void getUserForToken() throws Exception {
+        User user = UserTestBuilder.aDefaultUser().build();
+        persistAndRefresh(user);
+
+        Token token = Token.fromString("token");
+        UserToken userToken = userToken(token, user.getId());
+        persistAndRefresh(userToken);
+
+        Optional<User> maybeUser = userTokenService.getUserForToken(token);
+
+        Assertions.assertThat(maybeUser).contains(user);
     }
 }

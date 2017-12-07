@@ -16,8 +16,6 @@
  */
 package org.simbasecurity.core.chain;
 
-import com.google.common.collect.Maps;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -56,9 +54,10 @@ public class ChainContextImplTest {
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
 
     private static final String SIMBA_LOGIN_PAGE_URL = "login_url";
-    private static final String SIMBA_CHANGEPASSWORD_PAGE_URL = "/jsp/changepassword.jsp";
-    private static final String SIMBA_PASSWORD_CHANGED_URL = "/jsp/passwordchanged.jsp";
-    private static final String SIMBA_PASSWORD_RESET_URL = "/jsp/password-reset.jsp";
+    private static final String SIMBA_CHANGEPASSWORD_PAGE_URL = "jsp/changepassword.jsp";
+    private static final String SIMBA_PASSWORD_CHANGED_URL = "jsp/passwordchanged.jsp";
+    private static final String SIMBA_PASSWORD_RESET_URL = "jsp/password-reset.jsp";
+    private static final String SIMBA_NEW_PASSWORD_URL = "jsp/new-password.jsp";
 
     private static final String SIMBA_PASSWORD_INVALID_URL = "/jsp/password-invalid-token.jsp";
 
@@ -299,5 +298,23 @@ public class ChainContextImplTest {
         assertTrue(actionTypes.contains(REDIRECT));
         assertTrue(actionTypes.contains(ADD_PARAMETER_TO_TARGET));
         assertEquals(SIMBA_WEB_URL + SIMBA_PASSWORD_INVALID_URL, actionDescriptor.getRedirectURL());
+    }
+
+    @Test
+    public void redirectToNewPassword() throws Exception {
+        when(configurationServiceMock.getValue(NEW_PASSWORD_URL)).thenReturn(SIMBA_NEW_PASSWORD_URL);
+
+        chainContextImpl.redirectToNewPassword("someToken", "errorMessage");
+
+        ActionDescriptor actionDescriptor = chainContextImpl.getActionDescriptor();
+        Set<ActionType> actionTypes = actionDescriptor.getActionTypes();
+        assertEquals(2, actionTypes.size());
+        assertTrue(actionTypes.contains(REDIRECT));
+        assertTrue(actionTypes.contains(ADD_PARAMETER_TO_TARGET));
+        Map<String, String> parameterMap = actionDescriptor.getParameterMap();
+        assertThat(parameterMap).hasSize(2);
+        assertThat(parameterMap.get(TOKEN)).isEqualTo("someToken");
+        assertThat(parameterMap.get(ERROR_MESSAGE)).isEqualTo("errorMessage");
+        assertThat(SIMBA_WEB_URL + SIMBA_NEW_PASSWORD_URL).isEqualTo(actionDescriptor.getRedirectURL());
     }
 }

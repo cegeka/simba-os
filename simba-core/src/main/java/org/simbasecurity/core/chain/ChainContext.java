@@ -150,4 +150,14 @@ public interface ChainContext extends Serializable {
     Optional<String> getToken();
 
     void redirectToWrongToken();
+
+    void setUserName(String userName);
+
+    void redirectToNewPassword(String someToken, String name);
+
+    Optional<String> getNewPassword();
+
+    String getNewPasswordConfirmation();
+
+    void redirectToNewPasswordSuccessPage();
 }

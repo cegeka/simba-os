@@ -42,4 +42,8 @@ public class UserToken extends AbstractVersionedEntity {
     public void setToken(Token token) {
         this.token = token;
     }
+
+    public long getUserId() {
+        return userId;
+    }
 }

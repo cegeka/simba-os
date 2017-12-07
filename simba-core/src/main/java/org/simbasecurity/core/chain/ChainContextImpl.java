@@ -17,7 +17,6 @@
 
 package org.simbasecurity.core.chain;
 
-import com.google.common.collect.Maps;
 import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.api.service.thrift.RequestData;
@@ -387,5 +386,34 @@ public class ChainContextImpl implements ChainContext {
     @Override
     public void redirectToWrongToken() {
         redirectWithParameters(getSimbaWebURL() + configurationService.getValue(PASSWORD_INVALID_TOKEN_URL), newHashMap());
+    }
+
+    @Override
+    public void setUserName(String userName) {
+        getRequestParameters().put(USERNAME, userName);
+    }
+
+    @Override
+    public void redirectToNewPassword(String token, String errorMessage) {
+        HashMap<String, String> parameters = newHashMap();
+        parameters.put("token", token);
+        parameters.put("errorMessage", errorMessage);
+
+        redirectWithParameters(getSimbaWebURL() + configurationService.getValue(NEW_PASSWORD_URL), parameters);
+    }
+
+    @Override
+    public Optional<String> getNewPassword() {
+        return Optional.ofNullable(!isEmpty(getRequestParameter(NEW_PASSWORD)) ? getRequestParameter(NEW_PASSWORD) : null);
+    }
+
+    @Override
+    public String getNewPasswordConfirmation() {
+        return getRequestParameter(NEW_PASSWORD_CONFIRMATION);
+    }
+
+    @Override
+    public void redirectToNewPasswordSuccessPage() {
+        redirectWithParameters(getSimbaWebURL() + configurationService.getValue(NEW_PASSWORD_SUCCESS_URL), newHashMap());
     }
 }

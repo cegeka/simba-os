@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.google.common.collect.Sets.*;
+
 public class UserTestBuilder {
     private String name;
     private String firstName;
@@ -152,6 +154,11 @@ public class UserTestBuilder {
 
     public UserTestBuilder withRoles(Set<Role> roles) {
         this.roles = roles;
+        return this;
+    }
+
+    public UserTestBuilder withRoles(Role... roles) {
+        this.roles = newHashSet(roles);
         return this;
     }
 

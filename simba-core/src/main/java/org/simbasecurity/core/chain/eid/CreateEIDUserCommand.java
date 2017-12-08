@@ -27,6 +27,7 @@ import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.UserEntity;
 import org.simbasecurity.core.service.UserService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.core.service.user.UserFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +44,7 @@ import java.util.List;
 public class CreateEIDUserCommand implements Command {
 
     @Autowired private UserService userService;
+    @Autowired private UserFactory userFactory;
     @Autowired private CoreConfigurationService configurationService;
     @Autowired private Audit audit;
     @Autowired private AuditLogEventFactory auditLogFactory;
@@ -57,7 +59,7 @@ public class CreateEIDUserCommand implements Command {
 
             user = UserEntity.eidUser(samlUser.getInsz(), samlUser.getFirstname(),samlUser.getLastname(), getLanguageIfUnknownUseNL(samlUser));
 
-            userService.create(user, roles);
+            userFactory.createWithRoles(user, roles);
             audit.log(auditLogFactory.createEventForEIDSAMLResponse(context, "New user for eid created with username [" + user.getUserName() + "]"));
         } else {
             user.setName(samlUser.getLastname());

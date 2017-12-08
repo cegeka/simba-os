@@ -4,8 +4,10 @@ import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command;
+import org.simbasecurity.core.domain.communication.token.Token;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.CredentialService;
+import org.simbasecurity.core.service.communication.token.UserTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +15,7 @@ import java.util.Optional;
 
 import static org.simbasecurity.core.audit.AuditMessages.PASSWORD_CHANGED;
 import static org.simbasecurity.core.audit.AuditMessages.PASSWORD_NOT_VALID;
+import static org.simbasecurity.core.domain.communication.token.Token.fromString;
 
 @Component
 public class NewPasswordCommand implements Command {
@@ -23,6 +26,8 @@ public class NewPasswordCommand implements Command {
     private Audit audit;
     @Autowired
     private AuditLogEventFactory auditLogEventFactory;
+    @Autowired
+    private UserTokenService userTokenService;
 
 
     @Override
@@ -37,6 +42,7 @@ public class NewPasswordCommand implements Command {
 
         try {
             credentialService.changePassword(userName, maybePassword.get(), passwordConfirmation);
+            userTokenService.deleteToken(context.getToken().map(Token::fromString).orElse(null));
             audit.log(auditLogEventFactory.createEventForSessionForSuccess(context, PASSWORD_CHANGED));
             context.redirectToNewPasswordSuccessPage();
             return State.FINISH;

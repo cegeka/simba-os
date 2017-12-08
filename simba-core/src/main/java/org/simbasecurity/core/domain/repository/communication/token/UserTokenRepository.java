@@ -5,6 +5,7 @@ import org.simbasecurity.core.domain.communication.token.UserToken;
 import org.simbasecurity.core.domain.repository.AbstractVersionedDatabaseRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.Optional;
 
@@ -28,5 +29,11 @@ public class UserTokenRepository extends AbstractVersionedDatabaseRepository<Use
                 .setParameter("token", token);
 
         return query.getResultList().stream().findFirst();
+    }
+
+    public void deleteToken(Token token) {
+        Query query = entityManager.createQuery("DELETE FROM UserToken ut WHERE ut.token = :token");
+        query.setParameter("token", token);
+        query.executeUpdate();
     }
 }

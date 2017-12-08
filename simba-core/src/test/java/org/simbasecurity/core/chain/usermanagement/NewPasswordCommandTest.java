@@ -10,13 +10,14 @@ import org.simbasecurity.core.audit.AuditLogEvent;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command;
+import org.simbasecurity.core.domain.communication.token.Token;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.CredentialService;
+import org.simbasecurity.core.service.communication.token.UserTokenService;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 import static org.simbasecurity.core.audit.AuditMessages.PASSWORD_CHANGED;
 import static org.simbasecurity.core.audit.AuditMessages.PASSWORD_NOT_VALID;
@@ -28,6 +29,8 @@ public class NewPasswordCommandTest {
 
     @Mock
     private ChainContext contextMock;
+    @Mock
+    private UserTokenService userTokenServiceMock;
     @Mock
     private Audit auditMock;
     @Mock
@@ -54,6 +57,7 @@ public class NewPasswordCommandTest {
         when(contextMock.getNewPassword()).thenReturn(Optional.of("newPassword"));
         when(contextMock.getNewPasswordConfirmation()).thenReturn("newPassword");
         when(contextMock.getUserName()).thenReturn("someUsername");
+        when(contextMock.getToken()).thenReturn(Optional.of("token"));
         AuditLogEvent auditLogEvent = mock(AuditLogEvent.class);
         when(auditLogFactory.createEventForSessionForSuccess(contextMock, PASSWORD_CHANGED)).thenReturn(auditLogEvent);
 
@@ -61,6 +65,7 @@ public class NewPasswordCommandTest {
 
         assertThat(state).isEqualTo(FINISH);
 
+        verify(userTokenServiceMock).deleteToken(Token.fromString("token"));
         verify(credentialServiceMock).changePassword("someUsername", "newPassword", "newPassword");
         verify(auditMock).log(auditLogEvent);
         verify(contextMock).redirectToNewPasswordSuccessPage();

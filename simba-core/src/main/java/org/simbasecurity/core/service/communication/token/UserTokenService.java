@@ -7,6 +7,7 @@ import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.domain.repository.communication.token.UserTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -14,6 +15,7 @@ import java.util.logging.Logger;
 import static org.simbasecurity.core.domain.communication.token.UserToken.userToken;
 
 @Service
+@Transactional
 public class UserTokenService {
 
     private static final Logger logger = Logger.getLogger(UserTokenService.class.getName());
@@ -42,5 +44,9 @@ public class UserTokenService {
         return userTokenRepository.findByToken(token)
                 .map(UserToken::getUserId)
                 .flatMap(id -> userRepository.findById(id));
+    }
+
+    public void deleteToken(Token token) {
+        userTokenRepository.deleteToken(token);
     }
 }

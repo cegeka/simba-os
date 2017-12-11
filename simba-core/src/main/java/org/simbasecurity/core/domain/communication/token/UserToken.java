@@ -48,4 +48,8 @@ public abstract class UserToken extends AbstractVersionedEntity {
     public LocalDateTime getExpiresOn() {
         return expiresOn;
     }
+
+    public long getUserId() {
+        return userId;
+    }
 }

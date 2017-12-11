@@ -86,21 +86,22 @@ public class UserEntityTest extends LocatorTestCase {
 
     @Test
     public void changePasswordAuthorized_oldPasswordSameAsNewPassword() {
-        assertThatThrownBy(() -> user.changePasswordAuthorized(DEFAULT_PASSWORD, DEFAULT_PASSWORD))
+        user.changePasswordAuthorized(null, VALID_PASSWORD);
+        assertThatThrownBy(() -> user.changePasswordAuthorized(VALID_PASSWORD, VALID_PASSWORD))
                 .isInstanceOf(SimbaException.class)
                 .hasMessage("PASSWORD_SAME_AS_OLD");
     }
 
     @Test
     public void changePasswordAuthorized_newPasswordInvalid() {
-        assertThatThrownBy(() -> user.changePasswordAuthorized(DEFAULT_PASSWORD, INVALID_PASSWORD))
+        assertThatThrownBy(() -> user.changePasswordAuthorized(null, INVALID_PASSWORD))
                 .isInstanceOf(SimbaException.class)
                 .hasMessage("PASSWORD_INVALID_LENGTH");
     }
 
     @Test
     public void changePasswordAuthorized_changeSuccess() {
-        assertTrue(user.changePasswordAuthorized(DEFAULT_PASSWORD, VALID_PASSWORD));
+        assertTrue(user.changePasswordAuthorized(null, VALID_PASSWORD));
         assertFalse(user.isChangePasswordOnNextLogon());
         assertEquals(truncate(new Date(), Calendar.DAY_OF_MONTH), user.getDateOfLastPasswordChange());
     }
@@ -121,7 +122,7 @@ public class UserEntityTest extends LocatorTestCase {
 
     @Test
     public void changePassword_passwordConfirmationInvalid() {
-        assertThatThrownBy(() -> user.changePassword(DEFAULT_PASSWORD, INVALID_PASSWORD))
+        assertThatThrownBy(() -> user.changePassword(VALID_PASSWORD, INVALID_PASSWORD))
                 .isInstanceOf(SimbaException.class)
                 .hasMessage("PASSWORDS_DONT_MATCH");
     }

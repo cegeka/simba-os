@@ -140,7 +140,6 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 	private UserEntity(String userName, String firstName, String name, String successURL, Language language, Status status,
 			boolean changePasswordOnNextLogon, boolean passwordChangeRequired, EmailAddress email) {
 		setUserName(userName);
-		setPassword(getDefaultPassword());
 		setFirstName(firstName);
 		setName(name);
 		setSuccessURL(successURL);

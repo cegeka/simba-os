@@ -18,7 +18,7 @@ public class UserTokenRepositoryTest extends PersistenceTestCase {
     private UserTokenRepository userTokenRepository;
 
     @Test
-    public void findByUserId_HappyPath() throws Exception {
+    public void findByUserId_IfUserTokenExistsReturnToken() throws Exception {
         long userId = 63106510L;
         Token token = Token.generateToken();
         UserToken expectedUserToken = userToken().withToken(token).withUserId(userId).buildResetPasswordUserToken();
@@ -40,7 +40,7 @@ public class UserTokenRepositoryTest extends PersistenceTestCase {
         assertThat(loadedUserToken).isInstanceOf(ResetPasswordUserToken.class);
         assertThat(loadedUserToken.getExpiresOn()).isEqualTo(expiresOn);
     }
-    
+
     @Test
     public void findById_CanLookupUserCreationUserToken() throws Exception {
         long userId = 63106510L;
@@ -51,5 +51,27 @@ public class UserTokenRepositoryTest extends PersistenceTestCase {
         UserToken loadedUserToken = userTokenRepository.lookUp(expectedUserToken.getId());
         assertThat(loadedUserToken).isInstanceOf(UserCreationUserToken.class);
         assertThat(loadedUserToken.getExpiresOn()).isEqualTo(expiresOn);
+    }
+
+
+    @Test
+    public void findByUserId_IfUserTokenDoesNotExistsReturnEmpty() throws Exception {
+        Optional<UserToken> userToken = userTokenRepository.findByUserId(1L);
+
+        assertThat(userToken).isEmpty();
+    }
+
+    @Test
+    public void deleteToken() throws Exception {
+        long userId = 0;
+        Token token = Token.generateToken();
+        UserToken userToken = userToken().withToken(token).withUserId(userId).buildResetPasswordUserToken();
+        persistAndRefresh(userToken);
+
+        assertThat(userTokenRepository.findByToken(token)).contains(userToken);
+
+        userTokenRepository.deleteToken(token);
+
+        assertThat(userTokenRepository.findByToken(token)).isEmpty();
     }
 }

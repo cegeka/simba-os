@@ -39,6 +39,7 @@ import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.service.UserService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.core.service.user.UserFactory;
 import org.simbasecurity.test.LocatorTestCase;
 
 import java.util.Collections;
@@ -61,6 +62,7 @@ public class CreateEIDUserCommandTest extends LocatorTestCase {
     private static final String NL = "nl";
 
     @Mock private UserService userServiceMock;
+    @Mock private UserFactory userFactoryMock;
     @Mock private CoreConfigurationService configurationServiceMock;
 
     @Mock private ChainContext chainContextMock;
@@ -93,7 +95,7 @@ public class CreateEIDUserCommandTest extends LocatorTestCase {
 
         assertEquals(State.CONTINUE, state);
 
-        verify(userServiceMock).create(userCaptor.capture(), roleListCaptor.capture());
+        verify(userFactoryMock).createEIDUserWithRoles(userCaptor.capture(), roleListCaptor.capture());
         verify(chainContextMock).setUserPrincipal(INSZ);
 
         User user = userCaptor.getValue();

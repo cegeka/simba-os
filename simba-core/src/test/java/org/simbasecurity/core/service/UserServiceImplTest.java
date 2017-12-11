@@ -179,5 +179,4 @@ public class UserServiceImplTest {
         verify(userRepository).searchUsersOrderedByName("1");
     }
 
-
 }

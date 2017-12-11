@@ -25,11 +25,12 @@ public class CheckTokenCommand implements Command {
         Optional<User> mayBeUser = context.getToken()
                 .map(Token::fromString)
                 .flatMap(token -> userTokenService.getUserForToken(token));
-        if(mayBeUser.isPresent()){
-             return CONTINUE;
+        if (mayBeUser.isPresent()) {
+            mayBeUser.ifPresent(user -> context.setUserName(user.getUserName()));
+            return CONTINUE;
         } else {
             context.redirectToWrongToken();
-            return ERROR;
+            return FINISH;
         }
     }
 

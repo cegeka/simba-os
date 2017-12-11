@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -112,5 +113,12 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
         User user = userDatabaseRepository.findByEmail(email);
 
         Assertions.assertThat(user).isEqualTo(expectedUser);
+    }
+
+    @Test
+    public void findById(){
+        Optional<User> maybeUser = userDatabaseRepository.findById(user.getId());
+
+        Assertions.assertThat(maybeUser).contains(user);
     }
 }

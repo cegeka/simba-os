@@ -21,7 +21,7 @@
 <fmt:setBundle basename="org.simbasecurity.messages.Message"/>
 <html>
 <head>
-    <title><fmt:message key="reset.password.title"/></title>
+    <title><fmt:message key="new.password.title"/></title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
     <link href="../css/style.css" rel="stylesheet" type="text/css"/>
 </head>
@@ -30,7 +30,39 @@
     <div id="header">
         <h2>Simba</h2>
 
-        <h3><fmt:message key="reset.password.header"/></h3>
+        <h3><fmt:message key="new.password.header"/></h3>
+    </div>
+    <div id="content">
+        <%
+            String token = request.getParameter("token");
+        %>
+
+        <form name="changePasswordForm" id="changepassword" method="post" action="/simba/http/simba-new-pwd" autocomplete="off">
+            <p>
+                <label for="newpassword"><fmt:message key="changepassword.newpassword"/></label>
+                <span class="input"><input type="password" name="newpassword"
+                                           id="newpassword" value="${param['newpassword']}" class="text"/></span>
+            </p>
+
+            <p>
+                <label for="newpasswordconfirmation"><fmt:message key="changepassword.newpasswordconfirmation"/></label>
+                <span class="input"><input type="password" name="newpasswordconfirmation"
+                                           id="newpasswordconfirmation" value="${param['newpasswordconfirmation']}"
+                                           class="text"/></span>
+            </p>
+            <c:if test="${param['errorMessage'] != null && param['errorMessage'] != 'null'}">
+                <p class="error" id="errorMessage"><fmt:message key="error.${param['errorMessage']}"/></p>
+            </c:if>
+            <input type="submit" id="submit" value="<fmt:message key="changepassword.button"/>"
+                   style="cursor:pointer; cursor:hand;"/>
+            <%
+                if (token != null) {
+            %>
+            <input type="hidden" name="token" value="<%=token %>" />
+            <%
+                }
+            %>
+        </form>
     </div>
 </div>
 </body>

@@ -68,8 +68,7 @@
     <property name="commands">
       <list>
         <ref bean="checkTokenCommand" />
-        <ref bean="checkNewPasswordCommand" />
-        <ref bean="changePasswordCommand" />
+        <ref bean="newPasswordCommand" />
       </list>
     </property>
   </bean>

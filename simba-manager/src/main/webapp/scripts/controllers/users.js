@@ -121,7 +121,7 @@ angular.module('SimbaApp')
                                 language: user.language,
                                 status: user.status,
                                 successURL: user.successURL,
-                                changePassword: true
+                                changePassword: false
                             };
                         },
                         roles: function () {

@@ -26,6 +26,7 @@ import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserDatabaseRepository extends AbstractVersionedDatabaseRepository<User> implements UserRepository {
@@ -93,6 +94,14 @@ public class UserDatabaseRepository extends AbstractVersionedDatabaseRepository<
         }
 
         throw new IllegalStateException("Multiple users found for email: '" + email + "'");
+    }
+
+    @Override
+    public Optional<User> findById(long id) {
+        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM UserEntity u WHERE u.id = :id", User.class)
+                .setParameter("id", id);
+
+        return query.getResultList().stream().findFirst();
     }
 
     @Override

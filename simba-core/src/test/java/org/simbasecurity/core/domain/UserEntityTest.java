@@ -58,7 +58,6 @@ public class UserEntityTest extends LocatorTestCase {
         doThrow(new SimbaException(PASSWORD_INVALID_LENGTH)).when(mockPasswordValidator).validatePassword(INVALID_PASSWORD);
 
         CoreConfigurationService configurationServiceMock = implantMock(CoreConfigurationService.class);
-        when(configurationServiceMock.getValue(SimbaConfigurationParameter.DEFAULT_PASSWORD)).thenReturn(DEFAULT_PASSWORD);
 
         user = aUser().withUserName(USERNAME).withStatus(Status.ACTIVE).withChangePasswordOnNextLogon(true).withPasswordChangeRequired(true).buildWithValidation();
     }
@@ -133,12 +132,5 @@ public class UserEntityTest extends LocatorTestCase {
         entity.changePassword(VALID_PASSWORD, VALID_PASSWORD);
         assertFalse(entity.isChangePasswordOnNextLogon());
         assertEquals(DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH), entity.getDateOfLastPasswordChange());
-    }
-
-    @Test
-    public void resetPassword() {
-        user.resetPassword();
-        assertTrue(user.isChangePasswordOnNextLogon());
-        assertTrue(user.checkPassword(DEFAULT_PASSWORD));
     }
 }

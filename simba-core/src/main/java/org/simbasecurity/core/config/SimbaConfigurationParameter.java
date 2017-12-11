@@ -183,11 +183,6 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
     PASSWORD_MINIMUM_COMPLEXITY(DATABASE, true, IntegerType.class, "3"),
 
     /**
-     * Parameter for configuring the default password.
-     */
-    DEFAULT_PASSWORD(DATABASE, true, StringType.class, "Simba3D"),
-
-    /**
      * Parameter for configuring if new users should have the password change
      * required enabled.
      */

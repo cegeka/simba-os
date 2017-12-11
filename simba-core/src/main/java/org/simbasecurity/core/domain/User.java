@@ -175,11 +175,6 @@ public interface User extends Versionable {
 	void changePassword(String newPassword, String newPasswordConfirmation);
 
 	/**
-	 * Reset password to default
-	 */
-	void resetPassword();
-
-	/**
 	 * Checks if the user is required to change his password at next login.
 	 * <p/>
 	 * A user is required to change his password if the password has been used

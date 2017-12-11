@@ -31,14 +31,12 @@ import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.util.PasswordEncryptorFactory;
 import org.simbasecurity.core.util.SHA1PasswordEncryptorFactory;
 
 import javax.persistence.*;
 import java.util.*;
 
-import static org.simbasecurity.core.config.SimbaConfigurationParameter.DEFAULT_PASSWORD;
 import static org.simbasecurity.core.domain.Status.INACTIVE;
 import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORDS_DONT_MATCH;
 import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORD_SAME_AS_OLD;
@@ -337,12 +335,6 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 		setChangePasswordOnNextLogon(false);
 	}
 
-	@Override
-	public void resetPassword() {
-		setPassword(getDefaultPassword());
-		setChangePasswordOnNextLogon(true);
-	}
-
 	private void setPassword(String newPassword) {
 		getPasswordValidator().validatePassword(newPassword);
 
@@ -455,11 +447,7 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("id", id).append("userName", userName).toString();
 	}
 
-	private String getDefaultPassword() {
-		return GlobalContext.locate(CoreConfigurationService.class).getValue(DEFAULT_PASSWORD);
-	}
-
-    public void setEmail(EmailAddress email) {
+	public void setEmail(EmailAddress email) {
         this.email = email;
     }
 

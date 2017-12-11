@@ -1,7 +1,6 @@
 package org.simbasecurity.core.service.user;
 
 import org.assertj.core.api.Assertions;
-import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,30 +9,26 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.domain.User;
-import org.simbasecurity.core.domain.UserTestBuilder;
 import org.simbasecurity.core.domain.generator.PasswordGenerator;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
-import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.locator.SpringAwareLocator;
-import org.simbasecurity.core.service.communication.ResetPasswordService;
-import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.simbasecurity.core.domain.RoleTestBuilder.role;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 import static org.simbasecurity.core.domain.UserTestBuilder.aUser;
 import static org.simbasecurity.core.domain.user.EmailAddress.email;
+import static org.simbasecurity.core.service.communication.reset.password.ResetPasswordReason.NEW_USER;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserFactoryTest {
@@ -68,7 +63,7 @@ public class UserFactoryTest {
 
         User savedUser = userFactory.create(user);
 
-        verify(resetPasswordService).sendResetPasswordMessageTo(user);
+        verify(resetPasswordService).sendResetPasswordMessageTo(user, NEW_USER);
         verify(userRepository).persist(savedUser);
         verify(managementAudit).log("User ''{0}'' created", "userName");
     }

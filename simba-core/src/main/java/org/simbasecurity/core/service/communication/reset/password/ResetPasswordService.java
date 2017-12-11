@@ -1,13 +1,10 @@
-package org.simbasecurity.core.service.communication;
+package org.simbasecurity.core.service.communication.reset.password;
 
-import com.google.common.collect.ImmutableMap;
-import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.communication.token.Token;
 import org.simbasecurity.core.service.communication.mail.LinkGenerator;
 import org.simbasecurity.core.service.communication.mail.Mail;
 import org.simbasecurity.core.service.communication.mail.MailService;
-import org.simbasecurity.core.service.communication.mail.template.TemplateService;
 import org.simbasecurity.core.service.communication.token.UserTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,29 +29,24 @@ public class ResetPasswordService {
     @Autowired
     private LinkGenerator linkGenerator;
     @Autowired
-    private TemplateService templateService;
+    private ResetPasswordTemplateService templateService;
 
     @Value("${simba.smtp.mail.from}")
     private String resetPasswordFromAddress;
-    @Value("${simba.reset.password.mail.template}")
-    private String resetPasswordMailTemplate;
 
-    public void sendResetPasswordMessageTo(User user) {
+    public void sendResetPasswordMessageTo(User user, ResetPasswordReason reason) {
         Token token = tokenManager.generateToken(user);
         URL link = linkGenerator.generateResetPasswordLink(token);
-        mailService.sendMail(createMail(user, link));
+
+        String mailBody = templateService.createMailBody(reason, user.getLanguage(), link.toString());
+        mailService.sendMail(createMail(user, mailBody));
     }
 
-    private Mail createMail(User user, URL link) {
+    private Mail createMail(User user, String body) {
         return mail()
                 .from(email(resetPasswordFromAddress))
                 .to(user.getEmail())
                 .subject(RESET_PASSWORD_SUBJECT)
-                .body(createBody(user.getLanguage(), link.toString()));
+                .body(body);
     }
-
-    private String createBody(Language language, String link){
-        return templateService.createMailBody(resetPasswordMailTemplate, language, ImmutableMap.of("link", link));
-    }
-
 }

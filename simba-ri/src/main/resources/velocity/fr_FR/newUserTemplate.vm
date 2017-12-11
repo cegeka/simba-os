@@ -1,0 +1,21 @@
+<html>
+<head>
+    <title>Reset password</title>
+</head>
+<body>
+<div>
+    <p>Template pour nouveaux utilisateur en français</p>
+    <p>Madame, Monsieur,</p>
+    <br/>
+    <p style="margin:0px">vous avez introduit une demande de renouvellement de mot de passe sur notre site Internet.</p>
+    <p style="margin:0px">En cliquant sur le lien suivant, vous aurez la possibilité de mettre à jour votre mot de passe.</p>
+    <br/>
+    <a href="$link">$link</a>
+    <br/>
+    <p style="margin:0px">Cordialement,</p>
+    <br/>
+    <p style="margin:0px">Votre caisse d'assurances sociales.</p>
+    <p><i>Cet e-mail est généré automatiquement. Veuillez ne pas y répondre. Pour toute question, vous pouvez contacter votre caisse d'assurances sociales.</i></p>
+</div>
+</body>
+</html>

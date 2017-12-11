@@ -10,7 +10,8 @@ import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.service.CredentialService;
-import org.simbasecurity.core.service.communication.ResetPasswordService;
+import org.simbasecurity.core.service.communication.reset.password.ResetPasswordReason;
+import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 
 import java.util.Optional;
 
@@ -43,7 +44,7 @@ public class ResetPasswordCommandTest {
 
         Command.State state = resetPasswordCommand.execute(chainContextMock);
 
-        verify(resetPasswordServiceMock).sendResetPasswordMessageTo(user);
+        verify(resetPasswordServiceMock).sendResetPasswordMessageTo(user, ResetPasswordReason.FORGOT_PASSWORD);
         assertThat(state).isEqualTo(FINISH);
         verify(chainContextMock).redirectToPasswordReset();
     }

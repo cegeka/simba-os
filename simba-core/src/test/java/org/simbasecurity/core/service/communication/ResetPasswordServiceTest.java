@@ -12,7 +12,8 @@ import org.simbasecurity.core.domain.communication.token.Token;
 import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.service.communication.mail.MailService;
 import org.simbasecurity.core.service.communication.mail.LinkGenerator;
-import org.simbasecurity.core.service.communication.mail.template.TemplateService;
+import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
+import org.simbasecurity.core.service.communication.reset.password.ResetPasswordTemplateService;
 import org.simbasecurity.core.service.communication.token.UserTokenService;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -23,6 +24,8 @@ import static org.mockito.Mockito.when;
 import static org.simbasecurity.core.domain.Language.en_US;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 import static org.simbasecurity.core.domain.user.EmailAddress.email;
+import static org.simbasecurity.core.service.communication.reset.password.ResetPasswordReason.FORGOT_PASSWORD;
+import static org.simbasecurity.core.service.communication.reset.password.ResetPasswordReason.NEW_USER;
 import static org.simbasecurity.core.service.communication.mail.Mail.mail;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -35,7 +38,7 @@ public class ResetPasswordServiceTest {
     @Mock
     private UserTokenService tokenManagerMock;
     @Mock
-    private TemplateService templateService;
+    private ResetPasswordTemplateService templateServiceMock;
 
     @InjectMocks
     private ResetPasswordService resetPasswordService;
@@ -43,7 +46,6 @@ public class ResetPasswordServiceTest {
     @Before
     public void setUp() throws Exception {
         ReflectionTestUtils.setField(resetPasswordService, "resetPasswordFromAddress", "bla@hotmail.com");
-        ReflectionTestUtils.setField(resetPasswordService, "resetPasswordMailTemplate", "someTemplate.vm");
     }
 
     @Test
@@ -57,9 +59,9 @@ public class ResetPasswordServiceTest {
         when(tokenManagerMock.generateToken(user)).thenReturn(token);
         URL link = new URL("http://www.google.com");
         when(linkGeneratorMock.generateResetPasswordLink(token)).thenReturn(link);
-        when(templateService.createMailBody("someTemplate.vm", en_US, ImmutableMap.of("link", link.toString()))).thenReturn("someBody");
+        when(templateServiceMock.createMailBody(FORGOT_PASSWORD, en_US, link.toString())).thenReturn("someBody");
 
-        resetPasswordService.sendResetPasswordMessageTo(user);
+        resetPasswordService.sendResetPasswordMessageTo(user, FORGOT_PASSWORD);
 
         verify(mailServiceMock).sendMail(mail().from(email("bla@hotmail.com")).to(email).subject("reset password").body("someBody"));
     }

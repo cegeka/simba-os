@@ -1,0 +1,21 @@
+<html>
+<head>
+    <title>Reset password</title>
+</head>
+<body>
+<div>
+    <p>Template voor een nieuwe user in het nederlands</p>
+    <p>Beste,</p>
+    <br/>
+    <p style="margin:0px">Via onze site hebt u zonet een aanvraag tot paswoordwijziging verstuurd.</p>
+    <p style="margin:0px">Door te klikken op onderstaande link hebt u de mogelijkheid om uw paswoord opnieuw in te stellen.</p>
+    <br/>
+    <a href="$link">$link</a>
+    <br/>
+    <p style="margin:0px">Met vriendelijke groeten,</p>
+    <br/>
+    <p style="margin:0px">Uw sociaal verzekeringsfonds</p>
+    <p><i>Dit is een automatisch aangemaakte mail. Gelieve geen reply te doen. Bij vragen kan u uw fonds contacteren.</i></p>
+</div>
+</body>
+</html>

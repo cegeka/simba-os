@@ -26,6 +26,8 @@ public abstract class UserToken extends AbstractVersionedEntity {
     @Type(type="org.simbasecurity.core.util.hibernate.LocalDateTimeUserType")
     private LocalDateTime expiresOn;
 
+    protected UserToken(){}
+
     UserToken(Token token, long userId, LocalDateTime expiresOn) {
         this.token = token;
         this.userId = userId;

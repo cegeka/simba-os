@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 @DiscriminatorValue("userCreationUserToken")
 public class UserCreationUserToken extends UserToken {
 
+    protected UserCreationUserToken() {}
+
     UserCreationUserToken(Token token, long userId, LocalDateTime expiresOn) {
         super(token, userId, expiresOn);
     }

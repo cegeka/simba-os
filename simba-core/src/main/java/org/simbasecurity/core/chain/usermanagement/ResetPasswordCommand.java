@@ -27,7 +27,7 @@ public class ResetPasswordCommand implements Command {
         context.getEmail()
                 .map(EmailAddress::email)
                 .flatMap(email -> credentialService.findUserByMail(email))
-                .ifPresent(user -> resetPasswordService.sendMessage(user));
+                .ifPresent(user -> resetPasswordService.sendResetPasswordMessageTo(user));
         context.redirectToPasswordReset();
         return State.FINISH;
     }

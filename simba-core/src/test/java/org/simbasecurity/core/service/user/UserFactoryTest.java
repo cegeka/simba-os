@@ -1,26 +1,25 @@
 package org.simbasecurity.core.service.user;
 
 import org.assertj.core.api.Assertions;
+import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.domain.User;
-import org.simbasecurity.core.domain.UserEntity;
 import org.simbasecurity.core.domain.UserTestBuilder;
 import org.simbasecurity.core.domain.generator.PasswordGenerator;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
-import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.locator.SpringAwareLocator;
+import org.simbasecurity.core.service.communication.ResetPasswordService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 
 import java.util.List;
@@ -52,9 +51,7 @@ public class UserFactoryTest {
     @Mock
     private ManagementAudit managementAudit;
     @Mock
-    private CoreConfigurationService configurationService;
-    @Mock
-    private PasswordValidator passwordValidator;
+    private ResetPasswordService resetPasswordService;
     @InjectMocks
     private UserFactory userFactory;
 
@@ -62,8 +59,6 @@ public class UserFactoryTest {
     public void setUp() throws Exception {
         GlobalContext.initialize(locator);
         when(locator.locate(UserValidator.class)).thenReturn(userValidator);
-        when(locator.locate(CoreConfigurationService.class)).thenReturn(configurationService);
-        when(locator.locate(PasswordValidator.class)).thenReturn(passwordValidator);
     }
 
     @Test
@@ -73,6 +68,7 @@ public class UserFactoryTest {
 
         User savedUser = userFactory.create(user);
 
+        verify(resetPasswordService).sendResetPasswordMessageTo(user);
         verify(userRepository).persist(savedUser);
         verify(managementAudit).log("User ''{0}'' created", "userName");
     }
@@ -102,6 +98,25 @@ public class UserFactoryTest {
         when(userRepository.persist(user)).thenReturn(user);
 
         User savedUser = userFactory.createWithRoles(user, roleNames);
+
+        assertThat(savedUser.hasRole("manager")).isTrue();
+        assertThat(savedUser.hasRole("bediende")).isTrue();
+        assertThat(savedUser.hasRole("medewerker")).isTrue();
+
+        verify(userRepository).persist(user);
+        verify(managementAudit).log("User ''{0}'' created with roles ''{1}''", "userName", "manager, bediende, medewerker");
+    }
+
+    @Test
+    public void createEIDUserWithRoles() throws Exception {
+        List<String> roleNames = newArrayList("manager", "bediende", "medewerker");
+        User user = aDefaultUser().withUserName("userName").build();
+        when(roleRepository.findByName("manager")).thenReturn(role().name("manager").build());
+        when(roleRepository.findByName("bediende")).thenReturn(role().name("bediende").build());
+        when(roleRepository.findByName("medewerker")).thenReturn(role().name("medewerker").build());
+        when(userRepository.persist(user)).thenReturn(user);
+
+        User savedUser = userFactory.createEIDUserWithRoles(user, roleNames);
 
         assertThat(savedUser.hasRole("manager")).isTrue();
         assertThat(savedUser.hasRole("bediende")).isTrue();

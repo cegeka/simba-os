@@ -59,7 +59,7 @@ public class ResetPasswordServiceTest {
         when(linkGeneratorMock.generateResetPasswordLink(token)).thenReturn(link);
         when(templateService.createMailBody("someTemplate.vm", en_US, ImmutableMap.of("link", link.toString()))).thenReturn("someBody");
 
-        resetPasswordService.sendMessage(user);
+        resetPasswordService.sendResetPasswordMessageTo(user);
 
         verify(mailServiceMock).sendMail(mail().from(email("bla@hotmail.com")).to(email).subject("reset password").body("someBody"));
     }

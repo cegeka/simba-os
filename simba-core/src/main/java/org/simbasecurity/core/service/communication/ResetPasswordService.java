@@ -23,7 +23,7 @@ import static org.simbasecurity.core.service.communication.mail.Mail.mail;
 @Service
 public class ResetPasswordService {
 
-    public static final String RESET_PASSWORD_SUBJECT = "reset password";
+    private static final String RESET_PASSWORD_SUBJECT = "reset password";
 
     @Autowired
     private MailService mailService;
@@ -39,7 +39,7 @@ public class ResetPasswordService {
     @Value("${simba.reset.password.mail.template}")
     private String resetPasswordMailTemplate;
 
-    public void sendMessage(User user) {
+    public void sendResetPasswordMessageTo(User user) {
         Token token = tokenManager.generateToken(user);
         URL link = linkGenerator.generateResetPasswordLink(token);
         mailService.sendMail(createMail(user, link));

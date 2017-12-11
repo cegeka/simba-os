@@ -9,6 +9,7 @@ import org.simbasecurity.core.domain.generator.PasswordGenerator;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.exception.SimbaException;
+import org.simbasecurity.core.service.communication.ResetPasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,14 +21,20 @@ import static org.simbasecurity.common.util.StringUtil.join;
 import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS;
 import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS_WITH_EMAIL;
 
-@Service("userService")
+@Service
 @Transactional
 public class UserFactory {
 
-    @Autowired private UserRepository userRepository;
-    @Autowired private RoleRepository roleRepository;
-    @Autowired private ManagementAudit managementAudit;
-    @Autowired private PasswordGenerator passwordGenerator;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private ManagementAudit managementAudit;
+    @Autowired
+    private PasswordGenerator passwordGenerator;
+    @Autowired
+    private ResetPasswordService resetPasswordService;
 
     public User create(User user) {
         User newUser = createUser(user);
@@ -59,16 +66,39 @@ public class UserFactory {
     }
 
     private User createUser(User user) {
-        if (userRepository.findByName(user.getUserName()) != null) {
-            throw new SimbaException(USER_ALREADY_EXISTS, String.format("User already exists with username: %s",user.getUserName()));
-        }
+        validateUniqueUsername(user);
+        validateUniqueEmail(user);
 
+        User persist = userRepository.persist(user);
+        resetPasswordService.sendResetPasswordMessageTo(user);
+        return persist;
+    }
+
+    public User createEIDUserWithRoles(User user, List<String> roleNames) {
+        validateUniqueUsername(user);
+        User newUser = userRepository.persist(user);
+        roleNames.stream()
+                .map(n -> roleRepository.findByName(n))
+                .filter(Objects::nonNull)
+                .forEach(newUser::addRole);
+
+        managementAudit.log("User ''{0}'' created with roles ''{1}''", newUser.getUserName(), join(roleNames, r -> r));
+
+        return newUser;
+    }
+
+    private void validateUniqueEmail(User user) {
         if (userRepository.findByEmail(user.getEmail()) != null){
             throw new SimbaException(USER_ALREADY_EXISTS_WITH_EMAIL, String.format("User already exists with email: %s",user.getEmail()));
         }
-
-        return userRepository.persist(user);
     }
+
+    private void validateUniqueUsername(User user) {
+        if (userRepository.findByName(user.getUserName()) != null) {
+            throw new SimbaException(USER_ALREADY_EXISTS, String.format("User already exists with username: %s",user.getUserName()));
+        }
+    }
+
 
     public String createRestUser(String username) {
         UserEntity temporaryUser = UserEntity.restUser(username, null, null, null, Language.nl_NL, Status.ACTIVE, false, false);

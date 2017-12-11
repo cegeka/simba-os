@@ -43,7 +43,7 @@ public class ResetPasswordCommandTest {
 
         Command.State state = resetPasswordCommand.execute(chainContextMock);
 
-        verify(resetPasswordServiceMock).sendMessage(user);
+        verify(resetPasswordServiceMock).sendResetPasswordMessageTo(user);
         assertThat(state).isEqualTo(FINISH);
         verify(chainContextMock).redirectToPasswordReset();
     }

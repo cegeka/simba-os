@@ -59,7 +59,7 @@ public class CreateEIDUserCommand implements Command {
 
             user = UserEntity.eidUser(samlUser.getInsz(), samlUser.getFirstname(),samlUser.getLastname(), getLanguageIfUnknownUseNL(samlUser));
 
-            userFactory.createWithRoles(user, roles);
+            userFactory.createEIDUserWithRoles(user, roles);
             audit.log(auditLogFactory.createEventForEIDSAMLResponse(context, "New user for eid created with username [" + user.getUserName() + "]"));
         } else {
             user.setName(samlUser.getLastname());

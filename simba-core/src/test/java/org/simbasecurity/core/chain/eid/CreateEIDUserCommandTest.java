@@ -95,7 +95,7 @@ public class CreateEIDUserCommandTest extends LocatorTestCase {
 
         assertEquals(State.CONTINUE, state);
 
-        verify(userFactoryMock).createWithRoles(userCaptor.capture(), roleListCaptor.capture());
+        verify(userFactoryMock).createEIDUserWithRoles(userCaptor.capture(), roleListCaptor.capture());
         verify(chainContextMock).setUserPrincipal(INSZ);
 
         User user = userCaptor.getValue();

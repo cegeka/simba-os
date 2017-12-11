@@ -42,6 +42,8 @@ Every deployable component (see above) has a Maven `jetty` plugin target to run 
     </configuration>
 </plugin>
 ```
+To start a module: navigate to the module and execute `mvn jetty:run`.
+
 
 ### Build a War and deploy on an AppServer of your choice
 Use Maven to build a war e.g. from the commandline via:
@@ -58,3 +60,10 @@ Some components come with database scripts that are run automatically on applica
 * [simba-core/.../create_db.sql](simba-core/src/main/resources/db/hsqldb-embedded/scripts/create_db.sql)
 * [simba-core/.../insert_parameters.sql](simba-core/src/main/resources/db/hsqldb-embedded/scripts/insert_parameters.sql)
 * [simba-ri/.../insert_test_data.sql](simba-ri/src/main/resources/db.hsqldb-embedded.scripts/insert_test_data.sql)
+
+### Modules
+When running simba locally you'll always need to deploy *Simba-ri*.
+
+Optional modules are:
+- *Simba-manager*: for when you want to test user management.
+- *Simba-zoo*: to see how the selected roles can affect the behaviour of an application.

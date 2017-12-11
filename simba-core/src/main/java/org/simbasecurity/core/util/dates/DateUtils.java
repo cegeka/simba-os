@@ -14,14 +14,17 @@
  * limitations under the License.
  *
  */
-package org.simbasecurity.core.util;
+package org.simbasecurity.core.util.dates;
 
-import static java.util.Calendar.*;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import static java.util.Calendar.DAY_OF_WEEK;
 
 public class DateUtils {
     private static final String HOUR_VALIDATION_REGEX = "([01][0-9]|2[0-3]):[0-5][0-9]";
@@ -84,5 +87,21 @@ public class DateUtils {
     public static int getCurrentDayOfWeek() {
         Calendar cal = GregorianCalendar.getInstance();
         return cal.get(DAY_OF_WEEK);
+    }
+
+    public static LocalDateTime on(int year, int month, int day, int hour, int minute, int second) {
+        return LocalDateTime.of(year, month, day, hour, minute, second, 0);
+    }
+
+    public static LocalDate on(int year, int month, int day) {
+        return LocalDate.of(year, month, day);
+    }
+
+    public static LocalDateTime now() {
+        return Time.asLocalDateTime();
+    }
+
+    public static LocalDate today() {
+        return Time.asLocalDate();
     }
 }

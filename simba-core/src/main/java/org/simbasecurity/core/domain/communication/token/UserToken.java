@@ -1,12 +1,15 @@
 package org.simbasecurity.core.domain.communication.token;
 
+import org.hibernate.annotations.Type;
 import org.simbasecurity.core.domain.AbstractVersionedEntity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "SIMBA_USER_TOKEN")
-public class UserToken extends AbstractVersionedEntity {
+@DiscriminatorColumn(name = "CLASS", discriminatorType = DiscriminatorType.STRING)
+public abstract class UserToken extends AbstractVersionedEntity {
 
     @Id
     @GeneratedValue(generator = "simbaSequence", strategy = GenerationType.SEQUENCE)
@@ -19,15 +22,14 @@ public class UserToken extends AbstractVersionedEntity {
     @Column(name = "SIMBA_USER_ID", unique = true)
     private long userId;
 
-    protected UserToken() { }
+    @Column(name = "EXPIRES_ON")
+    @Type(type="org.simbasecurity.core.util.hibernate.LocalDateTimeUserType")
+    private LocalDateTime expiresOn;
 
-    private UserToken(Token token, long userId) {
+    UserToken(Token token, long userId, LocalDateTime expiresOn) {
         this.token = token;
         this.userId = userId;
-    }
-
-    public static UserToken userToken(Token token, long userId) {
-        return new UserToken(token, userId);
+        this.expiresOn = expiresOn;
     }
 
     @Override
@@ -41,5 +43,9 @@ public class UserToken extends AbstractVersionedEntity {
 
     public void setToken(Token token) {
         this.token = token;
+    }
+
+    public LocalDateTime getExpiresOn() {
+        return expiresOn;
     }
 }

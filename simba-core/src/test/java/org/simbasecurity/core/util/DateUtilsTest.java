@@ -19,6 +19,7 @@ package org.simbasecurity.core.util;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.simbasecurity.core.util.dates.DateUtils;
 
 
 public class DateUtilsTest {

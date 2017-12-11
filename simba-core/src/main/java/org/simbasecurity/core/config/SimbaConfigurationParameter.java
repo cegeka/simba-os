@@ -213,7 +213,15 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
      * Parameter for configuring the maximum elapsed time between opening the login page and the actual login.
      */
     MAX_LOGIN_ELAPSED_TIME(DATABASE, true, TimeType.class, TimeUnit.MINUTES, "2"),
-    
+    /**
+     * How much time a ResetPasswordUserToken used in the reset password mechanism expires.
+     */
+    RESET_PASSWORD_USERTOKEN_EXPIRATION_TIME(DATABASE, true, TimeType.class, TimeUnit.MINUTES, "10"),
+    /**
+     * How much time a UserCreationUserToken used in the user creation mechanism expires.
+     */
+    USER_CREATION_USERTOKEN_EXPIRATION_TIME(DATABASE, true, TimeType.class, TimeUnit.DAYS, "15"),
+
     MAIL_SERVER_HOST_NAME(StoreType.DATABASE, true, StringType.class, ""),
     MAIL_SERVER_PORT(StoreType.DATABASE, true, IntegerType.class, "0"),
     
@@ -227,7 +235,8 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
     SAML_IDP_SLO_TARGET_URL(StoreType.DATABASE, true, StringType.class, ""),
     SAML_ASSERTION_CONSUMER_SERVICE_URL(StoreType.DATABASE, true, StringType.class, ""),
     SAML_ISSUER(StoreType.DATABASE, true, StringType.class, ""),
-    SAML_IDP_CERTIFICATE(DATABASE, true, StringType.class, "");
+    SAML_IDP_CERTIFICATE(DATABASE, true, StringType.class, ""),
+    ;
 
     private final ConfigurationHelper helper;
     private final TimeUnit timeUnit;

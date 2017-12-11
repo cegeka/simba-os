@@ -12,4 +12,6 @@ public class ResetPasswordUserToken extends UserToken {
         super(token, userId, expiresOn);
     }
 
+    protected ResetPasswordUserToken(){}
+
 }

@@ -5,20 +5,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.simbasecurity.core.domain.User;
-import org.simbasecurity.core.domain.communication.token.ResetPasswordUserToken;
-import org.simbasecurity.core.domain.communication.token.Token;
-import org.simbasecurity.core.domain.communication.token.UserToken;
-import org.simbasecurity.core.domain.communication.token.UserTokenFactory;
+import org.simbasecurity.core.domain.communication.token.*;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.domain.repository.communication.token.UserTokenRepository;
 import org.simbasecurity.test.PersistenceTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
-import static org.simbasecurity.core.domain.communication.token.UserToken.userToken;
+import static org.simbasecurity.core.domain.communication.token.UserTokenTestBuilder.userToken;
 
 public class UserTokenServiceTest extends PersistenceTestCase {
 
@@ -34,7 +33,7 @@ public class UserTokenServiceTest extends PersistenceTestCase {
     @Before
     public void setUp() throws Exception {
         userTokenFactoryMock = implantMock(UserTokenFactory.class);
-        tokenManager = new UserTokenService(userTokenRepository, userTokenFactoryMock);
+        tokenManager = new UserTokenService(userTokenRepository, userTokenFactoryMock, userRepository);
     }
 
     @Test
@@ -67,14 +66,14 @@ public class UserTokenServiceTest extends PersistenceTestCase {
 
     @Test
     public void getUserForToken() throws Exception {
-        User user = UserTestBuilder.aDefaultUser().build();
+        User user = aDefaultUser().build();
         persistAndRefresh(user);
 
         Token token = Token.fromString("token");
-        UserToken userToken = userToken(token, user.getId());
+        UserToken userToken = userToken().withToken(token).withUserId(user.getId()).buildResetPasswordUserToken();
         persistAndRefresh(userToken);
 
-        Optional<User> maybeUser = userTokenService.getUserForToken(token);
+        Optional<User> maybeUser = tokenManager.getUserForToken(token);
 
         Assertions.assertThat(maybeUser).contains(user);
     }

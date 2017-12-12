@@ -18,8 +18,8 @@
 'use strict';
 
 angular.module('SimbaApp')
-    .controller('UserCreationCtrl', ['$scope', '$modalInstance', 'selectedUser', '$user', '$translate', '$error', '$simba_component', '$configuration', '$rule', '$role', 'roles','$filter',
-        function ($scope, $modalInstance, selectedUser, $user, $translate, $error, $simba_component, $configuration, $rule, $role, roles, $filter) {
+    .controller('UserCreationCtrl', ['$scope', '$modalInstance', 'selectedUser', '$user', '$translate', '$error', '$simba_component', '$configuration', '$rule', '$role', 'roles', 'isRest', '$filter',
+        function ($scope, $modalInstance, selectedUser, $user, $translate, $error, $simba_component, $configuration, $rule, $role, roles, isRest, $filter) {
             $scope.tabs;
             $scope.user;
             $scope.successUrls;
@@ -42,7 +42,28 @@ angular.module('SimbaApp')
             };
 
             $scope.save = function () {
-                $modalInstance.close({"user": $scope.user, "roles": $scope.userRoles});
+                if(isRest){
+                    $user.addRest($scope.user)
+                        .success(function (data) {
+                            $modalInstance.close({user: $scope.user, roles: $scope.userRoles, password: data});
+                        }).error(function () {
+                            $error.showError('error.create.failed');
+                        });
+                } else {
+                    $user.add($scope.user)
+                        .success(function (data) {
+                            $user.addRoles(data, $scope.userRoles)
+                                .success(function () {
+                                    $modalInstance.close($scope.user);
+                                })
+                                .catch(function () {
+                                    $error.showError('error.update.failed');
+                                });
+                        })
+                        .error(function () {
+                            $error.showError('error.create.failed');
+                        });
+                }
             };
 
             $scope.resetPassword = function() {

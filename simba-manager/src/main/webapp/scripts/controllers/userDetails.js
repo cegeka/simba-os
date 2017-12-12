@@ -74,7 +74,13 @@ angular.module('SimbaApp')
     };
 
     $scope.save = function () {
-        $modalInstance.close($scope.user);
+        $user.update($scope.user)
+            .success(function (data) {
+                $modalInstance.close(data);
+            })
+            .error(function () {
+                $error.showError('error.update.failed');
+            });
     };
 
     $scope.reset = function () {

@@ -82,16 +82,10 @@ angular.module('SimbaApp')
                 }
             });
 
-            modalInstance.result.then(function (user) {
-                $user.update(user)
-                    .success(function (data) {
-                        var i = $scope.viewUsers.indexOf(selectedUser);
-                        $scope.users[i] = data;
-                        $scope.viewUsers[i] = data;
-                    })
-                    .error(function () {
-                        $error.showError('error.update.failed');
-                    });
+            modalInstance.result.then(function (data) {
+                var i = $scope.viewUsers.indexOf(selectedUser);
+                $scope.users[i] = data;
+                $scope.viewUsers[i] = data;
             }, function () {
                 $log.info('Modal dismissed at: ' + new Date());
                 $user.refresh(selectedUser)
@@ -154,23 +148,16 @@ angular.module('SimbaApp')
                     },
                     roles: function () {
                         return [];
+                    },
+                    isRest: function() {
+                        return false;
                     }
                 }
             });
 
-            modalInstance.result.then(function (addUserResult) {
-                $user.add(addUserResult.user)
-                    .success(function (data) {
-                        $scope.users.push(data);
-                        $scope.viewUsers.push(data);
-                        $user.addRoles(data, addUserResult.roles)
-                            .catch(function () {
-                                $error.showError('error.update.failed');
-                            });
-                    })
-                    .error(function () {
-                        $error.showError('error.create.failed');
-                    });
+            modalInstance.result.then(function (user) {
+                $scope.users.push(user);
+                $scope.viewUsers.push(user);
             });
         };
 
@@ -184,12 +171,24 @@ angular.module('SimbaApp')
                     },
                     roles: function () {
                         return [];
+                    },
+                    isRest: function() {
+                        return true;
                     }
                 }
             });
 
-            modalInstance.result.then(function (addUserResult) {
-                addRestUser(addUserResult.user);
+            modalInstance.result.then(function (creationData) {
+                $scope.users.push(creationData);
+                $modal.open({
+                    templateUrl: 'views/modals/user/generatedPasswordTemplate.html',
+                    controller: 'GeneratedPasswordCtrl',
+                    resolve: {
+                        password: function () {
+                            return creationData.password;
+                        }
+                    }
+                });
             });
         };
 
@@ -199,25 +198,6 @@ angular.module('SimbaApp')
 
         $scope.isUserBlocked = function (user) {
             return user.status === 'BLOCKED';
-        };
-
-        var addRestUser = function (creationData) {
-            $user.addRest(creationData)
-                .success(function (data) {
-                    $scope.users.push(creationData);
-                    $modal.open({
-                        templateUrl: 'views/modals/user/generatedPasswordTemplate.html',
-                        controller: 'GeneratedPasswordCtrl',
-                        resolve: {
-                            password: function () {
-                                return data;
-                            }
-                        }
-                    });
-                })
-                .error(function () {
-                    $error.showError('error.create.failed');
-                });
         };
 
         $scope.isConfigurationAdmin = function () {

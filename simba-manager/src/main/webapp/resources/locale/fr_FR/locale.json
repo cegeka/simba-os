@@ -69,6 +69,7 @@
   "user.language": "Langue",
   "user.status": "Etat",
   "user.email": "E-mail",
+  "user.email.required": "E-mail est obligé.",
   "user.copy": "Copier l'utilisateur",
   "user.successurl": "URL de succès",
   "user.changepassword": "Changer le mot de passe lors de la prochaine connexion",

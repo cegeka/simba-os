@@ -130,6 +130,7 @@
   "textboxpopup.name": "Nom",
   "textboxpopup.add": "Ajouter",
   "textboxpopup.cancel": "Annuler",
+  "password.reset.successful": "La reinitilisation du mot de pass est passé correct. Une courielle est envoyé a l'adresse d'email de l'utilisateur.",
   "create.role": "Créer rôle",
   "create.policy": "Créer policy",
   "idle.title": "Vous êtes actuellement inactif!",

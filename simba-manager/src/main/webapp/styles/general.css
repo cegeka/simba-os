@@ -147,6 +147,14 @@ th span, td span {
     padding: 5px;
 }
 
+.successCloseButton {
+    float: right;
+    color: rgb(0, 128, 0);
+    font-size: 1.5em;
+    font-weight: bold;
+    text-decoration: none;
+}
+
 .success {
     background: rgb(109, 202, 100);
     border: 1px solid rgb(0, 128, 0);

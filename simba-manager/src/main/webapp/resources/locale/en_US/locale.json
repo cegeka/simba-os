@@ -130,6 +130,7 @@
   "textboxpopup.name": "Name",
   "textboxpopup.add": "Add",
   "textboxpopup.cancel": "Cancel",
+  "password.reset.successful": "Password reset was successful. A mail has been send to the mail address of the user.",
   "create.role": "Create role",
   "create.policy": "Create policy",
   "idle.title": "You are currently idle!",

@@ -42,6 +42,8 @@ public class JobSchedulerConfiguration {
     @Autowired
     private Trigger purgeExpiredSessionsTrigger;
     @Autowired
+    private Trigger purgeExpiredTokensTrigger;
+    @Autowired
     private Trigger markUsersForPasswordChangeTrigger;
 
     @Value("${quartz.jobstore.delegate:org.quartz.impl.jdbcjobstore.HSQLDBDelegate}")
@@ -59,6 +61,7 @@ public class JobSchedulerConfiguration {
                 cleanUpAuditLogTrigger,
                 purgeExpiredLoginMappingsTrigger,
                 purgeExpiredSessionsTrigger,
+                purgeExpiredTokensTrigger,
                 markUsersForPasswordChangeTrigger,
         };
 

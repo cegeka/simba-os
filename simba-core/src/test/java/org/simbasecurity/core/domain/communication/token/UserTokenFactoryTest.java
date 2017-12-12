@@ -33,6 +33,7 @@ public class UserTokenFactoryTest {
     @Test
     public void resetPasswordUserToken_GebruiktResetPasswordExpirationTime_ConfigurationParameter(){
         when(coreConfigurationService.getValue(RESET_PASSWORD_USERTOKEN_EXPIRATION_TIME)).thenReturn(10);
+        ChronoUnit RESET_PASSWORD_USERTOKEN_EXPIRATION_TIME_UNIT = ChronoUnit.valueOf(RESET_PASSWORD_USERTOKEN_EXPIRATION_TIME.getTimeUnit().name());
         Token token = generateToken();
 
         LocalDateTime tokenGenerationTime = on(2017, 12, 8, 13, 18, 45);
@@ -41,7 +42,7 @@ public class UserTokenFactoryTest {
 
         assertThat(resetPasswordUserToken.getToken()).isEqualTo(token);
 
-        LocalDateTime expirationTime = tokenGenerationTime.plus(10, ChronoUnit.MINUTES);
+        LocalDateTime expirationTime = tokenGenerationTime.plus(10, RESET_PASSWORD_USERTOKEN_EXPIRATION_TIME_UNIT);
 
         assertThat(resetPasswordUserToken.getExpiresOn()).isEqualTo(expirationTime);
     }
@@ -49,6 +50,7 @@ public class UserTokenFactoryTest {
     @Test
     public void userCreationUserToken_GebruiktUserCreationExpirationTime_ConfigurationParameter(){
         when(coreConfigurationService.getValue(USER_CREATION_USERTOKEN_EXPIRATION_TIME)).thenReturn(3);
+        ChronoUnit USER_CREATION_USERTOKEN_EXPIRATION_TIME_UNIT = ChronoUnit.valueOf(USER_CREATION_USERTOKEN_EXPIRATION_TIME.getTimeUnit().name());
         Token token = generateToken();
 
         LocalDateTime tokenGenerationTime = on(2017, 12, 8, 13, 18, 45);
@@ -57,7 +59,7 @@ public class UserTokenFactoryTest {
 
         assertThat(userCreationUserToken.getToken()).isEqualTo(token);
 
-        LocalDateTime expirationTime = tokenGenerationTime.plus(3, ChronoUnit.DAYS);
+        LocalDateTime expirationTime = tokenGenerationTime.plus(3, USER_CREATION_USERTOKEN_EXPIRATION_TIME_UNIT);
         assertThat(userCreationUserToken.getExpiresOn()).isEqualTo(expirationTime);
     }
 

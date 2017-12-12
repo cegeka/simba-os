@@ -46,6 +46,9 @@ public class TriggerConfiguration {
     private JobDetail purgeExpiredSessionsJobDetail;
 
     @Autowired
+    private JobDetail purgeExpiredTokensJobDetail;
+
+    @Autowired
     private JobDetail markUsersForPasswordChangeDetail;
 
     @Bean(initMethod = "afterPropertiesSet")
@@ -66,6 +69,11 @@ public class TriggerConfiguration {
     @Bean(initMethod = "afterPropertiesSet")
     public SimpleTriggerFactoryBean purgeExpiredSessionsTrigger() throws ParseException {
         return createSimpleTrigger(purgeExpiredSessionsJobDetail, TimeUnit.MINUTES.toMillis(1));
+    }
+
+    @Bean(initMethod = "afterPropertiesSet")
+    public SimpleTriggerFactoryBean purgeExpiredTokensTrigger() {
+        return createSimpleTrigger(purgeExpiredTokensJobDetail, TimeUnit.MINUTES.toMillis(1));
     }
 
     @Bean(initMethod = "afterPropertiesSet")

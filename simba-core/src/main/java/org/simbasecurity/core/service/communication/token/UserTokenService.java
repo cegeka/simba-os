@@ -6,11 +6,13 @@ import org.simbasecurity.core.domain.communication.token.UserToken;
 import org.simbasecurity.core.domain.communication.token.UserTokenFactory;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.domain.repository.communication.token.UserTokenRepository;
+import org.simbasecurity.core.util.dates.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 @Service
@@ -31,6 +33,7 @@ public class UserTokenService {
     }
 
     public Token generateToken(User user) {
+        //TODO: willems: moeten we bij het opzoeken van UserTokens rekening houden met vervallen tokens? Moeten we bij het updaten de expiresOn updaten?
         Token token = Token.generateToken();
         Optional<UserToken> maybeUserToken = userTokenRepository.findByUserId(user.getId());
         if (maybeUserToken.isPresent()) {
@@ -44,11 +47,27 @@ public class UserTokenService {
 
     public Optional<User> getUserForToken(Token token) {
         return userTokenRepository.findByToken(token)
+                .filter(isNotExpired())
                 .map(UserToken::getUserId)
                 .flatMap(id -> userRepository.findById(id));
     }
 
     public void deleteToken(Token token) {
         userTokenRepository.deleteToken(token);
+    }
+
+    public void purgeExpiredTokens() {
+        userTokenRepository.findAll().stream()
+                .filter(isExpired())
+                .map(UserToken::getToken)
+                .forEach(this::deleteToken);
+    }
+
+    private Predicate<UserToken> isExpired() {
+        return userToken -> userToken.getExpiresOn().isBefore(DateUtils.now());
+    }
+
+    private Predicate<UserToken> isNotExpired() {
+        return isExpired().negate();
     }
 }

@@ -1,6 +1,5 @@
 package org.simbasecurity.core.service.communication;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,8 +9,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.communication.token.Token;
 import org.simbasecurity.core.domain.user.EmailAddress;
-import org.simbasecurity.core.service.communication.mail.MailService;
 import org.simbasecurity.core.service.communication.mail.LinkGenerator;
+import org.simbasecurity.core.service.communication.mail.MailService;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordTemplateService;
 import org.simbasecurity.core.service.communication.token.UserTokenService;
@@ -24,9 +23,8 @@ import static org.mockito.Mockito.when;
 import static org.simbasecurity.core.domain.Language.en_US;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 import static org.simbasecurity.core.domain.user.EmailAddress.email;
-import static org.simbasecurity.core.service.communication.reset.password.ResetPasswordReason.FORGOT_PASSWORD;
-import static org.simbasecurity.core.service.communication.reset.password.ResetPasswordReason.NEW_USER;
 import static org.simbasecurity.core.service.communication.mail.Mail.mail;
+import static org.simbasecurity.core.service.communication.reset.password.ResetPasswordReason.FORGOT_PASSWORD;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ResetPasswordServiceTest {
@@ -44,7 +42,7 @@ public class ResetPasswordServiceTest {
     private ResetPasswordService resetPasswordService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         ReflectionTestUtils.setField(resetPasswordService, "resetPasswordFromAddress", "bla@hotmail.com");
     }
 

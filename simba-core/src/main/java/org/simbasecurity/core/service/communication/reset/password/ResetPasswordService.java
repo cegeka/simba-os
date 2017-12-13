@@ -1,5 +1,7 @@
 package org.simbasecurity.core.service.communication.reset.password;
 
+import org.simbasecurity.core.audit.Audit;
+import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.communication.token.Token;
 import org.simbasecurity.core.exception.SimbaException;
@@ -32,6 +34,10 @@ public class ResetPasswordService {
     private LinkGenerator linkGenerator;
     @Autowired
     private ResetPasswordTemplateService templateService;
+    @Autowired
+    private Audit audit;
+    @Autowired
+    private AuditLogEventFactory auditLogEventFactory;
 
     @Value("${simba.smtp.mail.from}")
     private String resetPasswordFromAddress;
@@ -43,6 +49,7 @@ public class ResetPasswordService {
         URL link = linkGenerator.generateResetPasswordLink(token);
         String mailBody = templateService.createMailBody(reason, user.getLanguage(), link.toString());
         mailService.sendMail(createMail(user, mailBody));
+        audit.log(auditLogEventFactory.createEventForUserAuthentication(user.getUserName(), "Email has been sent to user for following reason: " + reason.name()));
     }
 
     private Mail createMail(User user, String body) {

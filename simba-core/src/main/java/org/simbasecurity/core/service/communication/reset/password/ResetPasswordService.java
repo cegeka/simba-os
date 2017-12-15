@@ -11,6 +11,7 @@ import org.simbasecurity.core.service.communication.mail.Mail;
 import org.simbasecurity.core.service.communication.mail.MailService;
 import org.simbasecurity.core.service.communication.mail.template.TemplateService;
 import org.simbasecurity.core.service.communication.token.UserTokenService;
+import org.simbasecurity.core.util.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ import static org.simbasecurity.core.service.communication.mail.Mail.mail;
 @Service
 public class ResetPasswordService {
 
-    private static final String RESET_PASSWORD_SUBJECT = "reset password";
+    private static final String RESET_PASSWORD_SUBJECT = "reset.password.subject";
 
     @Autowired private MailService mailService;
     @Autowired private UserTokenService tokenManager;
@@ -45,14 +46,14 @@ public class ResetPasswordService {
         String mailBody = templateService.createMailBodyWithLink(reason.getTemplate(), user.getLanguage(), link);
 
         mailService.sendMail(createMail(user, mailBody));
-        audit.log(auditLogEventFactory.createEventForUserAuthentication(user.getUserName(), "Email has been sent to user for following reason: " + reason.getClass().getSimpleName()));
+        audit.log(auditLogEventFactory.createEventForUserAuthentication(user.getUserName(), reason.getMessage()));
     }
 
     private Mail createMail(User user, String body) {
         return mail()
                 .from(email(resetPasswordFromAddress))
                 .to(user.getEmail())
-                .subject(RESET_PASSWORD_SUBJECT)
+                .subject(MessageUtil.getResourceMessage(RESET_PASSWORD_SUBJECT, user.getLanguage()))
                 .body(body);
     }
 }

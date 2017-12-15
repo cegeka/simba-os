@@ -32,4 +32,8 @@ public abstract class ResetPasswordReason {
         Integer expirationDelay = coreConfigurationService.getValue(resetPasswordUsertokenExpirationTime);
         return TimeUnit.MILLISECONDS.convert(expirationDelay, resetPasswordUsertokenExpirationTime.getTimeUnit());
     }
+
+    public String getMessage() {
+        return "Email has been sent to user for following reason: "+getClass().getSimpleName();
+    }
 }

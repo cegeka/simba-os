@@ -27,7 +27,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.net.URL;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 import static org.simbasecurity.core.audit.AuditLogEventCategory.AUTHENTICATION;
 import static org.simbasecurity.core.domain.Language.en_US;
@@ -54,6 +54,8 @@ public class ResetPasswordServiceTest {
     @Before
     public void setUp() {
         ReflectionTestUtils.setField(resetPasswordService, "resetPasswordFromAddress", "bla@hotmail.com");
+        when(forgotPasswordReason.getMessage()).thenReturn("Email has been sent to user for following reason: ForgotPassword");
+        when(newUserReason.getMessage()).thenReturn("Email has been sent to user for following reason: NewUser");
     }
 
     @Test
@@ -72,13 +74,19 @@ public class ResetPasswordServiceTest {
 
         resetPasswordService.sendResetPasswordMessageTo(user, forgotPasswordReason);
 
-        verify(mailServiceMock).sendMail(mail().from(email("bla@hotmail.com")).to(email).subject("reset password").body("someBody"));
+        verify(mailServiceMock).sendMail(mail().from(email("bla@hotmail.com")).to(email).subject("Reset password").body("someBody"));
         ArgumentCaptor<AuditLogEvent> captor = ArgumentCaptor.forClass(AuditLogEvent.class);
         verify(auditMock).log(captor.capture());
-        AuditLogEvent auditLogEvent = captor.getValue();
-        assertThat(auditLogEvent.getUsername()).isEqualTo("test");
-        assertThat(auditLogEvent.getMessage()).startsWith("Email has been sent to user for following reason: ForgotPassword");
-        assertThat(auditLogEvent.getCategory()).isEqualTo(AUTHENTICATION);
+        assertThat(
+                captor.getValue()).extracting(
+                AuditLogEvent::getUsername,
+                AuditLogEvent::getMessage,
+                AuditLogEvent::getCategory
+        ).containsExactly(
+                "test",
+                "Email has been sent to user for following reason: ForgotPassword",
+                AUTHENTICATION
+        );
     }
 
     @Test
@@ -94,16 +102,27 @@ public class ResetPasswordServiceTest {
         URL link = new URL("http://www.google.com");
         when(linkGeneratorMock.generateResetPasswordLink(token)).thenReturn(link);
         when(templateServiceMock.createMailBodyWithLink(newUserReason.getTemplate(), en_US, link)).thenReturn("someBody");
+        ArgumentCaptor<AuditLogEvent> logCaptor = ArgumentCaptor.forClass(AuditLogEvent.class);
 
         resetPasswordService.sendResetPasswordMessageTo(user, newUserReason);
 
-        verify(mailServiceMock).sendMail(mail().from(email("bla@hotmail.com")).to(email).subject("reset password").body("someBody"));
-        ArgumentCaptor<AuditLogEvent> captor = ArgumentCaptor.forClass(AuditLogEvent.class);
-        verify(auditMock).log(captor.capture());
-        AuditLogEvent auditLogEvent = captor.getValue();
-        assertThat(auditLogEvent.getUsername()).isEqualTo("otherTest");
-        assertThat(auditLogEvent.getMessage()).startsWith("Email has been sent to user for following reason: NewUser");
-        assertThat(auditLogEvent.getCategory()).isEqualTo(AUTHENTICATION);
+        verify(mailServiceMock).sendMail(mail()
+                .from(email("bla@hotmail.com"))
+                .to(email)
+                .subject("Reset password")
+                .body("someBody")
+        );
+        verify(auditMock).log(logCaptor.capture());
+        assertThat(
+                logCaptor.getValue()).extracting(
+                AuditLogEvent::getUsername,
+                AuditLogEvent::getMessage,
+                AuditLogEvent::getCategory
+        ).containsExactly(
+                "otherTest",
+                "Email has been sent to user for following reason: NewUser",
+                AUTHENTICATION
+        );
     }
 
     @Test
@@ -112,9 +131,10 @@ public class ResetPasswordServiceTest {
                 .withEmail((EmailAddress) null)
                 .build();
 
-        assertThatThrownBy(() -> resetPasswordService.sendResetPasswordMessageTo(user, forgotPasswordReason))
-                .isInstanceOf(SimbaException.class)
-                .hasMessage(EMAIL_ADDRESS_REQUIRED.name());
+        assertThatExceptionOfType(SimbaException.class)
+                .isThrownBy(() -> resetPasswordService.sendResetPasswordMessageTo(user, forgotPasswordReason))
+                .withMessage(EMAIL_ADDRESS_REQUIRED.name());
+
         verifyZeroInteractions(auditMock);
     }
 }

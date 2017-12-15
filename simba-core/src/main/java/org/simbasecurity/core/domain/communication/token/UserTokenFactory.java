@@ -1,15 +1,14 @@
 package org.simbasecurity.core.domain.communication.token;
 
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.service.communication.reset.password.ResetPasswordReason;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.concurrent.TimeUnit;
 
 import static org.simbasecurity.core.config.SimbaConfigurationParameter.RESET_PASSWORD_USERTOKEN_EXPIRATION_TIME;
 import static org.simbasecurity.core.config.SimbaConfigurationParameter.USER_CREATION_USERTOKEN_EXPIRATION_TIME;
@@ -34,7 +33,7 @@ public class UserTokenFactory {
 
     protected long userTokenExpirationDelayInMillis(SimbaConfigurationParameter resetPasswordUsertokenExpirationTime)  {
         Integer expirationDelay = getConfigurationService().getValue(resetPasswordUsertokenExpirationTime);
-        return TimeUnit.MILLISECONDS.convert(expirationDelay, resetPasswordUsertokenExpirationTime.getTimeUnit());
+        return Duration.of(expirationDelay, resetPasswordUsertokenExpirationTime.getChronoUnit()).toMillis();
     }
 
     protected CoreConfigurationService getConfigurationService() {

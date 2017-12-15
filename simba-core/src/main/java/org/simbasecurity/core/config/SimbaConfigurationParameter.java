@@ -16,10 +16,10 @@
  */
 package org.simbasecurity.core.config;
 
-import org.springframework.stereotype.Component;
+import java.time.temporal.ChronoUnit;
 
-import java.util.concurrent.TimeUnit;
-
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.simbasecurity.core.config.StoreType.DATABASE;
 import static org.simbasecurity.core.config.StoreType.QUARTZ;
 
@@ -35,7 +35,7 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
      * password has been in use for longer than this period, a user should be
      * required to change his password.
      */
-    PASSWORD_LIFE_TIME(DATABASE, true, TimeType.class, TimeUnit.DAYS, "90"),
+    PASSWORD_LIFE_TIME(DATABASE, true, TimeType.class, DAYS, "90"),
 
     /**
      * Parameter for configuring the maximum successive amount of invalid
@@ -52,12 +52,12 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
     /**
      * Parameter for configuring the session time out.
      */
-    SESSION_TIME_OUT(DATABASE, true, TimeType.class, TimeUnit.MINUTES, "60"),
+    SESSION_TIME_OUT(DATABASE, true, TimeType.class, MINUTES, "60"),
 
     /**
      * Parameter for configuring the interval between to session purge runs.
      */
-    PURGE_SESSION_INTERVAL(QUARTZ, true, TimeType.class, TimeUnit.MINUTES, "60"),
+    PURGE_SESSION_INTERVAL(QUARTZ, true, TimeType.class, MINUTES, "60"),
 
     /**
      * Parameter for configuring the cron expression for marking user required
@@ -211,15 +211,15 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
     /**
      * Parameter for configuring the maximum elapsed time between opening the login page and the actual login.
      */
-    MAX_LOGIN_ELAPSED_TIME(DATABASE, true, TimeType.class, TimeUnit.MINUTES, "2"),
+    MAX_LOGIN_ELAPSED_TIME(DATABASE, true, TimeType.class, MINUTES, "2"),
     /**
      * How much time a ResetPasswordUserToken used in the reset password mechanism expires.
      */
-    RESET_PASSWORD_USERTOKEN_EXPIRATION_TIME(DATABASE, true, TimeType.class, TimeUnit.MINUTES, "10"),
+    RESET_PASSWORD_USERTOKEN_EXPIRATION_TIME(DATABASE, true, TimeType.class, MINUTES, "10"),
     /**
      * How much time a UserCreationUserToken used in the user creation mechanism expires.
      */
-    USER_CREATION_USERTOKEN_EXPIRATION_TIME(DATABASE, true, TimeType.class, TimeUnit.DAYS, "15"),
+    USER_CREATION_USERTOKEN_EXPIRATION_TIME(DATABASE, true, TimeType.class, DAYS, "15"),
 
     MAIL_SERVER_HOST_NAME(StoreType.DATABASE, true, StringType.class, ""),
     MAIL_SERVER_PORT(StoreType.DATABASE, true, IntegerType.class, "0"),
@@ -238,13 +238,13 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
     ;
 
     private final ConfigurationHelper helper;
-    private final TimeUnit timeUnit;
+    private final ChronoUnit timeUnit;
 
     SimbaConfigurationParameter(StoreType storeType, boolean unique, Class<? extends Type<?>> type, String defaultValue) {
         this(storeType, unique, type, null, defaultValue);
     }
 
-    SimbaConfigurationParameter(StoreType storeType, boolean unique, Class<? extends Type<?>> type, TimeUnit timeUnit, String defaultValue) {
+    SimbaConfigurationParameter(StoreType storeType, boolean unique, Class<? extends Type<?>> type, ChronoUnit timeUnit, String defaultValue) {
         try {
             this.helper = new ConfigurationHelper(name(), storeType, unique, type, defaultValue);
         } catch (Exception e) {
@@ -258,10 +258,10 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
     }
 
     /**
-     * @return the time unit to use for a {@link org.simbasecurity.core.config.TimeType time} parameter
+     * @return the chrono unit to use for a {@link org.simbasecurity.core.config.TimeType time} parameter
      * @see org.simbasecurity.core.config.TimeType
      */
-    public TimeUnit getTimeUnit() {
+    public ChronoUnit getChronoUnit() {
         return timeUnit;
     }
 

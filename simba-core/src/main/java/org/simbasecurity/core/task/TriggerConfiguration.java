@@ -17,15 +17,16 @@
 
 package org.simbasecurity.core.task;
 
-import java.text.ParseException;
-import java.util.concurrent.TimeUnit;
-
 import org.quartz.JobDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.scheduling.quartz.SimpleTriggerFactoryBean;
+
+import java.text.ParseException;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
 @Configuration
 public class TriggerConfiguration {
@@ -53,27 +54,27 @@ public class TriggerConfiguration {
 
     @Bean(initMethod = "afterPropertiesSet")
     public SimpleTriggerFactoryBean verifyAuditLogIntegrityTrigger() throws ParseException {
-        return createSimpleTrigger(verifyAuditLogIntegrityDetail, TimeUnit.MINUTES.toMillis(5));
+        return createSimpleTrigger(verifyAuditLogIntegrityDetail, Duration.of(5, ChronoUnit.MINUTES).toMillis());
     }
 
     @Bean(initMethod = "afterPropertiesSet")
     public SimpleTriggerFactoryBean cleanUpAuditLogTrigger() throws ParseException {
-        return createSimpleTrigger(cleanUpAuditLogJobDetail, TimeUnit.HOURS.toMillis(1));
+        return createSimpleTrigger(cleanUpAuditLogJobDetail, Duration.of(1, ChronoUnit.HOURS).toMillis());
     }
 
     @Bean(initMethod = "afterPropertiesSet")
     public SimpleTriggerFactoryBean purgeExpiredLoginMappingsTrigger() throws ParseException {
-        return createSimpleTrigger(purgeExpiredLoginMappingsJobDetail, TimeUnit.MINUTES.toMillis(1));
+        return createSimpleTrigger(purgeExpiredLoginMappingsJobDetail, Duration.of(1, ChronoUnit.MINUTES).toMillis());
     }
 
     @Bean(initMethod = "afterPropertiesSet")
     public SimpleTriggerFactoryBean purgeExpiredSessionsTrigger() throws ParseException {
-        return createSimpleTrigger(purgeExpiredSessionsJobDetail, TimeUnit.MINUTES.toMillis(1));
+        return createSimpleTrigger(purgeExpiredSessionsJobDetail, Duration.of(1, ChronoUnit.MINUTES).toMillis());
     }
 
     @Bean(initMethod = "afterPropertiesSet")
     public SimpleTriggerFactoryBean purgeExpiredTokensTrigger() {
-        return createSimpleTrigger(purgeExpiredTokensJobDetail, TimeUnit.MINUTES.toMillis(1));
+        return createSimpleTrigger(purgeExpiredTokensJobDetail, Duration.of(1, ChronoUnit.MINUTES).toMillis());
     }
 
     @Bean(initMethod = "afterPropertiesSet")

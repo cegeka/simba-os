@@ -27,7 +27,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 @Entity
 @Table(name = "SIMBA_SESSION")
@@ -94,8 +94,7 @@ public class SessionEntity implements Session {
 
     private long getSessionTimeOutInMillis() {
         Integer sessionTimeOut = getConfigurationService().getValue(SimbaConfigurationParameter.SESSION_TIME_OUT);
-        return TimeUnit.MILLISECONDS.convert(sessionTimeOut,
-                                             SimbaConfigurationParameter.SESSION_TIME_OUT.getTimeUnit());
+        return Duration.of(sessionTimeOut, SimbaConfigurationParameter.SESSION_TIME_OUT.getChronoUnit()).toMillis();
     }
 
     @Override

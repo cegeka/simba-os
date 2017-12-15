@@ -8,8 +8,6 @@ import org.simbasecurity.core.service.config.CoreConfigurationService;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.concurrent.TimeUnit;
 
 import static org.simbasecurity.core.util.dates.DateUtils.now;
 
@@ -23,14 +21,8 @@ public abstract class ResetPasswordReason {
 
     abstract String getTemplate();
 
-
     LocalDateTime expiresOn(SimbaConfigurationParameter configurationParameter) {
-        return now().plus(userTokenExpirationDelayInMillis(configurationParameter), ChronoUnit.MILLIS);
-    }
-
-    private long userTokenExpirationDelayInMillis(SimbaConfigurationParameter resetPasswordUsertokenExpirationTime) {
-        Integer expirationDelay = coreConfigurationService.getValue(resetPasswordUsertokenExpirationTime);
-        return TimeUnit.MILLISECONDS.convert(expirationDelay, resetPasswordUsertokenExpirationTime.getTimeUnit());
+        return now().plus(coreConfigurationService.getValue(configurationParameter), configurationParameter.getChronoUnit());
     }
 
     public String getMessage() {

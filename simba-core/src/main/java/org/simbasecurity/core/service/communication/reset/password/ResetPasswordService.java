@@ -9,6 +9,7 @@ import org.simbasecurity.core.exception.SimbaMessageKey;
 import org.simbasecurity.core.service.communication.mail.LinkGenerator;
 import org.simbasecurity.core.service.communication.mail.Mail;
 import org.simbasecurity.core.service.communication.mail.MailService;
+import org.simbasecurity.core.service.communication.mail.template.TemplateService;
 import org.simbasecurity.core.service.communication.token.UserTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,18 +27,12 @@ public class ResetPasswordService {
 
     private static final String RESET_PASSWORD_SUBJECT = "reset password";
 
-    @Autowired
-    private MailService mailService;
-    @Autowired
-    private UserTokenService tokenManager;
-    @Autowired
-    private LinkGenerator linkGenerator;
-    @Autowired
-    private ResetPasswordTemplateService templateService;
-    @Autowired
-    private Audit audit;
-    @Autowired
-    private AuditLogEventFactory auditLogEventFactory;
+    @Autowired private MailService mailService;
+    @Autowired private UserTokenService tokenManager;
+    @Autowired private LinkGenerator linkGenerator;
+    @Autowired private TemplateService templateService;
+    @Autowired private Audit audit;
+    @Autowired private AuditLogEventFactory auditLogEventFactory;
 
     @Value("${simba.smtp.mail.from}")
     private String resetPasswordFromAddress;
@@ -45,11 +40,12 @@ public class ResetPasswordService {
     public void sendResetPasswordMessageTo(User user, ResetPasswordReason reason) {
         if (user.getEmail() == null) { throw new SimbaException(SimbaMessageKey.EMAIL_ADDRESS_REQUIRED);}
 
-        Token token = tokenManager.generateToken(user);
+        Token token = tokenManager.generateToken(user, reason);
         URL link = linkGenerator.generateResetPasswordLink(token);
-        String mailBody = templateService.createMailBody(reason, user.getLanguage(), link.toString());
+        String mailBody = templateService.createMailBodyWithLink(reason.getTemplate(), user.getLanguage(), link);
+
         mailService.sendMail(createMail(user, mailBody));
-        audit.log(auditLogEventFactory.createEventForUserAuthentication(user.getUserName(), "Email has been sent to user for following reason: " + reason.name()));
+        audit.log(auditLogEventFactory.createEventForUserAuthentication(user.getUserName(), "Email has been sent to user for following reason: " + reason.getClass().getSimpleName()));
     }
 
     private Mail createMail(User user, String body) {

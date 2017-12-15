@@ -9,6 +9,7 @@ import org.simbasecurity.core.domain.generator.PasswordGenerator;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.exception.SimbaException;
+import org.simbasecurity.core.service.communication.reset.password.NewUser;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,22 +21,17 @@ import java.util.Objects;
 import static org.simbasecurity.common.util.StringUtil.join;
 import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS;
 import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS_WITH_EMAIL;
-import static org.simbasecurity.core.service.communication.reset.password.ResetPasswordReason.NEW_USER;
 
 @Service
 @Transactional
 public class UserFactory {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private ManagementAudit managementAudit;
-    @Autowired
-    private PasswordGenerator passwordGenerator;
-    @Autowired
-    private ResetPasswordService resetPasswordService;
+    @Autowired private UserRepository userRepository;
+    @Autowired private RoleRepository roleRepository;
+    @Autowired private ManagementAudit managementAudit;
+    @Autowired private PasswordGenerator passwordGenerator;
+    @Autowired private ResetPasswordService resetPasswordService;
+    @Autowired private NewUser resetPasswordForNewUser;
 
     public User create(User user) {
         User newUser = createUser(user);
@@ -71,7 +67,7 @@ public class UserFactory {
         validateUniqueEmail(user);
 
         User persist = userRepository.persist(user);
-        resetPasswordService.sendResetPasswordMessageTo(user, NEW_USER);
+        resetPasswordService.sendResetPasswordMessageTo(user, resetPasswordForNewUser);
         return persist;
     }
 

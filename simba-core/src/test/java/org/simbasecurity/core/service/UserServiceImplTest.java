@@ -40,6 +40,7 @@ import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.locator.SpringAwareLocator;
+import org.simbasecurity.core.service.communication.reset.password.ForgotPassword;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.filter.EntityFilter;
@@ -59,7 +60,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
-import static org.simbasecurity.core.service.communication.reset.password.ResetPasswordReason.FORGOT_PASSWORD;
 
 public class UserServiceImplTest {
 
@@ -70,6 +70,7 @@ public class UserServiceImplTest {
     @Mock private PasswordValidator passwordValidator;
     @Mock private CoreConfigurationService configurationService;
     @Mock private ResetPasswordService resetPasswordService;
+    @Mock private ForgotPassword resetReason;
     @Mock private ManagementAudit managementAudit;
 
     @Mock private PolicyRepository policyRepository;
@@ -198,7 +199,7 @@ public class UserServiceImplTest {
         TUser tUser = service.resetPassword(tUser01);
 
         assertThat(tUser).isEqualTo(expectedUser);
-        verify(resetPasswordService).sendResetPasswordMessageTo(user, FORGOT_PASSWORD);
+        verify(resetPasswordService).sendResetPasswordMessageTo(user, resetReason);
         verify(managementAudit).log("Password for user ''{0}'' resetted", "user-1");
     }
 }

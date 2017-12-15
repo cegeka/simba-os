@@ -16,6 +16,7 @@ import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.locator.SpringAwareLocator;
+import org.simbasecurity.core.service.communication.reset.password.NewUser;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 
 import java.util.List;
@@ -28,7 +29,6 @@ import static org.simbasecurity.core.domain.RoleTestBuilder.role;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 import static org.simbasecurity.core.domain.UserTestBuilder.aUser;
 import static org.simbasecurity.core.domain.user.EmailAddress.email;
-import static org.simbasecurity.core.service.communication.reset.password.ResetPasswordReason.NEW_USER;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserFactoryTest {
@@ -47,6 +47,8 @@ public class UserFactoryTest {
     private ManagementAudit managementAudit;
     @Mock
     private ResetPasswordService resetPasswordService;
+    @Mock
+    private NewUser newUserReason;
     @InjectMocks
     private UserFactory userFactory;
 
@@ -63,7 +65,7 @@ public class UserFactoryTest {
 
         User savedUser = userFactory.create(user);
 
-        verify(resetPasswordService).sendResetPasswordMessageTo(user, NEW_USER);
+        verify(resetPasswordService).sendResetPasswordMessageTo(user, newUserReason);
         verify(userRepository).persist(savedUser);
         verify(managementAudit).log("User ''{0}'' created", "userName");
     }

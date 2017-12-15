@@ -10,7 +10,7 @@ public class UserCreationUserToken extends UserToken {
 
     protected UserCreationUserToken() {}
 
-    UserCreationUserToken(Token token, long userId, LocalDateTime expiresOn) {
+    public UserCreationUserToken(Token token, long userId, LocalDateTime expiresOn) {
         super(token, userId, expiresOn);
     }
 

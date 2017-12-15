@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @DiscriminatorValue("resetPasswordUserToken")
 public class ResetPasswordUserToken extends UserToken {
 
-    ResetPasswordUserToken(Token token, long userId, LocalDateTime expiresOn) {
+    public ResetPasswordUserToken(Token token, long userId, LocalDateTime expiresOn) {
         super(token, userId, expiresOn);
     }
 

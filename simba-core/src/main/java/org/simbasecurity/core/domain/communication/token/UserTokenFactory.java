@@ -1,6 +1,7 @@
 package org.simbasecurity.core.domain.communication.token;
 
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
+import org.simbasecurity.core.service.communication.reset.password.ResetPasswordReason;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.stereotype.Service;
 
@@ -39,5 +40,4 @@ public class UserTokenFactory {
     protected CoreConfigurationService getConfigurationService() {
         return coreConfigurationService;
     }
-
 }

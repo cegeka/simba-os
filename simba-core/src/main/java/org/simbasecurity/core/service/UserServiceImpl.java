@@ -30,6 +30,7 @@ import org.simbasecurity.core.domain.repository.GroupRepository;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
+import org.simbasecurity.core.service.communication.reset.password.ForgotPassword;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
@@ -46,7 +47,6 @@ import java.util.stream.Collectors;
 
 import static org.simbasecurity.common.util.StringUtil.join;
 import static org.simbasecurity.core.domain.user.EmailAddress.email;
-import static org.simbasecurity.core.service.communication.reset.password.ResetPasswordReason.FORGOT_PASSWORD;
 
 @Transactional
 @Service("userService")
@@ -63,6 +63,7 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
 
     @Autowired private ThriftAssembler assembler;
     @Autowired private ResetPasswordService resetPasswordService;
+    @Autowired private ForgotPassword forgotPasswordReason;
 
     @Override
     public User findByName(String userName) {
@@ -129,7 +130,7 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
     public TUser resetPassword(TUser user) {
         User attachedUser = userRepository.findByName(user.getUserName());
 
-        resetPasswordService.sendResetPasswordMessageTo(attachedUser, FORGOT_PASSWORD);
+        resetPasswordService.sendResetPasswordMessageTo(attachedUser, forgotPasswordReason);
 
         managementAudit.log("Password for user ''{0}'' resetted", attachedUser.getUserName());
 

@@ -3,11 +3,11 @@ package org.simbasecurity.core.service.communication.token;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.communication.token.*;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.domain.repository.communication.token.UserTokenRepository;
+import org.simbasecurity.core.service.communication.reset.password.ResetPasswordReason;
 import org.simbasecurity.core.util.dates.DateUtils;
 import org.simbasecurity.test.PersistenceTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,44 +30,44 @@ public class UserTokenServiceTest extends PersistenceTestCase {
     @Autowired
     private UserRepository userRepository;
 
-    private UserTokenFactory userTokenFactoryMock;
+    private ResetPasswordReason resetPasswordReason;
 
     private UserTokenService tokenManager;
 
     @Before
     public void setUp() {
-        userTokenFactoryMock = implantMock(UserTokenFactory.class);
-        tokenManager = new UserTokenService(userTokenRepository, userTokenFactoryMock, userRepository);
+        tokenManager = new UserTokenService(userTokenRepository, userRepository);
+        resetPasswordReason = implantMock(ResetPasswordReason.class);
     }
 
     @Test
     public void generateToken_noTokenExists_generatesANewToken_persistsItForTheGivenUser() {
         User user = aDefaultUser().withId(665L).build();
-        UserToken userToken =  userToken().withNewToken().withUserId(user.getId()).buildResetPasswordUserToken();
+        Token initialToken = Token.generateToken();
+        UserToken userToken =  userToken().withToken(initialToken).withUserId(user.getId()).buildResetPasswordUserToken();
+        when(resetPasswordReason.createToken(isA(Token.class), isA(Long.class))).thenReturn(userToken);
 
-        ArgumentCaptor<Token> generatedTokenCaptor = ArgumentCaptor.forClass(Token.class);
-        when(userTokenFactoryMock.resetPasswordUserToken(generatedTokenCaptor.capture(),isA(Long.class))).thenReturn((ResetPasswordUserToken) userToken);
-
-        Token generatedToken = tokenManager.generateToken(user);
+        Token generatedToken = tokenManager.generateToken(user, resetPasswordReason);
 
         assertThat(userTokenRepository.findAll()).containsExactly(userToken);
-        assertThat(generatedToken).isEqualTo(generatedTokenCaptor.getValue());
+        assertThat(generatedToken).isNotEqualTo(initialToken);
     }
 
     @Test
     public void generateToken_tokenExistsForGivenUser_generatesANewToken_overwritesTheExistingToken() {
         User user = aDefaultUser().withId(665L).build();
-        Token initialToken = Token.generateToken();
-        LocalDateTime expiresTommorow = now().plusDays(1L);
-        UserToken userToken = userToken().withToken(initialToken).withUserId(user.getId()).withExpiresOn(expiresTommorow).buildResetPasswordUserToken();
+        UserToken userToken = userToken().withNewToken().withUserId(user.getId()).buildResetPasswordUserToken();
         persistAndRefresh(userToken);
 
-        Token generatedToken = tokenManager.generateToken(user);
+        Token newToken = Token.generateToken();
+        LocalDateTime expiresTommorow = now().plusDays(1L);
+        ResetPasswordUserToken resetToken = new ResetPasswordUserToken(newToken, user.getId(), expiresTommorow);
+        when(resetPasswordReason.createToken(isA(Token.class), isA(Long.class))).thenReturn(resetToken);
 
-        assertThat(userTokenRepository.findAll()).containsOnly(userToken);
-        assertThat(userTokenRepository.findAll()).extracting(UserToken::getToken, UserToken::getExpiresOn).containsExactly(tuple(generatedToken,expiresTommorow));
+        Token generatedToken = tokenManager.generateToken(user, resetPasswordReason);
 
-        assertThat(generatedToken).isNotEqualTo(initialToken);
+        assertThat(userTokenRepository.findAll()).containsOnly(resetToken);
+        assertThat(userTokenRepository.findAll()).extracting(UserToken::getToken, UserToken::getExpiresOn).containsExactly(tuple(newToken,expiresTommorow));
     }
 
     @Test

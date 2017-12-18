@@ -47,7 +47,7 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 
 	private static final long serialVersionUID = 552484022516217422L;
 
-	private static final ObjectPool<ConfigurablePasswordEncryptor> ENCRYPTOR_POOL = new StackObjectPool<ConfigurablePasswordEncryptor>(
+	private static final ObjectPool<ConfigurablePasswordEncryptor> ENCRYPTOR_POOL = new StackObjectPool<>(
 			new PasswordEncryptorFactory(), 2, 2);
 
 	private static ConfigurablePasswordEncryptor retrievePasswordEncryptor() {
@@ -108,15 +108,15 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 	@ManyToMany(targetEntity = RoleEntity.class)
 	@JoinTable(name = "SIMBA_USER_ROLE", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
 	@OrderBy("name")
-	private Set<Role> roles = new HashSet<Role>();
+	private Set<Role> roles = new HashSet<>();
 
 	@OneToMany(targetEntity = SessionEntity.class, mappedBy = "user")
-	private Set<Session> sessions = new HashSet<Session>();
+	private Set<Session> sessions = new HashSet<>();
 
 	@ManyToMany(targetEntity = GroupEntity.class)
 	@JoinTable(name = "SIMBA_USER_GROUP", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "GROUP_ID"))
 	@OrderBy("name")
-	private Set<Group> groups = new HashSet<Group>();
+	private Set<Group> groups = new HashSet<>();
 
 	protected UserEntity() {
 	}
@@ -125,9 +125,8 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 		return new UserEntity(userName, firstName, name, null, language, Status.ACTIVE, false, false, null);
 	}
 
-	public static UserEntity restUser(String userName, String firstName, String name, String successURL, Language language, Status status,
-									  boolean changePasswordOnNextLogon, boolean passwordChangeRequired){
-		return new UserEntity(userName, firstName, name, successURL, language, status, changePasswordOnNextLogon, passwordChangeRequired, null);
+	public static UserEntity restUser(String userName, Language language){
+		return new UserEntity(userName, null, null, null, language, Status.ACTIVE, false, false, null);
 	}
 
 	public static UserEntity user(String userName, String firstName, String name, String successURL, Language language, Status status,

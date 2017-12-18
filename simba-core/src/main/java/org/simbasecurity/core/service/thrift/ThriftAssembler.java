@@ -17,11 +17,17 @@
 package org.simbasecurity.core.service.thrift;
 
 import org.simbasecurity.api.service.thrift.*;
+import org.simbasecurity.common.util.StringUtil;
 import org.simbasecurity.common.util.ThriftDate;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.*;
 import org.simbasecurity.core.domain.condition.TimeCondition;
+import org.simbasecurity.core.domain.user.EmailAddress;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -32,6 +38,10 @@ import static org.simbasecurity.core.domain.user.EmailAddress.email;
 @Service
 @SuppressWarnings("unchecked")
 public class ThriftAssembler {
+
+    @Inject
+    @Named("configurationService")
+    private CoreConfigurationService coreConfigurationService;
 
     private Map<Class<?>, Function<?, ?>> classMappers = new HashMap<>();
 
@@ -106,21 +116,17 @@ public class ThriftAssembler {
                 tUser.getStatus() == null ? null : Status.valueOf(tUser.getStatus()),
                 tUser.isMustChangePassword(),
                 tUser.isPasswordChangeRequired(),
-                email(tUser.getEmail())
+                assemble(tUser.getEmail())
         );
     }
 
-    public User assembleRestUser(TUser tUser) {
-        return UserEntity.restUser(
-                tUser.getUserName(),
-                tUser.getFirstName(),
-                tUser.getName(),
-                tUser.getSuccessURL(),
-                tUser.getLanguage() == null ? null : Language.valueOf(tUser.getLanguage()),
-                tUser.getStatus() == null ? null : Status.valueOf(tUser.getStatus()),
-                tUser.isMustChangePassword(),
-                tUser.isPasswordChangeRequired()
-        );
+    private EmailAddress assemble(String email) {
+        boolean required = coreConfigurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED);
+
+        if(required || !StringUtil.isEmpty(email)) {
+            return email(email);
+        }
+        return null;
     }
 
     public TSession assemble(Session session) {

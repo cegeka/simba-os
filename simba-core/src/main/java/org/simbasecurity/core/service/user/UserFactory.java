@@ -2,7 +2,6 @@ package org.simbasecurity.core.service.user;
 
 import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.domain.Language;
-import org.simbasecurity.core.domain.Status;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.UserEntity;
 import org.simbasecurity.core.domain.generator.PasswordGenerator;
@@ -98,7 +97,7 @@ public class UserFactory {
 
 
     public String createRestUser(String username) {
-        UserEntity temporaryUser = UserEntity.restUser(username, null, null, null, Language.nl_NL, Status.ACTIVE, false, false);
+        UserEntity temporaryUser = UserEntity.restUser(username, Language.nl_NL);
         User newUser = createRestUser(temporaryUser);
 
         User attachedUser = userRepository.persist(newUser);

@@ -189,6 +189,11 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
     PASSWORD_CHANGE_REQUIRED(DATABASE, true, BooleanType.class, "true"),
 
     /**
+     * Parameter for configuring if new users should have a required email.
+     */
+    EMAIL_ADDRESS_REQUIRED(DATABASE, true, BooleanType.class, "true"),
+
+    /**
      * The name of the JVM argument that points to the Keystore location you
      * want to use. The JVM argument value should be full path on the OS.
      * extension.

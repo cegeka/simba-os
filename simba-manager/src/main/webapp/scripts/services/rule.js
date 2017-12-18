@@ -16,17 +16,21 @@
  */
 
 angular.module('SimbaApp')
-    .factory('$rule', ['$session', '$rest', function($session, $rest) {
+    .factory('$rule', ['$session', '$rest', function ($session, $rest) {
         var rules = {};
 
         return {
-            evaluateRule: function(resourceName, operation) {
+            evaluateRule: function (resourceName, operation) {
                 var key = resourceName + operation;
-                if(typeof rules[key] !== 'undefined') {
+                if (typeof rules[key] !== 'undefined') {
                     return rules[key];
                 }
 
-                rules[key] = $rest.post('authorization/isResourceRuleAllowed', {"username": $session.getCurrentUserName(), "resourcename": resourceName, "operation": operation});
+                $rest.post('authorization/isResourceRuleAllowed', {
+                    "username": $session.getCurrentUserName(),
+                    "resourcename": resourceName,
+                    "operation": operation
+                });
                 return rules[key];
             }
         };

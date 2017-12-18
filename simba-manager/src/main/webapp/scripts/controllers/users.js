@@ -201,7 +201,9 @@ angular.module('SimbaApp')
         };
 
         $scope.isConfigurationAdmin = function () {
-            return $rule.evaluateRule('manage-configuration', 'WRITE');
+            $rule.evaluateRule('manage-configuration', 'WRITE').success(function (response) {
+                tab.hidden = !response.allowed
+            });
         };
 
     }]);

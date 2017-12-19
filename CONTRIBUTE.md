@@ -64,6 +64,6 @@ Some components come with database scripts that are run automatically on applica
 ### Modules
 When running simba locally you'll always need to deploy *Simba-ri*.
 
-Optional modules are:
+Optional modules are (use jetty run):
 - *Simba-manager*: for when you want to test user management.
 - *Simba-zoo*: to see how the selected roles can affect the behaviour of an application.

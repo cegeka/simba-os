@@ -32,7 +32,7 @@ public class UserTokenFactory {
     }
 
     protected long userTokenExpirationDelayInMillis(SimbaConfigurationParameter resetPasswordUsertokenExpirationTime)  {
-        Integer expirationDelay = getConfigurationService().getValue(resetPasswordUsertokenExpirationTime);
+        Long expirationDelay = getConfigurationService().getValue(resetPasswordUsertokenExpirationTime);
         return Duration.of(expirationDelay, resetPasswordUsertokenExpirationTime.getChronoUnit()).toMillis();
     }
 

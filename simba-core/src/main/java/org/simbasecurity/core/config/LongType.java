@@ -17,6 +17,16 @@
 package org.simbasecurity.core.config;
 
 
-public class TimeType extends LongType {
+public class LongType extends Type<Long> {
+
+    @Override
+    public Long convertToValue(String stringValue) {
+        return Long.valueOf(stringValue);
+    }
+
+    @Override
+    public String convertToString(Object value) {
+        return value.toString();
+    }
 
 }

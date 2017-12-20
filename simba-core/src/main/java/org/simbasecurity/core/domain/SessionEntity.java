@@ -93,7 +93,7 @@ public class SessionEntity implements Session {
     }
 
     private long getSessionTimeOutInMillis() {
-        Integer sessionTimeOut = getConfigurationService().getValue(SimbaConfigurationParameter.SESSION_TIME_OUT);
+        Long sessionTimeOut = getConfigurationService().getValue(SimbaConfigurationParameter.SESSION_TIME_OUT);
         return Duration.of(sessionTimeOut, SimbaConfigurationParameter.SESSION_TIME_OUT.getChronoUnit()).toMillis();
     }
 

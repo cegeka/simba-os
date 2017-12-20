@@ -32,7 +32,7 @@ public class UserTokenFactoryTest {
 
     @Test
     public void resetPasswordUserToken_GebruiktResetPasswordExpirationTime_ConfigurationParameter(){
-        when(coreConfigurationService.getValue(RESET_PASSWORD_USERTOKEN_EXPIRATION_TIME)).thenReturn(10);
+        when(coreConfigurationService.getValue(RESET_PASSWORD_USERTOKEN_EXPIRATION_TIME)).thenReturn(10L);
         ChronoUnit RESET_PASSWORD_USERTOKEN_EXPIRATION_TIME_UNIT = ChronoUnit.valueOf(RESET_PASSWORD_USERTOKEN_EXPIRATION_TIME.getChronoUnit().name());
         Token token = generateToken();
 
@@ -49,7 +49,7 @@ public class UserTokenFactoryTest {
 
     @Test
     public void userCreationUserToken_GebruiktUserCreationExpirationTime_ConfigurationParameter(){
-        when(coreConfigurationService.getValue(USER_CREATION_USERTOKEN_EXPIRATION_TIME)).thenReturn(3);
+        when(coreConfigurationService.getValue(USER_CREATION_USERTOKEN_EXPIRATION_TIME)).thenReturn(3L);
         ChronoUnit USER_CREATION_USERTOKEN_EXPIRATION_TIME_UNIT = ChronoUnit.valueOf(USER_CREATION_USERTOKEN_EXPIRATION_TIME.getChronoUnit().name());
         Token token = generateToken();
 

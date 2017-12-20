@@ -6,6 +6,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.simbasecurity.core.audit.Audit;
+import org.simbasecurity.core.audit.AuditLogEvent;
+import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command;
 import org.simbasecurity.core.domain.User;
@@ -28,6 +31,9 @@ public class ResetPasswordCommandTest {
     @Mock private CredentialService credentialServiceMock;
     @Mock private ResetPasswordService resetPasswordServiceMock;
     @Mock private ForgotPassword resetReason;
+    @Mock private Audit audit;
+    @Mock private AuditLogEventFactory auditLogEventFactory;
+
     @InjectMocks private ResetPasswordCommand resetPasswordCommand;
 
     @Test
@@ -35,24 +41,30 @@ public class ResetPasswordCommandTest {
         User user = aUser().build();
         when(chainContextMock.getEmail()).thenReturn(Optional.of("someEmail@bla.com"));
         when(credentialServiceMock.findUserByMail(email("someEmail@bla.com"))).thenReturn(Optional.ofNullable(user));
+        AuditLogEvent auditLogEvent = mock(AuditLogEvent.class);
+        when(auditLogEventFactory.createEventForUserAuthentication(eq(user.getName()), anyString())).thenReturn(auditLogEvent);
 
         Command.State state = resetPasswordCommand.execute(chainContextMock);
 
         verify(resetPasswordServiceMock).sendResetPasswordMessageTo(user, resetReason);
         assertThat(state).isEqualTo(FINISH);
         verify(chainContextMock).redirectToPasswordReset();
+        verify(audit).log(auditLogEvent);
     }
 
     @Test
     public void execute_EmailUnknown_WillNotSendMailButWillRedirect() throws Exception {
         when(chainContextMock.getEmail()).thenReturn(Optional.of("someEmail@bla.com"));
         when(credentialServiceMock.findUserByMail(email("someEmail@bla.com"))).thenReturn(Optional.empty());
+        AuditLogEvent auditLogEvent = mock(AuditLogEvent.class);
+        when(auditLogEventFactory.createEventForUserAuthentication(isNull(), anyString())).thenReturn(auditLogEvent);
 
         Command.State state = resetPasswordCommand.execute(chainContextMock);
 
         verifyZeroInteractions(resetPasswordServiceMock);
         assertThat(state).isEqualTo(FINISH);
         verify(chainContextMock).redirectToPasswordReset();
+        verify(audit).log(auditLogEvent);
     }
 
     @Test

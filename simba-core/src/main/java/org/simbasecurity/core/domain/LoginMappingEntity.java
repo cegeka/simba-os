@@ -96,7 +96,7 @@ public class LoginMappingEntity implements LoginMapping {
     }
 
     private long getMaxLoginElapsedTime() {
-        Integer maxElapsedTime = getConfigurationService().getValue(MAX_LOGIN_ELAPSED_TIME);
+        Long maxElapsedTime = getConfigurationService().getValue(MAX_LOGIN_ELAPSED_TIME);
         return Duration.of(maxElapsedTime, MAX_LOGIN_ELAPSED_TIME.getChronoUnit()).toMillis();
     }
 

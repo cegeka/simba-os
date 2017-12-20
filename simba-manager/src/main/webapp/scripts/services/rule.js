@@ -26,11 +26,7 @@ angular.module('SimbaApp')
                     return rules[key];
                 }
 
-                $rest.post('authorization/isResourceRuleAllowed', {
-                    "username": $session.getCurrentUserName(),
-                    "resourcename": resourceName,
-                    "operation": operation
-                });
+                rules[key] = $rest.post('authorization/isResourceRuleAllowed', {"username": $session.getCurrentUserName(), "resourcename": resourceName, "operation": operation});
                 return rules[key];
             }
         };

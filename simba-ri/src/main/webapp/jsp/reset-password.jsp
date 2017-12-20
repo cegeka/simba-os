@@ -1,4 +1,3 @@
-<%@ page import="org.owasp.esapi.ESAPI" %>
 <%--
   ~ Copyright 2013-2017 Simba Open Source
   ~
@@ -36,13 +35,18 @@
         <%
             String resetSuccessfull = request.getParameter("resetSuccessfull");
         %>
+        <script type="text/javascript">
+            function toggleButton(ref,bttnID){
+                document.getElementById(bttnID).disabled= ((ref.value === null));
+            }
+        </script>
         <form name="resetPasswordForm" id="resetPassword" method="post" action="/simba/http/simba-reset-pwd">
             <p>
                 <label for="email"><fmt:message key="email"/></label>
-                <span class="input"><input type="email" name="email" id="email" class="text"/></span>
+                <span class="input"><input type="email" name="email" id="email" class="text" onkeyup="toggleButton(this, 'bttnsubmit')"/></span>
             </p>
             <p>
-                <input type="submit" value="<fmt:message key="reset.password.button"/>" class="button-submit" />
+                <input type="submit" id="bttnsubmit" value="<fmt:message key="reset.password.button"/>" class="button-submit" disabled/>
             </p>
         </form>
         <% if (resetSuccessfull != null) { %>

@@ -41,6 +41,7 @@ import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.locator.SpringAwareLocator;
 import org.simbasecurity.core.service.communication.reset.password.ForgotPassword;
+import org.simbasecurity.core.service.communication.reset.password.ResetPasswordByManager;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.filter.EntityFilter;
@@ -70,7 +71,7 @@ public class UserServiceImplTest {
     @Mock private PasswordValidator passwordValidator;
     @Mock private CoreConfigurationService configurationService;
     @Mock private ResetPasswordService resetPasswordService;
-    @Mock private ForgotPassword resetReason;
+    @Mock private ResetPasswordByManager resetReason;
     @Mock private ManagementAudit managementAudit;
 
     @Mock private PolicyRepository policyRepository;

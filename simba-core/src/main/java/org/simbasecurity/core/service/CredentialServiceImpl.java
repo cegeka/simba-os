@@ -16,7 +16,6 @@
  */
 package org.simbasecurity.core.service;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.password.PasswordEncryptor;
 import org.simbasecurity.core.audit.Audit;
@@ -34,7 +33,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
@@ -122,18 +123,21 @@ public class CredentialServiceImpl implements CredentialService {
     public void markUsersForPasswordChange() {
         Collection<User> allUsers = userRepository.findAll();
 
-        int passwordLifeTime = configurationService.getValue(SimbaConfigurationParameter.PASSWORD_LIFE_TIME);
+        long passwordLifeTime = configurationService.getValue(SimbaConfigurationParameter.PASSWORD_LIFE_TIME);
 
-        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
 
         for (User user : allUsers) {
-            Date changeDate = user.getDateOfLastPasswordChange();
-            if (changeDate == null) {
-                changeDate = new Date(0);
-            }
-            Date lastDateForNextChange = DateUtils.addDays(changeDate, passwordLifeTime);
 
-            if (user.isPasswordChangeRequired() && today.after(lastDateForNextChange)) {
+            LocalDateTime changeDate;
+            if (user.getDateOfLastPasswordChange() != null) {
+                changeDate = LocalDateTime.ofInstant(user.getDateOfLastPasswordChange().toInstant(), ZoneId.systemDefault());
+            } else {
+                changeDate = LocalDateTime.ofInstant(new Date(0).toInstant(), ZoneId.systemDefault());
+            }
+
+            LocalDateTime lastDateForNextChange = changeDate.plus(passwordLifeTime, SimbaConfigurationParameter.PASSWORD_LIFE_TIME.getChronoUnit());
+
+            if (user.isPasswordChangeRequired() && LocalDate.now().isAfter(lastDateForNextChange.toLocalDate())) {
                 user.setChangePasswordOnNextLogon(true);
             }
         }

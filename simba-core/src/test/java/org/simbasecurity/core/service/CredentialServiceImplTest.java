@@ -16,7 +16,6 @@
  */
 package org.simbasecurity.core.service;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -35,8 +34,10 @@ import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 
@@ -60,7 +61,7 @@ public class CredentialServiceImplTest {
     private static final String USERNAME = "username";
     private static final String OTHER_USER_NAME = "otherUser";
 
-    private static final int PASSWORD_EXPIRATION_TIME = 90;
+    private static final long PASSWORD_EXPIRATION_TIME = 90L;
 
     @Mock private UserRepository mockUserRepository;
     @Mock private ConfigurationServiceImpl mockConfigurationService;
@@ -134,10 +135,10 @@ public class CredentialServiceImplTest {
 
     @Test
     public void markUsersForPasswordChange() {
-        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+        LocalDate today = LocalDate.now();
 
-        Date notLongerThenChangeRateAgo = DateUtils.addDays(today, -PASSWORD_EXPIRATION_TIME);
-        Date longerThenChangeRateAgo = DateUtils.addDays(today, -(PASSWORD_EXPIRATION_TIME + 1));
+        Date notLongerThenChangeRateAgo = getDateInPast(today, PASSWORD_EXPIRATION_TIME);
+        Date longerThenChangeRateAgo = getDateInPast(today, PASSWORD_EXPIRATION_TIME + 1);
 
         User userWithExpiredPassword = mock(User.class);
         User userWithExpiredPasswordButNotRequired = mock(User.class);
@@ -162,6 +163,10 @@ public class CredentialServiceImplTest {
 
         verify(userWithExpiredPasswordButNotRequired, never()).setChangePasswordOnNextLogon(anyBoolean());
         verify(userWithValidPassword, never()).setChangePasswordOnNextLogon(anyBoolean());
+    }
+
+    private Date getDateInPast(LocalDate today, long amountToSubtract) {
+        return Date.from(today.minus(amountToSubtract, ChronoUnit.DAYS).atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
     @Test

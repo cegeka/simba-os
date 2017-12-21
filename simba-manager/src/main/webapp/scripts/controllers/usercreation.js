@@ -28,16 +28,19 @@ angular.module('SimbaApp')
             $scope.changePassword = true;
             $scope.showEditButtons=true;
             $scope.error = $error.getError();
+            $scope.emailRequired = true;
 
             $scope.initData = function() {
                 getSuccessUrls();
                 $scope.showEditButtons=true;
+                $scope.emailRequired = $configuration.getValue('EMAIL_ADDRESS_REQUIRED');
             };
 
             $scope.init = function() {
                 $scope.tabs = getTabs();
                 $scope.user = selectedUser;
                 $scope.userRoles = roles;
+
                 updateUserPolicies();
             };
 

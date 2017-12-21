@@ -30,6 +30,8 @@ import org.simbasecurity.core.domain.repository.GroupRepository;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
+import org.simbasecurity.core.exception.SimbaException;
+import org.simbasecurity.core.exception.SimbaMessageKey;
 import org.simbasecurity.core.service.communication.reset.password.ForgotPassword;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.filter.EntityFilterService;
@@ -130,6 +132,7 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
     public TUser resetPassword(TUser user) {
         User attachedUser = userRepository.findByName(user.getUserName());
 
+        if (attachedUser.getEmail() == null) { throw new SimbaException(SimbaMessageKey.EMAIL_ADDRESS_REQUIRED);}
         resetPasswordService.sendResetPasswordMessageTo(attachedUser, forgotPasswordReason);
 
         managementAudit.log("Password for user ''{0}'' resetted", attachedUser.getUserName());

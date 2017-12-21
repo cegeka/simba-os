@@ -125,16 +125,4 @@ public class ResetPasswordServiceTest {
         );
     }
 
-    @Test
-    public void sendMessage_NoEmailAddress_ThrowsSimbaException() throws Exception {
-        User user = aDefaultUser()
-                .withEmail((EmailAddress) null)
-                .build();
-
-        assertThatExceptionOfType(SimbaException.class)
-                .isThrownBy(() -> resetPasswordService.sendResetPasswordMessageTo(user, forgotPasswordReason))
-                .withMessage(EMAIL_ADDRESS_REQUIRED.name());
-
-        verifyZeroInteractions(auditMock);
-    }
 }

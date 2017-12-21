@@ -1,6 +1,7 @@
 package org.simbasecurity.core.service.user;
 
 import org.simbasecurity.core.audit.ManagementAudit;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.UserEntity;
@@ -8,8 +9,10 @@ import org.simbasecurity.core.domain.generator.PasswordGenerator;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.exception.SimbaException;
+import org.simbasecurity.core.exception.SimbaMessageKey;
 import org.simbasecurity.core.service.communication.reset.password.NewUser;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +34,8 @@ public class UserFactory {
     @Autowired private PasswordGenerator passwordGenerator;
     @Autowired private ResetPasswordService resetPasswordService;
     @Autowired private NewUser resetPasswordForNewUser;
+    @Autowired private CoreConfigurationService configurationService;
+
 
     public User create(User user) {
         User newUser = createUser(user);
@@ -64,9 +69,12 @@ public class UserFactory {
     private User createUser(User user) {
         validateUniqueUsername(user);
         validateUniqueEmail(user);
+        validateRequiredEmail(user);
 
         User persist = userRepository.persist(user);
-        resetPasswordService.sendResetPasswordMessageTo(user, resetPasswordForNewUser);
+        if (user.getEmail() != null) {
+            resetPasswordService.sendResetPasswordMessageTo(user, resetPasswordForNewUser);
+        }
         return persist;
     }
 
@@ -86,6 +94,14 @@ public class UserFactory {
     private void validateUniqueEmail(User user) {
         if (userRepository.findByEmail(user.getEmail()) != null){
             throw new SimbaException(USER_ALREADY_EXISTS_WITH_EMAIL, String.format("User already exists with email: %s",user.getEmail()));
+        }
+    }
+
+    private void validateRequiredEmail(User user) {
+        if (configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)) {
+            if(user.getEmail() == null ) {
+                throw new SimbaException(SimbaMessageKey.EMAIL_ADDRESS_REQUIRED);
+            }
         }
     }
 

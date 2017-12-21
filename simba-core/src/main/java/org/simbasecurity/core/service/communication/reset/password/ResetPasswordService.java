@@ -4,8 +4,6 @@ import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.communication.token.Token;
-import org.simbasecurity.core.exception.SimbaException;
-import org.simbasecurity.core.exception.SimbaMessageKey;
 import org.simbasecurity.core.service.communication.mail.LinkGenerator;
 import org.simbasecurity.core.service.communication.mail.Mail;
 import org.simbasecurity.core.service.communication.mail.MailService;
@@ -39,8 +37,6 @@ public class ResetPasswordService {
     private String resetPasswordFromAddress;
 
     public void sendResetPasswordMessageTo(User user, ResetPasswordReason reason) {
-        if (user.getEmail() == null) { throw new SimbaException(SimbaMessageKey.EMAIL_ADDRESS_REQUIRED);}
-
         Token token = tokenManager.generateToken(user, reason);
         URL link = linkGenerator.generateResetPasswordLink(token);
         String mailBody = templateService.createMailBodyWithLink(reason.getTemplate(), user.getLanguage(), link);

@@ -51,7 +51,7 @@
 
     <div class="control">
         <label class="control-label" for="email"><span translate="user.email"></span></label>
-        <input type="email" name="email" id="email" ng-model="user.email" required/>
+        <input type="email" name="email" id="email" ng-model="user.email" ng-required="emailRequired"/>
         <span ng-show="!userForm.email.$pristine && userForm.email.$error.required" translate="user.email.required"></span>
     </div>
 

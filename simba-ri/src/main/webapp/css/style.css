@@ -212,15 +212,14 @@ form input.text:focus {
     cursor: pointer;
 }
 
-form p.p-without-label {
-    margin-left: 130px;
-}
-
 p.p-top-space {
     margin-top: 20px;
 }
 
-input.button-submit {
-    cursor:pointer;
-    cursor:hand;
+input[type=Submit] {
+    cursor: pointer;
+}
+
+input#ResetSubmit {
+    margin-top: 10px;
 }

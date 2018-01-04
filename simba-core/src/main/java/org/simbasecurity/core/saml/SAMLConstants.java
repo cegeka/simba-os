@@ -65,6 +65,7 @@ public interface SAMLConstants {
     String AC_KERBEROS = "urn:oasis:names:tc:SAML:2.0:ac:classes:Kerberos";
     String AC_PASSWORD_PROTECTED_TRANSPORT = "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport";
     String AC_FAS_EID = "urn:be:fedict:iam:fas:citizen:eid";
+    String AC_FAS_BMID = "urn:be:fedict:iam:fas:citizen:bmid";
 
     // Subject Confirmation
     String CM_BEARER = "urn:oasis:names:tc:SAML:2.0:cm:bearer";

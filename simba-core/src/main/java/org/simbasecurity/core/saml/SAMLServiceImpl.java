@@ -87,6 +87,11 @@ public class SAMLServiceImpl implements SAMLService {
 
         writer.writeStartElement("saml", "AuthnContextClassRef", NS_SAML);
         writer.writeNamespace("saml", NS_SAML);
+        writer.writeCharacters(AC_FAS_BMID);
+        writer.writeEndElement();
+
+        writer.writeStartElement("saml", "AuthnContextClassRef", NS_SAML);
+        writer.writeNamespace("saml", NS_SAML);
         writer.writeCharacters(AC_FAS_EID);
         writer.writeEndElement();
 

@@ -133,7 +133,6 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
     public TUser resetPassword(TUser user) {
         User attachedUser = userRepository.findByName(user.getUserName());
 
-        if (attachedUser.getEmail() == null) { throw new SimbaException(SimbaMessageKey.EMAIL_ADDRESS_REQUIRED);}
         resetPasswordService.sendResetPasswordMessageTo(attachedUser, resetPasswordByManager);
 
         managementAudit.log("Password for user ''{0}'' resetted", attachedUser.getUserName());

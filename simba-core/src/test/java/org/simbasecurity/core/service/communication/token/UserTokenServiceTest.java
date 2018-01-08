@@ -99,14 +99,29 @@ public class UserTokenServiceTest extends PersistenceTestCase {
     }
 
     @Test
-    public void purgeExpiredTokens_expiredTokenGetsDeleted() {
-        User user = aDefaultUser().build();
-        User newUser = aDefaultUser().build();
-        persistAndRefresh(user, newUser);
+    public void purgeExpiredTokens_expiredTokensGetDeleted() {
+        User catwoman = aDefaultUser().withFirstName("Selina").withName("Kyle").build();
+        User theRiddler = aDefaultUser().withFirstName("Ed").withName("Nigma").build();
+        User batman = aDefaultUser().build();
+        persistAndRefresh(catwoman, batman, theRiddler);
 
-        UserToken expiredUserToken = userToken().withNewToken().withUserId(user.getId()).withExpiresOn(DateUtils.now().minusDays(1L)).buildResetPasswordUserToken();
-        UserToken userToken = userToken().withNewToken().withUserId(newUser.getId()).buildResetPasswordUserToken();
-        persistAndRefresh(expiredUserToken, userToken);
+        UserToken olderExpiredUserToken = userToken()
+            .withNewToken()
+            .withUserId(theRiddler.getId())
+            .withExpiresOn(DateUtils.now()
+            .minusDays(2L))
+            .buildResetPasswordUserToken();
+        UserToken expiredUserToken = userToken()
+            .withNewToken()
+            .withUserId(catwoman.getId())
+            .withExpiresOn(DateUtils.now()
+            .minusDays(1L))
+            .buildResetPasswordUserToken();
+        UserToken userToken = userToken()
+            .withNewToken()
+            .withUserId(batman.getId())
+            .buildResetPasswordUserToken();
+        persistAndRefresh(olderExpiredUserToken, expiredUserToken, userToken);
 
         tokenManager.purgeExpiredTokens();
 

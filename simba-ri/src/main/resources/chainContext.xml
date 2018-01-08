@@ -56,6 +56,26 @@
     </property>
   </bean>
 
+  <bean id="resetPasswordChain" class="org.simbasecurity.core.chain.ChainImpl">
+    <property name="commands">
+      <list>
+        <ref bean="resetPasswordCommand" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="newPasswordChain" class="org.simbasecurity.core.chain.ChainImpl">
+    <property name="commands">
+      <list>
+        <ref bean="checkTokenCommand" />
+        <ref bean="newPasswordCommand" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="emailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+  </bean>
+
   <bean id="sessionChain" class="org.simbasecurity.core.chain.ChainImpl">
     <property name="commands">
       <list>

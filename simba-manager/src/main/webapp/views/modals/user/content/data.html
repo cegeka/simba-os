@@ -20,17 +20,17 @@
         <label class="control-label" for="username"><span translate="user.username"></span></label>
         <label class="control-label" id="username">{{user.userName}}</label>
     </div>
-    
+
     <div class="control">
         <label class="control-label" for="lastname"><span translate="user.name"></span></label>
-        <input type="text" id="lastname" ng-model="user.name" />
+        <input type="text" id="lastname" ng-model="user.name"/>
     </div>
-    
+
     <div class="control">
         <label class="control-label" for="firstname"><span translate="user.firstname"></span></label>
-        <input type="text" id="firstname" ng-model="user.firstName" />    
+        <input type="text" id="firstname" ng-model="user.firstName"/>
     </div>
-    
+
     <div class="control">
         <label class="control-label" for="language"><span translate="user.language"></span></label>
         <select id="language" ng-model="user.language">
@@ -39,7 +39,7 @@
             <option value="fr_FR">{{"language.french"|translate}}</option>
         </select>
     </div>
-    
+
     <div class="control">
         <label class="control-label" for="status"><span translate="user.status"></span></label>
         <select id="status" ng-model="user.status">
@@ -48,20 +48,21 @@
             <option value="BLOCKED">{{"status.blocked"|translate}}</option>
         </select>
     </div>
-    
+
+    <div class="control">
+        <label class="control-label" for="email"><span translate="user.email"></span></label>
+        <input type="email" name="email" id="email" ng-model="user.email" ng-required="emailRequired"/>
+        <span ng-show="!userForm.email.$pristine && userForm.email.$error.required" translate="user.email.required"></span>
+    </div>
+
     <div class="control">
         <label class="control-label" for="successURL"><span translate="user.successurl"></span></label>
         <select id="successURL" ng-model="user.successURL" ng-options="u for u in successUrls">
         </select>
     </div>
-    
-    <div class="control">
-        <label class="control-label" id="changePasswordLabel" for="changePassword"><span class="changePasswordSpan" translate="user.changepassword"></span></label>
-        <input type="checkbox" id="changePassword" ng-model="user.changePasswordOnNextLogon" />
-    </div>
 
     <div class="control">
-        <label class="control-label" for="resetPassword"><span translate="user.resetpassword"></span></label>
-        <input type="checkbox" id="resetPassword" ng-model="user.resetPassword" />
+        <label class="control-label" id="changePasswordLabel" for="changePassword"><span class="changePasswordSpan" translate="user.changepassword"></span></label>
+        <input type="checkbox" id="changePassword" ng-model="user.changePasswordOnNextLogon"/>
     </div>
 </div>

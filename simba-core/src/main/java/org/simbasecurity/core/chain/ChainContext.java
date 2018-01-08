@@ -26,6 +26,7 @@ import org.simbasecurity.core.exception.SimbaMessageKey;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * A ChainContext represents the state information that is accessed and manipulated by the execution
@@ -90,6 +91,8 @@ public interface ChainContext extends Serializable {
 
     String getUserName();
 
+    Optional<String> getEmail();
+
     void setUserPrincipal(String userName);
 
     boolean isSsoTokenMappingKeyProvided();
@@ -97,6 +100,8 @@ public interface ChainContext extends Serializable {
     ActionDescriptor getActionDescriptor();
 
     void redirectToPasswordChanged();
+
+    void redirectToPasswordReset();
 
     void redirectToLogin();
 
@@ -141,4 +146,18 @@ public interface ChainContext extends Serializable {
     boolean isLoginUsingEID();
 
     String getSimbaEidSuccessUrl();
+
+    Optional<String> getToken();
+
+    void redirectToWrongToken();
+
+    void setUserName(String userName);
+
+    void redirectToNewPassword(String someToken, String name);
+
+    Optional<String> getNewPassword();
+
+    String getNewPasswordConfirmation();
+
+    void redirectToNewPasswordSuccessPage();
 }

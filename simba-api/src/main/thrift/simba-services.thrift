@@ -304,6 +304,7 @@ struct TUser {
     9: string language;
     10: bool mustChangePassword;
     11: bool passwordChangeRequired;
+    12: string email;
 }
 
 struct TRole {

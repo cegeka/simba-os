@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
 
 public class PolicyDatabaseRepositoryTest extends PersistenceTestCase {
 
-    private UserEntity user;
+    private User user;
     private PolicyEntity policy1;
     private PolicyEntity policy2;
     private PolicyEntity policy3;
@@ -46,7 +46,7 @@ public class PolicyDatabaseRepositoryTest extends PersistenceTestCase {
 
     @Before
     public void setUp() {
-        user = new UserEntity("jos");
+        user = UserTestBuilder.aDefaultUser().build();
         rule1 = new ResourceRuleEntity("aansluitingen");
         role1 = new RoleEntity("venn_dossierbeheerder");
         role2 = new RoleEntity("ss_dossierbeheerder");

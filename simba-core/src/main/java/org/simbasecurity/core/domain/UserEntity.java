@@ -26,18 +26,17 @@ import org.apache.commons.pool.impl.StackObjectPool;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.password.ConfigurablePasswordEncryptor;
 import org.jasypt.util.password.PasswordEncryptor;
+import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.util.PasswordEncryptorFactory;
 import org.simbasecurity.core.util.SHA1PasswordEncryptorFactory;
 
 import javax.persistence.*;
 import java.util.*;
 
-import static org.simbasecurity.core.config.SimbaConfigurationParameter.DEFAULT_PASSWORD;
 import static org.simbasecurity.core.domain.Status.INACTIVE;
 import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORDS_DONT_MATCH;
 import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORD_SAME_AS_OLD;
@@ -48,7 +47,7 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 
 	private static final long serialVersionUID = 552484022516217422L;
 
-	private static final ObjectPool<ConfigurablePasswordEncryptor> ENCRYPTOR_POOL = new StackObjectPool<ConfigurablePasswordEncryptor>(
+	private static final ObjectPool<ConfigurablePasswordEncryptor> ENCRYPTOR_POOL = new StackObjectPool<>(
 			new PasswordEncryptorFactory(), 2, 2);
 
 	private static ConfigurablePasswordEncryptor retrievePasswordEncryptor() {
@@ -103,30 +102,41 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 	@Enumerated(EnumType.STRING)
 	private Language language;
 
+	@Embedded
+	private EmailAddress email;
+
 	@ManyToMany(targetEntity = RoleEntity.class)
 	@JoinTable(name = "SIMBA_USER_ROLE", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
 	@OrderBy("name")
-	private Set<Role> roles = new HashSet<Role>();
+	private Set<Role> roles = new HashSet<>();
 
 	@OneToMany(targetEntity = SessionEntity.class, mappedBy = "user")
-	private Set<Session> sessions = new HashSet<Session>();
+	private Set<Session> sessions = new HashSet<>();
 
 	@ManyToMany(targetEntity = GroupEntity.class)
 	@JoinTable(name = "SIMBA_USER_GROUP", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "GROUP_ID"))
 	@OrderBy("name")
-	private Set<Group> groups = new HashSet<Group>();
+	private Set<Group> groups = new HashSet<>();
 
-	public UserEntity() {
+	protected UserEntity() {
 	}
 
-	public UserEntity(String userName) {
-		this(userName, null, null, null, Language.en_US, Status.ACTIVE, true, true);
+	public static UserEntity eidUser(String userName, String firstName, String name, Language language) {
+		return new UserEntity(userName, firstName, name, null, language, Status.ACTIVE, false, false, null);
 	}
 
-	public UserEntity(String userName, String firstName, String name, String successURL, Language language, Status status,
-			boolean changePasswordOnNextLogon, boolean passwordChangeRequired) {
+	public static UserEntity restUser(String userName, Language language){
+		return new UserEntity(userName, null, null, null, language, Status.ACTIVE, false, false, null);
+	}
+
+	public static UserEntity user(String userName, String firstName, String name, String successURL, Language language, Status status,
+								  boolean changePasswordOnNextLogon, boolean passwordChangeRequired, EmailAddress email) {
+		return new UserEntity(userName, firstName, name, successURL, language, status, changePasswordOnNextLogon, passwordChangeRequired, email);
+	}
+
+	private UserEntity(String userName, String firstName, String name, String successURL, Language language, Status status,
+			boolean changePasswordOnNextLogon, boolean passwordChangeRequired, EmailAddress email) {
 		setUserName(userName);
-		setPassword(getDefaultPassword());
 		setFirstName(firstName);
 		setName(name);
 		setSuccessURL(successURL);
@@ -134,6 +144,7 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 		setStatus(status);
 		setChangePasswordOnNextLogon(changePasswordOnNextLogon);
 		setPasswordChangeRequired(passwordChangeRequired);
+		setEmail(email);
 	}
 
 	@Override
@@ -323,12 +334,6 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 		setChangePasswordOnNextLogon(false);
 	}
 
-	@Override
-	public void resetPassword() {
-		setPassword(getDefaultPassword());
-		setChangePasswordOnNextLogon(true);
-	}
-
 	private void setPassword(String newPassword) {
 		getPasswordValidator().validatePassword(newPassword);
 
@@ -441,8 +446,12 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("id", id).append("userName", userName).toString();
 	}
 
-	private String getDefaultPassword() {
-		return GlobalContext.locate(CoreConfigurationService.class).getValue(DEFAULT_PASSWORD);
-	}
+	public void setEmail(EmailAddress email) {
+        this.email = email;
+    }
 
+    @Override
+    public EmailAddress getEmail() {
+        return email;
+    }
 }

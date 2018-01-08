@@ -17,6 +17,7 @@
 package org.simbasecurity.core.domain;
 
 import org.jasypt.util.password.PasswordEncryptor;
+import org.simbasecurity.core.domain.user.EmailAddress;
 
 import java.util.Collection;
 import java.util.Date;
@@ -174,11 +175,6 @@ public interface User extends Versionable {
 	void changePassword(String newPassword, String newPasswordConfirmation);
 
 	/**
-	 * Reset password to default
-	 */
-	void resetPassword();
-
-	/**
 	 * Checks if the user is required to change his password at next login.
 	 * <p/>
 	 * A user is required to change his password if the password has been used
@@ -253,4 +249,8 @@ public interface User extends Versionable {
 	void addGroup(Group group);
 
 	boolean hasRole(String roleName);
+
+    EmailAddress getEmail();
+
+    void setEmail(EmailAddress email);
 }

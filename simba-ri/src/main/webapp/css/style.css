@@ -143,6 +143,13 @@ form span.input {
     margin: 0 0 15px 0;
 }
 
+form span.span-text {
+    display: block;
+    margin: 0 0 15px 0;
+    font: 14px Helvetica, Arial, Verdana, sans-serif;
+    letter-spacing: -1px;
+}
+
 form p.error {
     display: block;
     -moz-border-radius: 5px;
@@ -196,4 +203,23 @@ form input.text:focus {
 
 #block5 {
     background-color: #ffd336;
+}
+
+.button-link {
+    background:none;
+    border:none;
+    color:red;
+    cursor: pointer;
+}
+
+p.p-top-space {
+    margin-top: 20px;
+}
+
+input[type=Submit] {
+    cursor: pointer;
+}
+
+input#ResetSubmit {
+    margin-top: 10px;
 }

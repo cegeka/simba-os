@@ -61,6 +61,17 @@ public class JobDetailConfiguration {
     }
 
     @Bean
+    public JobDetail purgeExpiredTokensJobDetail() throws Exception {
+        BeanInvokingJobDetailFactoryBean bean = new BeanInvokingJobDetailFactoryBean();
+        bean.setTargetBeanName("purgeExpiredTokensTask");
+        bean.setExecutionMethod("execute");
+        bean.setName("Purge Expired Tokens");
+        bean.setGroup(SIMBA_QUARTZ_GROUP);
+        bean.afterPropertiesSet();
+        return bean.getObject();
+    }
+
+    @Bean
     public JobDetail markUsersForPasswordChangeDetail() throws Exception {
         BeanInvokingJobDetailFactoryBean bean = new BeanInvokingJobDetailFactoryBean();
         bean.setTargetBeanName("markUsersForPasswordChangeTask");

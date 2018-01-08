@@ -16,10 +16,10 @@
  */
 package org.simbasecurity.core.config;
 
-import org.springframework.stereotype.Component;
+import java.time.temporal.ChronoUnit;
 
-import java.util.concurrent.TimeUnit;
-
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.simbasecurity.core.config.StoreType.DATABASE;
 import static org.simbasecurity.core.config.StoreType.QUARTZ;
 
@@ -35,7 +35,7 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
      * password has been in use for longer than this period, a user should be
      * required to change his password.
      */
-    PASSWORD_LIFE_TIME(DATABASE, true, TimeType.class, TimeUnit.DAYS, "90"),
+    PASSWORD_LIFE_TIME(DATABASE, true, TimeType.class, DAYS, "90"),
 
     /**
      * Parameter for configuring the maximum successive amount of invalid
@@ -52,12 +52,12 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
     /**
      * Parameter for configuring the session time out.
      */
-    SESSION_TIME_OUT(DATABASE, true, TimeType.class, TimeUnit.MINUTES, "60"),
+    SESSION_TIME_OUT(DATABASE, true, TimeType.class, MINUTES, "60"),
 
     /**
      * Parameter for configuring the interval between to session purge runs.
      */
-    PURGE_SESSION_INTERVAL(QUARTZ, true, TimeType.class, TimeUnit.MINUTES, "60"),
+    PURGE_SESSION_INTERVAL(QUARTZ, true, TimeType.class, MINUTES, "60"),
 
     /**
      * Parameter for configuring the cron expression for marking user required
@@ -84,6 +84,18 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
      * Parameter for configuring the URL to the password changed page.
      */
     PASSWORD_CHANGED_URL(DATABASE, true, StringType.class, "/jsp/changepassword.jsp"),
+
+    /**
+     * Parameter for configuring the URL to the password reset page.
+     */
+    PASSWORD_RESET_URL(DATABASE, true, StringType.class, "/jsp/reset-password.jsp"),
+
+
+    PASSWORD_INVALID_TOKEN_URL(DATABASE, true, StringType.class, "/jsp/password-invalid-token.jsp"),
+
+    NEW_PASSWORD_URL(DATABASE, true, StringType.class, "/jsp/new-password.jsp"),
+
+    NEW_PASSWORD_SUCCESS_URL(DATABASE, true, StringType.class, "/jsp/new-password-succes.jsp"),
 
     /**
      * Parameter for configuring the URL to the access denied page.
@@ -171,15 +183,15 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
     PASSWORD_MINIMUM_COMPLEXITY(DATABASE, true, IntegerType.class, "3"),
 
     /**
-     * Parameter for configuring the default password.
-     */
-    DEFAULT_PASSWORD(DATABASE, true, StringType.class, "Simba3D"),
-
-    /**
      * Parameter for configuring if new users should have the password change
      * required enabled.
      */
     PASSWORD_CHANGE_REQUIRED(DATABASE, true, BooleanType.class, "true"),
+
+    /**
+     * Parameter for configuring if new users should have a required email.
+     */
+    EMAIL_ADDRESS_REQUIRED(DATABASE, true, BooleanType.class, "true"),
 
     /**
      * The name of the JVM argument that points to the Keystore location you
@@ -204,8 +216,16 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
     /**
      * Parameter for configuring the maximum elapsed time between opening the login page and the actual login.
      */
-    MAX_LOGIN_ELAPSED_TIME(DATABASE, true, TimeType.class, TimeUnit.MINUTES, "2"),
-    
+    MAX_LOGIN_ELAPSED_TIME(DATABASE, true, TimeType.class, MINUTES, "2"),
+    /**
+     * How much time a ResetPasswordUserToken used in the reset password mechanism expires.
+     */
+    RESET_PASSWORD_USERTOKEN_EXPIRATION_TIME(DATABASE, true, TimeType.class, MINUTES, "10"),
+    /**
+     * How much time a UserCreationUserToken used in the user creation mechanism expires.
+     */
+    USER_CREATION_USERTOKEN_EXPIRATION_TIME(DATABASE, true, TimeType.class, DAYS, "15"),
+
     MAIL_SERVER_HOST_NAME(StoreType.DATABASE, true, StringType.class, ""),
     MAIL_SERVER_PORT(StoreType.DATABASE, true, IntegerType.class, "0"),
     
@@ -219,16 +239,17 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
     SAML_IDP_SLO_TARGET_URL(StoreType.DATABASE, true, StringType.class, ""),
     SAML_ASSERTION_CONSUMER_SERVICE_URL(StoreType.DATABASE, true, StringType.class, ""),
     SAML_ISSUER(StoreType.DATABASE, true, StringType.class, ""),
-    SAML_IDP_CERTIFICATE(DATABASE, true, StringType.class, "");
+    SAML_IDP_CERTIFICATE(DATABASE, true, StringType.class, ""),
+    ;
 
     private final ConfigurationHelper helper;
-    private final TimeUnit timeUnit;
+    private final ChronoUnit timeUnit;
 
     SimbaConfigurationParameter(StoreType storeType, boolean unique, Class<? extends Type<?>> type, String defaultValue) {
         this(storeType, unique, type, null, defaultValue);
     }
 
-    SimbaConfigurationParameter(StoreType storeType, boolean unique, Class<? extends Type<?>> type, TimeUnit timeUnit, String defaultValue) {
+    SimbaConfigurationParameter(StoreType storeType, boolean unique, Class<? extends Type<?>> type, ChronoUnit timeUnit, String defaultValue) {
         try {
             this.helper = new ConfigurationHelper(name(), storeType, unique, type, defaultValue);
         } catch (Exception e) {
@@ -242,10 +263,10 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
     }
 
     /**
-     * @return the time unit to use for a {@link org.simbasecurity.core.config.TimeType time} parameter
+     * @return the chrono unit to use for a {@link org.simbasecurity.core.config.TimeType time} parameter
      * @see org.simbasecurity.core.config.TimeType
      */
-    public TimeUnit getTimeUnit() {
+    public ChronoUnit getChronoUnit() {
         return timeUnit;
     }
 

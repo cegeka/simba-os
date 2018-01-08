@@ -33,7 +33,9 @@ angular.module('SimbaApp')
         ];
 
         tabs.forEach(function(tab) {
-            tab.hidden = !$rule.evaluateRule(tab.resourceName, tab.operation);
+            $rule.evaluateRule(tab.resourceName, tab.operation).success(function (response) {
+                tab.hidden = !response.allowed
+            });
 
         });
 

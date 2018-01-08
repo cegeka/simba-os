@@ -49,6 +49,12 @@
 </div>
 
 <div class="control">
+    <label class="control-label" for="email"><span translate="user.email"></span></label>
+    <input type="email" id="email" name="email" ng-model="user.email" required/>
+    <span ng-show="!createUserForm.email.$pristine && createUserForm.email.$error.required" translate="user.email.required"></span>
+</div>
+
+<div class="control">
     <label class="control-label" for="successURL"><span translate="user.successurl"></span></label>
     <select id="successURL" ng-model="user.successURL" ng-options="u for u in successUrls">
     </select>

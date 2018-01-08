@@ -18,6 +18,10 @@ package org.simbasecurity.core.service;
 
 import org.jasypt.util.password.PasswordEncryptor;
 import org.simbasecurity.core.domain.Status;
+import org.simbasecurity.core.domain.User;
+import org.simbasecurity.core.domain.user.EmailAddress;
+
+import java.util.Optional;
 
 
 public interface CredentialService {
@@ -132,4 +136,12 @@ public interface CredentialService {
      * @return the password hash
      */
     String getPasswordHash(String username);
+
+    /**
+     * Get the user linked with this email address
+     *
+     * @param email the email address the user is linked to
+     * @return the user or empty if no user is found
+     */
+    Optional<User> findUserByMail(EmailAddress email);
 }

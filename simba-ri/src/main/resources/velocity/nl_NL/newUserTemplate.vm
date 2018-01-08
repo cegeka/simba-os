@@ -1,0 +1,20 @@
+<html>
+<head>
+    <title>Gebruikersinfo voor uw sociaal verzekeringsfonds</title>
+</head>
+<body>
+<div>
+    <p>Beste,</p>
+    <br/>
+    <p style="margin:0px">U werd zonet geregistreerd als gebruiker van het e-loket of van de toepassing van uw sociaal verzekeringsfonds.</p>
+    <p style="margin:0px">Door te klikken op onderstaande link hebt u de mogelijkheid om uw paswoord in te stellen.</p>
+    <br/>
+    <a href="$link">$link</a>
+    <br/>
+    <p style="margin:0px">Met vriendelijke groeten,</p>
+    <br/>
+    <p style="margin:0px">Uw sociaal verzekeringsfonds</p>
+    <p><i>Dit is een automatisch aangemaakte mail. Gelieve geen reply te doen. Bij vragen kan u uw fonds contacteren.</i></p>
+</div>
+</body>
+</html>

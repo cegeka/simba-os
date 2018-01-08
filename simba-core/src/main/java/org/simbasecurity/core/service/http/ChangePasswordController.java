@@ -52,9 +52,11 @@ public class ChangePasswordController implements Controller {
     
     @Autowired
     private LoginMappingService loginMappingService;
+
+    private SimbaWebUrlResolver simbaWebUrlResolver = new SimbaWebUrlResolver();
     
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        RequestData requestData = RequestUtil.createRequestData(request, resolveSimbaWebURL(request));
+        RequestData requestData = RequestUtil.createRequestData(request, simbaWebUrlResolver.resolveSimbaWebURL(request));
 		ChainContextImpl context = new ChainContextImpl(requestData, sessionService.getSession(requestData.getSsoToken()), configurationService,loginMappingService);
         credentialChain.execute(context);
         
@@ -64,19 +66,5 @@ public class ChangePasswordController implements Controller {
         actionFactory.execute(actionDescriptor);
 
         return null;
-    }
-    
-    private String resolveSimbaWebURL(HttpServletRequest request) throws ServletException {
-    	String url = SystemConfiguration.getSimbaWebURL();
-    	
-    	if (url == null) {
-    		url = reconstructSimbaWebURL(request);
-    	}
-    	
-    	return url;
-    }
-
-	private String reconstructSimbaWebURL(HttpServletRequest request) {
-        return request.getScheme() + "://" + request.getServerName() + (request.getServerPort() != 80 ? ":" + request.getServerPort() : "") + request.getContextPath();
     }
 }

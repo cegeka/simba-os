@@ -38,12 +38,12 @@ public class RoleDatabaseRepositoryTest extends PersistenceTestCase {
     private RoleDatabaseRepository roleDatabaseRepository;
 
     private RoleEntity role1;
-    private UserEntity user;
+    private User user;
     private PolicyEntity policy;
 
     @Before
     public void setUp() {
-        user = new UserEntity("jos");
+        user = UserTestBuilder.aDefaultUser().build();
         policy = new PolicyEntity("aPolicy");
         role1 = new RoleEntity(VENN_DOSSIERBEHEERDER);
 

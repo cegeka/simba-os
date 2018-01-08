@@ -30,6 +30,10 @@ public class AuditLogEventFactory {
 	public AuditLogEvent createEventForUserPasswordForm(String userName, String message) {
 		return new AuditLogEvent(AUTH_LOGIN_FORM, userName, null,null,message,null,null,null,null,null,null);  
     }
+
+	public AuditLogEvent createEventForUserAuthentication(String userName, String message) {
+		return new AuditLogEvent(AUTHENTICATION, userName, null,null,message,null,null,null,null,null,null);
+	}
 	
 	public AuditLogEvent createEventForFailureInForm(String userName, String message) {
 		AuditLogEvent auditLogEvent = new AuditLogEvent(AUTH_LOGIN_FORM, userName, null,null,FAILURE + message,null,null,null,null,null,null);

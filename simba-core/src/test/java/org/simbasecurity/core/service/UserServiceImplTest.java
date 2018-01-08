@@ -28,10 +28,11 @@ import org.mockito.junit.MockitoRule;
 import org.simbasecurity.api.service.thrift.TPolicy;
 import org.simbasecurity.api.service.thrift.TRole;
 import org.simbasecurity.api.service.thrift.TUser;
+import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.domain.PolicyEntity;
 import org.simbasecurity.core.domain.Role;
 import org.simbasecurity.core.domain.RoleEntity;
-import org.simbasecurity.core.domain.UserEntity;
+import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
@@ -39,6 +40,9 @@ import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.locator.SpringAwareLocator;
+import org.simbasecurity.core.service.communication.reset.password.ForgotPassword;
+import org.simbasecurity.core.service.communication.reset.password.ResetPasswordByManager;
+import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.filter.EntityFilter;
 import org.simbasecurity.core.service.filter.EntityFilterService;
@@ -56,6 +60,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 
 public class UserServiceImplTest {
 
@@ -65,6 +70,9 @@ public class UserServiceImplTest {
     @Mock private UserValidator userValidator;
     @Mock private PasswordValidator passwordValidator;
     @Mock private CoreConfigurationService configurationService;
+    @Mock private ResetPasswordService resetPasswordService;
+    @Mock private ResetPasswordByManager resetReason;
+    @Mock private ManagementAudit managementAudit;
 
     @Mock private PolicyRepository policyRepository;
     @Mock private RoleRepository roleRepository;
@@ -95,9 +103,9 @@ public class UserServiceImplTest {
         when(locator.locate(PasswordValidator.class)).thenReturn(passwordValidator);
         when(locator.locate(CoreConfigurationService.class)).thenReturn(configurationService);
 
-        UserEntity userEntity1 = new UserEntity("user-1");
-        UserEntity userEntity2 = new UserEntity("user-2");
-        UserEntity userEntity3 = new UserEntity("user-3");
+        User userEntity1 = aDefaultUser().withUserName("user-1").build();
+        User userEntity2 = aDefaultUser().withUserName("user-2").build();
+        User userEntity3 = aDefaultUser().withUserName("user-3").build();
 
         ReflectionUtil.setField(entityFilterService, "filters", filterServices);
 
@@ -182,5 +190,17 @@ public class UserServiceImplTest {
         verify(userRepository).searchUsersOrderedByName("1");
     }
 
+    @Test
+    public void resetPassword() throws Exception {
+        User user = aDefaultUser().withUserName("user-1").build();
+        when(userRepository.findByName(tUser01.getUserName())).thenReturn(user);
+        TUser expectedUser = new TUser();
+        when(assembler.assemble(user)).thenReturn(expectedUser);
 
+        TUser tUser = service.resetPassword(tUser01);
+
+        assertThat(tUser).isEqualTo(expectedUser);
+        verify(resetPasswordService).sendResetPasswordMessageTo(user, resetReason);
+        verify(managementAudit).log("Password for user ''{0}'' resetted", "user-1");
+    }
 }

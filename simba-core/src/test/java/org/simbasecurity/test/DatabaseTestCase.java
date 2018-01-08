@@ -44,6 +44,5 @@ public abstract class DatabaseTestCase extends LocatorTestCase {
         implantMock(PasswordValidator.class);
 
         configurationServiceMock = implantMock(CoreConfigurationService.class);
-        when(configurationServiceMock.getValue(SimbaConfigurationParameter.DEFAULT_PASSWORD)).thenReturn("aPassword");
     }
 }

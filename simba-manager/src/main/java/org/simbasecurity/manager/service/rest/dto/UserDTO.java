@@ -28,6 +28,7 @@ public class UserDTO  {
     private String status;
     private String successURL;
     private String language;
+    private String email;
     private boolean mustChangePassword;
     private boolean passwordChangeRequired;
 
@@ -101,6 +102,14 @@ public class UserDTO  {
 
     public void setLanguage(String newLanguage) {
         this.language = newLanguage;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public boolean isChangePasswordOnNextLogon() {

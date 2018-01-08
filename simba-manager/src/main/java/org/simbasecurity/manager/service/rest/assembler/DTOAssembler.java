@@ -79,7 +79,8 @@ public class DTOAssembler {
                 user.getSuccessURL(),
                 user.getLanguage(),
                 user.isChangePasswordOnNextLogon(),
-                user.isPasswordChangeRequired()
+                user.isPasswordChangeRequired(),
+                user.getEmail()
         );
     }
 
@@ -95,6 +96,7 @@ public class DTOAssembler {
         userDTO.setSuccessURL(tUser.getSuccessURL());
         userDTO.setLanguage(tUser.getLanguage());
         userDTO.setChangePasswordOnNextLogon(tUser.isPasswordChangeRequired());
+        userDTO.setEmail(tUser.getEmail());
         return userDTO;
     }
 

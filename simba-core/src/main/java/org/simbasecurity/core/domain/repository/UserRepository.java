@@ -18,8 +18,10 @@ package org.simbasecurity.core.domain.repository;
 
 import org.simbasecurity.core.domain.Role;
 import org.simbasecurity.core.domain.User;
+import org.simbasecurity.core.domain.user.EmailAddress;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface UserRepository extends AbstractVersionedRepository<User> {
 
@@ -44,4 +46,8 @@ public interface UserRepository extends AbstractVersionedRepository<User> {
     Collection<User> searchUsersOrderedByName(String searchText);
 
     User refreshWithOptimisticLocking(String username, int version);
+
+    User findByEmail(EmailAddress emailAddress);
+
+    Optional<User> findById(long id);
 }

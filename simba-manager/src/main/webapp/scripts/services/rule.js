@@ -16,13 +16,13 @@
  */
 
 angular.module('SimbaApp')
-    .factory('$rule', ['$session', '$rest', function($session, $rest) {
+    .factory('$rule', ['$session', '$rest', function ($session, $rest) {
         var rules = {};
 
         return {
-            evaluateRule: function(resourceName, operation) {
+            evaluateRule: function (resourceName, operation) {
                 var key = resourceName + operation;
-                if(typeof rules[key] !== 'undefined') {
+                if (typeof rules[key] !== 'undefined') {
                     return rules[key];
                 }
 

@@ -18,8 +18,8 @@
 'use strict';
 
 angular.module('SimbaApp')
-  .controller('UserDetailsCtrl', ['$scope', '$modalInstance', 'selectedUser', '$user', '$translate', '$error', '$simba_component', '$configuration', '$log', '$filter',
-                        function ($scope, $modalInstance, selectedUser, $user, $translate, $error, $simba_component, $configuration, $log, $filter) {
+  .controller('UserDetailsCtrl', ['$scope', '$modalInstance', 'selectedUser', '$user', '$translate', '$error', '$info', '$simba_component', '$configuration', '$log', '$filter',
+                        function ($scope, $modalInstance, selectedUser, $user, $translate, $error, $info, $simba_component, $configuration, $log, $filter) {
     $scope.tabs;
     $scope.user;
     $scope.successUrls;
@@ -28,6 +28,7 @@ angular.module('SimbaApp')
     $scope.userGroups;
     $scope.showEditButtons=true;
     $scope.error = $error.getError();
+    $scope.info = $info.getInfo();
 
     $scope.initData = function() {
         getSuccessUrls();
@@ -71,9 +72,24 @@ angular.module('SimbaApp')
           });
       $scope.showEditButtons=false;
     };
-    
+
     $scope.save = function () {
-        $modalInstance.close($scope.user);
+        $user.update($scope.user)
+            .success(function (data) {
+                $modalInstance.close(data);
+            })
+            .error(function () {
+                $error.showError('error.update.failed');
+            });
+    };
+
+    $scope.reset = function () {
+        $user.resetPassword($scope.user)
+            .then(function () {
+                $info.showInfo('password.reset.successful');
+            }).catch(function (error) {
+                $error.showError('error.password.reset.failed')
+        });
     };
 
     $scope.cancel = function () {
@@ -118,7 +134,7 @@ angular.module('SimbaApp')
             $error.showError('error.update.failed');
         });
     };
-    
+
     var getTabs = function() {
         return [
             {id: 'Data', title: 'updateuser.data', active: true, url: 'views/modals/user/content/data.html', clickAction: function() {$scope.initData();}},
@@ -136,6 +152,10 @@ angular.module('SimbaApp')
 
         $scope.hideErrorMessage = function() {
             $error.hideError();
+        };
+
+        $scope.hideInfoMessage = function () {
+            $info.hideInfo();
         };
 
     var refreshSelectedUser = function () {

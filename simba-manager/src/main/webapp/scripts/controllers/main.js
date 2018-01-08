@@ -55,7 +55,10 @@ angular.module('SimbaApp')
                 {id: 'Configuration', title: 'menu.configuration', active: false, url: 'views/configuration.html', resourceName: 'manage-sessions', operation: 'READ'}
             ];
             tabs.forEach(function (tab) {
-                tab.hidden = !$rule.evaluateRule(tab.resourceName, tab.operation);
+                $rule.evaluateRule(tab.resourceName, tab.operation).success(function (response) {
+                    tab.hidden = !response.allowed
+                });
+
             });
             return tabs;
         };

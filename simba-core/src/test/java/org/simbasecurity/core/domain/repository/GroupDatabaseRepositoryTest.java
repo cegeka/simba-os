@@ -18,9 +18,7 @@ package org.simbasecurity.core.domain.repository;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.simbasecurity.core.domain.Group;
-import org.simbasecurity.core.domain.GroupEntity;
-import org.simbasecurity.core.domain.UserEntity;
+import org.simbasecurity.core.domain.*;
 import org.simbasecurity.test.PersistenceTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -55,7 +53,7 @@ public class GroupDatabaseRepositoryTest extends PersistenceTestCase {
 
     @Test
     public void find() {
-        UserEntity user = new UserEntity("Jan");
+        User user = UserTestBuilder.aDefaultUser().build();
         user.addGroup(group);
         persistAndRefresh(user);
 

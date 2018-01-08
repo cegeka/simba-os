@@ -21,13 +21,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.simbasecurity</groupId>
     <artifactId>simba</artifactId>
-    <version>3.1.6</version>
+    <version>3.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>http://www.simbasecurity.org</url>
 
     <scm>
         <developerConnection>scm:git:https://github.com/cegeka/simba-os/</developerConnection>
-      <tag>simba-3.1.6</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <properties>
@@ -145,6 +145,18 @@
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 		</plugins>
 	</build>

@@ -34,10 +34,12 @@ import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.UserEntity;
+import org.simbasecurity.core.domain.UserTestBuilder;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.service.UserService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.core.service.user.UserFactory;
 import org.simbasecurity.test.LocatorTestCase;
 
 import java.util.Collections;
@@ -47,18 +49,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 
 public class CreateEIDUserCommandTest extends LocatorTestCase {
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
 
     private static final String INSZ = "insz";
-    private static final String FIRSTNAME = "firstname";
-    private static final String LASTNAME = "lastname";
-    private static final String EMAIL = "email";
+    private static final String FIRSTNAME = "johnny";
+    private static final String LASTNAME = "tampony";
+    private static final String EMAIL = "johnny.tampony@hotmail.com";
     private static final String NL = "nl";
 
     @Mock private UserService userServiceMock;
+    @Mock private UserFactory userFactoryMock;
     @Mock private CoreConfigurationService configurationServiceMock;
 
     @Mock private ChainContext chainContextMock;
@@ -91,7 +95,7 @@ public class CreateEIDUserCommandTest extends LocatorTestCase {
 
         assertEquals(State.CONTINUE, state);
 
-        verify(userServiceMock).create(userCaptor.capture(), roleListCaptor.capture());
+        verify(userFactoryMock).createEIDUserWithRoles(userCaptor.capture(), roleListCaptor.capture());
         verify(chainContextMock).setUserPrincipal(INSZ);
 
         User user = userCaptor.getValue();
@@ -109,7 +113,7 @@ public class CreateEIDUserCommandTest extends LocatorTestCase {
 
     @Test
     public void execute_UpdateExistingUser() throws Exception {
-        User user = new UserEntity(INSZ);
+        User user = aDefaultUser().withUserName(INSZ).build();
 
         when(chainContextMock.getSAMLUser()).thenReturn(samlUser);
         when(userServiceMock.findByName(INSZ)).thenReturn(user);

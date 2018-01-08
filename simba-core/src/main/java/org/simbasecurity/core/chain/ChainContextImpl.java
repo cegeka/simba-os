@@ -30,16 +30,15 @@ import org.simbasecurity.core.service.LoginMappingService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.UUID;
 
+import static com.google.common.collect.Maps.newHashMap;
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.simbasecurity.common.constants.AuthenticationConstants.*;
 import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
 import static org.simbasecurity.common.request.RequestUtil.addParametersToUrlAndFilterInternalParameters;
+import static org.simbasecurity.common.util.StringUtil.isEmpty;
 import static org.simbasecurity.core.config.SimbaConfigurationParameter.*;
 import static org.simbasecurity.core.exception.SimbaMessageKey.ACCESS_DENIED;
 import static org.simbasecurity.core.exception.SimbaMessageKey.LOGIN_TIME_EXPIRED;
@@ -254,6 +253,12 @@ public class ChainContextImpl implements ChainContext {
         redirectWithParameters(getSimbaWebURL() + passwordChangedURL, new HashMap<>());
     }
 
+    public void redirectToPasswordReset(){
+        HashMap<String, String> parameters = newHashMap();
+        parameters.put("resetSuccessfull", "true");
+        redirectWithParameters(getSimbaWebURL() + configurationService.getValue(PASSWORD_RESET_URL), parameters);
+    }
+
     public void redirectWhenLoginTokenExpired(){
         Map<String, String> requestParameters = new HashMap<>();
         requestParameters.put(ERROR_MESSAGE, LOGIN_TIME_EXPIRED.name());
@@ -326,6 +331,11 @@ public class ChainContextImpl implements ChainContext {
     }
 
     @Override
+    public Optional<String> getEmail() {
+        return Optional.ofNullable(!isEmpty(getRequestParameter(EMAIL)) ? getRequestParameter(EMAIL) : null);
+    }
+
+    @Override
     public String getChainContextId() {
         if(uuiIdForAChain == null){
             uuiIdForAChain = UUID.randomUUID();
@@ -366,5 +376,44 @@ public class ChainContextImpl implements ChainContext {
     @Override
     public String getSimbaEidSuccessUrl() {
         return requestData.getSimbaEidSuccessUrl();
+    }
+
+    @Override
+    public Optional<String> getToken() {
+        return Optional.ofNullable(!isEmpty(getRequestParameter(TOKEN)) ? getRequestParameter(TOKEN) : null);
+    }
+
+    @Override
+    public void redirectToWrongToken() {
+        redirectWithParameters(getSimbaWebURL() + configurationService.getValue(PASSWORD_INVALID_TOKEN_URL), newHashMap());
+    }
+
+    @Override
+    public void setUserName(String userName) {
+        getRequestParameters().put(USERNAME, userName);
+    }
+
+    @Override
+    public void redirectToNewPassword(String token, String errorMessage) {
+        HashMap<String, String> parameters = newHashMap();
+        parameters.put("token", token);
+        parameters.put("errorMessage", errorMessage);
+
+        redirectWithParameters(getSimbaWebURL() + configurationService.getValue(NEW_PASSWORD_URL), parameters);
+    }
+
+    @Override
+    public Optional<String> getNewPassword() {
+        return Optional.ofNullable(!isEmpty(getRequestParameter(NEW_PASSWORD)) ? getRequestParameter(NEW_PASSWORD) : null);
+    }
+
+    @Override
+    public String getNewPasswordConfirmation() {
+        return getRequestParameter(NEW_PASSWORD_CONFIRMATION);
+    }
+
+    @Override
+    public void redirectToNewPasswordSuccessPage() {
+        redirectWithParameters(getSimbaWebURL() + configurationService.getValue(NEW_PASSWORD_SUCCESS_URL), newHashMap());
     }
 }

@@ -17,6 +17,6 @@
 package org.simbasecurity.core.config;
 
 
-public class TimeType extends IntegerType {
+public class TimeType extends LongType {
 
 }

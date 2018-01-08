@@ -76,4 +76,19 @@
       </list>
     </property>
   </bean>
+
+  <bean class="org.simbasecurity.core.service.communication.mail.MailServiceStub"/>
+
+  <bean class="org.simbasecurity.core.service.communication.mail.template.VelocityTemplateService">
+    <constructor-arg>
+      <bean class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+        <property name="velocityProperties">
+          <props>
+            <prop key="resource.loader">class</prop>
+            <prop key="class.resource.loader.class">org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader</prop>
+          </props>
+        </property>
+      </bean>
+    </constructor-arg>
+  </bean>
 </beans>

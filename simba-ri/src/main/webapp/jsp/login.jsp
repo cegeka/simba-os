@@ -58,11 +58,13 @@
                 <fmt:message key='<%= "error." + ESAPI.encoder().encodeForHTML(errorMessage) %>'/>
             </p>
             <% } %>
-            <input type="submit" id="signIn" value="<fmt:message key="login.button"/>"
-                   style="cursor:pointer; cursor:hand;"/>
+            <input type="submit" id="signIn" value="<fmt:message key="login.button"/>" />
             <% if (token != null) { %>
             <input type="hidden" name="loginToken" value="<%= ESAPI.encoder().encodeForHTML(token) %>"/>
             <% } %>
+        </form>
+        <form name="resetPassword" method="get" action="reset-password.jsp">
+            <input type="submit" id="ResetSubmit" value="<fmt:message key='reset.password.link'/>" />
         </form>
     </div>
 </div>

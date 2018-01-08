@@ -16,23 +16,31 @@
   -->
 
 <div ng-init="init()">
-  <div class="modal-header">
-      <p><span translate="userdetail.title"></span> {{user.userName}}</p>
-  </div>
-  <div class="modal-body">
-    <div class="error" ng-show="error.visible">
-        <span translate="{{error.message}}"></span>
-        <a href="javascript:;" class="errorCloseButton" ng-click="hideErrorMessage()">x</a>
-    </div>
-    <tabset>
-      <tab ng-repeat="tab in tabs" heading="{{tab.title|translate}}" active="tab.active" ng-hide="tab.hidden" select="tab.clickAction()">
-        <div id="tabContent" ng-include="tab.url">
+    <form name="userForm">
+        <div class="modal-header">
+            <p><span translate="userdetail.title"></span> {{user.userName}}</p>
         </div>
-      </tab>
-    </tabset>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-primary" ng-evaluate-rule="manage-users,WRITE" ng-click="save()" ng-show="showEditButtons"><span translate="user.update"></span></button>
-    <button class="btn btn-warning" ng-click="cancel()"><span translate="user.close"></span></button>
-  </div>
+        <div class="modal-body">
+            <div class="error" ng-show="error.visible">
+                <span translate="{{error.message}}"></span>
+                <a href="javascript:;" class="errorCloseButton" ng-click="hideErrorMessage()">x</a>
+            </div>
+            <div class="success" ng-show="info.visible">
+                <span translate="{{info.message}}"></span>
+                <a href="javascript:;" class="successCloseButton" ng-click="hideInfoMessage()">x</a>
+            </div>
+            <tabset>
+                <tab ng-repeat="tab in tabs" heading="{{tab.title|translate}}" active="tab.active" ng-hide="tab.hidden"
+                     select="tab.clickAction()">
+                    <div id="tabContent" ng-include="tab.url">
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-info" ng-click="reset()"><span translate="user.resetpassword"></span></button>
+            <button class="btn btn-primary"  type="submit" ng-evaluate-rule="manage-users,WRITE" ng-click="save()" ng-show="showEditButtons"><span translate="user.update"></span></button>
+            <button class="btn btn-warning" ng-click="cancel()"><span translate="user.close"></span></button>
+        </div>
+    </form>
 </div>

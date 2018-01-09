@@ -51,7 +51,7 @@
         </form>
         <% if (resetSuccessfull != null) { %>
         <p id="successMessage" class="p-top-space">
-            <fmt:message key="reset.password.successfull"/>
+            <fmt:message key="reset.password.successful"/>
         </p>
         <% } %>
     </div>

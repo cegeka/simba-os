@@ -1,20 +1,20 @@
 <html>
 <head>
-    <title>User information for your social security fund</title>
+    <title>User information for [application]</title>
 </head>
 <body>
 <div>
     <p>Dear,</p>
     <br/>
-    <p style="margin:0px">You were recently registered as a user of the e-loket or application of your social security fund.</p>
+    <p style="margin:0px">You were recently registered as a user of [application].</p>
     <p style="margin:0px">To configure your password, please follow the link below.</p>
     <br/>
     <a href="$link">$link</a>
     <br/>
     <p style="margin:0px">Kind regards,</p>
     <br/>
-    <p style="margin:0px">Your social security fund</p>
-    <p><i>This is an automatically created email. Do not reply. Contact your social security fund if you have further questions.</i></p>
+    <p style="margin:0px">Your security provider</p>
+    <p><i>This is an automatically created email. Do not reply. Contact your admin if you have further questions.</i></p>
 </div>
 </body>
 </html>

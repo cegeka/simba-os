@@ -204,5 +204,4 @@ An official release is a multi-step process.
    the earliest compatible version for the api and the client. If there are no breaking changes in current release
    these can be copied from the previous release. 
    
-   Check the _pre-release_ checkbox if current release is not
-   production ready.
+   Check the _pre-release_ checkbox if current release is not production ready. You can uncheck when the release has successfully passed the acceptance phase.

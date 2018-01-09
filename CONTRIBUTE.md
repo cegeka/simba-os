@@ -187,7 +187,9 @@ An official release is a multi-step process.
 3. Run the maven goal: `mvn release:prepare`
 
    This will prompt for the release version, SCM tag and next snapshot version. Afterwards it will update the pom
-   files, perform a `git tag` push them to GitHub, and prepare a `release.properties` file for next step.
+   files, perform a `git tag`, and prepare a `release.properties` file for next step.
+   
+   You will have to do a `git push` yourself still.
 
 4. Run the maven goal: `mvn release:perform -DuseReleaseProfile=false`
 

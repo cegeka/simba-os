@@ -69,7 +69,7 @@ public class ResetPasswordServiceTest {
         Token token = Token.generateToken();
         when(tokenManagerMock.generateToken(user, forgotPasswordReason)).thenReturn(token);
         URL link = new URL("http://www.google.com");
-        when(linkGeneratorMock.generateResetPasswordLink(token)).thenReturn(link);
+        when(linkGeneratorMock.generateResetPasswordLink(email, token)).thenReturn(link);
         when(templateServiceMock.createMailBodyWithLink(forgotPasswordReason.getTemplate(), en_US, link)).thenReturn("someBody");
 
         resetPasswordService.sendResetPasswordMessageTo(user, forgotPasswordReason);
@@ -100,7 +100,7 @@ public class ResetPasswordServiceTest {
         Token token = Token.generateToken();
         when(tokenManagerMock.generateToken(user, newUserReason)).thenReturn(token);
         URL link = new URL("http://www.google.com");
-        when(linkGeneratorMock.generateResetPasswordLink(token)).thenReturn(link);
+        when(linkGeneratorMock.generateResetPasswordLink(email, token)).thenReturn(link);
         when(templateServiceMock.createMailBodyWithLink(newUserReason.getTemplate(), en_US, link)).thenReturn("someBody");
         ArgumentCaptor<AuditLogEvent> logCaptor = ArgumentCaptor.forClass(AuditLogEvent.class);
 

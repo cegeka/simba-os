@@ -17,9 +17,13 @@ import org.springframework.web.servlet.mvc.Controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static org.simbasecurity.core.service.http.NewPasswordController.SIMBA_NEW_PWD_PATH;
+
 @org.springframework.stereotype.Controller
-@RequestMapping("/simba-new-pwd")
+@RequestMapping(SIMBA_NEW_PWD_PATH)
 public class NewPasswordController implements Controller {
+
+    public static final String SIMBA_NEW_PWD_PATH = "/simba-new-pwd";
 
     @Autowired
     private Chain newPasswordChain;

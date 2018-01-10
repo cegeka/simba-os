@@ -3,6 +3,7 @@ package org.simbasecurity.core.service.communication.mail;
 import org.junit.After;
 import org.junit.Test;
 import org.simbasecurity.core.domain.communication.token.Token;
+import org.simbasecurity.core.domain.user.EmailAddress;
 
 import java.net.URL;
 
@@ -26,9 +27,11 @@ public class LinkGeneratorTest {
     @Test
     public void generateResetPasswordUrl_WillGenerateLinkToResetPassword_WithTokenAndUsername() throws Exception {
         setProperty(SYS_PROP_SIMBA_WEB_URL, WEB_URL_SYSPROP_VALUE);
+        EmailAddress email = EmailAddress.email("myEmail@myProvider.com");
+        String urlEscapedEmail = "myEmail%40myProvider.com";
         Token token = generateToken();
 
-        URL url = linkGenerator.generateResetPasswordLink(token);
+        URL url = linkGenerator.generateResetPasswordLink(email, token);
 
         URL simbaUrl = new URL(getSimbaWebURL());
 
@@ -36,8 +39,7 @@ public class LinkGeneratorTest {
         assertThat(url.getHost()).isEqualTo(simbaUrl.getHost());
         assertThat(url.getProtocol()).isEqualTo(simbaUrl.getProtocol());
         assertThat(url.getPort()).isEqualTo(simbaUrl.getPort());
-        assertThat(url.getQuery()).isEqualTo(String.format("token=%s", token.asString()));
+        assertThat(url.getQuery()).isEqualTo(String.format("email=%s&token=%s", urlEscapedEmail, token.asString()));
         assertThat(url.getPath()).isEqualTo("/simba/http/simba-new-pwd");
-        assertThat(url.toString()).isEqualTo(String.format("http://www.simba.be/simba/http/simba-new-pwd?token=%s", token.asString()));
     }
 }

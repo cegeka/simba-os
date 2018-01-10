@@ -42,7 +42,7 @@ public class ResetPasswordService {
         if (user.getEmail() == null) { throw new SimbaException(SimbaMessageKey.EMAIL_ADDRESS_REQUIRED);}
 
         Token token = tokenManager.generateToken(user, reason);
-        URL link = linkGenerator.generateResetPasswordLink(token);
+        URL link = linkGenerator.generateResetPasswordLink(user.getEmail(), token);
         String mailBody = templateService.createMailBodyWithLink(reason.getTemplate(), user.getLanguage(), link);
 
         mailService.sendMail(createMail(user, mailBody));

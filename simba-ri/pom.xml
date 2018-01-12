@@ -158,12 +158,12 @@
                 <version>9.4.0.v20161208</version>
                 <configuration>
                     <httpConnector>
-                        <port>8080</port>
+                        <port>9090</port>
                     </httpConnector>
                     <webApp>
                         <contextPath>/simba</contextPath>
                     </webApp>
-                    <stopPort>8082</stopPort>
+                    <stopPort>9092</stopPort>
                     <stopKey>jetty-stop</stopKey>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
                     <systemProperties>

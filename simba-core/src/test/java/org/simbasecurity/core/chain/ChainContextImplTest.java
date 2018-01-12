@@ -39,6 +39,7 @@ import java.util.Set;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -51,7 +52,8 @@ import static org.simbasecurity.core.exception.SimbaMessageKey.LOGIN_FAILED;
 
 public class ChainContextImplTest {
 
-    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
 
     private static final String SIMBA_LOGIN_PAGE_URL = "login_url";
     private static final String SIMBA_CHANGEPASSWORD_PAGE_URL = "jsp/changepassword.jsp";
@@ -68,9 +70,12 @@ public class ChainContextImplTest {
 
     private static final String USERNAME = "username";
 
-    @Mock private RequestData requestDataMock;
-    @Mock private ConfigurationServiceImpl configurationServiceMock;
-    @Mock private LoginMappingService loginMappingServiceMock;
+    @Mock
+    private RequestData requestDataMock;
+    @Mock
+    private ConfigurationServiceImpl configurationServiceMock;
+    @Mock
+    private LoginMappingService loginMappingServiceMock;
 
     private ChainContextImpl chainContextImpl;
 
@@ -173,7 +178,7 @@ public class ChainContextImplTest {
     }
 
     @Test
-    public void redirectToPasswordReset(){
+    public void redirectToPasswordReset() {
         when(configurationServiceMock.getValue(PASSWORD_RESET_URL)).thenReturn(SIMBA_PASSWORD_RESET_URL);
 
         chainContextImpl.redirectToPasswordReset();
@@ -239,7 +244,7 @@ public class ChainContextImplTest {
     }
 
     @Test
-    public void getEmailWillReturnEmailIfPresentInRequestParameters(){
+    public void getEmailWillReturnEmailIfPresentInRequestParameters() {
         when(requestDataMock.getRequestParameters()).thenReturn(Collections.singletonMap(EMAIL, "someEmail"));
 
         Optional<String> email = chainContextImpl.getEmail();
@@ -248,7 +253,7 @@ public class ChainContextImplTest {
     }
 
     @Test
-    public void getEmailWillReturnEmptyIfNotPresentInRequestParameters(){
+    public void getEmailWillReturnEmptyIfNotPresentInRequestParameters() {
         when(requestDataMock.getRequestParameters()).thenReturn(newHashMap());
         assertThat(chainContextImpl.getEmail()).isEmpty();
 
@@ -272,7 +277,7 @@ public class ChainContextImplTest {
     }
 
     @Test
-    public void getTokenWillReturnEmptyIfNotPresentInRequestParameters(){
+    public void getTokenWillReturnEmptyIfNotPresentInRequestParameters() {
         when(requestDataMock.getRequestParameters()).thenReturn(newHashMap());
         assertThat(chainContextImpl.getToken()).isEmpty();
 
@@ -287,7 +292,7 @@ public class ChainContextImplTest {
     }
 
     @Test
-    public void redirectToWrongToken(){
+    public void redirectToWrongToken() {
         when(configurationServiceMock.getValue(PASSWORD_INVALID_TOKEN_URL)).thenReturn(SIMBA_PASSWORD_INVALID_URL);
 
         chainContextImpl.redirectToWrongToken();
@@ -304,7 +309,7 @@ public class ChainContextImplTest {
     public void redirectToNewPassword() throws Exception {
         when(configurationServiceMock.getValue(NEW_PASSWORD_URL)).thenReturn(SIMBA_NEW_PASSWORD_URL);
 
-        chainContextImpl.redirectToNewPassword("someToken", "errorMessage");
+        chainContextImpl.redirectToNewPassword("someToken", "email", "errorMessage");
 
         ActionDescriptor actionDescriptor = chainContextImpl.getActionDescriptor();
         Set<ActionType> actionTypes = actionDescriptor.getActionTypes();
@@ -312,9 +317,7 @@ public class ChainContextImplTest {
         assertTrue(actionTypes.contains(REDIRECT));
         assertTrue(actionTypes.contains(ADD_PARAMETER_TO_TARGET));
         Map<String, String> parameterMap = actionDescriptor.getParameterMap();
-        assertThat(parameterMap).hasSize(2);
-        assertThat(parameterMap.get(TOKEN)).isEqualTo("someToken");
-        assertThat(parameterMap.get(ERROR_MESSAGE)).isEqualTo("errorMessage");
+        assertThat(parameterMap).containsExactly(entry(ERROR_MESSAGE, "errorMessage"), entry(EMAIL, "email"),entry(TOKEN, "someToken"));
         assertThat(SIMBA_WEB_URL + SIMBA_NEW_PASSWORD_URL).isEqualTo(actionDescriptor.getRedirectURL());
     }
 }

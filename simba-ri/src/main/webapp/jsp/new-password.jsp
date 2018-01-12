@@ -1,4 +1,3 @@
-<%@ page import="org.owasp.esapi.ESAPI" %>
 <%--
   ~ Copyright 2013-2017 Simba Open Source
   ~
@@ -35,6 +34,7 @@
     <div id="content">
         <%
             String token = request.getParameter("token");
+            String email = request.getParameter("email");
         %>
 
         <form name="changePasswordForm" id="changepassword" method="post" action="/simba/http/simba-new-pwd" autocomplete="off">
@@ -59,6 +59,13 @@
                 if (token != null) {
             %>
             <input type="hidden" name="token" value="<%=token %>" />
+            <%
+                }
+            %>
+            <%
+                if (email != null) {
+            %>
+            <input type="hidden" name="email" value="<%=email %>" />
             <%
                 }
             %>

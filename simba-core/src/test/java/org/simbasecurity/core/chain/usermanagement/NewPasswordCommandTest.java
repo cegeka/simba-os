@@ -45,11 +45,12 @@ public class NewPasswordCommandTest {
     public void execute_NoNewPassword_ThenNavigateToNewPasswordPage() throws Exception {
         when(contextMock.getNewPassword()).thenReturn(Optional.empty());
         when(contextMock.getToken()).thenReturn(Optional.of("someToken"));
+        when(contextMock.getEmail()).thenReturn(Optional.of("email"));
 
         Command.State state = newPasswordCommand.execute(contextMock);
 
         assertThat(state).isEqualTo(FINISH);
-        verify(contextMock).redirectToNewPassword("someToken", null);
+        verify(contextMock).redirectToNewPassword("someToken", "email", null);
     }
 
     @Test
@@ -77,6 +78,7 @@ public class NewPasswordCommandTest {
         when(contextMock.getNewPasswordConfirmation()).thenReturn("differentPassword");
         when(contextMock.getUserName()).thenReturn("someUsername");
         when(contextMock.getToken()).thenReturn(Optional.of("token"));
+        when(contextMock.getEmail()).thenReturn(Optional.of("email"));
         doThrow(new SimbaException(PASSWORDS_DONT_MATCH)).when(credentialServiceMock).changePassword("someUsername", "newPassword","differentPassword");
         AuditLogEvent auditLogEvent = mock(AuditLogEvent.class);
         when(auditLogFactory.createEventForSessionForFailure(contextMock, PASSWORD_NOT_VALID)).thenReturn(auditLogEvent);
@@ -86,7 +88,7 @@ public class NewPasswordCommandTest {
         assertThat(state).isEqualTo(FINISH);
         verify(credentialServiceMock).changePassword("someUsername", "newPassword","differentPassword");
         verify(auditMock).log(auditLogEvent);
-        verify(contextMock).redirectToNewPassword("token", "PASSWORDS_DONT_MATCH");
+        verify(contextMock).redirectToNewPassword("token", "email", "PASSWORDS_DONT_MATCH");
     }
 
 }

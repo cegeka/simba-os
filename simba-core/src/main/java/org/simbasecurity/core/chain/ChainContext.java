@@ -153,7 +153,7 @@ public interface ChainContext extends Serializable {
 
     void setUserName(String userName);
 
-    void redirectToNewPassword(String someToken, String name);
+    void redirectToNewPassword(String someToken, String email, String name);
 
     Optional<String> getNewPassword();
 

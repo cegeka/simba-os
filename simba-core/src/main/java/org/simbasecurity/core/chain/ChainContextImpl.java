@@ -394,9 +394,10 @@ public class ChainContextImpl implements ChainContext {
     }
 
     @Override
-    public void redirectToNewPassword(String token, String errorMessage) {
+    public void redirectToNewPassword(String token, String email, String errorMessage) {
         HashMap<String, String> parameters = newHashMap();
         parameters.put("token", token);
+        parameters.put("email", email);
         parameters.put("errorMessage", errorMessage);
 
         redirectWithParameters(getSimbaWebURL() + configurationService.getValue(NEW_PASSWORD_URL), parameters);

@@ -15,7 +15,6 @@ import java.util.Optional;
 
 import static org.simbasecurity.core.audit.AuditMessages.PASSWORD_CHANGED;
 import static org.simbasecurity.core.audit.AuditMessages.PASSWORD_NOT_VALID;
-import static org.simbasecurity.core.domain.communication.token.Token.fromString;
 
 @Component
 public class NewPasswordCommand implements Command {
@@ -36,7 +35,7 @@ public class NewPasswordCommand implements Command {
         String passwordConfirmation = context.getNewPasswordConfirmation();
         String userName = context.getUserName();
         if (!maybePassword.isPresent()) {
-            context.getToken().ifPresent(someToken -> context.redirectToNewPassword(someToken, null));
+            context.getToken().ifPresent(someToken -> context.redirectToNewPassword(someToken, context.getEmail().orElseGet(null), null));
             return State.FINISH;
         }
 
@@ -48,7 +47,7 @@ public class NewPasswordCommand implements Command {
             return State.FINISH;
         } catch (SimbaException simbaException) {
             audit.log(auditLogEventFactory.createEventForSessionForFailure(context, PASSWORD_NOT_VALID));
-            context.redirectToNewPassword(context.getToken().orElse(null), simbaException.getMessageKey().name());
+            context.redirectToNewPassword(context.getToken().orElse(null), context.getEmail().orElseGet(null), simbaException.getMessageKey().name());
             return State.FINISH;
         }
     }

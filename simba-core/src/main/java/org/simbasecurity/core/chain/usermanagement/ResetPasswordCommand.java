@@ -33,7 +33,7 @@ public class ResetPasswordCommand implements Command {
     public State execute(ChainContext context) throws Exception {
         context.getEmail()
                 .map(EmailAddress::email)
-                .flatMap(email -> {
+                .flatMap((EmailAddress email) -> {
                     Optional<User> userByMail = credentialService.findUserByMail(email);
                     if (userByMail.isPresent()) {
                         audit.log(auditLogEventFactory.createEventForUserAuthentication(userByMail.get().getUserName(),

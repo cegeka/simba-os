@@ -36,11 +36,11 @@ import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
+import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.locator.SpringAwareLocator;
-import org.simbasecurity.core.service.communication.reset.password.ForgotPassword;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordByManager;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
@@ -201,6 +201,51 @@ public class UserServiceImplTest {
 
         assertThat(tUser).isEqualTo(expectedUser);
         verify(resetPasswordService).sendResetPasswordMessageTo(user, resetReason);
-        verify(managementAudit).log("Password for user ''{0}'' resetted", "user-1");
+        verify(managementAudit).log("Password for user ''{0}'' has been reset", "user-1");
+    }
+
+    @Test
+    public void update_LogsOnlyWhenDifferent() throws Exception {
+        User userFromDB = aDefaultUser()
+                .withUserName("user-1")
+                .withEmail("bruce@richorphan.com")
+                .build();
+
+        when(userRepository.refreshWithOptimisticLocking(tUser01.getId(),tUser01.getVersion())).thenReturn(userFromDB);
+        tUser01.setEmail("bruce@wayneindustries.com");
+        tUser01.setName("Wayne");
+        tUser01.setFirstName("bruce");
+        tUser01.setInactiveDate("20180112");
+        tUser01.setStatus("ACTIVE");
+        tUser01.setSuccessURL(null);
+        tUser01.setLanguage("en_US");
+        tUser01.setMustChangePassword(true);
+
+        service.update(tUser01);
+
+        verify(managementAudit).log("User ''{0}'' {3} has changed from ''{1}'' to ''{2}''", "user-1",
+                EmailAddress.email("bruce@richorphan.com"), EmailAddress.email("bruce@wayneindustries.com"), "e-mail");
+    }
+
+    @Test
+    public void update_WhenEmailChanged_sendResetPasswordEmail() throws Exception {
+        User userFromDB = aDefaultUser()
+                .withUserName("user-1")
+                .withEmail("bruce@richorphan.com").build();
+
+        when(userRepository.refreshWithOptimisticLocking(tUser01.getId(),tUser01.getVersion())).thenReturn(userFromDB);
+        tUser01.setEmail("bruce@wayneindustries.com");
+        tUser01.setName("Wayne");
+        tUser01.setFirstName("bruce");
+        tUser01.setInactiveDate("20180112");
+        tUser01.setStatus("ACTIVE");
+        tUser01.setSuccessURL(null);
+        tUser01.setLanguage("en_US");
+        tUser01.setMustChangePassword(true);
+
+        service.update(tUser01);
+
+        verify(managementAudit).log("Password for user ''{0}'' has been reset", userFromDB.getUserName());
+
     }
 }

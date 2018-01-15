@@ -13,6 +13,8 @@ public class NewUser extends ResetPasswordReason{
 
     @Value("${simba.new.user.mail.template}")
     private String mailTemplate;
+    @Value("${simba.new.user.subject.template}")
+    private String subjectTemplate;
 
     @Override
     public UserToken createToken(Token token, long userId) {
@@ -22,5 +24,10 @@ public class NewUser extends ResetPasswordReason{
     @Override
     public String getTemplate() {
         return mailTemplate;
+    }
+
+    @Override
+    public String getSubjectTemplate() {
+        return subjectTemplate;
     }
 }

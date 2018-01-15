@@ -6,14 +6,15 @@ import org.simbasecurity.core.domain.communication.token.UserToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import static org.simbasecurity.core.config.SimbaConfigurationParameter.RESET_PASSWORD_USERTOKEN_EXPIRATION_TIME;
 import static org.simbasecurity.core.config.SimbaConfigurationParameter.USER_CREATION_USERTOKEN_EXPIRATION_TIME;
 
 @Service
-public class ResetPasswordByManager extends ResetPasswordReason{
+public class ResetPasswordByManager extends ResetPasswordReason {
 
     @Value("${simba.forgot.password.mail.template}")
     private String mailTemplate;
+    @Value("${simba.forgot.password.subject.template}")
+    private String subjectTemplate;
 
     @Override
     public UserToken createToken(Token token, long userId) {
@@ -23,5 +24,10 @@ public class ResetPasswordByManager extends ResetPasswordReason{
     @Override
     public String getTemplate() {
         return mailTemplate;
+    }
+
+    @Override
+    String getSubjectTemplate() {
+        return subjectTemplate;
     }
 }

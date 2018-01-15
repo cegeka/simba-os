@@ -13,6 +13,8 @@ public class ForgotPassword extends ResetPasswordReason {
 
     @Value("${simba.forgot.password.mail.template}")
     private String mailTemplate;
+    @Value("${simba.forgot.password.subject.template}")
+    private String subjectTemplate;
 
     @Override
     public UserToken createToken(Token token, long userId) {
@@ -22,5 +24,10 @@ public class ForgotPassword extends ResetPasswordReason {
     @Override
     public String getTemplate() {
         return mailTemplate;
+    }
+
+    @Override
+    public String getSubjectTemplate() {
+        return subjectTemplate;
     }
 }

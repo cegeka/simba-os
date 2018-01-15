@@ -20,6 +20,7 @@ public abstract class ResetPasswordReason {
     public abstract UserToken createToken(Token token, long userId);
 
     abstract String getTemplate();
+    abstract String getSubjectTemplate();
 
     LocalDateTime expiresOn(SimbaConfigurationParameter configurationParameter) {
         return now().plus(coreConfigurationService.getValue(configurationParameter), configurationParameter.getChronoUnit());

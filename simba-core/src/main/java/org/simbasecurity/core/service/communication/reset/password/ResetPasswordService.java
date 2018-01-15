@@ -11,7 +11,6 @@ import org.simbasecurity.core.service.communication.mail.Mail;
 import org.simbasecurity.core.service.communication.mail.MailService;
 import org.simbasecurity.core.service.communication.mail.template.TemplateService;
 import org.simbasecurity.core.service.communication.token.UserTokenService;
-import org.simbasecurity.core.util.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,8 +24,6 @@ import static org.simbasecurity.core.service.communication.mail.Mail.mail;
 @Transactional
 @Service
 public class ResetPasswordService {
-
-    private static final String RESET_PASSWORD_SUBJECT = "reset.password.subject";
 
     @Autowired private MailService mailService;
     @Autowired private UserTokenService tokenManager;
@@ -44,16 +41,17 @@ public class ResetPasswordService {
         Token token = tokenManager.generateToken(user, reason);
         URL link = linkGenerator.generateResetPasswordLink(user.getEmail(), token);
         String mailBody = templateService.createMailBodyWithLink(reason.getTemplate(), user.getLanguage(), link);
+        String subject = templateService.createMailSubject(reason.getSubjectTemplate(), user.getLanguage());
 
-        mailService.sendMail(createMail(user, mailBody));
+        mailService.sendMail(createMail(user, mailBody, subject));
         audit.log(auditLogEventFactory.createEventForUserAuthentication(user.getUserName(), reason.getMessage()));
     }
 
-    private Mail createMail(User user, String body) {
+    private Mail createMail(User user, String body, String subject) {
         return mail()
                 .from(email(resetPasswordFromAddress))
                 .to(user.getEmail())
-                .subject(MessageUtil.getResourceMessage(RESET_PASSWORD_SUBJECT, user.getLanguage()))
+                .subject(subject)
                 .body(body);
     }
 }

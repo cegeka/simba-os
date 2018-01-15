@@ -16,7 +16,7 @@ public class VelocityTemplateService implements TemplateService {
     }
 
     @Override
-    public String createMailBody(String template, Language language, Map<String, String> properties) {
+    public String parseTemplate(String template, Language language, Map<String, String> properties) {
         VelocityContext context = new VelocityContext();
         for (String propertyName : properties.keySet()) {
             context.put(propertyName, properties.get(propertyName));

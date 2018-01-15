@@ -1,4 +1,4 @@
-package org.simbasecurity.core.service.communication;
+package org.simbasecurity.core.service.communication.reset.password;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,9 +18,6 @@ import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.communication.mail.LinkGenerator;
 import org.simbasecurity.core.service.communication.mail.MailService;
 import org.simbasecurity.core.service.communication.mail.template.TemplateService;
-import org.simbasecurity.core.service.communication.reset.password.ForgotPassword;
-import org.simbasecurity.core.service.communication.reset.password.NewUser;
-import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.communication.token.UserTokenService;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -55,7 +52,11 @@ public class ResetPasswordServiceTest {
     public void setUp() {
         ReflectionTestUtils.setField(resetPasswordService, "resetPasswordFromAddress", "bla@hotmail.com");
         when(forgotPasswordReason.getMessage()).thenReturn("Email has been sent to user for following reason: ForgotPassword");
+        when(forgotPasswordReason.getTemplate()).thenReturn("forgotPW.vm");
+        when(forgotPasswordReason.getSubjectTemplate()).thenReturn("forgotPWSubject.vm");
         when(newUserReason.getMessage()).thenReturn("Email has been sent to user for following reason: NewUser");
+        when(newUserReason.getTemplate()).thenReturn("newUser.vm");
+        when(newUserReason.getSubjectTemplate()).thenReturn("newUserSubject.vm");
     }
 
     @Test
@@ -71,6 +72,7 @@ public class ResetPasswordServiceTest {
         URL link = new URL("http://www.google.com");
         when(linkGeneratorMock.generateResetPasswordLink(email, token)).thenReturn(link);
         when(templateServiceMock.createMailBodyWithLink(forgotPasswordReason.getTemplate(), en_US, link)).thenReturn("someBody");
+        when(templateServiceMock.createMailSubject(forgotPasswordReason.getSubjectTemplate(), en_US)).thenReturn("Reset password");
 
         resetPasswordService.sendResetPasswordMessageTo(user, forgotPasswordReason);
 
@@ -102,6 +104,8 @@ public class ResetPasswordServiceTest {
         URL link = new URL("http://www.google.com");
         when(linkGeneratorMock.generateResetPasswordLink(email, token)).thenReturn(link);
         when(templateServiceMock.createMailBodyWithLink(newUserReason.getTemplate(), en_US, link)).thenReturn("someBody");
+        when(templateServiceMock.createMailSubject(newUserReason.getSubjectTemplate(), en_US)).thenReturn("New user");
+
         ArgumentCaptor<AuditLogEvent> logCaptor = ArgumentCaptor.forClass(AuditLogEvent.class);
 
         resetPasswordService.sendResetPasswordMessageTo(user, newUserReason);
@@ -109,7 +113,7 @@ public class ResetPasswordServiceTest {
         verify(mailServiceMock).sendMail(mail()
                 .from(email("bla@hotmail.com"))
                 .to(email)
-                .subject("Reset password")
+                .subject("New user")
                 .body("someBody")
         );
         verify(auditMock).log(logCaptor.capture());

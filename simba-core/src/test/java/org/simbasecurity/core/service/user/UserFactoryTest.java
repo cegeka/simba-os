@@ -1,6 +1,5 @@
 package org.simbasecurity.core.service.user;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,13 +12,12 @@ import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.generator.PasswordGenerator;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
+import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
-import org.simbasecurity.core.exception.SimbaMessageKey;
 import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.locator.SpringAwareLocator;
 import org.simbasecurity.core.service.communication.reset.password.NewUser;
-import org.simbasecurity.core.service.communication.reset.password.ResetPasswordReason;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 
@@ -67,21 +65,21 @@ public class UserFactoryTest {
     }
 
     @Test
-    public void createUserWithoutEmail_EmailNotRequired() {
-        User user = aUser().withUserName("userName").build();
+    public void createUserWithoutEmail_EmailNotRequiredAccordingToParameter_ShouldNotThrowAnException() {
+        User user = aDefaultUser().withoutEmail().withUserName("userName").build();
         when(userRepository.persist(user)).thenReturn(user);
         when(configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(false);
 
         User savedUser = userFactory.create(user);
 
-        verify(resetPasswordService, never()).sendResetPasswordMessageTo(user, newUserReason);
+        verifyZeroInteractions(resetPasswordService);
         verify(userRepository).persist(savedUser);
         verify(managementAudit).log("User ''{0}'' created", "userName");
     }
 
     @Test
-    public void createUserWithEmail_EmailNotRequired() {
-        User user = aDefaultUser().withUserName("userName").build();
+    public void createUser_UserWithEmail_EmailNotRequiredAccordingToParameter_ShouldNotThrowAnException() {
+        User user = aDefaultUser().withEmail("joker@acme.com").withUserName("userName").build();
         when(userRepository.persist(user)).thenReturn(user);
         when(configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(false);
 
@@ -93,32 +91,69 @@ public class UserFactoryTest {
     }
 
     @Test
-    public void createUser_EmailRequired() {
-        User user = aUser().withUserName("userName").build();
+    public void createUser_UserWithoutEmail_EmailRequiredAccordingToParameter_ShouldThrowAnException() {
+        User user = aDefaultUser().withoutEmail().withUserName("userName").build();
         when(configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(true);
 
         assertThatThrownBy(() -> userFactory.create(user))
                 .extracting(t -> ((SimbaException) t).getMessageKey())
                 .containsExactly(EMAIL_ADDRESS_REQUIRED);
 
-        verify(resetPasswordService,never()).sendResetPasswordMessageTo(any(User.class), any(ResetPasswordReason.class));
+        verifyZeroInteractions(resetPasswordService);
         verify(userRepository, never()).persist(any(User.class));
         verify(managementAudit, never()).log(any(String.class), any(String.class));
     }
 
     @Test
-    public void cloneUser() {
-        User userToBeCloned = aDefaultUser().withUserName("userToBeCloned").withRoles(role().name("manager").build()).build();
+    public void cloneUser_UserHasEmail_EmailRequiredAccordingToParameter_ShouldNotThrownAnException() {
+        User userBeingCreated = aDefaultUser()
+                .withEmail("johnnytampony@gmail.com")
+                .withUserName("johnnyTampony")
+                .build();
+        User userToBeCloned = aDefaultUser()
+                .withEmail("snarf@thundercats.com")
+                .withUserName("userToBeCloned")
+                .withRoles(role()
+                        .name("manager")
+                        .build())
+                .build();
         when(userRepository.findByName("userToBeCloned")).thenReturn(userToBeCloned);
-        User user = aDefaultUser().withUserName("userName").build();
-        when(userRepository.persist(user)).thenReturn(user);
+        when(userRepository.persist(userBeingCreated)).thenReturn(userBeingCreated);
         when(configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(true);
 
-        User savedUser = userFactory.cloneUser(user, "userToBeCloned");
+        User savedUser = userFactory.cloneUser(userBeingCreated, "userToBeCloned");
 
         assertThat(savedUser.hasRole("manager")).isTrue();
+        assertThat(savedUser.getEmail()).isEqualTo(EmailAddress.email("johnnytampony@gmail.com"));
+
         verify(userRepository).persist(savedUser);
-        verify(managementAudit).log("User ''{0}'' created as clone of ''{1}''", "userName", "userToBeCloned");
+        verify(managementAudit).log("User ''{0}'' created as clone of ''{1}''", "johnnyTampony", "userToBeCloned");
+    }
+
+    @Test
+    public void cloneUser_UserWithoutEmail_EmailNotRequiredAccordingToParameter_ShouldNotThrowError() {
+        User userBeingCreated = aDefaultUser()
+                .withoutEmail()
+                .withUserName("johnnyTampony")
+                .build();
+        User userToBeCloned = aDefaultUser()
+                .withoutEmail()
+                .withUserName("userToBeCloned")
+                .withRoles(role()
+                        .name("manager")
+                        .build())
+                .build();
+        when(userRepository.findByName("userToBeCloned")).thenReturn(userToBeCloned);
+        when(userRepository.persist(userBeingCreated)).thenReturn(userBeingCreated);
+        when(configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(false);
+
+        User savedUser = userFactory.cloneUser(userBeingCreated, "userToBeCloned");
+
+        assertThat(savedUser.hasRole("manager")).isTrue();
+        assertThat(savedUser.getEmail()).isNull();
+
+        verify(userRepository).persist(savedUser);
+        verify(managementAudit).log("User ''{0}'' created as clone of ''{1}''", "johnnyTampony", "userToBeCloned");
     }
 
     @Test
@@ -172,22 +207,42 @@ public class UserFactoryTest {
     }
 
     @Test
-    public void createUserWithExistingUserName_ThrowsError() {
+    public void createUser_WithExistingUserName_ThrowsError() {
         User user = aUser().withUserName("userName").build();
         when(userRepository.findByName("userName")).thenReturn(aDefaultUser().build());
 
-        Assertions.assertThatThrownBy(() -> userFactory.create(user))
+        assertThatThrownBy(() -> userFactory.create(user))
                 .isInstanceOf(SimbaException.class)
                 .hasMessage("User already exists with username: userName");
     }
 
     @Test
-    public void createUserWithExistingEmail_ThrowsError() {
+    public void createUser_WithExistingEmail_ThrowsError() {
         User user = aUser().withEmail("someEmail@email.com").build();
         when(userRepository.findByEmail(email("someEmail@email.com"))).thenReturn(aDefaultUser().build());
 
-        Assertions.assertThatThrownBy(() -> userFactory.create(user))
+        assertThatThrownBy(() -> userFactory.create(user))
                 .isInstanceOf(SimbaException.class)
                 .hasMessage("User already exists with email: someEmail@email.com");
+    }
+
+    @Test
+    public void cloneUser_WithExistingUserName_ThrowsError() {
+        User user = aDefaultUser().withUserName("userName").build();
+        when(userRepository.findByName("userName")).thenReturn(aDefaultUser().build());
+
+        assertThatThrownBy(() -> userFactory.cloneUser(user,"username"))
+                .isInstanceOf(SimbaException.class)
+                .hasMessage("User already exists with username: userName");
+    }
+
+    @Test
+    public void cloneUser_WithExistingEmail_ThrowsError() {
+        User user = aDefaultUser().withUserName("stormTrooper").withEmail("theOneAndOnlyStormTrooper@empire.com").build();
+        when(userRepository.findByEmail(email("theOneAndOnlyStormTrooper@empire.com"))).thenReturn(aDefaultUser().build());
+
+        assertThatThrownBy(() -> userFactory.cloneUser(user,"Finn"))
+                .isInstanceOf(SimbaException.class)
+                .hasMessage("User already exists with email: theOneAndOnlyStormTrooper@empire.com");
     }
 }

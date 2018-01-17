@@ -181,4 +181,9 @@ public class UserTestBuilder {
         this.email = email;
         return this;
     }
+
+    public UserTestBuilder withoutEmail() {
+        this.email = null;
+        return this;
+    }
 }

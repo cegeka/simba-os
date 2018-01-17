@@ -14,12 +14,10 @@
  * limitations under the License.
  *
  */
-package org.simbasecurity.test;
+package org.simbasecurity.core.locator;
 
-import static org.mockito.Mockito.*;
-
-import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.locator.Locator;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestLocator {
 
@@ -27,6 +25,10 @@ public class TestLocator {
         Locator locator = mock(Locator.class);
         GlobalContext.initialize(locator);
         return locator;
+    }
+
+    public static void reset() {
+        GlobalContext.initialize(new SpringAwareLocator());
     }
 
     public static <T> T implant(Locator locator, Class<T> aClass, T instance) {

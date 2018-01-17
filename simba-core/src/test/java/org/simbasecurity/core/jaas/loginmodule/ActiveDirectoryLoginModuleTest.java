@@ -25,8 +25,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.locator.Locator;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.test.LocatorTestCase;
 
@@ -53,15 +51,12 @@ public class ActiveDirectoryLoginModuleTest extends LocatorTestCase {
 
     @Before
     public void setUp() {
-        Locator locator = mock(Locator.class);
-        GlobalContext.initialize(locator);
-        when(locator.locate(CoreConfigurationService.class)).thenReturn(configurationService);
+        configurationService = implantMock(CoreConfigurationService.class);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void injection() throws Exception {
-
         when(configurationService.getValue(SimbaConfigurationParameter.ENABLE_AD_GROUPS)).thenReturn(Boolean.FALSE);
 
         Map<String, String> options = new HashMap<>();

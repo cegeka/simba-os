@@ -15,11 +15,10 @@ import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
-import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.locator.SpringAwareLocator;
 import org.simbasecurity.core.service.communication.reset.password.NewUser;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.test.LocatorTestCase;
 
 import java.util.List;
 
@@ -35,12 +34,8 @@ import static org.simbasecurity.core.domain.user.EmailAddress.email;
 import static org.simbasecurity.core.exception.SimbaMessageKey.EMAIL_ADDRESS_REQUIRED;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UserFactoryTest {
+public class UserFactoryTest extends LocatorTestCase {
 
-    @Mock
-    private SpringAwareLocator locator;
-    @Mock
-    private UserValidator userValidator;
     @Mock
     private RoleRepository roleRepository;
     @Mock
@@ -60,8 +55,7 @@ public class UserFactoryTest {
 
     @Before
     public void setUp() {
-        GlobalContext.initialize(locator);
-        when(locator.locate(UserValidator.class)).thenReturn(userValidator);
+        implantMock(UserValidator.class);
     }
 
     @Test

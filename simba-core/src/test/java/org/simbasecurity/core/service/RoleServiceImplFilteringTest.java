@@ -34,12 +34,11 @@ import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
-import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.locator.SpringAwareLocator;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.filter.EntityFilter;
 import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
+import org.simbasecurity.test.LocatorTestCase;
 import org.simbasecurity.test.util.ReflectionUtil;
 
 import java.util.ArrayList;
@@ -54,15 +53,9 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-public class RoleServiceImplFilteringTest {
+public class RoleServiceImplFilteringTest extends LocatorTestCase {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
-
-    @Mock
-    private SpringAwareLocator locator;
-    @Mock private UserValidator userValidator;
-    @Mock private PasswordValidator passwordValidator;
-    @Mock private CoreConfigurationService configurationService;
 
     @Mock private PolicyRepository policyRepository;
     @Mock private RoleRepository roleRepository;
@@ -87,10 +80,9 @@ public class RoleServiceImplFilteringTest {
 
     @Before
     public void setup() {
-        GlobalContext.initialize(locator);
-        when(locator.locate(UserValidator.class)).thenReturn(userValidator);
-        when(locator.locate(PasswordValidator.class)).thenReturn(passwordValidator);
-        when(locator.locate(CoreConfigurationService.class)).thenReturn(configurationService);
+        implantMock(UserValidator.class);
+        implantMock(PasswordValidator.class);
+        implantMock(CoreConfigurationService.class);
 
         User userEntity1 = UserTestBuilder.aDefaultUser().withUserName("user-1").build();
         User userEntity2 = UserTestBuilder.aDefaultUser().withUserName("user-2").build();

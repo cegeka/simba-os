@@ -19,10 +19,9 @@ package org.simbasecurity.core.locator;
 
 public final class GlobalContext {
 
-
     private static Locator locator = new SpringAwareLocator();
 
-    public static void initialize(Locator singleton) {
+    static void initialize(Locator singleton) {
         locator = singleton;
     }
 

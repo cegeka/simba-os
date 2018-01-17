@@ -19,9 +19,8 @@ package org.simbasecurity.test;
 import org.junit.After;
 import org.junit.Before;
 import org.simbasecurity.core.audit.Audit;
-import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.locator.Locator;
-import org.simbasecurity.core.locator.SpringAwareLocator;
+import org.simbasecurity.core.locator.TestLocator;
 
 public abstract class LocatorTestCase {
 
@@ -35,7 +34,7 @@ public abstract class LocatorTestCase {
 
     @After
     public void tearDown() throws Exception {
-        GlobalContext.initialize(new SpringAwareLocator());
+        TestLocator.reset();
     }
 
     private void backupOriginalGlobalContextLocatorAndSetMock() {

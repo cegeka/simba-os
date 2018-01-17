@@ -11,9 +11,8 @@ import org.simbasecurity.api.service.thrift.TUser;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
-import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.locator.SpringAwareLocator;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.test.LocatorTestCase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -21,18 +20,16 @@ import static org.mockito.Mockito.when;
 import static org.simbasecurity.core.config.SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ThriftAssemblerTest {
+public class ThriftAssemblerTest extends LocatorTestCase {
 
-    @Mock private SpringAwareLocator locator;
-    @Mock private UserValidator userValidator;
     @Mock private CoreConfigurationService config;
 
     @InjectMocks private ThriftAssembler assembler = new ThriftAssembler();
 
     @Before
     public void setUp() throws Exception {
-        GlobalContext.initialize(locator);
-        when(locator.locate(UserValidator.class)).thenReturn(userValidator);
+        implantMock(UserValidator.class);
+        implant(CoreConfigurationService.class, config);
     }
 
     @Test

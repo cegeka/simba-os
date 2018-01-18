@@ -45,9 +45,14 @@ public class CreateEIDUserCommand implements Command {
 
     @Autowired private UserService userService;
     @Autowired private UserFactory userFactory;
-    @Autowired private CoreConfigurationService configurationService;
     @Autowired private Audit audit;
     @Autowired private AuditLogEventFactory auditLogFactory;
+    private CoreConfigurationService configurationService;
+
+    @Autowired
+    public void setConfigurationService(CoreConfigurationService configurationService) {
+        this.configurationService = configurationService;
+    }
 
     @Override
     public State execute(ChainContext context) throws Exception {

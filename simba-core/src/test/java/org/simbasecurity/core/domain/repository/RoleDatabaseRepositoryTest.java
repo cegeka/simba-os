@@ -17,8 +17,13 @@
 package org.simbasecurity.core.domain.repository;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.simbasecurity.core.domain.*;
+import org.simbasecurity.core.domain.validator.PasswordValidator;
+import org.simbasecurity.core.domain.validator.UserValidator;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.PersistenceTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,6 +38,9 @@ public class RoleDatabaseRepositoryTest extends PersistenceTestCase {
     private static final String SS_DOSSIERBEHEERDER = "ss_dossierbeheerder";
     private static final String KB_DOSSIERBEHEERDER = "kb_dossierbeheerder";
     private static final String VENN_DOSSIERBEHEERDER = "venn_dossierbeheerder";
+    @Rule
+    public LocatorRule locatorRule = LocatorRule.locator();
+    protected CoreConfigurationService configurationServiceMock;
 
     @Autowired
     private RoleDatabaseRepository roleDatabaseRepository;
@@ -53,6 +61,14 @@ public class RoleDatabaseRepositoryTest extends PersistenceTestCase {
 
         role1.addUser(user);
         role1.addPolicy(policy);
+        setUpCommonLocatables();
+    }
+
+    public void setUpCommonLocatables() {
+        locatorRule.implantMock(UserValidator.class);
+        locatorRule.implantMock(PasswordValidator.class);
+
+        configurationServiceMock = locatorRule.getCoreConfigurationService();
     }
 
     @Test

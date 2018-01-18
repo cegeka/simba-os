@@ -16,28 +16,32 @@
  */
 package org.simbasecurity.core.jaas.loginmodule;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import com.sun.security.auth.UserPrincipal;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.simbasecurity.core.jaas.callbackhandler.ChainContextCallbackHandler;
+import org.simbasecurity.core.service.CredentialService;
+import org.simbasecurity.test.LocatorRule;
+import org.simbasecurity.test.LocatorTestCase;
 
-import java.security.Principal;
-import java.util.Collections;
-import java.util.Set;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.login.FailedLoginException;
+import java.security.Principal;
+import java.util.Collections;
+import java.util.Set;
 
-import com.sun.security.auth.UserPrincipal;
-import org.junit.Before;
-import org.junit.Test;
-import org.simbasecurity.core.jaas.callbackhandler.ChainContextCallbackHandler;
-import org.simbasecurity.core.service.CredentialService;
-import org.simbasecurity.test.LocatorTestCase;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class HtPasswdLoginModuleTest extends LocatorTestCase {
 
     private static final String ADMIN = "admin";
+    @Rule
+    public LocatorRule locatorRule = LocatorRule.locator();
     private HtPasswdLoginModule module;
     private Subject subject;
     private CredentialService mockCredentialService;
@@ -62,7 +66,7 @@ public class HtPasswdLoginModuleTest extends LocatorTestCase {
         ChainContextCallbackHandler mockCallbackHandler = mock(ChainContextCallbackHandler.class);
         mockCallbackHandler.handle(any(Callback[].class));
 
-        mockCredentialService = implantMock(CredentialService.class);
+        mockCredentialService = locatorRule.implantMock(CredentialService.class);
 
         subject = new Subject();
 

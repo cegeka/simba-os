@@ -10,6 +10,12 @@ import java.util.Set;
 import static com.google.common.collect.Sets.newHashSet;
 
 public class UserTestBuilder {
+    public static final String NAME = "Wayne";
+    public static final String FIRST_NAME = "bruce";
+    public static final String EMAIL = "bruce@wayneindustries.com";
+    public static final String PASSWORD = "iamthebatman";
+    public static final Language LANGUAGE = Language.en_US;
+
     private String name;
     private String firstName;
     private Status status;
@@ -38,15 +44,15 @@ public class UserTestBuilder {
 
     public static UserTestBuilder aDefaultUser() {
         return aUser()
-                .withName("Wayne")
-                .withFirstName("bruce")
-                .withEmail("bruce@wayneindustries.com")
-                .withPassword("iamthebatman")
+                .withName(NAME)
+                .withFirstName(FIRST_NAME)
+                .withEmail(EMAIL)
+                .withPassword(PASSWORD)
                 .withDateOfLastPasswordChange(new Date())
                 .withStatus(Status.ACTIVE)
                 .withPasswordChangeRequired(true)
                 .withChangePasswordOnNextLogon(true)
-                .withLanguage(Language.en_US)
+                .withLanguage(LANGUAGE)
                 ;
     }
 

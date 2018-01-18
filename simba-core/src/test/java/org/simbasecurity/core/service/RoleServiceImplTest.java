@@ -34,10 +34,10 @@ import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
-import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.filter.EntityFilter;
 import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
+import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.LocatorTestCase;
 import org.simbasecurity.test.util.ReflectionUtil;
 
@@ -55,13 +55,14 @@ import static org.mockito.Mockito.when;
 public class RoleServiceImplTest extends LocatorTestCase {
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
+    @Rule public LocatorRule locatorRule = LocatorRule.locator();
 
     @Mock private PolicyRepository policyRepository;
     @Mock private RoleRepository roleRepository;
     @Mock private UserRepository userRepository;
 
     @Spy private EntityFilterService entityFilterService = new EntityFilterService(Optional.empty());
-    @Spy private ThriftAssembler assembler = new ThriftAssembler();
+    @Spy private ThriftAssembler assembler = new ThriftAssembler(null);
 
     @InjectMocks private RoleServiceImpl roleService;
 
@@ -79,9 +80,9 @@ public class RoleServiceImplTest extends LocatorTestCase {
 
     @Before
     public void setup() {
-        implantMock(UserValidator.class);
-        implantMock(PasswordValidator.class);
-        implantMock(CoreConfigurationService.class);
+        locatorRule.implantMock(UserValidator.class);
+        locatorRule.implantMock(PasswordValidator.class);
+        locatorRule.getCoreConfigurationService();
 
         User userEntity1 = UserTestBuilder.aDefaultUser().withUserName("user-1").build();
         User userEntity2 = UserTestBuilder.aDefaultUser().withUserName("user-2").build();

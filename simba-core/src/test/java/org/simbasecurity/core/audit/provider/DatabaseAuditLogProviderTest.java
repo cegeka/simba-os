@@ -16,27 +16,35 @@
  */
 package org.simbasecurity.core.audit.provider;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.jasypt.digest.StandardStringDigester;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.core.audit.AuditLogEvent;
 import org.simbasecurity.core.audit.AuditLogEventCategory;
 import org.simbasecurity.core.audit.AuditLogLevel;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
+import org.simbasecurity.core.domain.validator.PasswordValidator;
+import org.simbasecurity.core.domain.validator.UserValidator;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.test.DatabaseTestCase;
+import org.simbasecurity.test.LocatorRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
+
 public class DatabaseAuditLogProviderTest extends DatabaseTestCase {
 
+    @Rule
+    public LocatorRule locatorRule = LocatorRule.locator();
+    protected CoreConfigurationService configurationServiceMock;
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -49,16 +57,24 @@ public class DatabaseAuditLogProviderTest extends DatabaseTestCase {
         provider.setIntegrityDigest(new StandardStringDigester());
         provider.setDatabaseTable("SIMBA_AUDIT_LOG");
         provider.setLevel(AuditLogLevel.ALL);
+        setUpCommonLocatables();
+    }
+
+    public void setUpCommonLocatables() {
+        locatorRule.implantMock(UserValidator.class);
+        locatorRule.implantMock(PasswordValidator.class);
+
+        configurationServiceMock = locatorRule.getCoreConfigurationService();
     }
 
     @Test
     public void auditEventIsPersisted_digestNotEnabled() {
         when(configurationServiceMock.getValue(SimbaConfigurationParameter.AUDIT_LOG_INTEGRITY_ENABLED)).thenReturn(
-                                                                                                                      Boolean.FALSE);
+                Boolean.FALSE);
 
         SSOToken ssoToken = new SSOToken();
         AuditLogEvent event = new AuditLogEvent(AuditLogEventCategory.SESSION, "username", ssoToken, "remoteIP",
-                "message", "userAgent", "hostServerName", "surname", "firstname","requestURL","CHAINID");
+                "message", "userAgent", "hostServerName", "surname", "firstname", "requestURL", "CHAINID");
         provider.log(event);
 
         jdbcTemplate.query("SELECT * FROM SIMBA_AUDIT_LOG WHERE ssoToken=?", getRowMapper(true), ssoToken.getToken());
@@ -67,11 +83,11 @@ public class DatabaseAuditLogProviderTest extends DatabaseTestCase {
     @Test
     public void auditEventIsPersisted_digestEnabled() {
         when(configurationServiceMock.getValue(SimbaConfigurationParameter.AUDIT_LOG_INTEGRITY_ENABLED)).thenReturn(
-                                                                                                              Boolean.TRUE);
+                Boolean.TRUE);
 
         SSOToken ssoToken = new SSOToken();
         AuditLogEvent event = new AuditLogEvent(AuditLogEventCategory.SESSION, "username", ssoToken, "remoteIP",
-                "message", "userAgent", "hostServerName", "surname", "firstname","requestURL","CHAINID");
+                "message", "userAgent", "hostServerName", "surname", "firstname", "requestURL", "CHAINID");
 
         provider.log(event);
 
@@ -95,11 +111,10 @@ public class DatabaseAuditLogProviderTest extends DatabaseTestCase {
                 }
                 assertEquals("requestURL", rs.getString("requesturl"));
                 assertEquals("CHAINID", rs.getString("chainid"));
-                
+
                 return null;
             }
         };
         return rowMapper;
     }
-
 }

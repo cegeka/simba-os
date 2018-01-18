@@ -17,21 +17,33 @@
 package org.simbasecurity.core.domain.repository;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.simbasecurity.core.domain.*;
+import org.simbasecurity.core.domain.Group;
+import org.simbasecurity.core.domain.GroupEntity;
+import org.simbasecurity.core.domain.User;
+import org.simbasecurity.core.domain.UserTestBuilder;
+import org.simbasecurity.core.domain.validator.PasswordValidator;
+import org.simbasecurity.core.domain.validator.UserValidator;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.PersistenceTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class GroupDatabaseRepositoryTest extends PersistenceTestCase {
 
 	private static final String DUMMY_GROUP_NAME = "dummy";
     private static final String DUMMY_GROUP_CN = "CN";
-	private GroupEntity group;
+    @Rule
+    public LocatorRule locatorRule = LocatorRule.locator();
+    protected CoreConfigurationService configurationServiceMock;
+    private GroupEntity group;
     private GroupEntity group2;
 
     @Autowired
@@ -42,7 +54,15 @@ public class GroupDatabaseRepositoryTest extends PersistenceTestCase {
 		group = new GroupEntity(DUMMY_GROUP_NAME, DUMMY_GROUP_CN);
         group2 = new GroupEntity(DUMMY_GROUP_NAME, "otherCN");
 		persistAndRefresh(group, group2);
+		setUpCommonLocatables();
 	}
+
+    public void setUpCommonLocatables() {
+        locatorRule.implantMock(UserValidator.class);
+        locatorRule.implantMock(PasswordValidator.class);
+
+        configurationServiceMock = locatorRule.getCoreConfigurationService();
+    }
 
 	@Test
 	public void findByName_success() {

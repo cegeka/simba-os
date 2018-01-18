@@ -18,9 +18,11 @@ package org.simbasecurity.core.jaas.loginmodule;
 
 import com.sun.security.auth.UserPrincipal;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.simbasecurity.core.jaas.callbackhandler.ChainContextCallbackHandler;
 import org.simbasecurity.core.service.CredentialService;
+import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.LocatorTestCase;
 
 import javax.security.auth.Subject;
@@ -38,6 +40,8 @@ import static org.mockito.Mockito.*;
 public class DatabaseLoginModuleTest extends LocatorTestCase {
 
     private static final String ADMIN = "admin";
+    @Rule
+    public LocatorRule locatorRule = LocatorRule.locator();
     private DatabaseLoginModule module;
     private Subject subject;
     private CredentialService mockCredentialService;
@@ -62,7 +66,7 @@ public class DatabaseLoginModuleTest extends LocatorTestCase {
         ChainContextCallbackHandler mockCallbackHandler = mock(ChainContextCallbackHandler.class);
         mockCallbackHandler.handle(any(Callback[].class));
 
-        mockCredentialService = implantMock(CredentialService.class);
+        mockCredentialService = locatorRule.implantMock(CredentialService.class);
 
         subject = new Subject();
 

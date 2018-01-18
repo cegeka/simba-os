@@ -33,13 +33,12 @@ import org.simbasecurity.core.chain.Command.State;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.User;
-import org.simbasecurity.core.domain.UserEntity;
-import org.simbasecurity.core.domain.UserTestBuilder;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.service.UserService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.user.UserFactory;
+import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.LocatorTestCase;
 
 import java.util.Collections;
@@ -54,6 +53,7 @@ import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 public class CreateEIDUserCommandTest extends LocatorTestCase {
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
+    @Rule public LocatorRule locatorRule = LocatorRule.locator();
 
     private static final String INSZ = "insz";
     private static final String FIRSTNAME = "johnny";
@@ -63,7 +63,6 @@ public class CreateEIDUserCommandTest extends LocatorTestCase {
 
     @Mock private UserService userServiceMock;
     @Mock private UserFactory userFactoryMock;
-    @Mock private CoreConfigurationService configurationServiceMock;
 
     @Mock private ChainContext chainContextMock;
     @Mock private User userMock;
@@ -72,6 +71,8 @@ public class CreateEIDUserCommandTest extends LocatorTestCase {
 
     @InjectMocks private CreateEIDUserCommand createEIDUserCommand;
 
+    private CoreConfigurationService configurationServiceMock;
+
     @Captor private ArgumentCaptor<User> userCaptor;
     @Captor private ArgumentCaptor<List<String>> roleListCaptor;
 
@@ -79,11 +80,13 @@ public class CreateEIDUserCommandTest extends LocatorTestCase {
 
     @Before
     public void setUp() {
-        implantMock(UserValidator.class);
-        implantMock(PasswordValidator.class);
+        locatorRule.implantMock(UserValidator.class);
+        locatorRule.implantMock(PasswordValidator.class);
 
-        implant(CoreConfigurationService.class, configurationServiceMock);
+        configurationServiceMock = locatorRule.getCoreConfigurationService();
         when(configurationServiceMock.getValue(SimbaConfigurationParameter.DEFAULT_USER_ROLE)).thenReturn(Collections.singletonList("guest"));
+
+        createEIDUserCommand.setConfigurationService(configurationServiceMock);
     }
 
     @Test

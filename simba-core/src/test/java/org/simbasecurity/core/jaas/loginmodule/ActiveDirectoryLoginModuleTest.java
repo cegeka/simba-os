@@ -26,6 +26,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.LocatorTestCase;
 
 import javax.naming.NamingEnumeration;
@@ -46,12 +47,13 @@ import static org.mockito.Mockito.*;
 
 public class ActiveDirectoryLoginModuleTest extends LocatorTestCase {
     @Rule public MockitoRule rule = MockitoJUnit.rule();
+    @Rule public LocatorRule locatorRule = LocatorRule.locator();
 
     @Mock private CoreConfigurationService configurationService;
 
     @Before
     public void setUp() {
-        configurationService = implantMock(CoreConfigurationService.class);
+        configurationService = locatorRule.getCoreConfigurationService();
     }
 
     @Test

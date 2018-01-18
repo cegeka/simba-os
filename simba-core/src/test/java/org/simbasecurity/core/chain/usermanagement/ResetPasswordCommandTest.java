@@ -1,6 +1,7 @@
 package org.simbasecurity.core.chain.usermanagement;
 
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -15,6 +16,7 @@ import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.service.CredentialService;
 import org.simbasecurity.core.service.communication.reset.password.ForgotPassword;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
+import org.simbasecurity.test.EmailRequiredRule;
 
 import java.util.Optional;
 
@@ -26,6 +28,9 @@ import static org.simbasecurity.core.domain.user.EmailAddress.email;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ResetPasswordCommandTest {
+
+    @Rule
+    public EmailRequiredRule emailRequired = EmailRequiredRule.emailRequired();
 
     @Mock private ChainContext chainContextMock;
     @Mock private CredentialService credentialServiceMock;

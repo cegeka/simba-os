@@ -28,13 +28,25 @@ import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXIS
 @Transactional
 public class UserFactory {
 
-    @Autowired private UserRepository userRepository;
-    @Autowired private RoleRepository roleRepository;
-    @Autowired private ManagementAudit managementAudit;
-    @Autowired private PasswordGenerator passwordGenerator;
-    @Autowired private ResetPasswordService resetPasswordService;
-    @Autowired private NewUser resetPasswordForNewUser;
-    @Autowired private CoreConfigurationService configurationService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private ManagementAudit managementAudit;
+    @Autowired
+    private PasswordGenerator passwordGenerator;
+    @Autowired
+    private ResetPasswordService resetPasswordService;
+    @Autowired
+    private NewUser resetPasswordForNewUser;
+
+    private CoreConfigurationService configurationService;
+
+    @Autowired
+    public void setConfigurationService(CoreConfigurationService configurationService) {
+        this.configurationService = configurationService;
+    }
 
 
     public User create(User user) {
@@ -72,7 +84,8 @@ public class UserFactory {
         validateRequiredEmail(user);
 
         User persist = userRepository.persist(user);
-        if (user.getEmail() != null) {
+
+        if (!user.getEmail().isEmpty()) {
             resetPasswordService.sendResetPasswordMessageTo(user, resetPasswordForNewUser);
         }
         return persist;
@@ -92,14 +105,14 @@ public class UserFactory {
     }
 
     private void validateUniqueEmail(User user) {
-        if (userRepository.findByEmail(user.getEmail()) != null){
-            throw new SimbaException(USER_ALREADY_EXISTS_WITH_EMAIL, String.format("User already exists with email: %s",user.getEmail()));
+        if (userRepository.findByEmail(user.getEmail()) != null) {
+            throw new SimbaException(USER_ALREADY_EXISTS_WITH_EMAIL, String.format("User already exists with email: %s", user.getEmail()));
         }
     }
 
     private void validateRequiredEmail(User user) {
         if (configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)) {
-            if(user.getEmail() == null ) {
+            if (user.getEmail().isEmpty()) {
                 throw new SimbaException(SimbaMessageKey.EMAIL_ADDRESS_REQUIRED);
             }
         }
@@ -107,7 +120,7 @@ public class UserFactory {
 
     private void validateUniqueUsername(User user) {
         if (userRepository.findByName(user.getUserName()) != null) {
-            throw new SimbaException(USER_ALREADY_EXISTS, String.format("User already exists with username: %s",user.getUserName()));
+            throw new SimbaException(USER_ALREADY_EXISTS, String.format("User already exists with username: %s", user.getUserName()));
         }
     }
 

@@ -36,7 +36,7 @@ public class ResetPasswordService {
     private String resetPasswordFromAddress;
 
     public void sendResetPasswordMessageTo(User user, ResetPasswordReason reason) {
-        if (user.getEmail() == null) { throw new SimbaException(SimbaMessageKey.EMAIL_ADDRESS_REQUIRED);}
+        if (user.getEmail().isEmpty() ) { throw new SimbaException(SimbaMessageKey.EMAIL_ADDRESS_REQUIRED);}
 
         Token token = tokenManager.generateToken(user, reason);
         URL link = linkGenerator.generateResetPasswordLink(user.getEmail(), token);

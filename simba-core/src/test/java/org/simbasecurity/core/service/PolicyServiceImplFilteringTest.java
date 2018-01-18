@@ -55,7 +55,7 @@ public class PolicyServiceImplFilteringTest {
     @Mock private RoleRepository roleRepository;
 
     @Spy private EntityFilterService entityFilterService = new EntityFilterService(Optional.empty());
-    @Spy private ThriftAssembler assembler = new ThriftAssembler();
+    @Spy private ThriftAssembler assembler = new ThriftAssembler(null);
     @InjectMocks private PolicyServiceImpl policyManagerService;
 
     @Mock private TPolicy tPolicy01;

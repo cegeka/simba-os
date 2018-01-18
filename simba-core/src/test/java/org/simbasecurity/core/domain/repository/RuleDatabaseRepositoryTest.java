@@ -16,16 +16,21 @@
  */
 package org.simbasecurity.core.domain.repository;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.simbasecurity.core.domain.*;
+import org.simbasecurity.core.domain.validator.PasswordValidator;
+import org.simbasecurity.core.domain.validator.UserValidator;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.test.LocatorRule;
+import org.simbasecurity.test.PersistenceTestCase;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.simbasecurity.core.domain.*;
-import org.simbasecurity.test.PersistenceTestCase;
-import org.springframework.beans.factory.annotation.Autowired;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class RuleDatabaseRepositoryTest extends PersistenceTestCase {
 
@@ -35,6 +40,9 @@ public class RuleDatabaseRepositoryTest extends PersistenceTestCase {
     private static final String ROLE_NAME = "venn_dossierbeheerder";
     private static final String USER_NAME = "joZEF123456";
     public static final String USER_VIA_GROUP = "user2";
+    @org.junit.Rule
+    public LocatorRule locatorRule = LocatorRule.locator();
+    protected CoreConfigurationService configurationServiceMock;
     private ResourceRuleEntity resourceRuleEntity;
     private PolicyEntity policy;
     private URLRuleEntity urlRuleEntity;
@@ -57,8 +65,15 @@ public class RuleDatabaseRepositoryTest extends PersistenceTestCase {
         policy.addRule(urlRuleEntity);
         role.addPolicy(policy);
         user.addRole(role);
+        setUpCommonLocatables();
     }
 
+    public void setUpCommonLocatables() {
+        locatorRule.implantMock(UserValidator.class);
+        locatorRule.implantMock(PasswordValidator.class);
+
+        configurationServiceMock = locatorRule.getCoreConfigurationService();
+    }
 
     @Test
     public void canFetchResourceRuleWithResourceName() {

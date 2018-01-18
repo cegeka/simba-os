@@ -16,41 +16,6 @@
  */
 package org.simbasecurity.test;
 
-import org.junit.After;
-import org.junit.Before;
-import org.simbasecurity.core.audit.Audit;
-import org.simbasecurity.core.locator.Locator;
-import org.simbasecurity.core.locator.TestLocator;
-
 public abstract class LocatorTestCase {
-
-    private Locator locator;
-
-    @Before
-    public void init() {
-        backupOriginalGlobalContextLocatorAndSetMock();
-        implantMock(Audit.class);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        TestLocator.reset();
-    }
-
-    private void backupOriginalGlobalContextLocatorAndSetMock() {
-        locator = TestLocator.createLocatorMock();
-    }
-
-    protected <B> B implantMock(Class<B> type) {
-        return TestLocator.implantMock(locator, type);
-    }
-
-    protected <B> B implantMockLocatingByNameOnly(Class<B> type, String name) {
-        return TestLocator.implantMockLocatingByNameOnly(locator, type, name);
-    }
-
-    protected <B> B implant(Class<B> type, B instance) {
-        return TestLocator.implant(locator, type, instance);
-    }
 
 }

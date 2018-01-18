@@ -16,11 +16,7 @@
  */
 package org.simbasecurity.test;
 
-import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.simbasecurity.core.domain.validator.PasswordValidator;
-import org.simbasecurity.core.domain.validator.UserValidator;
-import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -34,13 +30,4 @@ import org.springframework.transaction.annotation.Transactional;
 @Rollback
 public abstract class DatabaseTestCase extends LocatorTestCase {
 
-    protected CoreConfigurationService configurationServiceMock;
-
-    @Before
-    public void setUpCommonLocatables() {
-        implantMock(UserValidator.class);
-        implantMock(PasswordValidator.class);
-
-        configurationServiceMock = implantMock(CoreConfigurationService.class);
-    }
 }

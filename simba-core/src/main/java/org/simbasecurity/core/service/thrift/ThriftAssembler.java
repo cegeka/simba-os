@@ -39,9 +39,12 @@ import static org.simbasecurity.core.domain.user.EmailAddress.email;
 @SuppressWarnings("unchecked")
 public class ThriftAssembler {
 
-    @Inject
-    @Named("configurationService")
     private CoreConfigurationService coreConfigurationService;
+
+    @Inject
+    public ThriftAssembler(@Named("configurationService") CoreConfigurationService coreConfigurationService) {
+        this.coreConfigurationService = coreConfigurationService;
+    }
 
     private Map<Class<?>, Function<?, ?>> classMappers = new HashMap<>();
 

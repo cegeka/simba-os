@@ -1,6 +1,7 @@
 package org.simbasecurity.core.service.user;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -18,6 +19,7 @@ import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.communication.reset.password.NewUser;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.LocatorTestCase;
 
 import java.util.List;
@@ -36,6 +38,8 @@ import static org.simbasecurity.core.exception.SimbaMessageKey.EMAIL_ADDRESS_REQ
 @RunWith(MockitoJUnitRunner.class)
 public class UserFactoryTest extends LocatorTestCase {
 
+    @Rule
+    public LocatorRule locatorRule = LocatorRule.locator();
     @Mock
     private RoleRepository roleRepository;
     @Mock
@@ -48,14 +52,16 @@ public class UserFactoryTest extends LocatorTestCase {
     private ResetPasswordService resetPasswordService;
     @Mock
     private NewUser newUserReason;
-    @Mock
+    //@Mock
     private CoreConfigurationService configurationService;
     @InjectMocks
     private UserFactory userFactory;
 
     @Before
     public void setUp() {
-        implantMock(UserValidator.class);
+        locatorRule.implantMock(UserValidator.class);
+        configurationService = locatorRule.getCoreConfigurationService();
+        userFactory.setConfigurationService(configurationService);
     }
 
     @Test
@@ -144,7 +150,7 @@ public class UserFactoryTest extends LocatorTestCase {
         User savedUser = userFactory.cloneUser(userBeingCreated, "userToBeCloned");
 
         assertThat(savedUser.hasRole("manager")).isTrue();
-        assertThat(savedUser.getEmail()).isNull();
+        assertThat(savedUser.getEmail().isEmpty()).isTrue();
 
         verify(userRepository).persist(savedUser);
         verify(managementAudit).log("User ''{0}'' created as clone of ''{1}''", "johnnyTampony", "userToBeCloned");
@@ -203,7 +209,8 @@ public class UserFactoryTest extends LocatorTestCase {
     @Test
     public void createUser_WithExistingUserName_ThrowsError() {
         User user = aUser().withUserName("userName").build();
-        when(userRepository.findByName("userName")).thenReturn(aDefaultUser().build());
+        User aDefaultUser= aDefaultUser().build();
+        when(userRepository.findByName("userName")).thenReturn(aDefaultUser);
 
         assertThatThrownBy(() -> userFactory.create(user))
                 .isInstanceOf(SimbaException.class)
@@ -213,7 +220,8 @@ public class UserFactoryTest extends LocatorTestCase {
     @Test
     public void createUser_WithExistingEmail_ThrowsError() {
         User user = aUser().withEmail("someEmail@email.com").build();
-        when(userRepository.findByEmail(email("someEmail@email.com"))).thenReturn(aDefaultUser().build());
+        User aDefaultUser= aDefaultUser().build();
+        when(userRepository.findByEmail(email("someEmail@email.com"))).thenReturn(aDefaultUser);
 
         assertThatThrownBy(() -> userFactory.create(user))
                 .isInstanceOf(SimbaException.class)
@@ -223,9 +231,10 @@ public class UserFactoryTest extends LocatorTestCase {
     @Test
     public void cloneUser_WithExistingUserName_ThrowsError() {
         User user = aDefaultUser().withUserName("userName").build();
-        when(userRepository.findByName("userName")).thenReturn(aDefaultUser().build());
+        User aDefaultUser = aDefaultUser().build();
+        when(userRepository.findByName("userName")).thenReturn(aDefaultUser);
 
-        assertThatThrownBy(() -> userFactory.cloneUser(user,"username"))
+        assertThatThrownBy(() -> userFactory.cloneUser(user, "username"))
                 .isInstanceOf(SimbaException.class)
                 .hasMessage("User already exists with username: userName");
     }
@@ -233,9 +242,10 @@ public class UserFactoryTest extends LocatorTestCase {
     @Test
     public void cloneUser_WithExistingEmail_ThrowsError() {
         User user = aDefaultUser().withUserName("stormTrooper").withEmail("theOneAndOnlyStormTrooper@empire.com").build();
-        when(userRepository.findByEmail(email("theOneAndOnlyStormTrooper@empire.com"))).thenReturn(aDefaultUser().build());
+        User aDefaultUser= aDefaultUser().build();
+        when(userRepository.findByEmail(email("theOneAndOnlyStormTrooper@empire.com"))).thenReturn(aDefaultUser);
 
-        assertThatThrownBy(() -> userFactory.cloneUser(user,"Finn"))
+        assertThatThrownBy(() -> userFactory.cloneUser(user, "Finn"))
                 .isInstanceOf(SimbaException.class)
                 .hasMessage("User already exists with email: theOneAndOnlyStormTrooper@empire.com");
     }

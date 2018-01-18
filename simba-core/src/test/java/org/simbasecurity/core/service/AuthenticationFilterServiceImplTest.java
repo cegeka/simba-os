@@ -30,6 +30,7 @@ import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.ChainImpl;
 import org.simbasecurity.core.domain.Session;
+import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.LocatorTestCase;
 
 import java.util.Collections;
@@ -41,6 +42,7 @@ import static org.mockito.Mockito.*;
 public class AuthenticationFilterServiceImplTest extends LocatorTestCase {
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
+    @Rule public LocatorRule locatorRule = LocatorRule.locator();
 
     @Mock private SessionService sessionServiceMock;
     @Mock private LoginMappingService loginMappingService;
@@ -55,7 +57,7 @@ public class AuthenticationFilterServiceImplTest extends LocatorTestCase {
         Session sessionMock = mock(Session.class);
         when(sessionServiceMock.getSession(any(SSOToken.class))).thenReturn(sessionMock);
 
-        ChainImpl authenticationChainMock = implantMockLocatingByNameOnly(ChainImpl.class, "authenticationChain");
+        ChainImpl authenticationChainMock = locatorRule.implantMockLocatingByNameOnly(ChainImpl.class, "authenticationChain");
 
         serviceImpl.processRequest(new RequestData(null, null, null, null, null, null, false, false, false, false, false, null, null, "loginToken", null), "authenticationChain");
         verify(authenticationChainMock).execute(any(ChainContext.class));

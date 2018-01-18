@@ -1,6 +1,7 @@
 package org.simbasecurity.core.service.communication.reset.password;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -19,6 +20,7 @@ import org.simbasecurity.core.service.communication.mail.LinkGenerator;
 import org.simbasecurity.core.service.communication.mail.MailService;
 import org.simbasecurity.core.service.communication.mail.template.TemplateService;
 import org.simbasecurity.core.service.communication.token.UserTokenService;
+import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.LocatorTestCase;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -37,6 +39,8 @@ import static org.simbasecurity.core.service.communication.mail.Mail.mail;
 @RunWith(MockitoJUnitRunner.class)
 public class ResetPasswordServiceTest extends LocatorTestCase {
 
+    @Rule
+    public LocatorRule locatorRule = LocatorRule.locator();
     @Mock private MailService mailServiceMock;
     @Mock private LinkGenerator linkGeneratorMock;
     @Mock private UserTokenService tokenManagerMock;
@@ -133,7 +137,8 @@ public class ResetPasswordServiceTest extends LocatorTestCase {
     @Test
     public void sendMessage_NoEmailAddress_ThrowsSimbaException() throws Exception {
         User user = aDefaultUser()
-                .withEmail((EmailAddress) null)
+//                .withEmail((EmailAddress) null)
+                .withoutEmail()
                 .build();
 
         assertThatExceptionOfType(SimbaException.class)

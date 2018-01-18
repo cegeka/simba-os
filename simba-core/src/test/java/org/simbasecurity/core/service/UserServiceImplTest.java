@@ -29,24 +29,23 @@ import org.simbasecurity.api.service.thrift.TPolicy;
 import org.simbasecurity.api.service.thrift.TRole;
 import org.simbasecurity.api.service.thrift.TUser;
 import org.simbasecurity.core.audit.ManagementAudit;
-import org.simbasecurity.core.domain.PolicyEntity;
-import org.simbasecurity.core.domain.Role;
-import org.simbasecurity.core.domain.RoleEntity;
-import org.simbasecurity.core.domain.User;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
+import org.simbasecurity.core.domain.*;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
-import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.locator.SpringAwareLocator;
+import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordByManager;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.filter.EntityFilter;
 import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
+import org.simbasecurity.test.LocatorRule;
+import org.simbasecurity.test.LocatorTestCase;
 import org.simbasecurity.test.util.ReflectionUtil;
 
 import java.util.ArrayList;
@@ -57,19 +56,16 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 
-public class UserServiceImplTest {
+public class UserServiceImplTest extends LocatorTestCase {
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
+    @Rule public LocatorRule locatorRule = LocatorRule.locator();
 
-    @Mock private SpringAwareLocator locator;
-    @Mock private UserValidator userValidator;
-    @Mock private PasswordValidator passwordValidator;
-    @Mock private CoreConfigurationService configurationService;
     @Mock private ResetPasswordService resetPasswordService;
     @Mock private ResetPasswordByManager resetReason;
     @Mock private ManagementAudit managementAudit;
@@ -79,8 +75,10 @@ public class UserServiceImplTest {
     @Mock private UserRepository userRepository;
 
     @Spy private EntityFilterService entityFilterService = new EntityFilterService(Optional.empty());
-    @Spy private ThriftAssembler assembler = new ThriftAssembler();
+    @Spy private ThriftAssembler assembler = new ThriftAssembler(null);
     @InjectMocks private UserServiceImpl service;
+
+    private CoreConfigurationService configurationService;
 
     private TRole tRole01 = new TRole(1, 1, "role-1");
     private TRole tRole02 = new TRole(2, 1, "role-2");
@@ -98,10 +96,10 @@ public class UserServiceImplTest {
 
     @Before
     public void setup() {
-        GlobalContext.initialize(locator);
-        when(locator.locate(UserValidator.class)).thenReturn(userValidator);
-        when(locator.locate(PasswordValidator.class)).thenReturn(passwordValidator);
-        when(locator.locate(CoreConfigurationService.class)).thenReturn(configurationService);
+        locatorRule.implantMock(UserValidator.class);
+        locatorRule.implantMock(PasswordValidator.class);
+        configurationService = locatorRule.getCoreConfigurationService();
+        when(configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(true);
 
         User userEntity1 = aDefaultUser().withUserName("user-1").build();
         User userEntity2 = aDefaultUser().withUserName("user-2").build();
@@ -215,16 +213,80 @@ public class UserServiceImplTest {
         tUser01.setEmail("bruce@wayneindustries.com");
         tUser01.setName("Wayne");
         tUser01.setFirstName("bruce");
-        tUser01.setInactiveDate("20180112");
         tUser01.setStatus("ACTIVE");
-        tUser01.setSuccessURL(null);
         tUser01.setLanguage("en_US");
         tUser01.setMustChangePassword(true);
 
         service.update(tUser01);
 
         verify(managementAudit).log("User ''{0}'' {3} has changed from ''{1}'' to ''{2}''", "user-1",
-                EmailAddress.email("bruce@richorphan.com"), EmailAddress.email("bruce@wayneindustries.com"), "e-mail");
+                "bruce@richorphan.com", "bruce@wayneindustries.com", "e-mail");
+    }
+
+    @Test
+    public void update_DoesNotLogWhenSameEmail() throws Exception {
+        User userFromDB = aDefaultUser()
+                .withUserName("user-1")
+                .withEmail("bruce@wayneindustries.com")
+                .build();
+
+        when(userRepository.refreshWithOptimisticLocking(tUser01.getId(),tUser01.getVersion())).thenReturn(userFromDB);
+        tUser01.setEmail(UserTestBuilder.EMAIL);
+        tUser01.setName(UserTestBuilder.NAME);
+        tUser01.setFirstName(UserTestBuilder.FIRST_NAME);
+        tUser01.setStatus("ACTIVE");
+        tUser01.setLanguage("en_US");
+        tUser01.setMustChangePassword(true);
+
+        service.update(tUser01);
+
+        verifyZeroInteractions(managementAudit);
+    }
+
+    @Test
+    public void update_DoesNotLogWhenEmailRemainsNull_AndDoesNotThrowException() throws Exception {
+        User userFromDB = aDefaultUser()
+                .withUserName("user-1")
+                .withoutEmail()
+                .build();
+
+        when(userRepository.refreshWithOptimisticLocking(tUser01.getId(),tUser01.getVersion())).thenReturn(userFromDB);
+        tUser01.setEmail(null);
+        tUser01.setName(UserTestBuilder.NAME);
+        tUser01.setFirstName(UserTestBuilder.FIRST_NAME);
+        tUser01.setStatus("ACTIVE");
+        tUser01.setLanguage("en_US");
+        tUser01.setMustChangePassword(true);
+
+        when(configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(false);
+
+        service.update(tUser01);
+
+        verifyZeroInteractions(managementAudit);
+    }
+
+    @Test
+    public void update_WhenEmailWasBlankedOut_EmailNotRequiredAccordingToParameter_ThenNoExceptionIsThrown_AndGetsLogged() throws Exception {
+        User userFromDB = aDefaultUser()
+                .withUserName("user-1")
+                .withEmail("bruce@wayneindustries.com")
+                .build();
+
+        when(userRepository.refreshWithOptimisticLocking(tUser01.getId(),tUser01.getVersion())).thenReturn(userFromDB);
+        tUser01.setEmail("");
+        tUser01.setName(UserTestBuilder.NAME);
+        tUser01.setFirstName(UserTestBuilder.FIRST_NAME);
+        tUser01.setStatus("ACTIVE");
+        tUser01.setLanguage("en_US");
+        tUser01.setMustChangePassword(true);
+
+        when(configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(false);
+
+        TUser actual = service.update(tUser01);
+
+        verify(managementAudit).log("User ''{0}'' {3} has changed from ''{1}'' to ''{2}''", userFromDB.getUserName(), "bruce@wayneindustries.com", "", "e-mail");
+
+        assertThat(actual.getEmail()).isEqualTo(EmailAddress.emptyEmail().asString());
     }
 
     @Test
@@ -237,15 +299,52 @@ public class UserServiceImplTest {
         tUser01.setEmail("bruce@wayneindustries.com");
         tUser01.setName("Wayne");
         tUser01.setFirstName("bruce");
-        tUser01.setInactiveDate("20180112");
         tUser01.setStatus("ACTIVE");
-        tUser01.setSuccessURL(null);
         tUser01.setLanguage("en_US");
         tUser01.setMustChangePassword(true);
 
         service.update(tUser01);
 
         verify(managementAudit).log("Password for user ''{0}'' has been reset", userFromDB.getUserName());
+    }
 
+    @Test
+    public void update_WhenEmailRemainsNull_EmailRequiredAccordingToParameter_ThenSimbaExceptionIsThrown() throws Exception {
+        User userFromDB = aDefaultUser()
+                .withUserName("user-1")
+                .withoutEmail()
+                .build();
+
+        when(userRepository.refreshWithOptimisticLocking(tUser01.getId(),tUser01.getVersion())).thenReturn(userFromDB);
+        tUser01.setEmail(null);
+        tUser01.setName(UserTestBuilder.NAME);
+        tUser01.setFirstName(UserTestBuilder.FIRST_NAME);
+        tUser01.setStatus("ACTIVE");
+        tUser01.setLanguage("en_US");
+        tUser01.setMustChangePassword(true);
+
+        assertThatThrownBy(() -> service.update(tUser01))
+            .isInstanceOf(SimbaException.class)
+            .hasMessage("EMAIL_ADDRESS_REQUIRED");
+    }
+
+    @Test
+    public void update_WhenEmailWasBlankedOut_EmailRequiredAccordingToParameter_ThenSimbaExceptionIsThrown() throws Exception {
+        User userFromDB = aDefaultUser()
+                .withUserName("user-1")
+                .withEmail("bruce@wayneindustries.com")
+                .build();
+
+        when(userRepository.refreshWithOptimisticLocking(tUser01.getId(),tUser01.getVersion())).thenReturn(userFromDB);
+        tUser01.setEmail(null);
+        tUser01.setName(UserTestBuilder.NAME);
+        tUser01.setFirstName(UserTestBuilder.FIRST_NAME);
+        tUser01.setStatus("ACTIVE");
+        tUser01.setLanguage("en_US");
+        tUser01.setMustChangePassword(true);
+
+        assertThatThrownBy(() -> service.update(tUser01))
+            .isInstanceOf(SimbaException.class)
+            .hasMessage("EMAIL_ADDRESS_REQUIRED");
     }
 }

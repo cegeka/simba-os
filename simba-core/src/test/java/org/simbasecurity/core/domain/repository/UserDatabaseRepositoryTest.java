@@ -18,9 +18,19 @@ package org.simbasecurity.core.domain.repository;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.simbasecurity.core.domain.*;
+import org.mockito.Mockito;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
+import org.simbasecurity.core.domain.Role;
+import org.simbasecurity.core.domain.RoleEntity;
+import org.simbasecurity.core.domain.User;
+import org.simbasecurity.core.domain.UserTestBuilder;
 import org.simbasecurity.core.domain.user.EmailAddress;
+import org.simbasecurity.core.domain.validator.PasswordValidator;
+import org.simbasecurity.core.domain.validator.UserValidator;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.PersistenceTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,6 +47,9 @@ import static org.simbasecurity.core.domain.user.EmailAddress.email;
 public class UserDatabaseRepositoryTest extends PersistenceTestCase {
 
     private static final String DUMMY_USER_NAME = "dummy";
+    @Rule
+    public LocatorRule locatorRule = LocatorRule.locator();
+    protected CoreConfigurationService configurationServiceMock;
     private User user;
 
     @Autowired
@@ -46,6 +59,14 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
     public void setUp() {
         user = UserTestBuilder.aUser().withUserName(DUMMY_USER_NAME).withFirstName("").withName("").withPassword("moo").withDateOfLastPasswordChange(new Date()).build();
         persistAndRefresh(user);
+        setUpCommonLocatables();
+    }
+
+    public void setUpCommonLocatables() {
+        locatorRule.implantMock(UserValidator.class);
+        locatorRule.implantMock(PasswordValidator.class);
+
+        configurationServiceMock = locatorRule.getCoreConfigurationService();
     }
 
     @Test
@@ -116,9 +137,22 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
     }
 
     @Test
+    public void setEmail_StoredEmailIsNull_EmailIsNotNull() {
+        Mockito.when(configurationServiceMock.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(false);
+        User expectedUser = aDefaultUser().withoutEmail().build();
+        persistAndRefresh(expectedUser);
+
+        Optional<User> user = userDatabaseRepository.findById(expectedUser.getId());
+
+        assertThat(user).isNotEmpty();
+        assertThat(user.get().getEmail()).isNotNull();
+    }
+
+    @Test
     public void findById(){
         Optional<User> maybeUser = userDatabaseRepository.findById(user.getId());
 
         Assertions.assertThat(maybeUser).contains(user);
     }
+
 }

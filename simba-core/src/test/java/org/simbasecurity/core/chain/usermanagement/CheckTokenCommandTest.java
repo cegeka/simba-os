@@ -1,5 +1,6 @@
 package org.simbasecurity.core.chain.usermanagement;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
@@ -14,6 +15,7 @@ import org.simbasecurity.core.domain.communication.token.Token;
 import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.service.CredentialService;
 import org.simbasecurity.core.service.communication.token.UserTokenService;
+import org.simbasecurity.test.EmailRequiredRule;
 
 import java.util.Optional;
 
@@ -26,6 +28,9 @@ import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CheckTokenCommandTest {
+
+    @Rule
+    public EmailRequiredRule emailRequired = EmailRequiredRule.emailRequired();
 
     @Mock
     private ChainContext chainContextMock;

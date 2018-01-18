@@ -1,8 +1,17 @@
 package org.simbasecurity.core.domain.repository.communication.token;
 
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.simbasecurity.core.domain.communication.token.*;
+import org.simbasecurity.core.domain.communication.token.ResetPasswordUserToken;
+import org.simbasecurity.core.domain.communication.token.Token;
+import org.simbasecurity.core.domain.communication.token.UserCreationUserToken;
+import org.simbasecurity.core.domain.communication.token.UserToken;
+import org.simbasecurity.core.domain.validator.PasswordValidator;
+import org.simbasecurity.core.domain.validator.UserValidator;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.util.dates.DateUtils;
+import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.PersistenceTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,6 +23,9 @@ import static org.simbasecurity.core.domain.communication.token.UserTokenTestBui
 
 public class UserTokenRepositoryTest extends PersistenceTestCase {
 
+    @Rule
+    public LocatorRule locatorRule = LocatorRule.locator();
+    protected CoreConfigurationService configurationServiceMock;
     @Autowired
     private UserTokenRepository userTokenRepository;
 
@@ -73,5 +85,13 @@ public class UserTokenRepositoryTest extends PersistenceTestCase {
         userTokenRepository.deleteToken(token);
 
         assertThat(userTokenRepository.findByToken(token)).isEmpty();
+    }
+
+    @Before
+    public void setUpCommonLocatables() {
+        locatorRule.implantMock(UserValidator.class);
+        locatorRule.implantMock(PasswordValidator.class);
+
+        configurationServiceMock = locatorRule.getCoreConfigurationService();
     }
 }

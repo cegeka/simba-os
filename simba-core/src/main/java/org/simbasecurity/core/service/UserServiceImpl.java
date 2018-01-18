@@ -48,6 +48,7 @@ import java.util.stream.Collectors;
 
 import static org.simbasecurity.common.util.StringUtil.join;
 import static org.simbasecurity.core.domain.user.EmailAddress.email;
+import static org.simbasecurity.core.domain.user.EmailAddress.nullSafeAsString;
 
 @Transactional
 @Service("userService")
@@ -183,14 +184,21 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
         logUserPropertyChange(user, attachedUser.getSuccessURL(), user.getSuccessURL(), "success URL");
         attachedUser.setSuccessURL(user.getSuccessURL());
 
-        logUserPropertyChange(user, attachedUser.getEmail(), EmailAddress.email(user.getEmail()), "e-mail");
+        logEmailChange(user, attachedUser);
         if (!Objects.equals(attachedUser.getEmail(), EmailAddress.email(user.getEmail()))){
             attachedUser.setEmail(email(user.getEmail()));
             resetPassword(attachedUser);
         }
+
         userRepository.flush();
 
         return assembler.assemble(attachedUser);
+    }
+
+    private void logEmailChange(TUser user, User attachedUser) {
+        String attachedUserEmail = nullSafeAsString(attachedUser.getEmail());
+        String changedEmail = user.getEmail();
+        logUserPropertyChange(user, attachedUserEmail, changedEmail, "e-mail");
     }
 
     private void logUserPropertyChange(TUser user, Object oldValue, Object newValue, String property) {

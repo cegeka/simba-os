@@ -45,7 +45,6 @@ import org.simbasecurity.core.service.filter.EntityFilter;
 import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
 import org.simbasecurity.test.LocatorRule;
-import org.simbasecurity.test.LocatorTestCase;
 import org.simbasecurity.test.util.ReflectionUtil;
 
 import java.util.ArrayList;
@@ -61,7 +60,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 
-public class UserServiceImplTest extends LocatorTestCase {
+public class UserServiceImplTest {
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
     @Rule public LocatorRule locatorRule = LocatorRule.locator();

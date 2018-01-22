@@ -20,7 +20,6 @@ import org.simbasecurity.core.service.communication.reset.password.NewUser;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.test.LocatorRule;
-import org.simbasecurity.test.LocatorTestCase;
 
 import java.util.List;
 
@@ -36,7 +35,7 @@ import static org.simbasecurity.core.domain.user.EmailAddress.email;
 import static org.simbasecurity.core.exception.SimbaMessageKey.EMAIL_ADDRESS_REQUIRED;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UserFactoryTest extends LocatorTestCase {
+public class UserFactoryTest {
 
     @Rule
     public LocatorRule locatorRule = LocatorRule.locator();

@@ -10,13 +10,12 @@ import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.test.LocatorRule;
-import org.simbasecurity.test.LocatorTestCase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-public class EmailAddressTest extends LocatorTestCase {
+public class EmailAddressTest {
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule().silent();

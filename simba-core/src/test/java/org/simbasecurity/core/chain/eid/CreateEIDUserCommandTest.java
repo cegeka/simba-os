@@ -39,7 +39,6 @@ import org.simbasecurity.core.service.UserService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.user.UserFactory;
 import org.simbasecurity.test.LocatorRule;
-import org.simbasecurity.test.LocatorTestCase;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +49,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 
-public class CreateEIDUserCommandTest extends LocatorTestCase {
+public class CreateEIDUserCommandTest {
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
     @Rule public LocatorRule locatorRule = LocatorRule.locator();

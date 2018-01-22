@@ -23,7 +23,6 @@ import org.junit.Test;
 import org.simbasecurity.core.jaas.callbackhandler.ChainContextCallbackHandler;
 import org.simbasecurity.core.service.CredentialService;
 import org.simbasecurity.test.LocatorRule;
-import org.simbasecurity.test.LocatorTestCase;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -37,7 +36,7 @@ import java.util.Set;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class DatabaseLoginModuleTest extends LocatorTestCase {
+public class DatabaseLoginModuleTest {
 
     private static final String ADMIN = "admin";
     @Rule

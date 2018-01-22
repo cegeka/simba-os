@@ -27,7 +27,6 @@ import org.mockito.junit.MockitoRule;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.test.LocatorRule;
-import org.simbasecurity.test.LocatorTestCase;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.Attributes;
@@ -45,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-public class ActiveDirectoryLoginModuleTest extends LocatorTestCase {
+public class ActiveDirectoryLoginModuleTest {
     @Rule public MockitoRule rule = MockitoJUnit.rule();
     @Rule public LocatorRule locatorRule = LocatorRule.locator();
 

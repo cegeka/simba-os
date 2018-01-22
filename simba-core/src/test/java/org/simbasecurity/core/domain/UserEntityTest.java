@@ -27,7 +27,6 @@ import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.test.LocatorRule;
-import org.simbasecurity.test.LocatorTestCase;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -41,7 +40,7 @@ import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 import static org.simbasecurity.core.domain.UserTestBuilder.aUser;
 import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORD_INVALID_LENGTH;
 
-public class UserEntityTest extends LocatorTestCase {
+public class UserEntityTest {
 
     private static final String INVALID_PASSWORD = "invalidpassword";
     private static final String DEFAULT_PASSWORD = "Simba3D";

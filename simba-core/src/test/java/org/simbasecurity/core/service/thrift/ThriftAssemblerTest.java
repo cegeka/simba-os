@@ -13,7 +13,6 @@ import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.test.LocatorRule;
-import org.simbasecurity.test.LocatorTestCase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -21,7 +20,7 @@ import static org.mockito.Mockito.when;
 import static org.simbasecurity.core.config.SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ThriftAssemblerTest extends LocatorTestCase {
+public class ThriftAssemblerTest {
 
     @Rule
     public LocatorRule locatorRule = LocatorRule.locator();

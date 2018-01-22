@@ -31,7 +31,6 @@ import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.ChainImpl;
 import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.test.LocatorRule;
-import org.simbasecurity.test.LocatorTestCase;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -39,7 +38,7 @@ import java.util.UUID;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-public class AuthenticationFilterServiceImplTest extends LocatorTestCase {
+public class AuthenticationFilterServiceImplTest {
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
     @Rule public LocatorRule locatorRule = LocatorRule.locator();

@@ -21,7 +21,6 @@ import org.simbasecurity.core.service.communication.mail.MailService;
 import org.simbasecurity.core.service.communication.mail.template.TemplateService;
 import org.simbasecurity.core.service.communication.token.UserTokenService;
 import org.simbasecurity.test.LocatorRule;
-import org.simbasecurity.test.LocatorTestCase;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.net.URL;
@@ -37,7 +36,7 @@ import static org.simbasecurity.core.exception.SimbaMessageKey.EMAIL_ADDRESS_REQ
 import static org.simbasecurity.core.service.communication.mail.Mail.mail;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ResetPasswordServiceTest extends LocatorTestCase {
+public class ResetPasswordServiceTest {
 
     @Rule
     public LocatorRule locatorRule = LocatorRule.locator();

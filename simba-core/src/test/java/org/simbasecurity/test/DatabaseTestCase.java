@@ -28,6 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:persistenceTestContext.xml")
 @Rollback
-public abstract class DatabaseTestCase extends LocatorTestCase {
+public abstract class DatabaseTestCase {
 
 }

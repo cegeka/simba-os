@@ -99,6 +99,7 @@ public class UserServiceImplTest {
         locatorRule.implantMock(PasswordValidator.class);
         configurationService = locatorRule.getCoreConfigurationService();
         when(configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(true);
+        service.setConfigurationService(configurationService);
 
         User userEntity1 = aDefaultUser().withUserName("user-1").build();
         User userEntity2 = aDefaultUser().withUserName("user-2").build();
@@ -265,7 +266,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void update_WhenEmailWasBlankedOut_EmailNotRequiredAccordingToParameter_ThenNoExceptionIsThrown_AndGetsLogged() throws Exception {
+    public void update_WhenEmailWasBlankedOut_EmailNotRequiredAccordingToParameter_ThenNoMailIsSent_AndGetsLogged() throws Exception {
         User userFromDB = aDefaultUser()
                 .withUserName("user-1")
                 .withEmail("bruce@wayneindustries.com")
@@ -284,8 +285,34 @@ public class UserServiceImplTest {
         TUser actual = service.update(tUser01);
 
         verify(managementAudit).log("User ''{0}'' {3} has changed from ''{1}'' to ''{2}''", userFromDB.getUserName(), "bruce@wayneindustries.com", "", "e-mail");
+        verifyZeroInteractions(resetPasswordService);
 
         assertThat(actual.getEmail()).isEqualTo(EmailAddress.emptyEmail().asString());
+    }
+
+    @Test
+    public void update_WhenEmailChanged_EmailNotRequiredAccordingToParameter_sendResetPasswordEmail() throws Exception {
+        User userFromDB = aDefaultUser()
+                .withUserName("user-1")
+                .withEmail("bruce@richorphan.com").build();
+
+        when(userRepository.refreshWithOptimisticLocking(tUser01.getId(),tUser01.getVersion())).thenReturn(userFromDB);
+        tUser01.setEmail("bruce@wayneindustries.com");
+        tUser01.setName("Wayne");
+        tUser01.setFirstName("bruce");
+        tUser01.setStatus("ACTIVE");
+        tUser01.setLanguage("en_US");
+        tUser01.setMustChangePassword(true);
+
+        when(configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(false);
+
+        TUser actual = service.update(tUser01);
+
+        verify(managementAudit).log("User ''{0}'' {3} has changed from ''{1}'' to ''{2}''", userFromDB.getUserName(),
+                "bruce@richorphan.com", "bruce@wayneindustries.com", "e-mail");
+        verify(resetPasswordService).sendResetPasswordMessageTo(userFromDB, resetReason);
+
+        assertThat(actual.getEmail()).isEqualTo("bruce@wayneindustries.com");
     }
 
     @Test
@@ -302,9 +329,11 @@ public class UserServiceImplTest {
         tUser01.setLanguage("en_US");
         tUser01.setMustChangePassword(true);
 
-        service.update(tUser01);
+        TUser actual = service.update(tUser01);
 
         verify(managementAudit).log("Password for user ''{0}'' has been reset", userFromDB.getUserName());
+
+        assertThat(actual.getEmail()).isEqualTo(EmailAddress.email("bruce@wayneindustries.com").asString());
     }
 
     @Test

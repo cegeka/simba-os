@@ -22,6 +22,7 @@ import org.simbasecurity.api.service.thrift.TPolicy;
 import org.simbasecurity.api.service.thrift.TRole;
 import org.simbasecurity.api.service.thrift.TUser;
 import org.simbasecurity.core.audit.ManagementAudit;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.Role;
 import org.simbasecurity.core.domain.Status;
@@ -33,6 +34,7 @@ import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordByManager;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
 import org.simbasecurity.core.service.user.UserFactory;
@@ -54,18 +56,35 @@ import static org.simbasecurity.core.domain.user.EmailAddress.nullSafeAsString;
 @Service("userService")
 public class UserServiceImpl implements UserService, org.simbasecurity.api.service.thrift.UserService.Iface {
 
-    @Autowired private ManagementAudit managementAudit;
-    @Autowired private UserRepository userRepository;
-    @Autowired private RoleRepository roleRepository;
-    @Autowired private PolicyRepository policyRepository;
-    @Autowired private GroupRepository groupRepository;
+    @Autowired
+    private ManagementAudit managementAudit;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private PolicyRepository policyRepository;
+    @Autowired
+    private GroupRepository groupRepository;
 
-    @Autowired private EntityFilterService filterService;
-    @Autowired private UserFactory userFactory;
+    @Autowired
+    private EntityFilterService filterService;
+    @Autowired
+    private UserFactory userFactory;
 
-    @Autowired private ThriftAssembler assembler;
-    @Autowired private ResetPasswordService resetPasswordService;
-    @Autowired private ResetPasswordByManager resetPasswordByManager;
+    @Autowired
+    private ThriftAssembler assembler;
+    @Autowired
+    private ResetPasswordService resetPasswordService;
+    @Autowired
+    private ResetPasswordByManager resetPasswordByManager;
+
+    private CoreConfigurationService configurationService;
+
+    @Autowired
+    public void setConfigurationService(CoreConfigurationService configurationService) {
+        this.configurationService = configurationService;
+    }
 
     @Override
     public User findByName(String userName) {
@@ -108,8 +127,8 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
         User attachedUser = userRepository.refreshWithOptimisticLocking(user.getId(), user.getVersion());
         Collection<Role> attachedRoles =
                 roles.stream()
-                     .map(r -> roleRepository.refreshWithOptimisticLocking(r.getId(), r.getVersion()))
-                     .collect(Collectors.toList());
+                        .map(r -> roleRepository.refreshWithOptimisticLocking(r.getId(), r.getVersion()))
+                        .collect(Collectors.toList());
 
         managementAudit.log("Roles ''{0}'' added to user ''{1}''", join(attachedRoles, Role::getName), attachedUser.getUserName());
 
@@ -185,9 +204,11 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
         attachedUser.setSuccessURL(user.getSuccessURL());
 
         logEmailChange(user, attachedUser);
-        if (!Objects.equals(attachedUser.getEmail(), EmailAddress.email(user.getEmail()))){
+        if (!Objects.equals(attachedUser.getEmail(), EmailAddress.email(user.getEmail()))) {
             attachedUser.setEmail(email(user.getEmail()));
-            resetPassword(attachedUser);
+            if (configurationService.<Boolean>getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED) || !attachedUser.getEmail().isEmpty()) {
+                resetPassword(attachedUser);
+            }
         }
 
         userRepository.flush();

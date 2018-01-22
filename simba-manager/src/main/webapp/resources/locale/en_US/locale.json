@@ -130,7 +130,7 @@
   "textboxpopup.name": "Name",
   "textboxpopup.add": "Add",
   "textboxpopup.cancel": "Cancel",
-  "password.reset.successful": "Password reset was successful. A mail has been send to the mail address of the user.",
+  "password.reset.successful": "The password was reset successfully. An email has been sent to the email address of the user.",
   "user.email.required": "E-mail is required.",
   "create.role": "Create role",
   "create.policy": "Create policy",

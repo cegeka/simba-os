@@ -157,7 +157,7 @@
   "textboxpopup.add":"Toevoegen",
   "textboxpopup.cancel":"Annuleren",
 
-  "password.reset.successful": "Het passwoord is correct gereset. Er is een mail gestuurd naar het e-mailadres van de gebruiker.",
+  "password.reset.successful": "Het paswoord werd correct gereset. Er werd een mail verstuurd naar het e-mailadres van de gebruiker.",
 
   "create.role":"Rol Aanmaken",
   "create.policy":"Policy Aanmaken",

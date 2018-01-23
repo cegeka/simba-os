@@ -104,7 +104,7 @@ public class UserFactory {
         return newUser;
     }
 
-    private void validateUniqueEmail(User user) {
+     private void validateUniqueEmail(User user) {
         if (userRepository.findByEmail(user.getEmail()) != null) {
             throw new SimbaException(USER_ALREADY_EXISTS_WITH_EMAIL, String.format("User already exists with email: %s", user.getEmail()));
         }

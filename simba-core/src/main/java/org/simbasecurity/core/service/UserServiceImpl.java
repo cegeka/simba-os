@@ -211,7 +211,7 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
             }
         }
 
-        userRepository.flush();
+        userRepository.persist(attachedUser);
 
         return assembler.assemble(attachedUser);
     }

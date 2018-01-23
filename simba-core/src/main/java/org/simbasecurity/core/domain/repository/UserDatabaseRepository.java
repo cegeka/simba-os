@@ -17,9 +17,11 @@
 package org.simbasecurity.core.domain.repository;
 
 import org.simbasecurity.core.domain.Role;
+import org.simbasecurity.core.domain.Status;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.UserEntity;
 import org.simbasecurity.core.domain.user.EmailAddress;
+import org.simbasecurity.core.exception.SimbaException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.TypedQuery;
@@ -28,13 +30,25 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS_WITH_EMAIL;
+
 @Repository
 public class UserDatabaseRepository extends AbstractVersionedDatabaseRepository<User> implements UserRepository {
 
     @Override
+    public User persist(User entity) {
+        if (findByEmail(entity.getEmail()) != null) {
+            throw new SimbaException(USER_ALREADY_EXISTS_WITH_EMAIL, String.format("User already exists with email: %s", entity.getEmail()));
+        }
+        return super.persist(entity);
+
+    }
+
+    @Override
     public User findByName(String userName) {
         TypedQuery<User> query = entityManager.createQuery("SELECT u FROM UserEntity u WHERE u.userName = :userName", User.class)
-                                              .setParameter("userName", userName);
+                .setParameter("userName", userName);
+
         List<User> resultList = query.getResultList();
 
         if (resultList.size() == 0) {
@@ -49,14 +63,14 @@ public class UserDatabaseRepository extends AbstractVersionedDatabaseRepository<
     @Override
     public Collection<User> findNotLinked(Role role) {
         TypedQuery<User> query = entityManager.createQuery("SELECT user FROM UserEntity user WHERE :role not in elements(user.roles) order by user.userName", User.class)
-                                              .setParameter("role", role);
+                .setParameter("role", role);
         return new ArrayList<>(query.getResultList());
     }
 
     @Override
     public Collection<User> findForRole(Role role) {
         TypedQuery<User> query = entityManager.createQuery("SELECT user FROM UserEntity user WHERE :role in elements(user.roles) order by user.userName", User.class)
-                                              .setParameter("role", role);
+                .setParameter("role", role);
         return new ArrayList<>(query.getResultList());
     }
 
@@ -70,7 +84,7 @@ public class UserDatabaseRepository extends AbstractVersionedDatabaseRepository<
     public Collection<User> searchUsersOrderedByName(String searchText) {
         TypedQuery<User> query = entityManager.createQuery("SELECT user FROM UserEntity user WHERE UPPER(user.userName) like UPPER(:searchText) or UPPER(user.name) like UPPER(:searchText) or UPPER(user.firstName) like UPPER(:searchText) " +
                 "order by user.userName", User.class)
-                .setParameter("searchText", "%"+searchText+"%");
+                .setParameter("searchText", "%" + searchText + "%");
         return new ArrayList<>(query.getResultList());
     }
 
@@ -83,17 +97,23 @@ public class UserDatabaseRepository extends AbstractVersionedDatabaseRepository<
 
     @Override
     public User findByEmail(EmailAddress email) {
-        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM UserEntity u WHERE u.email = :email", User.class)
-                .setParameter("email", email);
-        List<User> resultList = query.getResultList();
+        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM UserEntity u WHERE u.email = :email AND (u.status =:active or  u.status=:blocked)", User.class)
+                .setParameter("email", email)
+                .setParameter("active", Status.ACTIVE)
+                .setParameter("blocked", Status.BLOCKED);
 
-        if (resultList.size() == 0) {
-            return null;
-        } else if (resultList.size() == 1) {
-            return resultList.get(0);
+        if (query.getResultList() != null) {
+            List<User> resultList = query.getResultList();
+            if (resultList.size() == 0) {
+                return null;
+            } else if (resultList.size() == 1) {
+                return resultList.get(0);
+            }
+            throw new IllegalStateException("Multiple users found for email: '" + email + "'");
         }
+        return null;
 
-        throw new IllegalStateException("Multiple users found for email: '" + email + "'");
+
     }
 
     @Override

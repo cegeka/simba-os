@@ -22,13 +22,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.domain.Role;
-import org.simbasecurity.core.domain.RoleEntity;
-import org.simbasecurity.core.domain.User;
-import org.simbasecurity.core.domain.UserTestBuilder;
+import org.simbasecurity.core.domain.*;
 import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
+import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.PersistenceTestCase;
@@ -39,6 +37,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
@@ -137,6 +136,56 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
     }
 
     @Test
+    public void findUserByMail_WillReturnUser_IfPresentInDatabase_AndActiveOrBlocked() throws Exception {
+        EmailAddress email = email("alfred@wayneindustries.com");
+
+        User expectedUser = aDefaultUser().withEmail(email).withStatus(Status.ACTIVE).build();
+        persistAndRefresh(expectedUser);
+
+        User user = userDatabaseRepository.findByEmail(email);
+
+        Assertions.assertThat(user).isEqualTo(expectedUser);
+    }
+
+    @Test
+    public void findUserByMail_WillNOTReturnUser_IfPresentInDatabase_AndInactive() throws Exception {
+        EmailAddress email = email("morganfreeman@wayneindustries.com");
+
+
+        User inactiveUser = aDefaultUser().withUserName("fmorgan").withEmail(email).withStatus(Status.INACTIVE).build();
+        persistAndRefresh(inactiveUser);
+
+        User user = userDatabaseRepository.findByEmail(email);
+
+        Assertions.assertThat(user).isEqualTo(null);
+
+    }
+
+    @Test
+    public void persist_whenEmailAlreadyExistOnInactiveUser_ShouldPersist() {
+        EmailAddress email = email("morganfreeman@wayneindustries.com");
+
+        User activeUser = aDefaultUser().withUserName("nelsonmandela").withEmail(email).withStatus(Status.ACTIVE).build();
+        persistAndRefresh(activeUser);
+
+        assertThat(persistAndRefresh(activeUser)).isEqualTo(activeUser);
+
+    }
+
+    @Test
+    public void persist_whenEmailAlreadyExistOnActiveOrBlockedUser_ShouldNOTPersist() {
+        EmailAddress email = email("morganfreeman@wayneindustries.com");
+        User activeUser = aDefaultUser().withUserName("nelsonmandela").withEmail(email).withStatus(Status.ACTIVE).build();
+        persistAndRefresh(activeUser);
+
+        User newUser = aDefaultUser().withUserName("morganfreeman").withEmail(email).withStatus(Status.ACTIVE).build();
+
+        assertThatThrownBy(() -> userDatabaseRepository.persist(newUser))
+                .isInstanceOf(SimbaException.class)
+                .hasMessage("User already exists with email: morganfreeman@wayneindustries.com");
+    }
+
+    @Test
     public void setEmail_StoredEmailIsNull_EmailIsNotNull() {
         Mockito.when(configurationServiceMock.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(false);
         User expectedUser = aDefaultUser().withoutEmail().build();
@@ -149,7 +198,7 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
     }
 
     @Test
-    public void findById(){
+    public void findById() {
         Optional<User> maybeUser = userDatabaseRepository.findById(user.getId());
 
         Assertions.assertThat(maybeUser).contains(user);

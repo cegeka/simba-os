@@ -21,7 +21,6 @@ import org.simbasecurity.core.domain.Status;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.UserEntity;
 import org.simbasecurity.core.domain.user.EmailAddress;
-import org.simbasecurity.core.exception.SimbaException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.TypedQuery;
@@ -30,19 +29,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS_WITH_EMAIL;
-
 @Repository
 public class UserDatabaseRepository extends AbstractVersionedDatabaseRepository<User> implements UserRepository {
-
-    @Override
-    public User persist(User entity) {
-        if (findByEmail(entity.getEmail()) != null) {
-            throw new SimbaException(USER_ALREADY_EXISTS_WITH_EMAIL, String.format("User already exists with email: %s", entity.getEmail()));
-        }
-        return super.persist(entity);
-
-    }
 
     @Override
     public User findByName(String userName) {

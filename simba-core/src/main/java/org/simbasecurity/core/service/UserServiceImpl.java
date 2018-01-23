@@ -32,6 +32,7 @@ import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.domain.user.EmailAddress;
+import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordByManager;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
@@ -51,6 +52,7 @@ import java.util.stream.Collectors;
 import static org.simbasecurity.common.util.StringUtil.join;
 import static org.simbasecurity.core.domain.user.EmailAddress.email;
 import static org.simbasecurity.core.domain.user.EmailAddress.nullSafeAsString;
+import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS_WITH_EMAIL;
 
 @Transactional
 @Service("userService")
@@ -183,37 +185,41 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
 
     @Override
     public TUser update(TUser user) throws TException {
-        User attachedUser = userRepository.refreshWithOptimisticLocking(user.getId(), user.getVersion());
+        if (userRepository.findByEmail(EmailAddress.email(user.getEmail())) != null) {
+            throw new SimbaException(USER_ALREADY_EXISTS_WITH_EMAIL, String.format("User already exists with email: %s", user.getEmail()));
+        } else {
+            User attachedUser = userRepository.refreshWithOptimisticLocking(user.getId(), user.getVersion());
 
-        logUserPropertyChange(user, attachedUser.getFirstName(), user.getFirstName(), "first name");
-        attachedUser.setFirstName(user.getFirstName());
+            logUserPropertyChange(user, attachedUser.getFirstName(), user.getFirstName(), "first name");
+            attachedUser.setFirstName(user.getFirstName());
 
-        logUserPropertyChange(user, attachedUser.getName(), user.getName(), "name");
-        attachedUser.setName(user.getName());
+            logUserPropertyChange(user, attachedUser.getName(), user.getName(), "name");
+            attachedUser.setName(user.getName());
 
-        logUserPropertyChange(user, String.valueOf(attachedUser.getLanguage()), user.getLanguage(), "language");
-        attachedUser.setLanguage(Language.valueOf(user.getLanguage()));
+            logUserPropertyChange(user, String.valueOf(attachedUser.getLanguage()), user.getLanguage(), "language");
+            attachedUser.setLanguage(Language.valueOf(user.getLanguage()));
 
-        logUserPropertyChange(user, attachedUser.isChangePasswordOnNextLogon(), user.isMustChangePassword(), "password must change");
-        attachedUser.setChangePasswordOnNextLogon(user.isMustChangePassword());
+            logUserPropertyChange(user, attachedUser.isChangePasswordOnNextLogon(), user.isMustChangePassword(), "password must change");
+            attachedUser.setChangePasswordOnNextLogon(user.isMustChangePassword());
 
-        logUserPropertyChange(user, attachedUser.getStatus().name(), user.getStatus(), "status");
-        attachedUser.setStatus(Status.valueOf(user.getStatus()));
+            logUserPropertyChange(user, attachedUser.getStatus().name(), user.getStatus(), "status");
+            attachedUser.setStatus(Status.valueOf(user.getStatus()));
 
-        logUserPropertyChange(user, attachedUser.getSuccessURL(), user.getSuccessURL(), "success URL");
-        attachedUser.setSuccessURL(user.getSuccessURL());
+            logUserPropertyChange(user, attachedUser.getSuccessURL(), user.getSuccessURL(), "success URL");
+            attachedUser.setSuccessURL(user.getSuccessURL());
 
-        logEmailChange(user, attachedUser);
-        if (!Objects.equals(attachedUser.getEmail(), EmailAddress.email(user.getEmail()))) {
-            attachedUser.setEmail(email(user.getEmail()));
-            if (configurationService.<Boolean>getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED) || !attachedUser.getEmail().isEmpty()) {
-                resetPassword(attachedUser);
+            logEmailChange(user, attachedUser);
+            if (!Objects.equals(attachedUser.getEmail(), EmailAddress.email(user.getEmail()))) {
+                attachedUser.setEmail(email(user.getEmail()));
+                if (configurationService.<Boolean>getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED) || !attachedUser.getEmail().isEmpty()) {
+                    resetPassword(attachedUser);
+                }
             }
+
+            userRepository.flush();
+
+            return assembler.assemble(attachedUser);
         }
-
-        userRepository.persist(attachedUser);
-
-        return assembler.assemble(attachedUser);
     }
 
     private void logEmailChange(TUser user, User attachedUser) {

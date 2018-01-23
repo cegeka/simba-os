@@ -26,7 +26,6 @@ import org.simbasecurity.core.domain.*;
 import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
-import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.PersistenceTestCase;
@@ -37,7 +36,6 @@ import java.util.Date;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
@@ -159,30 +157,6 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
 
         Assertions.assertThat(user).isEqualTo(null);
 
-    }
-
-    @Test
-    public void persist_whenEmailAlreadyExistOnInactiveUser_ShouldPersist() {
-        EmailAddress email = email("morganfreeman@wayneindustries.com");
-
-        User activeUser = aDefaultUser().withUserName("nelsonmandela").withEmail(email).withStatus(Status.ACTIVE).build();
-        persistAndRefresh(activeUser);
-
-        assertThat(persistAndRefresh(activeUser)).isEqualTo(activeUser);
-
-    }
-
-    @Test
-    public void persist_whenEmailAlreadyExistOnActiveOrBlockedUser_ShouldNOTPersist() {
-        EmailAddress email = email("morganfreeman@wayneindustries.com");
-        User activeUser = aDefaultUser().withUserName("nelsonmandela").withEmail(email).withStatus(Status.ACTIVE).build();
-        persistAndRefresh(activeUser);
-
-        User newUser = aDefaultUser().withUserName("morganfreeman").withEmail(email).withStatus(Status.ACTIVE).build();
-
-        assertThatThrownBy(() -> userDatabaseRepository.persist(newUser))
-                .isInstanceOf(SimbaException.class)
-                .hasMessage("User already exists with email: morganfreeman@wayneindustries.com");
     }
 
     @Test

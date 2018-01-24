@@ -28,7 +28,7 @@ angular.module('SimbaApp')
             $scope.changePassword = true;
             $scope.showEditButtons=true;
             $scope.error = $error.getError();
-            $scope.emailRequired = true;
+            $scope.emailRequired = $configuration.getValue('EMAIL_ADDRESS_REQUIRED');
 
             $scope.initData = function() {
                 getSuccessUrls();

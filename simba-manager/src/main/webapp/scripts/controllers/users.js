@@ -117,6 +117,9 @@ angular.module('SimbaApp')
                         },
                         roles: function () {
                             return roles.data;
+                        },
+                        isRest: function() {
+                            return false;
                         }
                     }
                 });

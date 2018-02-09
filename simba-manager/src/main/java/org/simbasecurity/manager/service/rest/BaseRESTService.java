@@ -22,6 +22,8 @@ import org.apache.thrift.TServiceClientFactory;
 import org.apache.thrift.protocol.TJSONProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.THttpClient;
+import org.simbasecurity.api.service.thrift.TSimbaError;
+import org.simbasecurity.manager.service.rest.error.SimbaManagerException;
 
 import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
 
@@ -65,6 +67,8 @@ abstract class BaseRESTService<T extends TServiceClient> {
     <R> R $(Invocation<R> o) {
         try {
             return o.invoke();
+        } catch(TSimbaError e) {
+            throw new SimbaManagerException(e.getErrorkey(), e.getMessage());
         } catch(TException e) {
             throw new RuntimeException(e);
         }
@@ -73,6 +77,8 @@ abstract class BaseRESTService<T extends TServiceClient> {
     void $(VoidInvocation o) {
         try {
             o.invoke();
+        } catch(TSimbaError e) {
+            throw new SimbaManagerException(e.getErrorkey(), e.getMessage());
         } catch(TException e) {
             throw new RuntimeException(e);
         }

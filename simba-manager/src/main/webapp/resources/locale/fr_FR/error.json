@@ -26,6 +26,7 @@
   "error.loading.data": "Une erreur s'est produite lors du charger des données.",
   "error.create.invalid.type": "Une erreur s'est produite lors du créer l'utilisateur.",
   "error.reset.password.failed": "Une erreur s'est produite lors du reinitialisation du mot de passe.",
-  "error.cache.refresh.failed": "Une erreur s'est produite lors du actualiser le cache serveur."
-
+  "error.cache.refresh.failed": "Une erreur s'est produite lors du actualiser le cache serveur.",
+  "error.EMAIL_IS_REQUIRED":"Il est obligatoire de remplir une adresse e-mail.",
+  "error.EMAIL_ALREADY_EXISTS":"L'adresse e-mail est déjà attribuée à un utilisateur existant."
 }

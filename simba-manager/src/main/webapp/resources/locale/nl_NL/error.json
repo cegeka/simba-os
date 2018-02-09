@@ -26,6 +26,7 @@
   "error.loading.data": "Er is een fout opgetreden bij het ophalen van de data.",
   "error.reset.password.failed": "Paswoord kon niet gereset worden.",
   "error.create.invalid.type": "Er is een fout opgetreden bij het aanmaken van de gebruiker.",
-  "error.cache.refresh.failed": "Er is een fout opgetreden bij het hernieuwen van de server cache."
-
+  "error.cache.refresh.failed": "Er is een fout opgetreden bij het hernieuwen van de server cache.",
+  "error.EMAIL_IS_REQUIRED":"Het is verplicht om een emailadres in te vullen.",
+  "error.EMAIL_ALREADY_EXISTS":"Het ingevulde mail adres is reeds toegekend aan een bestaande gebruiker."
 }

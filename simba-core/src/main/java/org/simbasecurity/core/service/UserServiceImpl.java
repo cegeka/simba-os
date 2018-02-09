@@ -17,10 +17,7 @@
 package org.simbasecurity.core.service;
 
 import org.apache.thrift.TException;
-import org.simbasecurity.api.service.thrift.TGroup;
-import org.simbasecurity.api.service.thrift.TPolicy;
-import org.simbasecurity.api.service.thrift.TRole;
-import org.simbasecurity.api.service.thrift.TUser;
+import org.simbasecurity.api.service.thrift.*;
 import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.Language;
@@ -36,6 +33,8 @@ import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordByManager;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
+import org.simbasecurity.core.service.errors.SimbaExceptionThriftHandler;
 import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
 import org.simbasecurity.core.service.user.UserFactory;
@@ -77,9 +76,13 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
     @Autowired
     private ThriftAssembler assembler;
     @Autowired
+    private SimbaExceptionThriftHandler simbaExceptionHandler;
+    @Autowired
     private ResetPasswordService resetPasswordService;
     @Autowired
     private ResetPasswordByManager resetPasswordByManager;
+    @Autowired
+    private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller;
 
     private CoreConfigurationService configurationService;
 
@@ -164,8 +167,10 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
     }
 
     @Override
-    public TUser create(TUser user) throws TException {
-        return assembler.assemble(userFactory.create(assembleUser(user)));
+    public TUser create(TUser user) throws TSimbaError {
+        return simbaExceptionHandlingCaller.call(() -> {
+            return assembler.assemble(userFactory.create(assembleUser(user)));
+        });
     }
 
     @Override

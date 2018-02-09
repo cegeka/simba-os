@@ -1272,6 +1272,73 @@ TGroup.prototype.write = function(output) {
   return;
 };
 
+TSimbaError = function(args) {
+  this.errorkey = null;
+  this.message = null;
+  if (args) {
+    if (args.errorkey !== undefined && args.errorkey !== null) {
+      this.errorkey = args.errorkey;
+    }
+    if (args.message !== undefined && args.message !== null) {
+      this.message = args.message;
+    }
+  }
+};
+Thrift.inherits(TSimbaError, Thrift.TException);
+TSimbaError.prototype.name = 'TSimbaError';
+TSimbaError.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.errorkey = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.message = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TSimbaError.prototype.write = function(output) {
+  output.writeStructBegin('TSimbaError');
+  if (this.errorkey !== null && this.errorkey !== undefined) {
+    output.writeFieldBegin('errorkey', Thrift.Type.STRING, 1);
+    output.writeString(this.errorkey);
+    output.writeFieldEnd();
+  }
+  if (this.message !== null && this.message !== undefined) {
+    output.writeFieldBegin('message', Thrift.Type.STRING, 2);
+    output.writeString(this.message);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 TCondition = function(args) {
   this.id = null;
   this.version = null;

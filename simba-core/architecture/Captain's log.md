@@ -15,6 +15,9 @@ There are a couple of hurdles we need to overcome before we can pass domain vali
 
 Worth noting is that we're breaking the API again with these changes, so simba _customers_ will need to update their simba-api and simba-client jars.
 
+![Image about SimbaManager Exceptions](svf4521-SIMBA.jpg "improving simbamanager exceptions")
+
+
 ## December 2017 - Reset password via mail
 Since GDPR will go live in may 2018 we are looking at potential security risks. 
 One of these risks is using a default password when resetting a password.

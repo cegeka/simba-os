@@ -56,21 +56,21 @@ public class RoleServiceImpl implements RoleService.Iface {
         });
     }
 
-    public List<TPolicy> findPolicies(TRole role) throws TSimbaError {
+    public List<TPolicy> findPolicies(TRole role) throws TException {
         return simbaExceptionHandlingCaller.call(() -> {
             return assembler.list(
                     filterService.filterPolicies(policyRepository.findForRole(roleRepository.lookUp(role.getId()))));
         });
     }
 
-    public List<TPolicy> findPoliciesNotLinked(TRole role) throws TSimbaError {
+    public List<TPolicy> findPoliciesNotLinked(TRole role) throws TException {
         return simbaExceptionHandlingCaller.call(() -> {
             return assembler.list(
                     filterService.filterPolicies(policyRepository.findNotLinked(roleRepository.lookUp(role.getId()))));
         });
     }
 
-    public List<TUser> findUsers(TRole role) throws TSimbaError {
+    public List<TUser> findUsers(TRole role) throws TException {
         return simbaExceptionHandlingCaller.call(() -> {
             return assembler.list(
                     filterService.filterUsers(userRepository.findForRole(roleRepository.lookUp(role.getId()))));
@@ -78,14 +78,14 @@ public class RoleServiceImpl implements RoleService.Iface {
 
     }
 
-    public List<TUser> findUsersNotLinked(TRole role) throws TSimbaError {
+    public List<TUser> findUsersNotLinked(TRole role) throws TException {
         return simbaExceptionHandlingCaller.call(() -> {
             return assembler.list(
                     filterService.filterUsers(userRepository.findNotLinked(roleRepository.lookUp(role.getId()))));
         });
     }
 
-    public void addPolicy(TRole role, TPolicy policy) throws TSimbaError {
+    public void addPolicy(TRole role, TPolicy policy) throws TException {
         simbaExceptionHandlingCaller.call(() -> {
                     final Role attachedRole = roleRepository.refreshWithOptimisticLocking(role.getId(), role.getVersion());
                     final Policy attachedPolicy =
@@ -100,7 +100,7 @@ public class RoleServiceImpl implements RoleService.Iface {
         );
     }
 
-    public void addPolicies(TRole role, List<TPolicy> policies) throws TSimbaError {
+    public void addPolicies(TRole role, List<TPolicy> policies) throws TException {
         simbaExceptionHandlingCaller.call(() -> {
             Role attachedRole = roleRepository.refreshWithOptimisticLocking(role.getId(), role.getVersion());
             Set<Policy> attachedPolicies = policies.stream()
@@ -115,7 +115,7 @@ public class RoleServiceImpl implements RoleService.Iface {
         });
     }
 
-    public void removePolicy(TRole role, TPolicy policy) throws TSimbaError {
+    public void removePolicy(TRole role, TPolicy policy) throws TException {
         simbaExceptionHandlingCaller.call(() -> {
             Role attachedRole = roleRepository.refreshWithOptimisticLocking(role.getId(), role.getVersion());
             Policy attachedPolicy = policyRepository.refreshWithOptimisticLocking(policy.getId(), policy.getVersion());
@@ -129,7 +129,7 @@ public class RoleServiceImpl implements RoleService.Iface {
         });
     }
 
-    public void removeUser(TUser user, TRole role) throws TSimbaError {
+    public void removeUser(TUser user, TRole role) throws TException {
         simbaExceptionHandlingCaller.call(() -> {
             Role attachedRole = roleRepository.refreshWithOptimisticLocking(role.getId(), role.getVersion());
             User attachedUser = userRepository.refreshWithOptimisticLocking(user.getId(), user.getVersion());
@@ -141,7 +141,7 @@ public class RoleServiceImpl implements RoleService.Iface {
         });
     }
 
-    public void addUsers(TRole role, List<TUser> users) throws TSimbaError {
+    public void addUsers(TRole role, List<TUser> users) throws TException {
         simbaExceptionHandlingCaller.call(() -> {
             Role attachedRole = roleRepository.refreshWithOptimisticLocking(role.getId(), role.getVersion());
             Set<User> attachedUsers = users.stream()
@@ -156,13 +156,13 @@ public class RoleServiceImpl implements RoleService.Iface {
         });
     }
 
-    public TRole refresh(TRole role) throws TSimbaError {
+    public TRole refresh(TRole role) throws TException {
         return simbaExceptionHandlingCaller.call(() -> {
             return assembler.assemble(roleRepository.lookUp(role.getId()));
         });
     }
 
-    public TRole createRole(String roleName) throws TSimbaError {
+    public TRole createRole(String roleName) throws TException {
         return simbaExceptionHandlingCaller.call(() -> {
             try {
                 DTOValidator.assertValidString("createRole", roleName);
@@ -181,7 +181,7 @@ public class RoleServiceImpl implements RoleService.Iface {
         });
     }
 
-    public void deleteRole(TRole role) throws TSimbaError {
+    public void deleteRole(TRole role) throws TException {
         simbaExceptionHandlingCaller.call(() -> {
             Role roleToDelete = roleRepository.lookUp(role.getId());
             managementAudit.log("Role ''{0}'' deleted", roleToDelete.getName());

@@ -8,13 +8,13 @@ import org.simbasecurity.core.exception.SimbaMessageKey;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class SimbaExceptionThriftHandlerTest {
+public class TSimbaErrorMappingHandlerTest {
 
-    private SimbaExceptionThriftHandler handler;
+    private TSimbaErrorMappingHandler handler;
 
     @Before
     public void setUp() throws Exception {
-        handler = new SimbaExceptionThriftHandler();
+        handler = new TSimbaErrorMappingHandler();
     }
 
     @Test

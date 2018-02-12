@@ -17,7 +17,7 @@ public class SimbaExceptionHandlingCallerTest {
 
     @Before
     public void setUp() throws Exception {
-        caller = new SimbaExceptionHandlingCaller(new SimbaExceptionThriftHandler());
+        caller = new SimbaExceptionHandlingCaller(new TSimbaErrorMappingHandler());
     }
 
     @Test

@@ -34,7 +34,6 @@ import org.simbasecurity.core.service.communication.reset.password.ResetPassword
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
-import org.simbasecurity.core.service.errors.SimbaExceptionThriftHandler;
 import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
 import org.simbasecurity.core.service.user.UserFactory;
@@ -75,8 +74,6 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
 
     @Autowired
     private ThriftAssembler assembler;
-    @Autowired
-    private SimbaExceptionThriftHandler simbaExceptionHandler;
     @Autowired
     private ResetPasswordService resetPasswordService;
     @Autowired

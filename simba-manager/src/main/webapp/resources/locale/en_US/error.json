@@ -26,5 +26,7 @@
   "error.loading.data": "An error occured while loading the data.",
   "error.create.invalid.type": "An error occured while creating the user.",
   "error.reset.password.failed": "An error occured while resetting the password.",
-  "error.cache.refresh.failed": "An error occurred while refreshing the cache."
+  "error.cache.refresh.failed": "An error occurred while refreshing the cache.",
+  "error.EMAIL_IS_REQUIRED":"It is mandatory to enter an email address.",
+  "error.EMAIL_ALREADY_EXISTS":"The provided e-mail address has already been assigned to an existing user."
 }

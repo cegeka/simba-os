@@ -333,9 +333,14 @@ service SessionService {
     TUser getUserFor(1: string ssoToken);
 }
 
+exception TSimbaError {
+    1: string errorkey,
+    2: string message;
+}
+
 service UserService {
     void addRoles(1: TUser user, 2: set<TRole> roles);
-    TUser create(1: TUser user);
+    TUser create(1: TUser user) throws (1: TSimbaError simbaError);
     TUser createWithRoles(1: TUser user, 2: list<string> roleNames);
     TUser cloneUser(1: TUser user, 2: string clonedUsername);
 

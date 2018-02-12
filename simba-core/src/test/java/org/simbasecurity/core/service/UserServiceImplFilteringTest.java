@@ -34,6 +34,7 @@ import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
+import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
 import org.simbasecurity.core.service.filter.EntityFilter;
 import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
@@ -52,6 +53,7 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.simbasecurity.core.service.errors.ForwardingThriftHandlerForTests.forwardingThriftHandlerForTests;
 
 public class UserServiceImplFilteringTest {
 
@@ -64,6 +66,8 @@ public class UserServiceImplFilteringTest {
 
     @Spy private EntityFilterService entityFilterService = new EntityFilterService(Optional.empty());
     @Spy private ThriftAssembler assember = new ThriftAssembler(null);
+
+    @Spy private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller = new SimbaExceptionHandlingCaller(forwardingThriftHandlerForTests());
 
     @InjectMocks private UserServiceImpl service;
 
@@ -151,32 +155,32 @@ public class UserServiceImplFilteringTest {
     }
 
     @Test
-    public void findAll() {
+    public void findAll() throws Exception {
         assertThat(service.findAll()).extracting(TUser::getUserName).containsExactlyInAnyOrder("user-1");
     }
 
     @Test
-    public void find() {
+    public void find() throws Exception  {
         assertThat(service.findByRole(tRole01)).extracting(TUser::getUserName).containsExactlyInAnyOrder("user-1");
         assertThat(service.findByRole(tRole02)).extracting(TUser::getUserName).isEmpty();
     }
 
     @Test
-    public void findRoles() {
+    public void findRoles() throws Exception {
         assertThat(service.findRoles(tUser01)).extracting(TRole::getName).containsExactlyInAnyOrder("role-1");
         assertThat(service.findRoles(tUser02)).extracting(TRole::getName).isEmpty();
         assertThat(service.findRoles(tUser03)).extracting(TRole::getName).containsExactlyInAnyOrder("role-1");
     }
 
     @Test
-    public void findRolesNotLinked() {
+    public void findRolesNotLinked() throws Exception {
         assertThat(service.findRolesNotLinked(tUser01)).extracting(TRole::getName).isEmpty();
         assertThat(service.findRolesNotLinked(tUser02)).extracting(TRole::getName).containsExactlyInAnyOrder("role-1");
         assertThat(service.findRolesNotLinked(tUser03)).extracting(TRole::getName).isEmpty();
     }
 
     @Test
-    public void findPolicies() {
+    public void findPolicies() throws Exception {
         assertThat(service.findPolicies(tUser01)).extracting(TPolicy::getName).containsExactlyInAnyOrder("policy-1");
         assertThat(service.findPolicies(tUser02)).extracting(TPolicy::getName).isEmpty();
         assertThat(service.findPolicies(tUser03)).extracting(TPolicy::getName).containsExactlyInAnyOrder("policy-1");

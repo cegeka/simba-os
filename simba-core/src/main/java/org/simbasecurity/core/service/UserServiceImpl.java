@@ -96,74 +96,95 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
         return userRepository.findByName(userName);
     }
 
-    public List<TUser> findAll() {
-        return assembler.list(filterService.filterUsers(userRepository.findAllOrderedByName()));
+    @Override
+    public List<TUser> findAll() throws TException {
+        return simbaExceptionHandlingCaller.call(() -> {
+            return assembler.list(filterService.filterUsers(userRepository.findAllOrderedByName()));
+        });
     }
 
-    public List<TUser> search(String searchText) {
-        return assembler.list(filterService.filterUsers(userRepository.searchUsersOrderedByName(searchText)));
+    @Override
+    public List<TUser> search(String searchText) throws TException {
+        return simbaExceptionHandlingCaller.call(() -> {
+            return assembler.list(filterService.filterUsers(userRepository.searchUsersOrderedByName(searchText)));
+        });
     }
 
-    public List<TUser> findByRole(TRole role) {
-        return assembler.list(
-                filterService.filterUsers(userRepository.findForRole(roleRepository.lookUp(assembler.assemble(role)))));
+    @Override
+    public List<TUser> findByRole(TRole role) throws TException {
+        return simbaExceptionHandlingCaller.call(() -> {
+            return assembler.list(
+                    filterService.filterUsers(userRepository.findForRole(roleRepository.lookUp(assembler.assemble(role)))));
+        });
     }
 
-    public List<TRole> findRoles(TUser user) {
-        return assembler.list(
-                filterService.filterRoles(roleRepository.findForUser(userRepository.findByName(user.getUserName()))));
+    @Override
+    public List<TRole> findRoles(TUser user) throws TException {
+        return simbaExceptionHandlingCaller.call(() -> {
+            return assembler.list(
+                    filterService.filterRoles(roleRepository.findForUser(userRepository.findByName(user.getUserName()))));
+        });
     }
 
-    public List<TRole> findRolesNotLinked(TUser user) {
-        return assembler.list(filterService.filterRoles(
-                roleRepository.findNotLinked(userRepository.findByName(user.getUserName()))));
+    @Override
+    public List<TRole> findRolesNotLinked(TUser user) throws TException {
+        return simbaExceptionHandlingCaller.call(() -> {
+            return assembler.list(filterService.filterRoles(
+                    roleRepository.findNotLinked(userRepository.findByName(user.getUserName()))));
+        });
     }
 
-    public void removeRole(TUser user, TRole role) {
-        User attachedUser = userRepository.refreshWithOptimisticLocking(user.getId(), user.getVersion());
-        Role attachedRole = roleRepository.refreshWithOptimisticLocking(role.getId(), role.getVersion());
+    @Override
+    public void removeRole(TUser user, TRole role) throws TException {
+        simbaExceptionHandlingCaller.call(() -> {
+            User attachedUser = userRepository.refreshWithOptimisticLocking(user.getId(), user.getVersion());
+            Role attachedRole = roleRepository.refreshWithOptimisticLocking(role.getId(), role.getVersion());
 
-        managementAudit.log("Role ''{0}'' removed from user ''{1}''", attachedRole.getName(), attachedUser.getUserName());
+            managementAudit.log("Role ''{0}'' removed from user ''{1}''", attachedRole.getName(), attachedUser.getUserName());
 
-        attachedUser.removeRole(attachedRole);
+            attachedUser.removeRole(attachedRole);
+        });
     }
 
-    public void addRoles(TUser user, Set<TRole> roles) {
-        User attachedUser = userRepository.refreshWithOptimisticLocking(user.getId(), user.getVersion());
-        Collection<Role> attachedRoles =
-                roles.stream()
-                        .map(r -> roleRepository.refreshWithOptimisticLocking(r.getId(), r.getVersion()))
-                        .collect(Collectors.toList());
+    @Override
+    public void addRoles(TUser user, Set<TRole> roles) throws TException {
+        simbaExceptionHandlingCaller.call(() -> {
+            User attachedUser = userRepository.refreshWithOptimisticLocking(user.getId(), user.getVersion());
+            Collection<Role> attachedRoles =
+                    roles.stream()
+                            .map(r -> roleRepository.refreshWithOptimisticLocking(r.getId(), r.getVersion()))
+                            .collect(Collectors.toList());
 
-        managementAudit.log("Roles ''{0}'' added to user ''{1}''", join(attachedRoles, Role::getName), attachedUser.getUserName());
+            managementAudit.log("Roles ''{0}'' added to user ''{1}''", join(attachedRoles, Role::getName), attachedUser.getUserName());
 
-        attachedUser.addRoles(attachedRoles);
+            attachedUser.addRoles(attachedRoles);
+        });
     }
 
-    public List<TPolicy> findPolicies(TUser user) {
-        return assembler.list(
-                filterService.filterPolicies(policyRepository.find(userRepository.findByName(user.getUserName()))));
+    @Override
+    public List<TPolicy> findPolicies(TUser user) throws TException {
+        return simbaExceptionHandlingCaller.call(() -> {
+            return assembler.list(
+                    filterService.filterPolicies(policyRepository.find(userRepository.findByName(user.getUserName()))));
+        });
     }
 
-    public List<TGroup> findGroups(TUser user) {
-        return assembler.list(groupRepository.find(userRepository.lookUp(assembleUser(user))));
+    @Override
+    public List<TGroup> findGroups(TUser user) throws TException {
+        return simbaExceptionHandlingCaller.call(() -> {
+            return assembler.list(groupRepository.find(userRepository.lookUp(assembleUser(user))));
+        });
     }
 
-    private User assembleUser(TUser user) {
-        return assembler.assemble(user);
-    }
+    @Override
+    public TUser resetPassword(TUser user) throws TException {
+        return simbaExceptionHandlingCaller.call(() -> {
+            User attachedUser = userRepository.findByName(user.getUserName());
 
-    public TUser resetPassword(TUser user) {
-        User attachedUser = userRepository.findByName(user.getUserName());
+            resetPassword(attachedUser);
 
-        resetPassword(attachedUser);
-
-        return assembler.assemble(attachedUser);
-    }
-
-    private void resetPassword(User attachedUser) {
-        resetPasswordService.sendResetPasswordMessageTo(attachedUser, resetPasswordByManager);
-        managementAudit.log("Password for user ''{0}'' has been reset", attachedUser.getUserName());
+            return assembler.assemble(attachedUser);
+        });
     }
 
     @Override
@@ -235,6 +256,22 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
         });
     }
 
+    @Override
+    public TUser refresh(TUser user) throws TException {
+        return simbaExceptionHandlingCaller.call(() -> {
+            return assembler.assemble(userRepository.lookUp(user.getId()));
+        });
+    }
+
+    private User assembleUser(TUser user) {
+        return assembler.assemble(user);
+    }
+
+    private void resetPassword(User attachedUser) {
+        resetPasswordService.sendResetPasswordMessageTo(attachedUser, resetPasswordByManager);
+        managementAudit.log("Password for user ''{0}'' has been reset", attachedUser.getUserName());
+    }
+
     private void logEmailChange(TUser user, User attachedUser) {
         String attachedUserEmail = nullSafeAsString(attachedUser.getEmail());
         String changedEmail = user.getEmail();
@@ -246,12 +283,5 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
             managementAudit.log("User ''{0}'' {3} has changed from ''{1}'' to ''{2}''", user.getUserName(),
                     oldValue, newValue, property);
         }
-    }
-
-    @Override
-    public TUser refresh(TUser user) throws TException {
-        return simbaExceptionHandlingCaller.call(() -> {
-            return assembler.assemble(userRepository.lookUp(user.getId()));
-        });
     }
 }

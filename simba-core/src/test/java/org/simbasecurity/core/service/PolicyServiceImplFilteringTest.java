@@ -30,6 +30,7 @@ import org.simbasecurity.api.service.thrift.TRole;
 import org.simbasecurity.core.domain.*;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
+import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
 import org.simbasecurity.core.service.filter.EntityFilter;
 import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
@@ -46,6 +47,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static org.simbasecurity.core.service.errors.ForwardingThriftHandlerForTests.forwardingThriftHandlerForTests;
 
 public class PolicyServiceImplFilteringTest {
 
@@ -56,6 +58,7 @@ public class PolicyServiceImplFilteringTest {
 
     @Spy private EntityFilterService entityFilterService = new EntityFilterService(Optional.empty());
     @Spy private ThriftAssembler assembler = new ThriftAssembler(null);
+    @Spy private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller = new SimbaExceptionHandlingCaller(forwardingThriftHandlerForTests());
     @InjectMocks private PolicyServiceImpl policyManagerService;
 
     @Mock private TPolicy tPolicy01;

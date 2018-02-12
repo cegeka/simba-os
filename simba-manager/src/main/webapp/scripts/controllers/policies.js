@@ -62,7 +62,7 @@ angular.module('SimbaApp')
                             refreshSelectedPolicy();
                         })
                         .error(function(){
-                            $error.showError('error.update.failed');
+                            $error.showError('error.adding.rol');
                         });}, function () {
                     $log.info('Modal dismissed at: ' + new Date());
                 });
@@ -113,7 +113,7 @@ angular.module('SimbaApp')
             refreshSelectedPolicy();
         })
         .error(function() {
-            $error.showError('error.update.failed');
+            $error.showError('error.remove.rol');
         });
     }
 
@@ -137,7 +137,7 @@ angular.module('SimbaApp')
             refreshSelectedPolicy();
         })
         .error(function() {
-            $error.showError('error.update.failed');
+            $error.showError('error.remove.policy');
         });
     };
 

@@ -22,11 +22,19 @@
   "error.create.failed": "Er is een fout opgetreden bij het aanmaken van de data.",
   "error.refresh.failed": "Er is een fout opgetreden bij het verversen van de data.",
   "error.no.role.selected": "Er is een fout opgetreden: er is geen rol geselecteerd.",
+  "error.adding.rol": "Er is een fout opgetreden tijdens het toevoegen van een rol.",
+  "error.remove.rol": "Er is een fout opgetreden tijdens het verwijderen van een rol.",
+  "error.adding.user": "Er is een fout opgetreden tijdens het toevoegen van een user.",
+  "error.remove.user": "Er is een fout opgetreden tijdens het verwijderen van een user.",
+  "error.adding.policy": "Er is een fout opgetreden tijdens het toevoegen van een policy.",
+  "error.remove.policy": "Er is een fout opgetreden tijdens het verwijderen van een policy.",
+  "error.adding.rule": "Er is een fout opgetreden tijdens het toevoegen van een rule.",
+  "error.remove.rule": "Er is een fout opgetreden tijdens het verwijderen van een rule.",
   "error.no.policy.selected": "Er is een fout opgetreden: er is geen policy geselecteerd.",
   "error.loading.data": "Er is een fout opgetreden bij het ophalen van de data.",
   "error.reset.password.failed": "Paswoord kon niet gereset worden.",
   "error.create.invalid.type": "Er is een fout opgetreden bij het aanmaken van de gebruiker.",
   "error.cache.refresh.failed": "Er is een fout opgetreden bij het hernieuwen van de server cache.",
-  "error.EMAIL_IS_REQUIRED":"Het is verplicht om een emailadres in te vullen.",
-  "error.EMAIL_ALREADY_EXISTS":"Het ingevulde mail adres is reeds toegekend aan een bestaande gebruiker."
+  "error.email.is.required": "Het is verplicht om een emailadres in te vullen.",
+  "error.email.already.exists": "Het ingevulde mail adres is reeds toegekend aan een bestaande gebruiker."
 }

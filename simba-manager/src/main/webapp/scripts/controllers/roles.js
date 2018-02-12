@@ -62,7 +62,7 @@ angular.module('SimbaApp')
                             });
                         })
                         .error(function(){
-                            $error.showError('error.update.failed');
+                            $error.showError('error.adding.user');
                         });}, function () {
                     $log.info('Modal dismissed at: ' + new Date());
                 });
@@ -91,7 +91,7 @@ angular.module('SimbaApp')
                               });
                           })
                           .error(function(){
-                              $error.showError('error.update.failed');
+                              $error.showError('error.adding.policy');
                           });}, function () {
                       $log.info('Modal dismissed at: ' + new Date());
                   });
@@ -109,7 +109,7 @@ angular.module('SimbaApp')
             });
         })
         .error(function() {
-            $error.showError('error.update.failed');
+            $error.showError('error.remove.user');
         });
     }
 
@@ -119,7 +119,7 @@ angular.module('SimbaApp')
             $scope.roles.splice(index,1);
         })
         .error(function() {
-            $error.showError('error.update.failed');
+            $error.showError('error.remove.rol');
         });
     };
 
@@ -145,7 +145,7 @@ angular.module('SimbaApp')
             });
         })
         .error(function() {
-            $error.showError('error.update.failed');
+            $error.showError('error.remove.policy');
         });
     }
 

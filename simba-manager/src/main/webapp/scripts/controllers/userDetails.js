@@ -78,8 +78,8 @@ angular.module('SimbaApp')
             .success(function (data) {
                 $modalInstance.close(data);
             })
-            .error(function () {
-                $error.showError('error.update.failed');
+            .error(function (data) {
+                $error.showError(data.errorkey);
             });
     };
 
@@ -111,7 +111,7 @@ angular.module('SimbaApp')
                             refreshSelectedUser();
                         })
                         .error(function(){
-                            $error.showError('error.update.failed');
+                            $error.showError('error.adding.rol');
                         });
                 }, function () {
                     $log.info('Modal dismissed at: ' + new Date());
@@ -131,7 +131,7 @@ angular.module('SimbaApp')
             refreshSelectedUser();
         })
         .error(function() {
-            $error.showError('error.update.failed');
+            $error.showError('error.remove.rol');
         });
     };
 

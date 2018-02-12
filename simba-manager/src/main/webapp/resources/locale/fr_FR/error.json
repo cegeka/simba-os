@@ -22,11 +22,19 @@
   "error.create.failed": "Une erreur s'est produite lors du rafraîchir des données.",
   "error.refresh.failed": "An error occured while refreshing the data.",
   "error.no.role.selected": "Une erreur s'est produite: aucun rôle n'a été sélectionné.",
+  "error.adding.rol": "Une erreur s'est produite en ajoutant d'un rôle.",
+  "error.remove.rol": "Une erreur s'est produite pendant l'enlèvement d'un rôle.",
+  "error.adding.user": "Une erreur s'est produite en ajoutant d'un utilisateur.",
+  "error.remove.user": "Une erreur s'est produite pendant l'enlèvement d'un utilisateur.",
+  "error.adding.policy": "Une erreur s'est produite en ajoutant d'un policy.",
+  "error.remove.policy": "Une erreur s'est produite pendant l'enlèvement d'un policy.",
+  "error.adding.rule": "Une erreur s'est produite en ajoutant d'une règle.",
+  "error.remove.rule": "Une erreur s'est produite pendant l'enlèvement d'une règle.",
   "error.no.policy.selected": "Une erreur s'est produite: aucun policy n'a été sélectionné.",
   "error.loading.data": "Une erreur s'est produite lors du charger des données.",
   "error.create.invalid.type": "Une erreur s'est produite lors du créer l'utilisateur.",
   "error.reset.password.failed": "Une erreur s'est produite lors du reinitialisation du mot de passe.",
   "error.cache.refresh.failed": "Une erreur s'est produite lors du actualiser le cache serveur.",
-  "error.EMAIL_IS_REQUIRED":"Il est obligatoire de remplir une adresse e-mail.",
-  "error.EMAIL_ALREADY_EXISTS":"L'adresse e-mail est déjà attribuée à un utilisateur existant."
+  "error.email.is.required": "Il est obligatoire de remplir une adresse e-mail.",
+  "error.email.already.exists": "L'adresse e-mail est déjà attribuée à un utilisateur existant."
 }

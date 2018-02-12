@@ -64,7 +64,7 @@ angular.module('SimbaApp')
                               });
                           })
                           .error(function(){
-                              $error.showError('error.update.failed');
+                              $error.showError('error.adding.rol');
                           });}, function () {
                       $log.info('Modal dismissed at: ' + new Date());
                   });
@@ -85,7 +85,7 @@ angular.module('SimbaApp')
             });
         })
         .error(function() {
-            $error.showError('error.update.failed');
+            $error.showError('error.remove.rol');
         });
     }
 

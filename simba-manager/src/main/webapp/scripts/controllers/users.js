@@ -132,7 +132,7 @@ angular.module('SimbaApp')
                             $scope.viewUsers.push(data);
                             $user.addRoles(data, addUserResult.roles)
                                 .catch(function () {
-                                    $error.showError('error.update.failed');
+                                    $error.showError('error.adding.rol');
                                 });
                         })
                         .error(function () {

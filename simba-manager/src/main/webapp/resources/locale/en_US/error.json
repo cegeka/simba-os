@@ -22,11 +22,19 @@
   "error.create.failed": "An error occured while creating the data.",
   "error.refresh.failed": "An error occured while refreshing the data.",
   "error.no.role.selected": "An error occured: no role was selected.",
+  "error.adding.rol": "An error occured while adding a role.",
+  "error.remove.rol": "An error occured while removing a role.",
+  "error.adding.user": "An error occured while adding a user.",
+  "error.remove.user": "An error occured while removing a user.",
+  "error.adding.policy": "An error occured while adding a policy.",
+  "error.remove.policy": "An error occured while removing a policy.",
+  "error.adding.rule": "An error occured while adding a rule.",
+  "error.remove.rule": "An error occured while removing a rule.",
   "error.no.policy.selected": "An error occured: no policy was selected.",
   "error.loading.data": "An error occured while loading the data.",
   "error.create.invalid.type": "An error occured while creating the user.",
   "error.reset.password.failed": "An error occured while resetting the password.",
   "error.cache.refresh.failed": "An error occurred while refreshing the cache.",
-  "error.EMAIL_IS_REQUIRED":"It is mandatory to enter an email address.",
-  "error.EMAIL_ALREADY_EXISTS":"The provided e-mail address has already been assigned to an existing user."
+  "error.email.is.required": "It is mandatory to enter an email address.",
+  "error.email.already.exists": "The provided e-mail address has already been assigned to an existing user."
 }

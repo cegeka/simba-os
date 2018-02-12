@@ -60,11 +60,11 @@ angular.module('SimbaApp')
                                     $modalInstance.close($scope.user);
                                 })
                                 .catch(function () {
-                                    $error.showError('error.update.failed');
+                                    $error.showError('error.adding.rol');
                                 });
                         })
-                        .error(function () {
-                            $error.showError('error.create.failed');
+                        .error(function (data) {
+                            $error.showError(data.errorkey);
                         });
                 }
             };

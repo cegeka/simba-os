@@ -30,6 +30,7 @@ import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.ChainImpl;
 import org.simbasecurity.core.domain.Session;
+import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
 import org.simbasecurity.test.LocatorRule;
 
 import java.util.Collections;
@@ -37,6 +38,7 @@ import java.util.UUID;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
+import static org.simbasecurity.core.service.errors.ForwardingThriftHandlerForTests.forwardingThriftHandlerForTests;
 
 public class AuthenticationFilterServiceImplTest {
 
@@ -48,6 +50,7 @@ public class AuthenticationFilterServiceImplTest {
     @Mock private SSOTokenMappingService ssoTokenMappingService;
 
     @Spy private AuditLogEventFactory auditLogEventFactory;
+    @Spy private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller = new SimbaExceptionHandlingCaller(forwardingThriftHandlerForTests());
 
     @InjectMocks private AuthenticationFilterServiceImpl serviceImpl;
 

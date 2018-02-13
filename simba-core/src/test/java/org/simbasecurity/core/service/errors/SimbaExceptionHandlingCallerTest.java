@@ -40,16 +40,6 @@ public class SimbaExceptionHandlingCallerTest {
     }
 
     @Test
-    public void callWithVoid_UnmappableSimbaMessageKey_RethrowsSimbaException_AndLogs() throws Exception {
-        assertThatThrownBy(() -> caller.call(this::voidUnmappableExceptionThrower))
-            .isInstanceOf(SimbaException.class);
-
-        assertThat(TestLoggerFactory.getLoggingEvents())
-                .extracting(LoggingEvent::getLevel, LoggingEvent::getMessage)
-                .contains(Tuple.tuple(ERROR, "LANGUAGE_EMPTY"));
-    }
-
-    @Test
     public void callWithVoid_NoException_DoesNotThrowAnything_AndLogsNothing() throws Exception {
         caller.call(this::voidMethod);
 
@@ -65,16 +55,6 @@ public class SimbaExceptionHandlingCallerTest {
         assertThat(TestLoggerFactory.getLoggingEvents())
                 .extracting(LoggingEvent::getLevel, LoggingEvent::getMessage)
                 .contains(Tuple.tuple(ERROR, "EMAIL_ADDRESS_REQUIRED"));
-    }
-
-    @Test
-    public void callWithReturn_UnmappableSimbaMessageKey_RethrowsSimbaException_AndLogs() throws Exception {
-        assertThatThrownBy(() -> caller.call(this::returnTypeUnmappableExceptionThrower))
-            .isInstanceOf(SimbaException.class);
-
-        assertThat(TestLoggerFactory.getLoggingEvents())
-                .extracting(LoggingEvent::getLevel, LoggingEvent::getMessage)
-                .contains(Tuple.tuple(ERROR, "LANGUAGE_EMPTY"));
     }
 
     @Test
@@ -99,10 +79,6 @@ public class SimbaExceptionHandlingCallerTest {
 
     private String returnTypeMappableExceptionThrower() {
         throw new SimbaException(SimbaMessageKey.EMAIL_ADDRESS_REQUIRED);
-    }
-
-    private String returnTypeUnmappableExceptionThrower() {
-        throw new SimbaException(SimbaMessageKey.LANGUAGE_EMPTY);
     }
 
     private String returnTypeMethod() {

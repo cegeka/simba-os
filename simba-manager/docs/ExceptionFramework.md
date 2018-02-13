@@ -1,4 +1,13 @@
 # SimbaManagerException framework
+* **Old situation**: In the backend while creating or updating a user, we do a few validations. If one of the validations fail, we throw a SimbaException. 
+    Which is visible in the server log. In the frontend we just check if something went wrong and if so, we throw general error which says f.e. something went wrong during the update of the data.
+   *The problem is that its unclear to a user, what exactly went wrong.*
+* **New situation**: The validation still happens, but now we throw the error to the frontend. (see image below)
+
+## Error message flow
+
+![Error message flow](ErrorMessagesSimba.jpg)
+
 ## Glossary
 
 `SimbaExceptionThriftHandler`: maps SimbaExceptions to TSimbaErrors with correct errorkeys values.

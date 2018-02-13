@@ -52,7 +52,7 @@ import static org.simbasecurity.core.domain.user.EmailAddress.email;
 import static org.simbasecurity.core.domain.user.EmailAddress.nullSafeAsString;
 import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS_WITH_EMAIL;
 
-@Transactional
+@Transactional(rollbackFor = TException.class)
 @Service("userService")
 public class UserServiceImpl implements UserService, org.simbasecurity.api.service.thrift.UserService.Iface {
 

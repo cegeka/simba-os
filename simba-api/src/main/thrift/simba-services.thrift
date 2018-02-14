@@ -339,10 +339,10 @@ exception TSimbaError {
 }
 
 service UserService {
-    void addRoles(1: TUser user, 2: set<TRole> roles);
+    void addRoles(1: TUser user, 2: set<TRole> roles) throws (1: TSimbaError simbaError);
     TUser create(1: TUser user) throws (1: TSimbaError simbaError);
-    TUser createWithRoles(1: TUser user, 2: list<string> roleNames);
-    TUser cloneUser(1: TUser user, 2: string clonedUsername);
+    TUser createWithRoles(1: TUser user, 2: list<string> roleNames) throws (1: TSimbaError simbaError);
+    TUser cloneUser(1: TUser user, 2: string clonedUsername) throws (1: TSimbaError simbaError);
 
     /**
      * @return the generated password
@@ -356,7 +356,7 @@ service UserService {
     list<TRole> findRolesNotLinked(1: TUser user);
     TUser refresh(1: TUser user);
 
-    void removeRole(1: TUser user, 2: TRole role);
+    void removeRole(1: TUser user, 2: TRole role)throws (1: TSimbaError simbaError);
     TUser resetPassword(1: TUser user);
     list<TUser> search(1: string searchText);
     TUser update(1: TUser user) throws (1: TSimbaError simbaError);

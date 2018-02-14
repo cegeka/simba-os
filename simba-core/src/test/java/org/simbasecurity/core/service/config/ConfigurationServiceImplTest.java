@@ -24,12 +24,12 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.simbasecurity.common.event.SimbaEventType;
 import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.config.ConfigurationStore;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.StoreType;
 import org.simbasecurity.core.event.EventService;
-import org.simbasecurity.core.event.SimbaEventType;
 import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
 
 import java.util.Arrays;
@@ -66,7 +66,7 @@ public class ConfigurationServiceImplTest {
 
     @Before
     public void setup() {
-        EnumMap<StoreType, ConfigurationStore> stores = new EnumMap<StoreType, ConfigurationStore>(StoreType.class);
+        EnumMap<StoreType, ConfigurationStore> stores = new EnumMap<>(StoreType.class);
         stores.put(StoreType.DATABASE, databaseStore);
         stores.put(StoreType.QUARTZ, quartzStore);
 

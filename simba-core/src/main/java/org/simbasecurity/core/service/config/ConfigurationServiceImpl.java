@@ -17,12 +17,16 @@
 package org.simbasecurity.core.service.config;
 
 import org.apache.thrift.TException;
+import org.simbasecurity.common.event.SimbaEvent;
+import org.simbasecurity.common.event.SimbaEventListener;
+import org.simbasecurity.common.event.SimbaEventType;
 import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.config.ConfigurationParameter;
 import org.simbasecurity.core.config.ConfigurationStore;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.StoreType;
-import org.simbasecurity.core.event.*;
+import org.simbasecurity.core.event.EventService;
+import org.simbasecurity.core.event.Pair;
 import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +42,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.simbasecurity.common.event.SimbaEventType.CONFIG_PARAM_CHANGED;
 import static org.simbasecurity.common.util.StringUtil.join;
-import static org.simbasecurity.core.event.SimbaEventType.CONFIG_PARAM_CHANGED;
 
 @Transactional
 @Service("configurationService")
@@ -92,55 +96,43 @@ public class ConfigurationServiceImpl implements CoreConfigurationService, Simba
 
     @Override
     public String getValue(String parameterName) throws TException {
-        return simbaExceptionHandlingCaller.call(() -> {
-            return findConfigurationParameter(parameterName).map(p -> p.convertToString(getValue(p)))
-                    .orElse(null);
-        });
+        return simbaExceptionHandlingCaller.call(() -> findConfigurationParameter(parameterName).map(p -> p.convertToString(getValue(p)))
+                .orElse(null));
     }
 
     @Override
     public List<String> getListValue(String parameterName) throws TException {
-        return simbaExceptionHandlingCaller.call(() -> {
-            return findConfigurationParameter(parameterName).map(p -> ((List<?>) getValue(p)).stream()
-                    .map(p::convertToString)
-                    .collect(Collectors.toList()))
-                    .orElse(null);
-        });
+        return simbaExceptionHandlingCaller.call(() -> findConfigurationParameter(parameterName).map(p -> ((List<?>) getValue(p)).stream()
+                .map(p::convertToString)
+                .collect(Collectors.toList()))
+                .orElse(null));
     }
 
     @Override
     public void changeParameter(String parameterName, String value) throws TException {
-        simbaExceptionHandlingCaller.call(() -> {
-            findConfigurationParameter(parameterName).ifPresent(p -> changeParameter(p, p.convertToType(value)));
-        });
+        simbaExceptionHandlingCaller.call(() -> findConfigurationParameter(parameterName).ifPresent(p -> changeParameter(p, p.convertToType(value))));
     }
 
     @Override
     public void changeListParameter(String parameterName, List<String> values) throws TException {
-        simbaExceptionHandlingCaller.call(() -> {
-            findConfigurationParameter(parameterName).ifPresent(
-                    p -> changeParameter(p, values.stream().map(p::convertToType).collect(Collectors.toList())));
-        });
+        simbaExceptionHandlingCaller.call(() -> findConfigurationParameter(parameterName).ifPresent(
+                p -> changeParameter(p, values.stream().map(p::convertToType).collect(Collectors.toList()))));
     }
 
     @Override
     public List<String> getUniqueParameters() throws TException {
-        return simbaExceptionHandlingCaller.call(() -> {
-            return configurationParameters.stream()
-                    .filter(isUnique)
-                    .map(ConfigurationParameter::getName)
-                    .collect(Collectors.toList());
-        });
+        return simbaExceptionHandlingCaller.call(() -> configurationParameters.stream()
+                .filter(isUnique)
+                .map(ConfigurationParameter::getName)
+                .collect(Collectors.toList()));
     }
 
     @Override
     public List<String> getListParameters() throws TException {
-        return simbaExceptionHandlingCaller.call(() -> {
-            return configurationParameters.stream()
-                    .filter(isUnique.negate())
-                    .map(ConfigurationParameter::getName)
-                    .collect(Collectors.toList());
-        });
+        return simbaExceptionHandlingCaller.call(() -> configurationParameters.stream()
+                .filter(isUnique.negate())
+                .map(ConfigurationParameter::getName)
+                .collect(Collectors.toList()));
     }
 
     @Override

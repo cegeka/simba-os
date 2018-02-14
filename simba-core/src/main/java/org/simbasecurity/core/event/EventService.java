@@ -16,26 +16,21 @@
  */
 package org.simbasecurity.core.event;
 
-import java.util.EnumMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageListener;
-import javax.jms.ObjectMessage;
-import javax.jms.Session;
-import javax.jms.Topic;
-
+import org.simbasecurity.common.event.SimbaEvent;
+import org.simbasecurity.common.event.SimbaEventListener;
+import org.simbasecurity.common.event.SimbaEventType;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import javax.jms.*;
+import java.util.EnumMap;
+import java.util.LinkedList;
+import java.util.List;
 
 @Service
 public class EventService implements MessageListener, BeanPostProcessor {
@@ -52,7 +47,7 @@ public class EventService implements MessageListener, BeanPostProcessor {
         jmsTemplate = new JmsTemplate(connectionFactory);
     }
 
-    private EnumMap<SimbaEventType, List<SimbaEventListener>> registeredListeners = new EnumMap<SimbaEventType, List<SimbaEventListener>>(
+    private EnumMap<SimbaEventType, List<SimbaEventListener>> registeredListeners = new EnumMap<>(
             SimbaEventType.class);
 
     public void publish(final SimbaEventType eventType) {
@@ -68,13 +63,10 @@ public class EventService implements MessageListener, BeanPostProcessor {
     }
 
     private void publish(final SimbaEvent simbaEvent) {
-        jmsTemplate.send(this.topic, new MessageCreator() {
-            @Override
-            public Message createMessage(Session session) throws JMSException {
-                ObjectMessage message = session.createObjectMessage();
-                message.setObject(simbaEvent);
-                return message;
-            }
+        jmsTemplate.send(this.topic, session -> {
+            ObjectMessage message = session.createObjectMessage();
+            message.setObject(simbaEvent);
+            return message;
         });
     }
 
@@ -103,11 +95,7 @@ public class EventService implements MessageListener, BeanPostProcessor {
             SimbaEventListener listener = (SimbaEventListener) bean;
 
             for (SimbaEventType eventType : listener.getTypesOfInterest()) {
-                List<SimbaEventListener> list = registeredListeners.get(eventType);
-                if (list == null) {
-                    list = new LinkedList<SimbaEventListener>();
-                    registeredListeners.put(eventType, list);
-                }
+                List<SimbaEventListener> list = registeredListeners.computeIfAbsent(eventType, k -> new LinkedList<>());
                 list.add(listener);
                 LOG.debug("{} registered interest in events of type '{}'", beanName, eventType);
             }

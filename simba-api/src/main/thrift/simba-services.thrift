@@ -339,15 +339,15 @@ exception TSimbaError {
 }
 
 service UserService {
-    void addRoles(1: TUser user, 2: set<TRole> roles);
+    void addRoles(1: TUser user, 2: set<TRole> roles) throws (1: TSimbaError simbaError);
     TUser create(1: TUser user) throws (1: TSimbaError simbaError);
-    TUser createWithRoles(1: TUser user, 2: list<string> roleNames);
-    TUser cloneUser(1: TUser user, 2: string clonedUsername);
+    TUser createWithRoles(1: TUser user, 2: list<string> roleNames) throws (1: TSimbaError simbaError);
+    TUser cloneUser(1: TUser user, 2: string clonedUsername) throws (1: TSimbaError simbaError);
 
     /**
      * @return the generated password
      */
-    string createRestUser(1: string username);
+    string createRestUser(1: string username) throws (1: TSimbaError simbaError);
     list<TUser> findByRole(1: TRole role);
     list<TUser> findAll();
     list<TGroup> findGroups(1: TUser user);
@@ -356,7 +356,7 @@ service UserService {
     list<TRole> findRolesNotLinked(1: TUser user);
     TUser refresh(1: TUser user);
 
-    void removeRole(1: TUser user, 2: TRole role);
+    void removeRole(1: TUser user, 2: TRole role)throws (1: TSimbaError simbaError);
     TUser resetPassword(1: TUser user);
     list<TUser> search(1: string searchText);
     TUser update(1: TUser user) throws (1: TSimbaError simbaError);
@@ -367,8 +367,8 @@ service GroupService {
     list<TRole> findRoles(1: TGroup group);
     list<TRole> findRolesNotLinked(1: TGroup group);
     list<TUser> findUsers(1: TGroup group);
-    void addRole(1: TGroup group, 2: TRole role);
-    void addRoles(1: TGroup group, 2: list<TRole> roles);
+    void addRole(1: TGroup group, 2: TRole role) throws (1: TSimbaError simbaError);
+    void addRoles(1: TGroup group, 2: list<TRole> roles) throws (1: TSimbaError simbaError);
     void removeRole(1: TGroup group, 2: TRole role);
     TGroup refresh(1: TGroup group);
 }

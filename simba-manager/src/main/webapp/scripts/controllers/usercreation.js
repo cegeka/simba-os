@@ -49,8 +49,8 @@ angular.module('SimbaApp')
                     $user.addRest($scope.user)
                         .success(function (data) {
                             $modalInstance.close({user: $scope.user, roles: $scope.userRoles, password: data});
-                        }).error(function () {
-                            $error.showError('error.create.failed');
+                        }).error(function (data) {
+                            $error.showError(data.errorkey);
                         });
                 } else {
                     $user.add($scope.user)

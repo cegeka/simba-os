@@ -359,7 +359,7 @@ service UserService {
     void removeRole(1: TUser user, 2: TRole role);
     TUser resetPassword(1: TUser user);
     list<TUser> search(1: string searchText);
-    TUser update(1: TUser user);
+    TUser update(1: TUser user) throws (1: TSimbaError simbaError);
 }
 
 service GroupService {

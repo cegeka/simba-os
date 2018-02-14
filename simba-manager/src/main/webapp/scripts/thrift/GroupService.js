@@ -570,6 +570,16 @@ GroupService_addRole_args.prototype.write = function(output) {
 };
 
 GroupService_addRole_result = function(args) {
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
+  if (args) {
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
+    }
+  }
 };
 GroupService_addRole_result.prototype = {};
 GroupService_addRole_result.prototype.read = function(input) {
@@ -583,7 +593,22 @@ GroupService_addRole_result.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -592,6 +617,11 @@ GroupService_addRole_result.prototype.read = function(input) {
 
 GroupService_addRole_result.prototype.write = function(output) {
   output.writeStructBegin('GroupService_addRole_result');
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -688,6 +718,16 @@ GroupService_addRoles_args.prototype.write = function(output) {
 };
 
 GroupService_addRoles_result = function(args) {
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
+  if (args) {
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
+    }
+  }
 };
 GroupService_addRoles_result.prototype = {};
 GroupService_addRoles_result.prototype.read = function(input) {
@@ -701,7 +741,22 @@ GroupService_addRoles_result.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -710,6 +765,11 @@ GroupService_addRoles_result.prototype.read = function(input) {
 
 GroupService_addRoles_result.prototype.write = function(output) {
   output.writeStructBegin('GroupService_addRoles_result');
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -1165,6 +1225,9 @@ GroupServiceClient.prototype.recv_addRole = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   return;
 };
 GroupServiceClient.prototype.addRoles = function(group, roles, callback) {
@@ -1212,6 +1275,9 @@ GroupServiceClient.prototype.recv_addRoles = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   return;
 };
 GroupServiceClient.prototype.removeRole = function(group, role, callback) {

@@ -367,8 +367,8 @@ service GroupService {
     list<TRole> findRoles(1: TGroup group);
     list<TRole> findRolesNotLinked(1: TGroup group);
     list<TUser> findUsers(1: TGroup group);
-    void addRole(1: TGroup group, 2: TRole role);
-    void addRoles(1: TGroup group, 2: list<TRole> roles);
+    void addRole(1: TGroup group, 2: TRole role) throws (1: TSimbaError simbaError);
+    void addRoles(1: TGroup group, 2: list<TRole> roles) throws (1: TSimbaError simbaError);
     void removeRole(1: TGroup group, 2: TRole role);
     TGroup refresh(1: TGroup group);
 }

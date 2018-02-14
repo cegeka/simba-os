@@ -347,7 +347,7 @@ service UserService {
     /**
      * @return the generated password
      */
-    string createRestUser(1: string username);
+    string createRestUser(1: string username) throws (1: TSimbaError simbaError);
     list<TUser> findByRole(1: TRole role);
     list<TUser> findAll();
     list<TGroup> findGroups(1: TUser user);

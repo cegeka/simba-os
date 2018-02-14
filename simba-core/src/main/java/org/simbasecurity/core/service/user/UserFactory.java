@@ -15,6 +15,7 @@ import org.simbasecurity.core.service.communication.reset.password.ResetPassword
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +25,7 @@ import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXIS
 import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS_WITH_EMAIL;
 
 @Service
+@Transactional
 public class UserFactory {
 
     @Autowired

@@ -104,7 +104,7 @@ angular.module('SimbaApp')
                             $scope.initRoles();
                             refreshSelectedUser();
                         })
-                        .error($error.handlerWithDefault('error.loading.data'));
+                        .error($error.handlerWithDefault('error.adding.rol'));
                 }, function () {
                     $log.info('Modal dismissed at: ' + new Date());
                 });
@@ -120,7 +120,7 @@ angular.module('SimbaApp')
             $scope.initRoles();
             refreshSelectedUser();
         })
-        .error($error.handlerWithDefault('error.loading.data'));
+        .error($error.handlerWithDefault('error.remove.rol'));
     };
 
     var getTabs = function() {

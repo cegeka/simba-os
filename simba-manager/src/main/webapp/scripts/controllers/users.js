@@ -131,13 +131,9 @@ angular.module('SimbaApp')
                             $scope.users.push(data);
                             $scope.viewUsers.push(data);
                             $user.addRoles(data, addUserResult.roles)
-                                .catch(function () {
-                                    $error.showError('error.adding.rol');
-                                });
+                                .catch($error.handlerWithDefault('error.adding.rol'));
                         })
-                        .error(function () {
-                            $error.showError('error.create.failed');
-                        });
+                        .error($error.handlerWithDefault('error.create.failed'));
                 });
             });
         };

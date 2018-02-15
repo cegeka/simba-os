@@ -18,6 +18,7 @@
 angular.module('SimbaApp')
     .factory('$error', function() {
         var error = {message:'', visible:false};
+        var self = this;
         return {
             getError: function() {
                 return error;
@@ -28,6 +29,11 @@ angular.module('SimbaApp')
             },
             hideError: function() {
                 error.visible=false;
+            },
+            handlerWithDefault: function(defaultErrorKey) {
+                return function (data) {
+                    (data && data.errorkey) ? self.showError(data.errorkey) : self.showError(defaultErrorKey);
+                };
             }
         };
     });

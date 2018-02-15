@@ -67,9 +67,7 @@ angular.module('SimbaApp')
           .success(function(data) {
               $scope.userGroups = data;
           })
-          .error(function() {
-              $error.showError('error.loading.data');
-          });
+          .error($error.handlerWithDefault('error.loading.data'));
       $scope.showEditButtons=false;
     };
 

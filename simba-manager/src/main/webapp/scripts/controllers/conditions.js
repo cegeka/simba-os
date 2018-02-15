@@ -112,9 +112,7 @@ angular.module('SimbaApp')
                                     modal.result.then(function () {
                                         $conditions.addOrUpdate(newCondition).then(function (condition) {
                                             $scope.conditions.push(condition.data);
-                                        }).catch(function () {
-                                            $error.showError('error.update.failed');
-                                        });
+                                        }).catch($error.handlerWithDefault('error.update.failed'));
                                     });
                                 });
                             });

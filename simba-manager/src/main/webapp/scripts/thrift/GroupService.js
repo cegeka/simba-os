@@ -37,9 +37,17 @@ GroupService_findAll_args.prototype.write = function(output) {
 
 GroupService_findAll_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TGroup]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -78,9 +86,14 @@ GroupService_findAll_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -104,6 +117,11 @@ GroupService_findAll_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -167,9 +185,17 @@ GroupService_findRoles_args.prototype.write = function(output) {
 
 GroupService_findRoles_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TRole]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -208,9 +234,14 @@ GroupService_findRoles_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -234,6 +265,11 @@ GroupService_findRoles_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -297,9 +333,17 @@ GroupService_findRolesNotLinked_args.prototype.write = function(output) {
 
 GroupService_findRolesNotLinked_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TRole]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -338,9 +382,14 @@ GroupService_findRolesNotLinked_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -364,6 +413,11 @@ GroupService_findRolesNotLinked_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -427,9 +481,17 @@ GroupService_findUsers_args.prototype.write = function(output) {
 
 GroupService_findUsers_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TUser]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -468,9 +530,14 @@ GroupService_findUsers_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -494,6 +561,11 @@ GroupService_findUsers_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -844,6 +916,16 @@ GroupService_removeRole_args.prototype.write = function(output) {
 };
 
 GroupService_removeRole_result = function(args) {
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
+  if (args) {
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
+    }
+  }
 };
 GroupService_removeRole_result.prototype = {};
 GroupService_removeRole_result.prototype.read = function(input) {
@@ -857,7 +939,22 @@ GroupService_removeRole_result.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -866,6 +963,11 @@ GroupService_removeRole_result.prototype.read = function(input) {
 
 GroupService_removeRole_result.prototype.write = function(output) {
   output.writeStructBegin('GroupService_removeRole_result');
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -927,9 +1029,17 @@ GroupService_refresh_args.prototype.write = function(output) {
 
 GroupService_refresh_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = new TGroup(args.success);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -955,9 +1065,14 @@ GroupService_refresh_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -972,6 +1087,11 @@ GroupService_refresh_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1028,6 +1148,9 @@ GroupServiceClient.prototype.recv_findAll = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1077,6 +1200,9 @@ GroupServiceClient.prototype.recv_findRoles = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1126,6 +1252,9 @@ GroupServiceClient.prototype.recv_findRolesNotLinked = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1175,6 +1304,9 @@ GroupServiceClient.prototype.recv_findUsers = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1325,6 +1457,9 @@ GroupServiceClient.prototype.recv_removeRole = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   return;
 };
 GroupServiceClient.prototype.refresh = function(group, callback) {
@@ -1371,6 +1506,9 @@ GroupServiceClient.prototype.recv_refresh = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }

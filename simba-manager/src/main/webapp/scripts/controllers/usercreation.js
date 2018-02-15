@@ -125,7 +125,7 @@ angular.module('SimbaApp')
                             updateUserPolicies();
                         });
                     })
-                    .error($error.handlerWithDefault('error.error.adding.rol'));
+                    .catch($error.handlerWithDefault('error.error.adding.rol'));
             };
 
             var updateUserPolicies = function () {

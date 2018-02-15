@@ -55,8 +55,8 @@ angular.module('SimbaApp')
        $scope.changeParameter = function(parameter) {
             $configuration.changeListParameter(parameter,
                 function () {},
-                function(){
-                    $error.showError('error.update.failed');
+                function (data) {
+                    (data && data.errorkey) ? $error.showError(data.errorkey) : $error.showError('error.update.failed');
                     $scope.init();
                 });
        };

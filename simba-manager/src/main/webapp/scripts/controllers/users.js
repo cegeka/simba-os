@@ -94,9 +94,7 @@ angular.module('SimbaApp')
                         $scope.users[i] = data;
                         $scope.viewUsers[i] = data;
                     })
-                    .error(function () {
-                        $error.showError('error.refresh.failed');
-                    });
+                    .error($error.handlerWithDefault('error.refresh.failed'));
             });
         };
 

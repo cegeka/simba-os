@@ -61,12 +61,10 @@ angular.module('SimbaApp')
                             });
                             refreshSelectedPolicy();
                         })
-                        .error(function(){
-                            $error.showError('error.adding.rol');
-                        });}, function () {
+                        .error($error.handlerWithDefault('error.adding.rol'));
+                }, function () {
                     $log.info('Modal dismissed at: ' + new Date());
                 });
-
             });
     };
 
@@ -88,9 +86,8 @@ angular.module('SimbaApp')
                               });
                               refreshSelectedPolicy();
                           })
-                          .error(function(){
-                              $error.showError('error.update.failed');
-                          });}, function () {
+                          .error($error.handlerWithDefault('error.update.failed'));
+                  }, function () {
                       $log.info('Modal dismissed at: ' + new Date());
                   });
 
@@ -112,9 +109,7 @@ angular.module('SimbaApp')
             });
             refreshSelectedPolicy();
         })
-        .error(function() {
-            $error.showError('error.remove.rol');
-        });
+        .error($error.handlerWithDefault('error.remove.rol'));
     }
 
     $scope.deleteRuleFromPolicy = function(rule) {
@@ -124,9 +119,7 @@ angular.module('SimbaApp')
           });
           refreshSelectedPolicy()
         })
-        .error(function() {
-          $error.showError('error.update.failed');
-        });
+        .error($error.handlerWithDefault('error.update.failed'));
     }
 
     $scope.deletePolicy = function(policy) {
@@ -136,9 +129,7 @@ angular.module('SimbaApp')
             $scope.init();
             refreshSelectedPolicy();
         })
-        .error(function() {
-            $error.showError('error.remove.policy');
-        });
+        .error($error.handlerWithDefault('error.remove.policy'));
     };
 
     $scope.createPolicy = function() {
@@ -149,9 +140,7 @@ angular.module('SimbaApp')
                         $scope.init();
                         refreshSelectedPolicy();
                     })
-                    .error(function() {
-                        $error.showError('error.create.failed');
-                    });
+                    .error($error.handlerWithDefault('error.create.failed'));
         }, function () {
             $log.info('Modal dismissed at: ' + new Date());
         });

@@ -37,9 +37,17 @@ PolicyService_findAll_args.prototype.write = function(output) {
 
 PolicyService_findAll_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TPolicy]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -78,9 +86,14 @@ PolicyService_findAll_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -104,6 +117,11 @@ PolicyService_findAll_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -167,9 +185,17 @@ PolicyService_findRoles_args.prototype.write = function(output) {
 
 PolicyService_findRoles_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TRole]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -208,9 +234,14 @@ PolicyService_findRoles_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -234,6 +265,11 @@ PolicyService_findRoles_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -297,9 +333,17 @@ PolicyService_findRolesNotLinked_args.prototype.write = function(output) {
 
 PolicyService_findRolesNotLinked_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TRole]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -338,9 +382,14 @@ PolicyService_findRolesNotLinked_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -364,6 +413,11 @@ PolicyService_findRolesNotLinked_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -462,6 +516,16 @@ PolicyService_addRoles_args.prototype.write = function(output) {
 };
 
 PolicyService_addRoles_result = function(args) {
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
+  if (args) {
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
+    }
+  }
 };
 PolicyService_addRoles_result.prototype = {};
 PolicyService_addRoles_result.prototype.read = function(input) {
@@ -475,7 +539,22 @@ PolicyService_addRoles_result.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -484,6 +563,11 @@ PolicyService_addRoles_result.prototype.read = function(input) {
 
 PolicyService_addRoles_result.prototype.write = function(output) {
   output.writeStructBegin('PolicyService_addRoles_result');
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -558,6 +642,16 @@ PolicyService_removeRole_args.prototype.write = function(output) {
 };
 
 PolicyService_removeRole_result = function(args) {
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
+  if (args) {
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
+    }
+  }
 };
 PolicyService_removeRole_result.prototype = {};
 PolicyService_removeRole_result.prototype.read = function(input) {
@@ -571,7 +665,22 @@ PolicyService_removeRole_result.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -580,6 +689,11 @@ PolicyService_removeRole_result.prototype.read = function(input) {
 
 PolicyService_removeRole_result.prototype.write = function(output) {
   output.writeStructBegin('PolicyService_removeRole_result');
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -676,6 +790,16 @@ PolicyService_addRules_args.prototype.write = function(output) {
 };
 
 PolicyService_addRules_result = function(args) {
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
+  if (args) {
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
+    }
+  }
 };
 PolicyService_addRules_result.prototype = {};
 PolicyService_addRules_result.prototype.read = function(input) {
@@ -689,7 +813,22 @@ PolicyService_addRules_result.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -698,6 +837,11 @@ PolicyService_addRules_result.prototype.read = function(input) {
 
 PolicyService_addRules_result.prototype.write = function(output) {
   output.writeStructBegin('PolicyService_addRules_result');
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -759,9 +903,17 @@ PolicyService_findRules_args.prototype.write = function(output) {
 
 PolicyService_findRules_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TRule]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -800,9 +952,14 @@ PolicyService_findRules_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -826,6 +983,11 @@ PolicyService_findRules_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -889,9 +1051,17 @@ PolicyService_findRulesNotLinked_args.prototype.write = function(output) {
 
 PolicyService_findRulesNotLinked_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TRule]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -930,9 +1100,14 @@ PolicyService_findRulesNotLinked_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -956,6 +1131,11 @@ PolicyService_findRulesNotLinked_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1032,6 +1212,16 @@ PolicyService_removeRule_args.prototype.write = function(output) {
 };
 
 PolicyService_removeRule_result = function(args) {
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
+  if (args) {
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
+    }
+  }
 };
 PolicyService_removeRule_result.prototype = {};
 PolicyService_removeRule_result.prototype.read = function(input) {
@@ -1045,7 +1235,22 @@ PolicyService_removeRule_result.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -1054,6 +1259,11 @@ PolicyService_removeRule_result.prototype.read = function(input) {
 
 PolicyService_removeRule_result.prototype.write = function(output) {
   output.writeStructBegin('PolicyService_removeRule_result');
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -1115,9 +1325,17 @@ PolicyService_refresh_args.prototype.write = function(output) {
 
 PolicyService_refresh_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = new TPolicy(args.success);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -1143,9 +1361,14 @@ PolicyService_refresh_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1160,6 +1383,11 @@ PolicyService_refresh_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1222,9 +1450,17 @@ PolicyService_createPolicy_args.prototype.write = function(output) {
 
 PolicyService_createPolicy_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = new TPolicy(args.success);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -1250,9 +1486,14 @@ PolicyService_createPolicy_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1267,6 +1508,11 @@ PolicyService_createPolicy_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1329,6 +1575,16 @@ PolicyService_deletePolicy_args.prototype.write = function(output) {
 };
 
 PolicyService_deletePolicy_result = function(args) {
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
+  if (args) {
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
+    }
+  }
 };
 PolicyService_deletePolicy_result.prototype = {};
 PolicyService_deletePolicy_result.prototype.read = function(input) {
@@ -1342,7 +1598,22 @@ PolicyService_deletePolicy_result.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -1351,6 +1622,11 @@ PolicyService_deletePolicy_result.prototype.read = function(input) {
 
 PolicyService_deletePolicy_result.prototype.write = function(output) {
   output.writeStructBegin('PolicyService_deletePolicy_result');
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -1405,6 +1681,9 @@ PolicyServiceClient.prototype.recv_findAll = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1454,6 +1733,9 @@ PolicyServiceClient.prototype.recv_findRoles = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1503,6 +1785,9 @@ PolicyServiceClient.prototype.recv_findRolesNotLinked = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1553,6 +1838,9 @@ PolicyServiceClient.prototype.recv_addRoles = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   return;
 };
 PolicyServiceClient.prototype.removeRole = function(policy, role, callback) {
@@ -1600,6 +1888,9 @@ PolicyServiceClient.prototype.recv_removeRole = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   return;
 };
 PolicyServiceClient.prototype.addRules = function(policy, rules, callback) {
@@ -1647,6 +1938,9 @@ PolicyServiceClient.prototype.recv_addRules = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   return;
 };
 PolicyServiceClient.prototype.findRules = function(policy, callback) {
@@ -1693,6 +1987,9 @@ PolicyServiceClient.prototype.recv_findRules = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1742,6 +2039,9 @@ PolicyServiceClient.prototype.recv_findRulesNotLinked = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1792,6 +2092,9 @@ PolicyServiceClient.prototype.recv_removeRule = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   return;
 };
 PolicyServiceClient.prototype.refresh = function(policy, callback) {
@@ -1838,6 +2141,9 @@ PolicyServiceClient.prototype.recv_refresh = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1887,6 +2193,9 @@ PolicyServiceClient.prototype.recv_createPolicy = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1936,5 +2245,8 @@ PolicyServiceClient.prototype.recv_deletePolicy = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   return;
 };

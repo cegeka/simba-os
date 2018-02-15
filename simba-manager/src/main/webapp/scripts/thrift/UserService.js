@@ -761,9 +761,17 @@ UserService_findByRole_args.prototype.write = function(output) {
 
 UserService_findByRole_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TUser]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -802,9 +810,14 @@ UserService_findByRole_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -828,6 +841,11 @@ UserService_findByRole_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -865,9 +883,17 @@ UserService_findAll_args.prototype.write = function(output) {
 
 UserService_findAll_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TUser]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -906,9 +932,14 @@ UserService_findAll_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -932,6 +963,11 @@ UserService_findAll_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -995,9 +1031,17 @@ UserService_findGroups_args.prototype.write = function(output) {
 
 UserService_findGroups_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TGroup]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -1036,9 +1080,14 @@ UserService_findGroups_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1062,6 +1111,11 @@ UserService_findGroups_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1125,9 +1179,17 @@ UserService_findPolicies_args.prototype.write = function(output) {
 
 UserService_findPolicies_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TPolicy]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -1166,9 +1228,14 @@ UserService_findPolicies_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1192,6 +1259,11 @@ UserService_findPolicies_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1255,9 +1327,17 @@ UserService_findRoles_args.prototype.write = function(output) {
 
 UserService_findRoles_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TRole]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -1296,9 +1376,14 @@ UserService_findRoles_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1322,6 +1407,11 @@ UserService_findRoles_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1385,9 +1475,17 @@ UserService_findRolesNotLinked_args.prototype.write = function(output) {
 
 UserService_findRolesNotLinked_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TRole]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -1426,9 +1524,14 @@ UserService_findRolesNotLinked_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1452,6 +1555,11 @@ UserService_findRolesNotLinked_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1515,9 +1623,17 @@ UserService_refresh_args.prototype.write = function(output) {
 
 UserService_refresh_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = new TUser(args.success);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -1543,9 +1659,14 @@ UserService_refresh_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1560,6 +1681,11 @@ UserService_refresh_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1749,9 +1875,17 @@ UserService_resetPassword_args.prototype.write = function(output) {
 
 UserService_resetPassword_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = new TUser(args.success);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -1777,9 +1911,14 @@ UserService_resetPassword_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1794,6 +1933,11 @@ UserService_resetPassword_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1856,9 +2000,17 @@ UserService_search_args.prototype.write = function(output) {
 
 UserService_search_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TUser]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -1897,9 +2049,14 @@ UserService_search_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1923,6 +2080,11 @@ UserService_search_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -2366,6 +2528,9 @@ UserServiceClient.prototype.recv_findByRole = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -2414,6 +2579,9 @@ UserServiceClient.prototype.recv_findAll = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -2463,6 +2631,9 @@ UserServiceClient.prototype.recv_findGroups = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -2512,6 +2683,9 @@ UserServiceClient.prototype.recv_findPolicies = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -2561,6 +2735,9 @@ UserServiceClient.prototype.recv_findRoles = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -2610,6 +2787,9 @@ UserServiceClient.prototype.recv_findRolesNotLinked = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -2659,6 +2839,9 @@ UserServiceClient.prototype.recv_refresh = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -2758,6 +2941,9 @@ UserServiceClient.prototype.recv_resetPassword = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -2807,6 +2993,9 @@ UserServiceClient.prototype.recv_search = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }

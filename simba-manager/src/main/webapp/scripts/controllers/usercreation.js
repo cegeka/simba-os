@@ -59,9 +59,7 @@ angular.module('SimbaApp')
                                 .success(function () {
                                     $modalInstance.close($scope.user);
                                 })
-                                .catch(function () {
-                                    $error.showError('error.adding.rol');
-                                });
+                                .catch($error.handlerWithDefault('error.adding.rol'));
                         })
                         .error(function (data) {
                             $error.showError(data.errorkey);
@@ -131,9 +129,7 @@ angular.module('SimbaApp')
                             updateUserPolicies();
                         });
                     })
-                    .catch(function() {
-                        $error.showError('error.loading.data');
-                    });
+                    .catch($error.handlerWithDefault('error.loading.data'));
             };
 
             var updateUserPolicies = function () {

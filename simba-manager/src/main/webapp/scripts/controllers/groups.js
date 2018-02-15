@@ -70,9 +70,7 @@ angular.module('SimbaApp')
                   });
 
               })
-              .catch(function() {
-                  $error.showError('error.loading.data');
-              });
+              .catch($error.handlerWithDefault('error.loading.data'));
       };
 
     $scope.deleteRoleFromGroup = function(role) {

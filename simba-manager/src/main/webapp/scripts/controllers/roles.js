@@ -68,9 +68,7 @@ angular.module('SimbaApp')
                 });
 
             })
-            .catch(function() {
-                $error.showError('error.loading.data');
-            });
+            .catch($error.handlerWithDefault('error.loading.data'));
     };
 
       $scope.openAddPolicy = function() {
@@ -97,9 +95,7 @@ angular.module('SimbaApp')
                   });
 
               })
-              .catch(function() {
-                  $error.showError('error.loading.data');
-              });
+              .catch($error.handlerWithDefault('error.loading.data'));
       };
 
     $scope.deleteUserFromRole = function(user) {

@@ -49,9 +49,7 @@ angular.module('SimbaApp')
                     $user.addRest($scope.user)
                         .success(function (data) {
                             $modalInstance.close({user: $scope.user, roles: $scope.userRoles, password: data});
-                        }).error(function (data) {
-                            $error.showError(data.errorkey);
-                        });
+                        }).error($error.handlerWithDefault('error.loading.data'));
                 } else {
                     $user.add($scope.user)
                         .success(function (data) {
@@ -59,13 +57,9 @@ angular.module('SimbaApp')
                                 .success(function () {
                                     $modalInstance.close($scope.user);
                                 })
-                                .catch(function () {
-                                    $error.showError('error.adding.rol');
-                                });
+                                .error($error.handlerWithDefault('error.loading.data'));
                         })
-                        .error(function (data) {
-                            $error.showError(data.errorkey);
-                        });
+                        .error($error.handlerWithDefault('error.loading.data'));
                 }
             };
 
@@ -131,9 +125,7 @@ angular.module('SimbaApp')
                             updateUserPolicies();
                         });
                     })
-                    .catch(function() {
-                        $error.showError('error.loading.data');
-                    });
+                    .error($error.handlerWithDefault('error.loading.data'));
             };
 
             var updateUserPolicies = function () {

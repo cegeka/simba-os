@@ -51,11 +51,11 @@ angular.module('SimbaApp')
 
           $group.findRolesNotLinked($scope.selectedGroup)
               .then(function(data) {
-                  var listbox = $simba_component.listbox($translate('addRolesToGroup'), data, "name");
+                  var listbox = $simba_component.listbox($translate.instant('addRolesToGroup'), data, "name");
 
                   listbox.result.then(function (selectedUnlinkedRoles) {
                       $group.addRoles($scope.selectedGroup, selectedUnlinkedRoles)
-                          .success(function(){
+                          .then(function(){
                               $group.findRoles($scope.selectedGroup).then(function(data) {
                                   $scope.roles = data;
                               });
@@ -63,16 +63,13 @@ angular.module('SimbaApp')
                                   $scope.selectedGroup = data;
                               });
                           })
-                          .error(function(){
-                              $error.showError('error.update.failed');
-                          });}, function () {
+                          .catch($error.handlerWithDefault('error.adding.rol'))
+                      ;}, function () {
                       $log.info('Modal dismissed at: ' + new Date());
                   });
 
               })
-              .catch(function() {
-                  $error.showError('error.loading.data');
-              });
+              .catch($error.handlerWithDefault('error.loading.data'));
       };
 
     $scope.deleteRoleFromGroup = function(role) {
@@ -84,9 +81,7 @@ angular.module('SimbaApp')
                 $scope.selectedGroup = data;
             });
         })
-        .error(function() {
-            $error.showError('error.update.failed');
-        });
+        .error($error.handlerWithDefault('error.remove.rol'));
     }
 
   }]);

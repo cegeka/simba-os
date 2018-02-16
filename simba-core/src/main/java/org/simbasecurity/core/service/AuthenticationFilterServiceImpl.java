@@ -26,6 +26,7 @@ import org.simbasecurity.core.chain.ChainContextImpl;
 import org.simbasecurity.core.chain.Command;
 import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,24 +41,27 @@ public class AuthenticationFilterServiceImpl implements AuthenticationFilterServ
     @Autowired private CoreConfigurationService configurationService;
     @Autowired private LoginMappingService loginMapping;
     @Autowired private SSOTokenMappingService ssoTokenMappingService;
+    @Autowired private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller;
 
     @Transactional
     public ActionDescriptor processRequest(RequestData requestData, String chainCommand) throws TException {
-        if (requestData == null) {
-            throw new IllegalArgumentException("Parameter 'requestData' can not be null");
-        }
-        if (chainCommand == null) {
-            throw new IllegalArgumentException("Parameter 'chainCommand' can not be null");
-        }
-        Command chain = locateCommandChain(chainCommand);
-        Session currentSession = getCurrentSession(requestData);
-        ChainContext chainContext = createChainContext(requestData, currentSession);
-        try {
-            chain.execute(chainContext);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return chainContext.getActionDescriptor();
+        return simbaExceptionHandlingCaller.call(() -> {
+            if (requestData == null) {
+                throw new IllegalArgumentException("Parameter 'requestData' can not be null");
+            }
+            if (chainCommand == null) {
+                throw new IllegalArgumentException("Parameter 'chainCommand' can not be null");
+            }
+            Command chain = locateCommandChain(chainCommand);
+            Session currentSession = getCurrentSession(requestData);
+            ChainContext chainContext = createChainContext(requestData, currentSession);
+            try {
+                chain.execute(chainContext);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            return chainContext.getActionDescriptor();
+        });
     }
 
     private Command locateCommandChain(String chainCommand) {

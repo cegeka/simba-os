@@ -183,6 +183,11 @@ struct PolicyDecision {
     2: required i64 expirationTimestamp
 }
 
+exception TSimbaError {
+    1: string errorkey,
+    2: string message;
+}
+
 /**
  * The AuthenticationFilterService is responsible for checking a request for valid authentication
  * data.
@@ -199,7 +204,7 @@ service AuthenticationFilterService {
      *                     Simba server to process the request
      * @return an ActionDescriptor containing the actions the calling service should perform
      */
-    ActionDescriptor processRequest(1: RequestData requestData, 2: string chainCommand);
+    ActionDescriptor processRequest(1: RequestData requestData, 2: string chainCommand) throws (1: TSimbaError simbaError);
 }
 
 /**
@@ -216,7 +221,7 @@ service AuthorizationService {
      *                     'write', 'create' or 'delete'.
      * @return a PolicyDecision containing the result of the request.
      */
-    PolicyDecision isResourceRuleAllowed(1: string username, 2: string resourceName, 3: string operation);
+    PolicyDecision isResourceRuleAllowed(1: string username, 2: string resourceName, 3: string operation) throws (1: TSimbaError simbaError);
 
     /**
      * Check if a user is allowed to perform a specified action on the given URL.
@@ -226,7 +231,7 @@ service AuthorizationService {
      *                  'post', 'head', 'put', 'delete', 'options' or 'trace'.
      * @return a PolicyDecision containing the result of the request.
      */
-    PolicyDecision isURLRuleAllowed(1: string username, 2: string url, 3: string method);
+    PolicyDecision isURLRuleAllowed(1: string username, 2: string url, 3: string method) throws (1: TSimbaError simbaError);
 
     /**
      * Check if a user is included in the specified role.
@@ -234,7 +239,7 @@ service AuthorizationService {
      * @param roleName the name of the role
      * @return a PolicyDecision containing the result of the request.
      */
-    PolicyDecision isUserInRole(1: string username, 2: string roleName)
+    PolicyDecision isUserInRole(1: string username, 2: string roleName) throws (1: TSimbaError simbaError)
 }
 
 /**
@@ -268,19 +273,19 @@ service CacheService {
 
 service ConfigurationService {
 
-    string getValue(1: string parameterName);
+    string getValue(1: string parameterName) throws (1: TSimbaError simbaError);
 
-    list<string> getListValue(1: string parameterName);
+    list<string> getListValue(1: string parameterName) throws (1: TSimbaError simbaError);
 
-    void changeParameter(1: string parameterName, 2: string value);
+    void changeParameter(1: string parameterName, 2: string value) throws (1: TSimbaError simbaError);
 
-    void changeListParameter(1: string parameterName, 2: list<string> values);
+    void changeListParameter(1: string parameterName, 2: list<string> values) throws (1: TSimbaError simbaError);
 
-    list<string> getConfigurationParameters();
+    list<string> getConfigurationParameters() throws (1: TSimbaError simbaError);
 
-    list<string> getUniqueParameters();
+    list<string> getUniqueParameters() throws (1: TSimbaError simbaError);
 
-    list<string> getListParameters();
+    list<string> getListParameters() throws (1: TSimbaError simbaError);
 }
 
 
@@ -327,50 +332,45 @@ struct TGroup {
 }
 
 service SessionService {
-    list<TSession> findAllActive();
-    void remove(1: string ssoToken);
-    void removeAllBut(1: string ssoToken);
-    TUser getUserFor(1: string ssoToken);
-}
-
-exception TSimbaError {
-    1: string errorkey,
-    2: string message;
+    list<TSession> findAllActive() throws (1: TSimbaError simbaError);
+    void remove(1: string ssoToken) throws (1: TSimbaError simbaError);
+    void removeAllBut(1: string ssoToken) throws (1: TSimbaError simbaError);
+    TUser getUserFor(1: string ssoToken) throws (1: TSimbaError simbaError);
 }
 
 service UserService {
-    void addRoles(1: TUser user, 2: set<TRole> roles);
+    void addRoles(1: TUser user, 2: set<TRole> roles) throws (1: TSimbaError simbaError);
     TUser create(1: TUser user) throws (1: TSimbaError simbaError);
-    TUser createWithRoles(1: TUser user, 2: list<string> roleNames);
-    TUser cloneUser(1: TUser user, 2: string clonedUsername);
+    TUser createWithRoles(1: TUser user, 2: list<string> roleNames) throws (1: TSimbaError simbaError);
+    TUser cloneUser(1: TUser user, 2: string clonedUsername) throws (1: TSimbaError simbaError);
 
     /**
      * @return the generated password
      */
-    string createRestUser(1: string username);
-    list<TUser> findByRole(1: TRole role);
-    list<TUser> findAll();
-    list<TGroup> findGroups(1: TUser user);
-    list<TPolicy> findPolicies(1: TUser user);
-    list<TRole> findRoles(1: TUser user);
-    list<TRole> findRolesNotLinked(1: TUser user);
-    TUser refresh(1: TUser user);
+    string createRestUser(1: string username) throws (1: TSimbaError simbaError);
+    list<TUser> findByRole(1: TRole role) throws (1: TSimbaError simbaError);
+    list<TUser> findAll() throws (1: TSimbaError simbaError);
+    list<TGroup> findGroups(1: TUser user) throws (1: TSimbaError simbaError);
+    list<TPolicy> findPolicies(1: TUser user) throws (1: TSimbaError simbaError);
+    list<TRole> findRoles(1: TUser user) throws (1: TSimbaError simbaError);
+    list<TRole> findRolesNotLinked(1: TUser user) throws (1: TSimbaError simbaError);
+    TUser refresh(1: TUser user) throws (1: TSimbaError simbaError);
 
-    void removeRole(1: TUser user, 2: TRole role);
-    TUser resetPassword(1: TUser user);
-    list<TUser> search(1: string searchText);
-    TUser update(1: TUser user);
+    void removeRole(1: TUser user, 2: TRole role)throws (1: TSimbaError simbaError);
+    TUser resetPassword(1: TUser user) throws (1: TSimbaError simbaError);
+    list<TUser> search(1: string searchText) throws (1: TSimbaError simbaError);
+    TUser update(1: TUser user) throws (1: TSimbaError simbaError);
 }
 
 service GroupService {
-    list<TGroup> findAll();
-    list<TRole> findRoles(1: TGroup group);
-    list<TRole> findRolesNotLinked(1: TGroup group);
-    list<TUser> findUsers(1: TGroup group);
-    void addRole(1: TGroup group, 2: TRole role);
-    void addRoles(1: TGroup group, 2: list<TRole> roles);
-    void removeRole(1: TGroup group, 2: TRole role);
-    TGroup refresh(1: TGroup group);
+    list<TGroup> findAll() throws (1: TSimbaError simbaError);
+    list<TRole> findRoles(1: TGroup group) throws (1: TSimbaError simbaError);
+    list<TRole> findRolesNotLinked(1: TGroup group) throws (1: TSimbaError simbaError);
+    list<TUser> findUsers(1: TGroup group) throws (1: TSimbaError simbaError);
+    void addRole(1: TGroup group, 2: TRole role) throws (1: TSimbaError simbaError);
+    void addRoles(1: TGroup group, 2: list<TRole> roles) throws (1: TSimbaError simbaError);
+    void removeRole(1: TGroup group, 2: TRole role) throws (1: TSimbaError simbaError);
+    TGroup refresh(1: TGroup group) throws (1: TSimbaError simbaError);
 }
 
 enum TConditionType {
@@ -393,13 +393,13 @@ struct TCondition {
 }
 
 service ConditionService {
-    list<TCondition> findAll();
-    list<TPolicy> findPolicies(1: TCondition condition);
-    list<TUser> findExemptedUsers(1: TCondition condition);
-    TCondition refresh(TCondition condition);
-    TCondition addOrUpdate(1: TCondition condition, 2: list<TPolicy> policies, 3: list<TUser> excludedUsers);
-    void remove(1: TCondition condition);
-    bool validateTimeCondition(1: TCondition condition);
+    list<TCondition> findAll() throws (1: TSimbaError simbaError);
+    list<TPolicy> findPolicies(1: TCondition condition) throws (1: TSimbaError simbaError);
+    list<TUser> findExemptedUsers(1: TCondition condition) throws (1: TSimbaError simbaError);
+    TCondition refresh(TCondition condition) throws (1: TSimbaError simbaError);
+    TCondition addOrUpdate(1: TCondition condition, 2: list<TPolicy> policies, 3: list<TUser> excludedUsers) throws (1: TSimbaError simbaError);
+    void remove(1: TCondition condition) throws (1: TSimbaError simbaError);
+    bool validateTimeCondition(1: TCondition condition) throws (1: TSimbaError simbaError);
 }
 
 struct TRule {
@@ -410,32 +410,32 @@ struct TRule {
 }
 
 service PolicyService {
-    list<TPolicy> findAll();
-    list<TRole> findRoles(1: TPolicy policy);
-    list<TRole> findRolesNotLinked(1: TPolicy policy);
-    void addRoles(1: TPolicy policy, 2: set<TRole> roles);
-    void removeRole(1: TPolicy policy, 2: TRole role);
-    void addRules(1: TPolicy policy, 2: set<TRule> rules);
-    list<TRule> findRules(1: TPolicy policy);
-    list<TRule> findRulesNotLinked(1: TPolicy policy);
-    void removeRule(1: TPolicy policy, 2: TRule rule);
-    TPolicy refresh(1: TPolicy policy);
-    TPolicy createPolicy(1: string policyName);
-    void deletePolicy(1: TPolicy policy);
+    list<TPolicy> findAll() throws (1: TSimbaError simbaError);
+    list<TRole> findRoles(1: TPolicy policy) throws (1: TSimbaError simbaError);
+    list<TRole> findRolesNotLinked(1: TPolicy policy) throws (1: TSimbaError simbaError);
+    void addRoles(1: TPolicy policy, 2: set<TRole> roles) throws (1: TSimbaError simbaError);
+    void removeRole(1: TPolicy policy, 2: TRole role) throws (1: TSimbaError simbaError);
+    void addRules(1: TPolicy policy, 2: set<TRule> rules) throws (1: TSimbaError simbaError);
+    list<TRule> findRules(1: TPolicy policy) throws (1: TSimbaError simbaError);
+    list<TRule> findRulesNotLinked(1: TPolicy policy) throws (1: TSimbaError simbaError);
+    void removeRule(1: TPolicy policy, 2: TRule rule) throws (1: TSimbaError simbaError);
+    TPolicy refresh(1: TPolicy policy) throws (1: TSimbaError simbaError);
+    TPolicy createPolicy(1: string policyName) throws (1: TSimbaError simbaError);
+    void deletePolicy(1: TPolicy policy) throws (1: TSimbaError simbaError);
 }
 
 service RoleService {
-    list<TRole> findAll();
-    list<TPolicy> findPolicies(1: TRole role);
-    list<TPolicy> findPoliciesNotLinked(1: TRole role);
-    list<TUser> findUsers(1: TRole role);
-    list<TUser> findUsersNotLinked(1: TRole role);
-    void addPolicy(1: TRole role, 2: TPolicy policy);
-    void addPolicies(1: TRole role, 2: list<TPolicy> policies);
-    void removePolicy(1: TRole role, 2: TPolicy policy);
-    void removeUser(1: TUser user, 2: TRole role);
-    void addUsers(1: TRole role, 2: list<TUser> users);
-    TRole refresh(1: TRole role);
-    TRole createRole(1: string roleName);
-    void deleteRole(1: TRole role);
+    list<TRole> findAll() throws (1: TSimbaError simbaError);
+    list<TPolicy> findPolicies(1: TRole role) throws (1: TSimbaError simbaError);
+    list<TPolicy> findPoliciesNotLinked(1: TRole role) throws (1: TSimbaError simbaError);
+    list<TUser> findUsers(1: TRole role) throws (1: TSimbaError simbaError);
+    list<TUser> findUsersNotLinked(1: TRole role) throws (1: TSimbaError simbaError);
+    void addPolicy(1: TRole role, 2: TPolicy policy) throws (1: TSimbaError simbaError);
+    void addPolicies(1: TRole role, 2: list<TPolicy> policies) throws (1: TSimbaError simbaError);
+    void removePolicy(1: TRole role, 2: TPolicy policy) throws (1: TSimbaError simbaError);
+    void removeUser(1: TUser user, 2: TRole role) throws (1: TSimbaError simbaError);
+    void addUsers(1: TRole role, 2: list<TUser> users) throws (1: TSimbaError simbaError);
+    TRole refresh(1: TRole role) throws (1: TSimbaError simbaError);
+    TRole createRole(1: string roleName) throws (1: TSimbaError simbaError);
+    void deleteRole(1: TRole role) throws (1: TSimbaError simbaError);
 }

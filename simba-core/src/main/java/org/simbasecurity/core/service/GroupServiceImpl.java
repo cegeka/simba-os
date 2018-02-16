@@ -16,6 +16,7 @@
  */
 package org.simbasecurity.core.service;
 
+import org.apache.thrift.TException;
 import org.simbasecurity.api.service.thrift.GroupService;
 import org.simbasecurity.api.service.thrift.TGroup;
 import org.simbasecurity.api.service.thrift.TRole;
@@ -25,6 +26,7 @@ import org.simbasecurity.core.domain.Group;
 import org.simbasecurity.core.domain.Role;
 import org.simbasecurity.core.domain.repository.GroupRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
+import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,63 +46,89 @@ public class GroupServiceImpl implements GroupService.Iface {
     private final RoleRepository roleRepository;
     private final ThriftAssembler assembler;
     private final ManagementAudit audit;
+    private final SimbaExceptionHandlingCaller simbaExceptionHandlingCaller;
 
     @Autowired
     public GroupServiceImpl(GroupRepository groupRepository, RoleRepository roleRepository,
-                            ThriftAssembler assembler, ManagementAudit audit) {
+                            ThriftAssembler assembler, ManagementAudit audit, SimbaExceptionHandlingCaller simbaExceptionHandlingCaller) {
         this.groupRepository = groupRepository;
         this.roleRepository = roleRepository;
         this.assembler = assembler;
         this.audit = audit;
+        this.simbaExceptionHandlingCaller = simbaExceptionHandlingCaller;
     }
 
-    public List<TGroup> findAll() {
-        return assembler.list(groupRepository.findAll());
+    @Override
+    public List<TGroup> findAll() throws TException {
+        return simbaExceptionHandlingCaller.call(() -> {
+            return assembler.list(groupRepository.findAll());
+        });
     }
 
-    public List<TRole> findRoles(TGroup group) {
-        return assembler.list(groupRepository.lookUp(group.getId()).getRoles());
+    @Override
+    public List<TRole> findRoles(TGroup group) throws TException {
+        return simbaExceptionHandlingCaller.call(() -> {
+            return assembler.list(groupRepository.lookUp(group.getId()).getRoles());
+        });
     }
 
-    public List<TRole> findRolesNotLinked(TGroup group) {
-        return assembler.list(roleRepository.findNotLinked(groupRepository.lookUp(group.getId())));
+    @Override
+    public List<TRole> findRolesNotLinked(TGroup group) throws TException {
+        return simbaExceptionHandlingCaller.call(() -> {
+            return assembler.list(roleRepository.findNotLinked(groupRepository.lookUp(group.getId())));
+        });
     }
 
-    public List<TUser> findUsers(TGroup group) {
-        return assembler.list(groupRepository.lookUp(group.getId()).getUsers());
+    @Override
+    public List<TUser> findUsers(TGroup group) throws TException {
+        return simbaExceptionHandlingCaller.call(() -> {
+            return assembler.list(groupRepository.lookUp(group.getId()).getUsers());
+        });
     }
 
-    public void addRole(TGroup group, TRole role) {
-        Role attachedRole = roleRepository.refreshWithOptimisticLocking(role.getId(), role.getVersion());
-        Group attachedGroup = groupRepository.refreshWithOptimisticLocking(group.getId(), group.getVersion());
+    @Override
+    public void addRole(TGroup group, TRole role) throws TException {
+        simbaExceptionHandlingCaller.call(() -> {
+            Role attachedRole = roleRepository.refreshWithOptimisticLocking(role.getId(), role.getVersion());
+            Group attachedGroup = groupRepository.refreshWithOptimisticLocking(group.getId(), group.getVersion());
 
-        audit.log("Role ''{0}'' added to group ''{1}''", attachedRole.getName(), attachedGroup.getName());
+            audit.log("Role ''{0}'' added to group ''{1}''", attachedRole.getName(), attachedGroup.getName());
 
-        attachedGroup.addRole(attachedRole);
+            attachedGroup.addRole(attachedRole);
+        });
     }
 
-    public void addRoles(TGroup group, List<TRole> roles) {
-        Group attachedGroup = groupRepository.refreshWithOptimisticLocking(group.getId(), group.getVersion());
-        Collection<Role> attachedRoles = roles.stream()
-                                              .map(r -> roleRepository.refreshWithOptimisticLocking(r.getId(),
-                                                                                                    r.getVersion()))
-                                              .collect(Collectors.toList());
+    @Override
+    public void addRoles(TGroup group, List<TRole> roles) throws TException {
+        simbaExceptionHandlingCaller.call(() -> {
+            Group attachedGroup = groupRepository.refreshWithOptimisticLocking(group.getId(), group.getVersion());
+            Collection<Role> attachedRoles = roles.stream()
+                    .map(r -> roleRepository.refreshWithOptimisticLocking(r.getId(),
+                            r.getVersion()))
+                    .collect(Collectors.toList());
 
-        audit.log("Roles ''{0}'' added to group ''{1}''", join(attachedRoles, Role::getName));
+            audit.log("Roles ''{0}'' added to group ''{1}''", join(attachedRoles, Role::getName));
 
-        attachedGroup.addRoles(attachedRoles);
+            attachedGroup.addRoles(attachedRoles);
+        });
     }
 
-    public void removeRole(TGroup group, TRole role) {
-        Role attachedRole = roleRepository.refreshWithOptimisticLocking(role.getId(), role.getVersion());
-        Group attachedGroup = groupRepository.refreshWithOptimisticLocking(group.getId(), group.getVersion());
+    @Override
+    public void removeRole(TGroup group, TRole role) throws TException {
+        simbaExceptionHandlingCaller.call(() -> {
+            Role attachedRole = roleRepository.refreshWithOptimisticLocking(role.getId(), role.getVersion());
+            Group attachedGroup = groupRepository.refreshWithOptimisticLocking(group.getId(), group.getVersion());
 
-        audit.log("Role ''{0}'' removed from group ''{1}''", attachedRole.getName(), attachedGroup.getName());
+            audit.log("Role ''{0}'' removed from group ''{1}''", attachedRole.getName(), attachedGroup.getName());
 
-        attachedGroup.removeRole(attachedRole);
+            attachedGroup.removeRole(attachedRole);
+        });
     }
 
-    public TGroup refresh(TGroup group) {
-        return assembler.assemble(groupRepository.lookUp(group.getId()));
+    @Override
+    public TGroup refresh(TGroup group) throws TException {
+        return simbaExceptionHandlingCaller.call(() -> {
+            return assembler.assemble(groupRepository.lookUp(group.getId()));
+        });
     }
 }

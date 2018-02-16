@@ -34,6 +34,7 @@ import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
+import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
 import org.simbasecurity.core.service.filter.EntityFilter;
 import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
@@ -50,24 +51,37 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static org.simbasecurity.core.service.errors.ForwardingThriftHandlerForTests.forwardingThriftHandlerForTests;
 
 public class RoleServiceImplTest {
 
-    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
-    @Rule public LocatorRule locatorRule = LocatorRule.locator();
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
+    @Rule
+    public LocatorRule locatorRule = LocatorRule.locator();
 
-    @Mock private PolicyRepository policyRepository;
-    @Mock private RoleRepository roleRepository;
-    @Mock private UserRepository userRepository;
+    @Mock
+    private PolicyRepository policyRepository;
+    @Mock
+    private RoleRepository roleRepository;
+    @Mock
+    private UserRepository userRepository;
 
-    @Spy private EntityFilterService entityFilterService = new EntityFilterService(Optional.empty());
-    @Spy private ThriftAssembler assembler = new ThriftAssembler(null);
+    @Spy
+    private EntityFilterService entityFilterService = new EntityFilterService(Optional.empty());
+    @Spy
+    private ThriftAssembler assembler = new ThriftAssembler(null);
+    @Spy
+    private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller = new SimbaExceptionHandlingCaller(forwardingThriftHandlerForTests());
+    @InjectMocks
+    private RoleServiceImpl roleService;
 
-    @InjectMocks private RoleServiceImpl roleService;
-
-    @Mock private TRole tRole01;
-    @Mock private TRole tRole02;
-    @Mock private TRole tRole03;
+    @Mock
+    private TRole tRole01;
+    @Mock
+    private TRole tRole02;
+    @Mock
+    private TRole tRole03;
 
     private PolicyEntity policyEntity1 = new PolicyEntity("policy-1");
     private PolicyEntity policyEntity2 = new PolicyEntity("policy-2");

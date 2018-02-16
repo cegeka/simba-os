@@ -44,18 +44,14 @@ angular.module('SimbaApp')
             $scope.refreshCache = function () {
                 $cache.refresh().then(function () {
                     $scope.showFeedback('configuration.cache.refreshed');
-                }).catch(function () {
-                    $error.showError('error.cache.refresh.failed');
-                });
+                }).catch($error.handlerWithDefault('error.loading.data'));
             };
 
             $scope.enableCache = function () {
                 if (!$scope.cacheEnabled) {
                     $cache.enable().then(function () {
                         $scope.showFeedback('configuration.cache.set.enabled');
-                    }).catch(function () {
-                        $error.showError('error.update.failed');
-                    });
+                    }).catch($error.handlerWithDefault('error.loading.data'));
                 }else{
                     $scope.showFeedback('configuration.cache.already.enabled');
                 }
@@ -65,9 +61,7 @@ angular.module('SimbaApp')
                 if ($scope.cacheEnabled) {
                     $cache.disable().then(function () {
                         $scope.showFeedback('configuration.cache.set.disabled');
-                    }).catch(function () {
-                        $error.showError('error.update.failed');
-                    });
+                    }).catch($error.handlerWithDefault('error.loading.data'));
                 }else {
                     $scope.showFeedback('configuration.cache.already.disabled');
                 }

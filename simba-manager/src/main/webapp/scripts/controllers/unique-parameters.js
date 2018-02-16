@@ -35,7 +35,7 @@ angular.module('SimbaApp')
             $configuration.changeParameter(parameter,
                 function() {},
                 function(){
-                    $error.showError('error.update.failed');
+                    $error.handlerWithDefault('error.loading.data');
                     parameter.value = $scope.currentValue;
                 });
        }

@@ -23,9 +23,7 @@ angular.module('SimbaApp')
             .success(function(data){
                     deferred.resolve(data);
             })
-            .error(function(){
-                    deferred.reject();
-            });
+            .error($error.handlerWithDefault('error.loading.data'));
             return deferred.promise;
         }
 

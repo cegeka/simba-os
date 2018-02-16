@@ -17,25 +17,28 @@
 package org.simbasecurity.core.event;
 
 
-import static org.mockito.Mockito.*;
-
-import java.util.EnumSet;
-import javax.jms.ObjectMessage;
-import javax.jms.Topic;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.simbasecurity.common.event.SimbaEvent;
+import org.simbasecurity.common.event.SimbaEventListener;
+import org.simbasecurity.common.event.SimbaEventType;
 import org.springframework.jms.core.JmsTemplate;
+
+import javax.jms.ObjectMessage;
+import javax.jms.Topic;
+import java.util.EnumSet;
+
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EventServiceTest {
 
-    @Mock private org.simbasecurity.core.event.SimbaEventListener ruleChangedInterestListener;
-    @Mock private org.simbasecurity.core.event.SimbaEventListener noInterestListener;
+    @Mock private SimbaEventListener ruleChangedInterestListener;
+    @Mock private SimbaEventListener noInterestListener;
 
     @Mock private JmsTemplate jmsTemplateMock;
     @Mock private Topic jmsTopicMock;
@@ -46,7 +49,7 @@ public class EventServiceTest {
     private EventService eventService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(ruleChangedInterestListener.getTypesOfInterest()).thenReturn(EnumSet.of(SimbaEventType.RULE_CHANGED));
         when(noInterestListener.getTypesOfInterest()).thenReturn(EnumSet.noneOf(SimbaEventType.class));
 

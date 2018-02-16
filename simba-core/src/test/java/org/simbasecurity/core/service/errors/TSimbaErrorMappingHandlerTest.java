@@ -6,7 +6,12 @@ import org.simbasecurity.api.service.thrift.TSimbaError;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.exception.SimbaMessageKey;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.simbasecurity.core.exception.SimbaMessageKey.*;
 
 public class TSimbaErrorMappingHandlerTest {
 
@@ -18,17 +23,15 @@ public class TSimbaErrorMappingHandlerTest {
     }
 
     @Test
-    public void handle_UnknownSimbaMessageKey_ReturnsOriginalSimbaException() {
-        SimbaException simbaExceptionWithUnknownMessageKey = new SimbaException(SimbaMessageKey.LANGUAGE_EMPTY);
+    public void handle_canConvertAllSimbaMessageKeys() {
+        List<SimbaMessageKey> ignoredSimbaMessageKeys = asList(EMPTY_USERNAME, EMPTY_PASSWORD, WRONG_PASSWORD, EMPTY_TARGET_URL, LOGIN_FAILED, ACCESS_DENIED, EMPTY_SUCCESS_URL, ACCOUNT_BLOCKED, MAIL_ERROR);
 
-        assertThatThrownBy(() -> handler.handle(simbaExceptionWithUnknownMessageKey)).isEqualTo(simbaExceptionWithUnknownMessageKey);
-    }
-
-    @Test
-    public void handle_KnownSimbaMessageKey_ReturnsTSimbaErrorWithConvertedMessageKey() {
-        SimbaException emailAddressRequired = new SimbaException(SimbaMessageKey.EMAIL_ADDRESS_REQUIRED, "User can't be created without an email...");
-
-        assertThatThrownBy(() -> handler.handle(emailAddressRequired))
-                .isEqualTo(new TSimbaError("error.email.is.required", "User can't be created without an email..."));
+        Arrays.stream(values())
+              .filter(messageKey -> !ignoredSimbaMessageKeys.contains(messageKey))
+              .forEach(messageKey -> {
+                  assertThatThrownBy(() ->
+                          handler.handle(new SimbaException(messageKey, messageKey.name())))
+                          .isInstanceOf(TSimbaError.class);
+              });
     }
 }

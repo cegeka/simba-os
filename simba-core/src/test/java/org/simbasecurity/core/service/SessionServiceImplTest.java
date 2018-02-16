@@ -16,11 +16,6 @@
  */
 package org.simbasecurity.core.service;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.util.Arrays;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -37,6 +32,13 @@ import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.repository.SessionRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
+import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
+
+import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+import static org.simbasecurity.core.service.errors.ForwardingThriftHandlerForTests.forwardingThriftHandlerForTests;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SessionServiceImplTest {
@@ -45,12 +47,19 @@ public class SessionServiceImplTest {
     private static final SSOToken SSO_TOKEN = new SSOToken();
     private static final String REMOTE_IP = "10.0.0.1";
 
-    @Mock private Audit audit;
-    @Mock private UserRepository userRepository;
-    @Mock private SessionRepository sessionRepository;
-    @Mock private ArchiveSessionService archiveSessionService;
+    @Mock
+    private Audit audit;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private SessionRepository sessionRepository;
+    @Mock
+    private ArchiveSessionService archiveSessionService;
 
-    @Spy private AuditLogEventFactory auditLogEventFactory;
+    @Spy
+    private AuditLogEventFactory auditLogEventFactory;
+    @Spy
+    private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller = new SimbaExceptionHandlingCaller(forwardingThriftHandlerForTests());
 
     @InjectMocks
     private SessionServiceImpl service;
@@ -69,10 +78,10 @@ public class SessionServiceImplTest {
         verify(sessionRepository).remove(expiredSession);
         verify(sessionRepository, never()).remove(unexpiredSession);
         verify(audit).log(captor.capture());
-		AuditLogEvent resultAuditLogEvent = captor.getValue();
-		
-		assertEquals(AuditLogEventCategory.SESSION, resultAuditLogEvent.getCategory());
-		assertEquals("Purged expired session", resultAuditLogEvent.getMessage());        
+        AuditLogEvent resultAuditLogEvent = captor.getValue();
+
+        assertEquals(AuditLogEventCategory.SESSION, resultAuditLogEvent.getCategory());
+        assertEquals("Purged expired session", resultAuditLogEvent.getMessage());
     }
 
     private Session createSessionMock(boolean expired) {

@@ -28,6 +28,7 @@ import org.simbasecurity.core.domain.SessionEntity;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.repository.SessionRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
+import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -44,91 +45,107 @@ import static org.simbasecurity.core.audit.AuditMessages.SESSION_CREATED;
 @Service("sessionService")
 public class SessionServiceImpl implements SessionService, org.simbasecurity.api.service.thrift.SessionService.Iface {
 
-	@Autowired private Audit audit;
+    @Autowired
+    private Audit audit;
 
-	@Autowired private UserRepository userRepository;
-	@Autowired private SessionRepository sessionRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private SessionRepository sessionRepository;
 
-	@Qualifier("ArchiveSessionService")
-	@Autowired private ArchiveSessionService archiveSessionService;
-	@Autowired private AuditLogEventFactory auditLogEventFactory;
+    @Qualifier("ArchiveSessionService")
+    @Autowired
+    private ArchiveSessionService archiveSessionService;
+    @Autowired
+    private AuditLogEventFactory auditLogEventFactory;
 
-	@Autowired private ThriftAssembler assembler;
+    @Autowired
+    private ThriftAssembler assembler;
 
-	@Autowired private ManagementAudit managementAudit;
+    @Autowired
+    private ManagementAudit managementAudit;
 
-	@Override
-	public Session createSession(String userName, String clientIpAddress, String hostServerName, String userAgent, String requestURL) {
-		User user = userRepository.findByName(userName);
+    @Autowired
+    private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller;
 
-		SSOToken ssoToken = new SSOToken(UUID.randomUUID().toString());
-		Session session = new SessionEntity(user, ssoToken, clientIpAddress, hostServerName);
+    @Override
+    public Session createSession(String userName, String clientIpAddress, String hostServerName, String userAgent, String requestURL) {
+        User user = userRepository.findByName(userName);
 
-		sessionRepository.persist(session);
-		audit.log(auditLogEventFactory.createEventForSession(user.getUserName(), ssoToken, clientIpAddress, hostServerName, userAgent, requestURL,
-				SESSION_CREATED));
-		return session;
-	}
+        SSOToken ssoToken = new SSOToken(UUID.randomUUID().toString());
+        Session session = new SessionEntity(user, ssoToken, clientIpAddress, hostServerName);
 
-	@Override
-	public void removeSession(Session session) {
-		archiveSession(session);
-		sessionRepository.remove(session);
-	}
-
-	@Override
-	public Session getSession(SSOToken token) {
-		if (token == null)
-			return null;
-		return sessionRepository.findBySSOToken(token);
-	}
-
-	@Override
-	public void purgeExpiredSessions() {
-		Collection<Session> sessions = sessionRepository.findAll();
-
-		for (Session session : sessions) {
-			if (session.isExpired()) {
-				archiveSession(session);
-				audit.log(auditLogEventFactory.createEventForSession(session.getUser().getUserName(), session.getSSOToken(),
-						session.getClientIpAddress(), "Purged expired session"));
-				sessionRepository.remove(session);
-			}
-		}
-	}
-
-	@Override
-	public void purgeSessionsOlderThanAbsoluteSessionTimeOut() {
-		// TODO philipn finish
-	}
-
-	private void archiveSession(Session session) {
-		archiveSessionService.archive(session);
-	}
-
-	@Override
-	public List<TSession> findAllActive() throws TException {
-		return assembler.list(sessionRepository.findAllActive());
-	}
-
-	@Override
-	public void remove(String ssoToken) throws TException {
-		removeSession(getSession(new SSOToken(ssoToken)));
-
-		managementAudit.log("Session with token ''{0}'' removed.", ssoToken);
-
-	}
-
-	@Override
-	public void removeAllBut(String ssoToken) throws TException {
-		sessionRepository.removeAllBut(new SSOToken(ssoToken));
-
-        managementAudit.log("Removed all sessions");
+        sessionRepository.persist(session);
+        audit.log(auditLogEventFactory.createEventForSession(user.getUserName(), ssoToken, clientIpAddress, hostServerName, userAgent, requestURL,
+                SESSION_CREATED));
+        return session;
     }
 
-	@Override
-	public TUser getUserFor(String ssoToken) throws TException {
-		User user = getSession(new SSOToken(ssoToken)).getUser();
-		return assembler.assemble(user);
-	}
+    @Override
+    public void removeSession(Session session) {
+        archiveSession(session);
+        sessionRepository.remove(session);
+    }
+
+    @Override
+    public Session getSession(SSOToken token) {
+        if (token == null)
+            return null;
+        return sessionRepository.findBySSOToken(token);
+    }
+
+    @Override
+    public void purgeExpiredSessions() {
+        Collection<Session> sessions = sessionRepository.findAll();
+
+        for (Session session : sessions) {
+            if (session.isExpired()) {
+                archiveSession(session);
+                audit.log(auditLogEventFactory.createEventForSession(session.getUser().getUserName(), session.getSSOToken(),
+                        session.getClientIpAddress(), "Purged expired session"));
+                sessionRepository.remove(session);
+            }
+        }
+    }
+
+    @Override
+    public void purgeSessionsOlderThanAbsoluteSessionTimeOut() {
+        // TODO philipn finish
+    }
+
+    private void archiveSession(Session session) {
+        archiveSessionService.archive(session);
+    }
+
+    @Override
+    public List<TSession> findAllActive() throws TException {
+        return simbaExceptionHandlingCaller.call(() -> {
+            return assembler.list(sessionRepository.findAllActive());
+        });
+    }
+
+    @Override
+    public void remove(String ssoToken) throws TException {
+        simbaExceptionHandlingCaller.call(() -> {
+            removeSession(getSession(new SSOToken(ssoToken)));
+            managementAudit.log("Session with token ''{0}'' removed.", ssoToken);
+        });
+    }
+
+    @Override
+    public void removeAllBut(String ssoToken) throws TException {
+        simbaExceptionHandlingCaller.call(() -> {
+            sessionRepository.removeAllBut(new SSOToken(ssoToken));
+            managementAudit.log("Removed all sessions");
+        });
+
+    }
+
+    @Override
+    public TUser getUserFor(String ssoToken) throws TException {
+        return simbaExceptionHandlingCaller.call(() -> {
+            User user = getSession(new SSOToken(ssoToken)).getUser();
+            return assembler.assemble(user);
+        });
+    }
 }

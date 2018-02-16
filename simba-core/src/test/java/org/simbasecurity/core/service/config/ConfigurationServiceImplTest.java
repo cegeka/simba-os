@@ -21,42 +21,52 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.simbasecurity.common.event.SimbaEventType;
 import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.config.ConfigurationStore;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.config.StoreType;
 import org.simbasecurity.core.event.EventService;
-import org.simbasecurity.core.event.SimbaEventType;
+import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
 
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
+import static org.simbasecurity.core.service.errors.ForwardingThriftHandlerForTests.forwardingThriftHandlerForTests;
 
 public class ConfigurationServiceImplTest {
 
-    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     private static final String APP_NAME = "app-name";
     private static final List<String> SUCCESS_URLS = Arrays.asList("url-1", "url-2", "url-3");
 
-    @Mock private ConfigurationStore databaseStore;
-    @Mock private ConfigurationStore quartzStore;
-    @Mock private EventService eventService;
-    @Mock private ManagementAudit managementAudit;
+    @Mock
+    private ConfigurationStore databaseStore;
+    @Mock
+    private ConfigurationStore quartzStore;
+    @Mock
+    private EventService eventService;
+    @Mock
+    private ManagementAudit managementAudit;
+    @Spy
+    private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller = new SimbaExceptionHandlingCaller(forwardingThriftHandlerForTests());
 
     @InjectMocks
     private ConfigurationServiceImpl configService;
 
     @Before
     public void setup() {
-        EnumMap<StoreType, ConfigurationStore> stores = new EnumMap<StoreType, ConfigurationStore>(StoreType.class);
+        EnumMap<StoreType, ConfigurationStore> stores = new EnumMap<>(StoreType.class);
         stores.put(StoreType.DATABASE, databaseStore);
         stores.put(StoreType.QUARTZ, quartzStore);
 
@@ -98,7 +108,7 @@ public class ConfigurationServiceImplTest {
         configService.changeParameter(SimbaConfigurationParameter.APPLICATION_NAME, APP_NAME);
         verify(databaseStore).setValue(SimbaConfigurationParameter.APPLICATION_NAME, APP_NAME);
         verify(eventService).publish(SimbaEventType.CONFIG_PARAM_CHANGED,
-                                     SimbaConfigurationParameter.APPLICATION_NAME.name(), "SIMBA Manager", APP_NAME);
+                SimbaConfigurationParameter.APPLICATION_NAME.name(), "SIMBA Manager", APP_NAME);
     }
 
     @SuppressWarnings("unchecked")

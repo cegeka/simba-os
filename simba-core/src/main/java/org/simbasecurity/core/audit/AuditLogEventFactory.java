@@ -32,7 +32,9 @@ public class AuditLogEventFactory {
     }
 
 	public AuditLogEvent createEventForUserAuthentication(String userName, String message) {
-		return new AuditLogEvent(AUTHENTICATION, userName, null,null,message,null,null,null,null,null,null);
+		AuditLogEvent auditLogEvent=new AuditLogEvent(AUTHENTICATION, userName, null,null,message,null,null,null,null,null,null);
+		auditLogEvent.markAuditLogToBeArchived();
+		return auditLogEvent;
 	}
 	
 	public AuditLogEvent createEventForFailureInForm(String userName, String message) {

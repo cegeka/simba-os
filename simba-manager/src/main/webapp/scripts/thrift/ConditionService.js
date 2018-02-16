@@ -37,9 +37,17 @@ ConditionService_findAll_args.prototype.write = function(output) {
 
 ConditionService_findAll_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TCondition]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -78,9 +86,14 @@ ConditionService_findAll_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -104,6 +117,11 @@ ConditionService_findAll_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -167,9 +185,17 @@ ConditionService_findPolicies_args.prototype.write = function(output) {
 
 ConditionService_findPolicies_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TPolicy]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -208,9 +234,14 @@ ConditionService_findPolicies_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -234,6 +265,11 @@ ConditionService_findPolicies_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -297,9 +333,17 @@ ConditionService_findExemptedUsers_args.prototype.write = function(output) {
 
 ConditionService_findExemptedUsers_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TUser]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -338,9 +382,14 @@ ConditionService_findExemptedUsers_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -364,6 +413,11 @@ ConditionService_findExemptedUsers_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -427,9 +481,17 @@ ConditionService_refresh_args.prototype.write = function(output) {
 
 ConditionService_refresh_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = new TCondition(args.success);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -455,9 +517,14 @@ ConditionService_refresh_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -472,6 +539,11 @@ ConditionService_refresh_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -610,9 +682,17 @@ ConditionService_addOrUpdate_args.prototype.write = function(output) {
 
 ConditionService_addOrUpdate_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = new TCondition(args.success);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -638,9 +718,14 @@ ConditionService_addOrUpdate_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -655,6 +740,11 @@ ConditionService_addOrUpdate_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -717,6 +807,16 @@ ConditionService_remove_args.prototype.write = function(output) {
 };
 
 ConditionService_remove_result = function(args) {
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
+  if (args) {
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
+    }
+  }
 };
 ConditionService_remove_result.prototype = {};
 ConditionService_remove_result.prototype.read = function(input) {
@@ -730,7 +830,22 @@ ConditionService_remove_result.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -739,6 +854,11 @@ ConditionService_remove_result.prototype.read = function(input) {
 
 ConditionService_remove_result.prototype.write = function(output) {
   output.writeStructBegin('ConditionService_remove_result');
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -800,9 +920,17 @@ ConditionService_validateTimeCondition_args.prototype.write = function(output) {
 
 ConditionService_validateTimeCondition_result = function(args) {
   this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = args.success;
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
     }
   }
 };
@@ -827,9 +955,14 @@ ConditionService_validateTimeCondition_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -844,6 +977,11 @@ ConditionService_validateTimeCondition_result.prototype.write = function(output)
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.BOOL, 0);
     output.writeBool(this.success);
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -900,6 +1038,9 @@ ConditionServiceClient.prototype.recv_findAll = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -949,6 +1090,9 @@ ConditionServiceClient.prototype.recv_findPolicies = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -998,6 +1142,9 @@ ConditionServiceClient.prototype.recv_findExemptedUsers = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1047,6 +1194,9 @@ ConditionServiceClient.prototype.recv_refresh = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1098,6 +1248,9 @@ ConditionServiceClient.prototype.recv_addOrUpdate = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1147,6 +1300,9 @@ ConditionServiceClient.prototype.recv_remove = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   return;
 };
 ConditionServiceClient.prototype.validateTimeCondition = function(condition, callback) {
@@ -1193,6 +1349,9 @@ ConditionServiceClient.prototype.recv_validateTimeCondition = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
   if (null !== result.success) {
     return result.success;
   }

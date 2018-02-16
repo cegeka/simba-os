@@ -1,15 +1,24 @@
 package org.simbasecurity.core.service.errors;
 
+import org.assertj.core.groups.Tuple;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.simbasecurity.api.service.thrift.TSimbaError;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.exception.SimbaMessageKey;
+import uk.org.lidalia.slf4jtest.LoggingEvent;
+import uk.org.lidalia.slf4jtest.TestLoggerFactory;
+import uk.org.lidalia.slf4jtest.TestLoggerFactoryResetRule;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static uk.org.lidalia.slf4jext.Level.ERROR;
 
 public class SimbaExceptionHandlingCallerTest {
+
+    @Rule
+    public TestLoggerFactoryResetRule loggerRule = new TestLoggerFactoryResetRule();
 
     private SimbaExceptionHandlingCaller caller;
 
@@ -21,39 +30,59 @@ public class SimbaExceptionHandlingCallerTest {
     }
 
     @Test
-    public void callWithVoid_MappableSimbaMessageKey_ThrowsTSimbaError() throws Exception {
+    public void callWithVoid_MappableSimbaMessageKey_ThrowsTSimbaError_AndLogs() throws Exception {
         assertThatThrownBy(() -> caller.call(this::voidMappableExceptionThrower))
             .isInstanceOf(TSimbaError.class);
+
+        assertThat(TestLoggerFactory.getLoggingEvents())
+                .extracting(LoggingEvent::getLevel, LoggingEvent::getMessage)
+                .contains(Tuple.tuple(ERROR, "EMAIL_ADDRESS_REQUIRED"));
     }
 
     @Test
-    public void callWithVoid_UnmappableSimbaMessageKey_RethrowsSimbaException() throws Exception {
+    public void callWithVoid_UnmappableSimbaMessageKey_RethrowsSimbaException_AndLogs() throws Exception {
         assertThatThrownBy(() -> caller.call(this::voidUnmappableExceptionThrower))
-            .isInstanceOf(SimbaException.class);
+                .isInstanceOf(SimbaException.class);
+
+        assertThat(TestLoggerFactory.getLoggingEvents())
+                .extracting(LoggingEvent::getLevel, LoggingEvent::getMessage)
+                .contains(Tuple.tuple(ERROR, "EMPTY_USERNAME"));
     }
 
     @Test
-    public void callWithVoid_NoException_DoesNotThrowAnything() throws Exception {
+    public void callWithVoid_NoException_DoesNotThrowAnything_AndLogsNothing() throws Exception {
         caller.call(this::voidMethod);
+
         assertThat(sideEffectedString).isEqualTo("sideEffected");
+        assertThat(TestLoggerFactory.getLoggingEvents()).isEmpty();
     }
 
     @Test
-    public void callWithReturn_MappableSimbaMessageKey_ThrowsTSimbaError() throws Exception {
+    public void callWithReturn_MappableSimbaMessageKey_ThrowsTSimbaError_AndLogs() throws Exception {
         assertThatThrownBy(() -> caller.call(this::returnTypeMappableExceptionThrower))
             .isInstanceOf(TSimbaError.class);
+
+        assertThat(TestLoggerFactory.getLoggingEvents())
+                .extracting(LoggingEvent::getLevel, LoggingEvent::getMessage)
+                .contains(Tuple.tuple(ERROR, "EMAIL_ADDRESS_REQUIRED"));
     }
 
     @Test
-    public void callWithReturn_UnmappableSimbaMessageKey_RethrowsSimbaException() throws Exception {
+    public void callWithReturn_UnmappableSimbaMessageKey_RethrowsSimbaException_AndLogs() throws Exception {
         assertThatThrownBy(() -> caller.call(this::returnTypeUnmappableExceptionThrower))
-            .isInstanceOf(SimbaException.class);
+                .isInstanceOf(SimbaException.class);
+
+        assertThat(TestLoggerFactory.getLoggingEvents())
+                .extracting(LoggingEvent::getLevel, LoggingEvent::getMessage)
+                .contains(Tuple.tuple(ERROR, "EMPTY_USERNAME"));
     }
 
     @Test
-    public void callWithReturn_NoException_DoesNotThrowAnything() throws Exception {
+    public void callWithReturn_NoException_DoesNotThrowAnything_AndLogsNothing() throws Exception {
         String actual = caller.call(this::returnTypeMethod);
+
         assertThat(actual).isEqualTo("newString");
+        assertThat(TestLoggerFactory.getLoggingEvents()).isEmpty();
     }
 
     private void voidMappableExceptionThrower() {
@@ -61,7 +90,7 @@ public class SimbaExceptionHandlingCallerTest {
     }
 
     private void voidUnmappableExceptionThrower() {
-        throw new SimbaException(SimbaMessageKey.LANGUAGE_EMPTY);
+        throw new SimbaException(SimbaMessageKey.EMPTY_USERNAME);
     }
 
     private void voidMethod() {
@@ -73,7 +102,7 @@ public class SimbaExceptionHandlingCallerTest {
     }
 
     private String returnTypeUnmappableExceptionThrower() {
-        throw new SimbaException(SimbaMessageKey.LANGUAGE_EMPTY);
+        throw new SimbaException(SimbaMessageKey.EMPTY_USERNAME);
     }
 
     private String returnTypeMethod() {

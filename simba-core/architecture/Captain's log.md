@@ -18,6 +18,21 @@ Worth noting is that we're breaking the API again with these changes, so simba _
 ![Image about SimbaManager Exceptions](svf4521-SIMBA.jpg "improving simbamanager exceptions")
 
 
+On 12/02/2018 we ran into the following issue:
+When checking that the frontend would receive the thrown error for `USER_ALREADY_EXISTS_WITH_EMAIL` 
+We received `TransactionInterceptor - Application exception overridden by commit exception`, this was caused by the following:
+* UserServiceImpl and UserFactory was annotated with @Transactional. This created a transaction within a transaction.
+* TException is a custom/checked exception
+* Transactionmanager doens't rollback for automaticly for checked exception
+
+The SimbaException was caught and the inner transaction was marked for rollback due to the SimbaException.
+A new TSimbaError(TException) was thrown but it didn't mark the outer transaction for rollback(remained commit)
+The commit didn't go through as the there was a conflict(commit vs rollback). This is the error we received.
+
+By removing the inner transaction(on UserFactory) and explicitly specifying rollback for the TException class 
+on the remaining outer transaction, the exception was caught and passed on correctly to the front-end
+
+
 ## December 2017 - Reset password via mail
 Since GDPR will go live in may 2018 we are looking at potential security risks. 
 One of these risks is using a default password when resetting a password.

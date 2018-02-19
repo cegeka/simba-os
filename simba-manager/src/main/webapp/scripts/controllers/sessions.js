@@ -35,18 +35,14 @@ angular.module('SimbaApp')
             var index = $scope.sessions.indexOf(session);
             $scope.sessions.splice(index,1);
         })
-        .error(function() {
-            $error.showError('error.update.failed');
-        });
+        .error($error.handlerWithDefault('error.update.failed'));
     };
 
     $scope.removeAllSessions = function() {
         $session.removeAllButMine().then(function() {
             $scope.init();
         })
-        .catch(function() {
-            $error.showError('error.update.failed');
-        });
+        .catch($error.handlerWithDefault('error.update.failed'));
     };
 
     $scope.timeStampAsDate = function (UNIX_timestamp){

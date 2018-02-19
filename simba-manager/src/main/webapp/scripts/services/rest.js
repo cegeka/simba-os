@@ -25,8 +25,8 @@ angular.module('SimbaApp')
                     url: '/simba-manager/rest/' + url
                 }).success(function (data) {
                     deferred.resolve(data);
-                }).error(function () {
-                    deferred.reject();
+                }).error(function (data) {
+                    deferred.reject(data);
                 });
                 return deferred.promise;
             },

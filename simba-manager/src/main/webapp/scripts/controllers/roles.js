@@ -18,30 +18,30 @@
 'use strict';
 
 angular.module('SimbaApp')
-  .controller('RoleCtrl', ['$scope', '$modal', '$log', '$role', '$error', '$translate', '$simba_component', '$rootScope',
-                  function ($scope, $modal, $log, $role, $error, $translate, $simba_component, $rootScope) {
+    .controller('RoleCtrl', ['$scope', '$modal', '$log', '$role', '$error', '$translate', '$simba_component', '$rootScope',
+        function ($scope, $modal, $log, $role, $error, $translate, $simba_component, $rootScope) {
 
-    $scope.roles =[];
-    $scope.users =[];
-    $scope.policies =[];
-    $scope.selectedRole;
-    
-    $scope.init = function() {
-        $role.getAll().then(
-            function(data) {
-                $scope.roles = data;
-            });
-    };
+            $scope.roles = [];
+            $scope.users = [];
+            $scope.policies = [];
+            $scope.selectedRole;
 
-    $scope.selectRole = function(role) {
-        $role.findUsers(role).then(function(data) {
-            $scope.users = data;
-        });
-        $role.findPolicies(role).then(function(data) {
-            $scope.policies = data;
-        });
-        $scope.selectedRole = role;
-    };
+            $scope.init = function () {
+                $role.getAll().then(
+                    function (data) {
+                        $scope.roles = data;
+                    });
+            };
+
+            $scope.selectRole = function (role) {
+                $role.findUsers(role).then(function (data) {
+                    $scope.users = data;
+                });
+                $role.findPolicies(role).then(function (data) {
+                    $scope.policies = data;
+                });
+                $scope.selectedRole = role;
+            };
 
     $scope.openAddUser = function() {
         if($scope.selectedRole==null) {
@@ -49,29 +49,26 @@ angular.module('SimbaApp')
             return;
         }
 
-        $role.findUsersNotLinked($scope.selectedRole)
-            .success(function(data) {
-                $scope.unlinkedUsers = data.data;
-                var listbox = $simba_component.listbox($translate('adduserstorolepopup.adduserstorole'), data, "userName");
+                $role.findUsersNotLinked($scope.selectedRole)
+                    .success(function (data) {
+                        $scope.unlinkedUsers = data.data;
+                        var listbox = $simba_component.listbox($translate('adduserstorolepopup.adduserstorole'), data, "userName");
 
-                listbox.result.then(function (selectedUnlinkedUsers) {
-                    $role.addUsers($scope.selectedRole, selectedUnlinkedUsers)
-                        .success(function(){
-                            $role.findUsers($scope.selectedRole).then(function(data) {
-                                $scope.users = data;
-                            });
-                        })
-                        .error(function(){
-                            $error.showError('error.adding.user');
-                        });}, function () {
-                    $log.info('Modal dismissed at: ' + new Date());
-                });
+                        listbox.result.then(function (selectedUnlinkedUsers) {
+                            $role.addUsers($scope.selectedRole, selectedUnlinkedUsers)
+                                .success(function () {
+                                    $role.findUsers($scope.selectedRole).then(function (data) {
+                                        $scope.users = data;
+                                    });
+                                })
+                                .error($error.handlerWithDefault('error.adding.user'));
+                        }, function () {
+                            $log.info('Modal dismissed at: ' + new Date());
+                        });
 
-            })
-            .catch(function() {
-                $error.showError('error.loading.data');
-            });
-    };
+                    })
+                    .catch($error.handlerWithDefault('error.loading.data'));
+            };
 
       $scope.openAddPolicy = function() {
           if($scope.selectedRole==null) {
@@ -79,74 +76,63 @@ angular.module('SimbaApp')
               return;
           }
 
-          $role.findPoliciesNotLinked($scope.selectedRole)
-              .then(function(data) {
-                  var listbox = $simba_component.listbox($translate('adduserstorolepopup.adduserstorole'), data, "name");
+                $role.findPoliciesNotLinked($scope.selectedRole)
+                    .then(function (data) {
+                        var listbox = $simba_component.listbox($translate('adduserstorolepopup.adduserstorole'), data, "name");
 
-                  listbox.result.then(function (selectedUnlinkedPolicies) {
-                      $role.addPolicies($scope.selectedRole, selectedUnlinkedPolicies)
-                          .success(function(){
-                              $role.findPolicies($scope.selectedRole).then(function(data) {
-                                  $scope.policies = data;
-                              });
-                          })
-                          .error(function(){
-                              $error.showError('error.adding.policy');
-                          });}, function () {
-                      $log.info('Modal dismissed at: ' + new Date());
-                  });
+                        listbox.result.then(function (selectedUnlinkedPolicies) {
+                            $role.addPolicies($scope.selectedRole, selectedUnlinkedPolicies)
+                                .success(function () {
+                                    $role.findPolicies($scope.selectedRole).then(function (data) {
+                                        $scope.policies = data;
+                                    });
+                                })
+                                .error($error.handlerWithDefault('error.adding.policy'));
+                        }, function () {
+                            $log.info('Modal dismissed at: ' + new Date());
+                        });
 
-              })
-              .catch(function() {
-                  $error.showError('error.loading.data');
-              });
-      };
+                    })
+                    .catch($error.handlerWithDefault('error.loading.data'));
+            };
 
-    $scope.deleteUserFromRole = function(user) {
-        $role.removeUser(user, $scope.selectedRole).success(function() {
-            $role.findUsers($scope.selectedRole).then(function(data) {
-                $scope.users = data;
-            });
-        })
-        .error(function() {
-            $error.showError('error.remove.user');
-        });
-    }
+            $scope.deleteUserFromRole = function (user) {
+                $role.removeUser(user, $scope.selectedRole).success(function () {
+                    $role.findUsers($scope.selectedRole).then(function (data) {
+                        $scope.users = data;
+                    });
+                })
+                    .error($error.handlerWithDefault('error.remove.user'));
+            };
 
-    $scope.deleteRole = function(role) {
-        $role.deleteRole(role).success(function() {
-            var index = $scope.roles.indexOf(role);
-            $scope.roles.splice(index,1);
-        })
-        .error(function() {
-            $error.showError('error.remove.rol');
-        });
-    };
+            $scope.deleteRole = function (role) {
+                $role.deleteRole(role).success(function () {
+                    var index = $scope.roles.indexOf(role);
+                    $scope.roles.splice(index, 1);
+                })
+                .error($error.handlerWithDefault('error.remove.rol'));
+            };
 
-    $scope.createRole = function() {
-        var textbox =  $simba_component.textbox($translate('create.role'));
+            $scope.createRole = function () {
+                var textbox = $simba_component.textbox($translate('create.role'));
 
-        textbox.result.then(function (name) {
-            $role.createRole(name).success(function(data) {
+                textbox.result.then(function (name) {
+                    $role.createRole(name).success(function (data) {
                         $scope.roles.push(data);
                     })
-                    .error(function() {
-                        $error.showError('error.create.failed');
+                    .error($error.handlerWithDefault('error.create.failed'));
+                }, function () {
+                    $log.info('Modal dismissed at: ' + new Date());
+                });
+            };
+
+            $scope.deletePolicyFromRole = function (policy) {
+                $role.removePolicy($scope.selectedRole, policy).success(function () {
+                    $role.findPolicies($scope.selectedRole).then(function (data) {
+                        $scope.policies = data;
                     });
-        }, function () {
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-    };
+                })
+                .error($error.handlerWithDefault('error.remove.policy'));
+            }
 
-    $scope.deletePolicyFromRole = function(policy) {
-        $role.removePolicy($scope.selectedRole, policy).success(function() {
-            $role.findPolicies($scope.selectedRole).then(function(data) {
-                $scope.policies = data;
-            });
-        })
-        .error(function() {
-            $error.showError('error.remove.policy');
-        });
-    }
-
-  }]);
+        }]);

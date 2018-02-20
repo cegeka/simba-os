@@ -43,7 +43,6 @@ public class ResetPasswordService {
         URL link = linkGenerator.generateResetPasswordLink(user.getEmail(), token);
 
         String mailBody = templateService.createMailBodyWithLink(new TemplateWithLink(reason.getTemplate(), link), user.getLanguage());
-//        String mailBody = templateService.createMailBodyWithLink(reason.getTemplate(), user.getLanguage(), link);
         String subject = templateService.createMailSubject(reason.getSubjectTemplate(), user.getLanguage());
 
         mailService.sendMail(createMail(user, mailBody, subject));

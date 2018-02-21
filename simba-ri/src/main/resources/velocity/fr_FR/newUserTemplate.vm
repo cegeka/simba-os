@@ -14,7 +14,7 @@
     <br/>
     <a href="$links.get(0)">$links.get(0)</a>
 #else
-    <p style="margin:0px">En cliquant sur un des liens suivant, vous aurez la possibilité de mettre à jour votre mot de passe.</p>
+    <p style="margin:0px">En cliquant sur un des liens suivants, vous aurez la possibilité de mettre à jour votre mot de passe.</p>
 #foreach( $link in $links )
     <br/>
     <a href="$link">$link</a>

@@ -16,6 +16,6 @@ public interface TemplateService {
         return parseTemplate(template, language, Collections.emptyMap());
     }
 
-    String parseTemplate(String template, Language language, Map<String, String> properties);
+    String parseTemplate(String template, Language language, Map<String, ?> properties);
 
 }

@@ -1,0 +1,8 @@
+#if( $links.size() == 0)
+There are no values.
+#elseif( $links.size() == 1)
+This is value: $links.get(0)
+#else
+These are values:#foreach( $link in $links ) $link#if( $foreach.hasNext ),#end
+#end
+#end

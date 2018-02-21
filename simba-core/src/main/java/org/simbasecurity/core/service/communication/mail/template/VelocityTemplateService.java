@@ -16,12 +16,12 @@ public class VelocityTemplateService implements TemplateService {
     }
 
     @Override
-    public String parseTemplate(String template, Language language, Map<String, String> properties) {
+    public String parseTemplate(String template, Language language, Map<String, ?> properties) {
         VelocityContext context = new VelocityContext();
         for (String propertyName : properties.keySet()) {
             context.put(propertyName, properties.get(propertyName));
         }
-        return mergeTemplate(template, language, context);
+        return mergeTemplate(template, language, context).trim();
     }
 
     private String mergeTemplate(String template, Language language, VelocityContext context) {

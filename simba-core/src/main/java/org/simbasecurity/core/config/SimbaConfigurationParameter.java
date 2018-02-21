@@ -16,6 +16,8 @@
  */
 package org.simbasecurity.core.config;
 
+import org.simbasecurity.common.config.SystemConfiguration;
+
 import java.time.temporal.ChronoUnit;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -90,6 +92,10 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
      */
     PASSWORD_RESET_URL(DATABASE, true, StringType.class, "/jsp/reset-password.jsp"),
 
+    /**
+     * Parameter for configuring the URL to the password reset page.
+     */
+    PASSWORD_RESET_TOKEN_URL(DATABASE, false, StringType.class, SystemConfiguration.getSimbaWebURL()),
 
     PASSWORD_INVALID_TOKEN_URL(DATABASE, true, StringType.class, "/jsp/password-invalid-token.jsp"),
 

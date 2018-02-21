@@ -8,8 +8,8 @@ import java.util.Map;
 
 public interface TemplateService {
 
-    default String createMailBodyWithLink(TemplateWithLink templateWithLink, Language language) {
-        return parseTemplate(templateWithLink.getTemplate(), language, ImmutableMap.of("link", templateWithLink.getLink()));
+    default String createMailBodyWithLink(TemplateWithLinks templateWithLinks, Language language) {
+        return parseTemplate(templateWithLinks.getTemplate(), language, ImmutableMap.of("links", templateWithLinks.getLinks()));
     }
 
     default String createMailSubject(String template, Language language) {

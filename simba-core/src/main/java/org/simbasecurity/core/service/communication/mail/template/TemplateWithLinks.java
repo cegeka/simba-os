@@ -1,37 +1,37 @@
 package org.simbasecurity.core.service.communication.mail.template;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 
-public class TemplateWithLink {
+public class TemplateWithLinks {
     private final String template;
-    private final URL link;
+    private final List<URL> links;
 
-    public TemplateWithLink(String template, URL link) {
+    public TemplateWithLinks(String template, List<URL> links) {
         this.template = template;
-        this.link = link;
+        this.links = links;
     }
 
     public String getTemplate() {
         return template;
     }
 
-    public String getLink() {
-        return link.toString();
+    public String[] getLinks() {
+        return links.stream().map(URL::toString).toArray(String[]::new);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TemplateWithLink that = (TemplateWithLink) o;
+        TemplateWithLinks that = (TemplateWithLinks) o;
         return Objects.equals(template, that.template) &&
-                Objects.equals(link, that.link);
+                Objects.equals(links, that.links);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(template, link);
+        return Objects.hash(template, links);
     }
 }

@@ -1,50 +1,62 @@
 package org.simbasecurity.core.service.communication.mail;
 
-import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.simbasecurity.core.domain.communication.token.Token;
 import org.simbasecurity.core.domain.user.EmailAddress;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.test.EmailRequiredRule;
 
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 
-import static java.lang.System.getProperties;
-import static java.lang.System.setProperty;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.simbasecurity.common.config.SystemConfiguration.SYS_PROP_SIMBA_WEB_URL;
-import static org.simbasecurity.common.config.SystemConfiguration.getSimbaWebURL;
+import static org.assertj.core.groups.Tuple.tuple;
+import static org.mockito.Mockito.when;
+import static org.simbasecurity.core.config.SimbaConfigurationParameter.PASSWORD_RESET_TOKEN_URL;
 import static org.simbasecurity.core.domain.communication.token.Token.generateToken;
 
-public class LinkGeneratorTest{
+@RunWith(MockitoJUnitRunner.class)
+public class LinkGeneratorTest {
 
     @Rule
     public EmailRequiredRule emailRequired = EmailRequiredRule.emailRequired();
 
-    public static final String WEB_URL_SYSPROP_VALUE = "http://www.simba.be/simba";
-    private LinkGenerator linkGenerator = new LinkGenerator();
+    @Mock
+    private CoreConfigurationService configurationServiceMock;
 
-    @After
-    public void tearDown() throws Exception {
-        getProperties().remove(SYS_PROP_SIMBA_WEB_URL);
+    private LinkGenerator linkGenerator;
+
+    @Before
+    public void setUp() throws Exception {
+        linkGenerator = new LinkGenerator(configurationServiceMock);
     }
 
     @Test
-    public void generateResetPasswordUrl_WillGenerateLinkToResetPassword_WithTokenAndUsername() throws Exception {
-        setProperty(SYS_PROP_SIMBA_WEB_URL, WEB_URL_SYSPROP_VALUE);
+    public void generateResetPasswordUrl_WillGenerateLinksToResetPassword_BasedOnSimbaProperty_WithTokenAndUsername() throws Exception {
+        List<String> links = Arrays.asList("https://www.simba.be:1000/simba", "https://www.dag.no:8080/FYFAEN");
+        when(configurationServiceMock.getValue(PASSWORD_RESET_TOKEN_URL)).thenReturn(links);
         EmailAddress email = EmailAddress.email("myEmail@myProvider.com");
         String urlEscapedEmail = "myEmail%40myProvider.com";
         Token token = generateToken();
 
-        URL url = linkGenerator.generateResetPasswordLink(email, token);
+        List<URL> urls = linkGenerator.generateResetPasswordLinks(email, token);
 
-        URL simbaUrl = new URL(getSimbaWebURL());
-
-        assertThat(url).isNotNull();
-        assertThat(url.getHost()).isEqualTo(simbaUrl.getHost());
-        assertThat(url.getProtocol()).isEqualTo(simbaUrl.getProtocol());
-        assertThat(url.getPort()).isEqualTo(simbaUrl.getPort());
-        assertThat(url.getQuery()).isEqualTo(String.format("email=%s&token=%s", urlEscapedEmail, token.asString()));
-        assertThat(url.getPath()).isEqualTo("/simba/http/simba-new-pwd");
+        String queryParams = String.format("email=%s&token=%s", urlEscapedEmail, token.asString());
+        assertThat(urls).extracting(
+                URL::getHost,
+                URL::getProtocol,
+                URL::getPort,
+                URL::getQuery,
+                URL::getPath
+        ).containsExactly(
+                tuple("www.simba.be", "https", 1000, queryParams, "/simba/http/simba-new-pwd"),
+                tuple("www.dag.no", "https", 8080, queryParams, "/FYFAEN/http/simba-new-pwd")
+        );
     }
 }

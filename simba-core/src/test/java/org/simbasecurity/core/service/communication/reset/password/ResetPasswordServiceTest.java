@@ -19,6 +19,7 @@ import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.communication.mail.LinkGenerator;
 import org.simbasecurity.core.service.communication.mail.MailService;
 import org.simbasecurity.core.service.communication.mail.template.TemplateService;
+import org.simbasecurity.core.service.communication.mail.template.TemplateWithLink;
 import org.simbasecurity.core.service.communication.token.UserTokenService;
 import org.simbasecurity.test.LocatorRule;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -75,7 +76,8 @@ public class ResetPasswordServiceTest {
         when(tokenManagerMock.generateToken(user, forgotPasswordReason)).thenReturn(token);
         URL link = new URL("http://www.google.com");
         when(linkGeneratorMock.generateResetPasswordLink(email, token)).thenReturn(link);
-        when(templateServiceMock.createMailBodyWithLink(forgotPasswordReason.getTemplate(), en_US, link)).thenReturn("someBody");
+
+        when(templateServiceMock.createMailBodyWithLink(new TemplateWithLink(forgotPasswordReason.getTemplate(), link), en_US)).thenReturn("someBody");
         when(templateServiceMock.createMailSubject(forgotPasswordReason.getSubjectTemplate(), en_US)).thenReturn("Reset password");
 
         resetPasswordService.sendResetPasswordMessageTo(user, forgotPasswordReason);
@@ -107,7 +109,7 @@ public class ResetPasswordServiceTest {
         when(tokenManagerMock.generateToken(user, newUserReason)).thenReturn(token);
         URL link = new URL("http://www.google.com");
         when(linkGeneratorMock.generateResetPasswordLink(email, token)).thenReturn(link);
-        when(templateServiceMock.createMailBodyWithLink(newUserReason.getTemplate(), en_US, link)).thenReturn("someBody");
+        when(templateServiceMock.createMailBodyWithLink(new TemplateWithLink(newUserReason.getTemplate(), link), en_US)).thenReturn("someBody");
         when(templateServiceMock.createMailSubject(newUserReason.getSubjectTemplate(), en_US)).thenReturn("New user");
 
         ArgumentCaptor<AuditLogEvent> logCaptor = ArgumentCaptor.forClass(AuditLogEvent.class);
@@ -146,5 +148,7 @@ public class ResetPasswordServiceTest {
 
         verifyZeroInteractions(auditMock);
     }
+
+
 
 }

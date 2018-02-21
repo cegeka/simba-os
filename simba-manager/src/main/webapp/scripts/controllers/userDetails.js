@@ -45,9 +45,7 @@ angular.module('SimbaApp')
             .success(function(data) {
                 $scope.userRoles = data;
             })
-            .error(function() {
-                $error.showError('error.loading.data');
-            });
+            .error($error.handlerWithDefault('error.loading.data'));
         $scope.showEditButtons=false;
     };
 
@@ -56,9 +54,7 @@ angular.module('SimbaApp')
           .success(function(data) {
               $scope.userPolicies = data;
           })
-          .error(function() {
-              $error.showError('error.loading.data');
-          });
+          .error($error.handlerWithDefault('error.loading.data'));
       $scope.showEditButtons=false;
     };
 
@@ -106,18 +102,14 @@ angular.module('SimbaApp')
                             $scope.initRoles();
                             refreshSelectedUser();
                         })
-                        .error(function(){
-                            $error.showError('error.adding.rol');
-                        });
+                        .error($error.handlerWithDefault('error.adding.rol'));
                 }, function () {
                     $log.info('Modal dismissed at: ' + new Date());
                 });
 
 
             })
-            .error(function() {
-               $error.showError('error.loading.data');
-            });
+            .error($error.handlerWithDefault('error.loading.data'));
     };
 
     $scope.deleteRole = function(role) {
@@ -126,9 +118,7 @@ angular.module('SimbaApp')
             $scope.initRoles();
             refreshSelectedUser();
         })
-        .error(function() {
-            $error.showError('error.remove.rol');
-        });
+        .error($error.handlerWithDefault('error.remove.rol'));
     };
 
     var getTabs = function() {

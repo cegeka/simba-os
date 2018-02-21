@@ -10,6 +10,7 @@ import org.simbasecurity.core.service.communication.mail.LinkGenerator;
 import org.simbasecurity.core.service.communication.mail.Mail;
 import org.simbasecurity.core.service.communication.mail.MailService;
 import org.simbasecurity.core.service.communication.mail.template.TemplateService;
+import org.simbasecurity.core.service.communication.mail.template.TemplateWithLink;
 import org.simbasecurity.core.service.communication.token.UserTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +41,8 @@ public class ResetPasswordService {
 
         Token token = tokenManager.generateToken(user, reason);
         URL link = linkGenerator.generateResetPasswordLink(user.getEmail(), token);
-        String mailBody = templateService.createMailBodyWithLink(reason.getTemplate(), user.getLanguage(), link);
+
+        String mailBody = templateService.createMailBodyWithLink(new TemplateWithLink(reason.getTemplate(), link), user.getLanguage());
         String subject = templateService.createMailSubject(reason.getSubjectTemplate(), user.getLanguage());
 
         mailService.sendMail(createMail(user, mailBody, subject));

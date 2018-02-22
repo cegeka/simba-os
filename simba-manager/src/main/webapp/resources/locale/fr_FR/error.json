@@ -40,7 +40,7 @@
   "error.password.dont.match": "Le nouveau mot de passe ne correspond pas au mot de passe de confirmation.",
   "error.password.same.as.old": "Le nouveau mot de passe correspond au mot de passe existant.",
   "error.cache.refresh.failed": "Une erreur s'est produite lors du actualiser le cache serveur.",
-  "error.email.is.required": "Il est obligatoire de remplir une adresse e-mail.",
+  "error.email.is.required": "Adresse e-mail est obligatoire.",
   "error.email.invalid": "L'adresse e-mail fournie n'est pas une adresse e-mail correcte.",
   "error.user.already.exists.with.email": "L'adresse e-mail est déjà attribuée à un utilisateur existant.",
   "error.login.time.expired": "L'heure de connexion a expiré."

@@ -17,7 +17,7 @@
   "error.status.empty": "S'il vous plaît spécifier un statut.",
   "error.user.already.exists": "Le nom d'utilisateur existe déjà.",
   "error.user.doesnt.exists": "Le nom d'utilisateur n'existe pas.",
-  "error.optimistic.lock": "Les données affichées sont mis à jour par un autre utilisateur. L'application doit être rechargé avant de continuer.",
+  "error.optimistic.lock": "Les données affichées sont mis à jour par un autre utilisateur. L'application doit être rechargé avant de continuer. (F5)",
   "error.SESSION_EXPIRED": "Votre session est expiré.",
   "error.update.failed": "Une erreur s'est produite lors de l'actualisation des données.",
   "error.create.failed": "Une erreur s'est produite lors du rafraîchir des données.",

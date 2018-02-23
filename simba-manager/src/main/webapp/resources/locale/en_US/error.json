@@ -17,7 +17,7 @@
   "error.status.empty": "Please specify a status.",
   "error.user.already.exists": "The username is not available.",
   "error.user.doesnt.exists": "The username does not exist.",
-  "error.optimistic.lock": "The data was modified by another user. The application must be reloaded before continuing. ",
+  "error.optimistic.lock": "The data was modified by another user. The application must be reloaded before continuing. (F5)",
   "error.SESSION_EXPIRED": "Your session has expired.",
   "error.update.failed": "An error occured while updating the data.",
   "error.create.failed": "An error occured while creating the data.",

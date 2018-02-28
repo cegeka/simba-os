@@ -26,7 +26,7 @@
     <url>http://www.simbasecurity.org</url>
 
     <scm>
-        <developerConnection>scm:git:ssh://git@github.com/cegeka/simba-os/</developerConnection>
+        <developerConnection>scm:git:https://github.com/cegeka/simba-os/</developerConnection>
       <tag>HEAD</tag>
   </scm>
 

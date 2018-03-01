@@ -21,7 +21,7 @@
   "error.SESSION_EXPIRED": "Your session has expired.",
   "error.update.failed": "An error occured while updating the data.",
   "error.create.failed": "An error occured while creating the data.",
-  "error.refresh.failed": "An error occured while refreshing the data.",
+  "error.refresh.failed": "An error occurred while refreshing the data.",
   "error.no.role.selected": "An error occured: no role was selected.",
   "error.adding.rol": "An error occured while adding a role.",
   "error.remove.rol": "An error occured while removing a role.",

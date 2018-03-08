@@ -85,8 +85,8 @@ public class UserDatabaseRepository extends AbstractVersionedDatabaseRepository<
 
     @Override
     public User findByEmail(EmailAddress email) {
-        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM UserEntity u WHERE u.email = :email AND (u.status =:active or  u.status=:blocked)", User.class)
-                .setParameter("email", email)
+        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM UserEntity u WHERE lower(u.email) = :email AND (u.status =:active or  u.status=:blocked)", User.class)
+                .setParameter("email", email.getLowerCaseEmailAddress())
                 .setParameter("active", Status.ACTIVE)
                 .setParameter("blocked", Status.BLOCKED);
 

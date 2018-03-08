@@ -57,6 +57,10 @@ public class EmailAddress {
         return email;
     }
 
+    public EmailAddress getLowerCaseEmailAddress() {
+        return new EmailAddress(email == null ? null : email.toLowerCase());
+    }
+
     public boolean isEmpty() {
         return email == null;
     }

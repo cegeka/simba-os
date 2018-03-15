@@ -1,13 +1,16 @@
 package org.simbasecurity.core.service.user;
 
+import org.apache.commons.lang.StringUtils;
 import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.Language;
+import org.simbasecurity.core.domain.Status;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.UserEntity;
 import org.simbasecurity.core.domain.generator.PasswordGenerator;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
+import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.exception.SimbaMessageKey;
 import org.simbasecurity.core.service.communication.reset.password.NewUser;
@@ -21,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.simbasecurity.common.util.StringUtil.join;
+import static org.simbasecurity.core.domain.UserEntity.user;
 import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS;
 import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS_WITH_EMAIL;
 
@@ -55,6 +59,27 @@ public class UserFactory {
         managementAudit.log("User ''{0}'' created", user.getUserName());
 
         return newUser;
+    }
+
+    public User createUserWithDefaultRoles(String userName, String firstName, String name, String successURL, String language, String email) throws Exception {
+
+        UserEntity user = user(
+                userName,
+                emptyToNull(firstName),
+                emptyToNull(name),
+                emptyToNull(successURL),
+                Language.fromISO639Code(language),
+                Status.ACTIVE,
+                false,
+                false,
+                EmailAddress.email(email));
+
+        List<String> roles = configurationService.getListValue(SimbaConfigurationParameter.DEFAULT_USER_ROLE.name());
+        return createWithRoles(user, roles);
+    }
+
+    private static String emptyToNull(String s) {
+        return StringUtils.isBlank(s) ? null : s;
     }
 
     public User createWithRoles(User user, List<String> roleNames) {

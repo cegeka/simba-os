@@ -19,18 +19,13 @@ package org.simbasecurity.core.domain;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.Duration;
 import java.util.UUID;
-
-import static org.simbasecurity.core.config.SimbaConfigurationParameter.MAX_LOGIN_ELAPSED_TIME;
 
 
 @Entity
@@ -88,19 +83,5 @@ public class LoginMappingEntity implements LoginMapping {
         builder.append("targetURL", targetURL);
         builder.append("TimeStamp", creationTime);
         return builder.toString();
-    }
-
-    @Override
-    public boolean isExpired() {
-        return creationTime + getMaxLoginElapsedTime() < System.currentTimeMillis();
-    }
-
-    private long getMaxLoginElapsedTime() {
-        Long maxElapsedTime = getConfigurationService().getValue(MAX_LOGIN_ELAPSED_TIME);
-        return Duration.of(maxElapsedTime, MAX_LOGIN_ELAPSED_TIME.getChronoUnit()).toMillis();
-    }
-
-    private CoreConfigurationService getConfigurationService() {
-        return GlobalContext.locate(CoreConfigurationService.class);
     }
 }

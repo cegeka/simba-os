@@ -42,8 +42,7 @@ public class SAMLAuthResponseCommand implements Command {
     public State execute(ChainContext context) throws Exception {
         SAMLResponseHandler samlResponse = getSamlResponse(context);
         String loginToken = samlResponse.getInResponseTo();
-        LoginMapping loginMapping = loginMappingService.getMapping(loginToken);
-        if (loginMapping != null && !loginMapping.isExpired()) {
+        if (!loginMappingService.isExpired(loginToken)) {
             context.setSAMLUser(
                 new SAMLUser(
                     samlResponse.getAttribute("egovNRN"),
@@ -53,6 +52,7 @@ public class SAMLAuthResponseCommand implements Command {
                     samlResponse.getAttribute("PrefLanguage")
                 )
             );
+            LoginMapping loginMapping = loginMappingService.getMapping(loginToken);
             context.setLoginMapping(loginMapping);
             auditLog(context, samlResponse);
             return State.CONTINUE;

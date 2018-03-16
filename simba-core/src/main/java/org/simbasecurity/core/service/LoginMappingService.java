@@ -27,4 +27,6 @@ public interface LoginMappingService {
 	void removeMapping(String token);
 	
 	void purgeExpiredMappings();
+
+	boolean isExpired(String token);
 }

@@ -16,21 +16,25 @@
  */
 package org.simbasecurity.core.service;
 
-import java.util.Collection;
-
 import org.simbasecurity.core.domain.LoginMapping;
 import org.simbasecurity.core.domain.LoginMappingEntity;
 import org.simbasecurity.core.domain.repository.LoginMappingRepository;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Duration;
+
+import static org.simbasecurity.core.config.SimbaConfigurationParameter.MAX_LOGIN_ELAPSED_TIME;
 
 @Service
 @Transactional
 public class LoginMappingServiceImpl implements LoginMappingService {
 
     @Autowired private LoginMappingRepository mappingRepository;
-	
+	@Autowired private CoreConfigurationService configurationService;
+
 	@Override
 	public LoginMapping createMapping(String targetURL) {
 		LoginMappingEntity mapping = LoginMappingEntity.create(targetURL);
@@ -44,20 +48,29 @@ public class LoginMappingServiceImpl implements LoginMappingService {
 		return mappingRepository.findByToken(token);
 	}
 
+	public boolean isExpired(String token) {
+        return token == null || isExpired(getMapping(token));
+    }
+
+	private boolean isExpired(LoginMapping mapping) {
+        return mapping.getCreationTime() + getMaxLoginElapsedTime() < System.currentTimeMillis();
+    }
+
 	@Override
 	public void purgeExpiredMappings() {
-		Collection<LoginMapping> mappings = mappingRepository.findAll();
-		
-		for (LoginMapping mapping : mappings) {
-			if (mapping.isExpired()) {
-				mappingRepository.remove(mapping);
-			}
-		}
+        mappingRepository.findAll().stream()
+                         .filter(this::isExpired)
+                         .forEach(loginMapping -> mappingRepository.remove(loginMapping));
 	}
 
 	@Override
 	public void removeMapping(String token) {
 		mappingRepository.remove(token);
+	}
+
+	private long getMaxLoginElapsedTime() {
+		Long maxElapsedTime = configurationService.getValue(MAX_LOGIN_ELAPSED_TIME);
+		return Duration.of(maxElapsedTime, MAX_LOGIN_ELAPSED_TIME.getChronoUnit()).toMillis();
 	}
 
 }

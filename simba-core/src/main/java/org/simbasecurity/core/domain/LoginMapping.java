@@ -33,8 +33,4 @@ public interface LoginMapping {
      */
     long getCreationTime();
 
-    /**
-     * @return <tt>true</tt> if the mapping is expired; <tt>false</tt> otherwise
-     */
-	boolean isExpired();
 }

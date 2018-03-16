@@ -19,15 +19,11 @@ package org.simbasecurity.core.domain;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.simbasecurity.api.service.thrift.SSOToken;
-import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.service.config.CoreConfigurationService;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.time.Duration;
 
 @Entity
 @Table(name = "SIMBA_SESSION")
@@ -88,22 +84,8 @@ public class SessionEntity implements Session {
     }
 
     @Override
-    public boolean isExpired() {
-        return lastAccessTime + getSessionTimeOutInMillis() < System.currentTimeMillis();
-    }
-
-    private long getSessionTimeOutInMillis() {
-        Long sessionTimeOut = getConfigurationService().getValue(SimbaConfigurationParameter.SESSION_TIME_OUT);
-        return Duration.of(sessionTimeOut, SimbaConfigurationParameter.SESSION_TIME_OUT.getChronoUnit()).toMillis();
-    }
-
-    @Override
     public String getHostServerName() {
         return hostServerName;
-    }
-
-    private CoreConfigurationService getConfigurationService() {
-        return GlobalContext.locate(CoreConfigurationService.class);
     }
 
     @Override

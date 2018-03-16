@@ -28,10 +28,12 @@ import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEvent;
 import org.simbasecurity.core.audit.AuditLogEventCategory;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.repository.SessionRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
 
 import java.util.Arrays;
@@ -47,22 +49,16 @@ public class SessionServiceImplTest {
     private static final SSOToken SSO_TOKEN = new SSOToken();
     private static final String REMOTE_IP = "10.0.0.1";
 
-    @Mock
-    private Audit audit;
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private SessionRepository sessionRepository;
-    @Mock
-    private ArchiveSessionService archiveSessionService;
+    @Mock private Audit audit;
+    @Mock private UserRepository userRepository;
+    @Mock private SessionRepository sessionRepository;
+    @Mock private ArchiveSessionService archiveSessionService;
+    @Mock private CoreConfigurationService configurationService;
 
-    @Spy
-    private AuditLogEventFactory auditLogEventFactory;
-    @Spy
-    private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller = new SimbaExceptionHandlingCaller(forwardingThriftHandlerForTests());
+    @Spy private AuditLogEventFactory auditLogEventFactory;
+    @Spy private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller = new SimbaExceptionHandlingCaller(forwardingThriftHandlerForTests());
 
-    @InjectMocks
-    private SessionServiceImpl service;
+    @InjectMocks private SessionServiceImpl service;
 
     private ArgumentCaptor<AuditLogEvent> captor = ArgumentCaptor.forClass(AuditLogEvent.class);
 
@@ -71,6 +67,7 @@ public class SessionServiceImplTest {
         Session expiredSession = createSessionMock(true);
         Session unexpiredSession = createSessionMock(false);
 
+        when(configurationService.getValue(SimbaConfigurationParameter.SESSION_TIME_OUT)).thenReturn(1L);
         when(sessionRepository.findAll()).thenReturn(Arrays.asList(expiredSession, unexpiredSession));
 
         service.purgeExpiredSessions();
@@ -90,11 +87,10 @@ public class SessionServiceImplTest {
 
         Session sessionMock = mock(Session.class);
 
-        when(sessionMock.isExpired()).thenReturn(expired);
         when(sessionMock.getUser()).thenReturn(userMock);
         when(sessionMock.getClientIpAddress()).thenReturn(REMOTE_IP);
         when(sessionMock.getSSOToken()).thenReturn(SSO_TOKEN);
-
+        when(sessionMock.getLastAccessTime()).thenReturn(System.currentTimeMillis() + (expired ? -300000 : 300000));
         return sessionMock;
     }
 }

@@ -77,7 +77,7 @@ public class CheckSessionCommandTest {
         when(contextMock.getRequestSSOToken()).thenReturn(SSO_TOKEN);
         when(contextMock.getClientIpAddress()).thenReturn(CLIENT_IP);
         Session sessionMock = mock(Session.class);
-        when(sessionMock.isExpired()).thenReturn(true);
+        when(sessionServiceMock.isExpired(sessionMock)).thenReturn(true);
         when(contextMock.getCurrentSession()).thenReturn(sessionMock);
 
         assertEquals(State.FINISH, command.execute(contextMock));

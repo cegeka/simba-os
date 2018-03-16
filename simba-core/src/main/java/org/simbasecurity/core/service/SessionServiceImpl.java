@@ -23,11 +23,13 @@ import org.simbasecurity.api.service.thrift.TUser;
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.audit.ManagementAudit;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.core.domain.SessionEntity;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.repository.SessionRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +37,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
+import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 
@@ -68,16 +70,21 @@ public class SessionServiceImpl implements SessionService, org.simbasecurity.api
     @Autowired
     private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller;
 
+    @Autowired
+    private CoreConfigurationService configurationService;
+
     @Override
-    public Session createSession(String userName, String clientIpAddress, String hostServerName, String userAgent, String requestURL) {
+    public Session createSession(String userName, String clientIpAddress, String hostServerName, String userAgent,
+                                 String requestURL) {
         User user = userRepository.findByName(userName);
 
         SSOToken ssoToken = new SSOToken(UUID.randomUUID().toString());
         Session session = new SessionEntity(user, ssoToken, clientIpAddress, hostServerName);
 
         sessionRepository.persist(session);
-        audit.log(auditLogEventFactory.createEventForSession(user.getUserName(), ssoToken, clientIpAddress, hostServerName, userAgent, requestURL,
-                SESSION_CREATED));
+        audit.log(auditLogEventFactory.createEventForSession(user.getUserName(), ssoToken, clientIpAddress,
+                                                             hostServerName, userAgent, requestURL,
+                                                             SESSION_CREATED));
         return session;
     }
 
@@ -94,18 +101,28 @@ public class SessionServiceImpl implements SessionService, org.simbasecurity.api
         return sessionRepository.findBySSOToken(token);
     }
 
+    public boolean isExpired(Session session) {
+        return session == null
+               || session.getLastAccessTime() + getSessionTimeOutInMillis() < System.currentTimeMillis();
+    }
+
+    private long getSessionTimeOutInMillis() {
+        Long sessionTimeOut = configurationService.getValue(SimbaConfigurationParameter.SESSION_TIME_OUT);
+        return Duration.of(sessionTimeOut, SimbaConfigurationParameter.SESSION_TIME_OUT.getChronoUnit()).toMillis();
+    }
+
     @Override
     public void purgeExpiredSessions() {
-        Collection<Session> sessions = sessionRepository.findAll();
-
-        for (Session session : sessions) {
-            if (session.isExpired()) {
-                archiveSession(session);
-                audit.log(auditLogEventFactory.createEventForSession(session.getUser().getUserName(), session.getSSOToken(),
-                        session.getClientIpAddress(), "Purged expired session"));
-                sessionRepository.remove(session);
-            }
-        }
+        sessionRepository.findAll().stream()
+                         .filter(this::isExpired)
+                         .forEach(session -> {
+                             archiveSession(session);
+                             audit.log(auditLogEventFactory.createEventForSession(session.getUser().getUserName(),
+                                                                                  session.getSSOToken(),
+                                                                                  session.getClientIpAddress(),
+                                                                                  "Purged expired session"));
+                             sessionRepository.remove(session);
+                         });
     }
 
     @Override

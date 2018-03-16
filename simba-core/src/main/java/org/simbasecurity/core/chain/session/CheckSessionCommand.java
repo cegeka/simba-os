@@ -57,7 +57,7 @@ public class CheckSessionCommand implements Command {
 
         Session currentSession = context.getCurrentSession();
 
-        if (currentSession == null || currentSession.isExpired()) {
+        if (currentSession == null || sessionService.isExpired(currentSession)) {
             redirectToLogin(context);
             sessionService.removeSession(currentSession);
             audit.log(auditLogFactory.createEventForAuthenticationForFailure(context, AuditMessages.SESSION_INVALID));

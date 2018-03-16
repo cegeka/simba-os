@@ -56,11 +56,6 @@ public interface Session {
     SSOToken getSSOToken();
 
     /**
-     * @return <tt>true</tt> if the session is expired; <tt>false</tt> otherwise
-     */
-    boolean isExpired();
-
-    /**
      * @return the name of the host server for the session.
      */
     String getHostServerName();

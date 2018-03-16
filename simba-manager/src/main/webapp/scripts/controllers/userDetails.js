@@ -81,9 +81,7 @@ angular.module('SimbaApp')
         $user.resetPassword($scope.user)
             .then(function () {
                 $info.showInfo('password.reset.successful');
-            }).catch(function (error) {
-                $error.showError('error.password.reset.failed')
-        });
+            }).catch($error.handlerWithDefault('error.password.reset.failed'));
     };
 
     $scope.cancel = function () {

@@ -7,9 +7,19 @@
     <p>Dear,</p>
     <br/>
     <p style="margin:0px">You were recently registered as a user of [application].</p>
-    <p style="margin:0px">To configure your password, please follow the link below.</p>
+#if( $links.size() == 0)
+    <p style="margin:0px">There should be a link that allows you to configure your password but something went wrong. Please contact your admin.</p>
+#elseif( $links.size() == 1)
+    <p style="margin:0px">To configure your password please follow the link below.</p>
+    <br/>
+    <a href="$links.get(0)">$links.get(0)</a>
+#else
+    <p style="margin:0px">To configure your password please follow one of the links below.</p>
+#foreach( $link in $links )
     <br/>
     <a href="$link">$link</a>
+#end
+#end
     <br/>
     <p style="margin:0px">Kind regards,</p>
     <br/>

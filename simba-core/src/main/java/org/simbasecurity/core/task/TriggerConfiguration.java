@@ -54,12 +54,12 @@ public class TriggerConfiguration {
 
     @Bean(initMethod = "afterPropertiesSet")
     public SimpleTriggerFactoryBean verifyAuditLogIntegrityTrigger() throws ParseException {
-        return createSimpleTrigger(verifyAuditLogIntegrityDetail, Duration.of(5, ChronoUnit.MINUTES).toMillis());
+        return createSimpleTrigger(verifyAuditLogIntegrityDetail, Duration.of(1, ChronoUnit.HOURS).toMillis());
     }
 
     @Bean(initMethod = "afterPropertiesSet")
-    public SimpleTriggerFactoryBean cleanUpAuditLogTrigger() throws ParseException {
-        return createSimpleTrigger(cleanUpAuditLogJobDetail, Duration.of(1, ChronoUnit.HOURS).toMillis());
+    public CronTriggerFactoryBean cleanUpAuditLogTrigger() throws ParseException {
+        return createCronTrigger(cleanUpAuditLogJobDetail, "0 0 5 * * ?");
     }
 
     @Bean(initMethod = "afterPropertiesSet")

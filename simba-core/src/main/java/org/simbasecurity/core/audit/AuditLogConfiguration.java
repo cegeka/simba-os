@@ -19,14 +19,21 @@ package org.simbasecurity.core.audit;
 
 import org.jasypt.digest.StandardStringDigester;
 import org.jasypt.digest.StringDigester;
+import org.jasypt.salt.RandomSaltGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AuditLogConfiguration {
+    private final static String ALGORITHM = "SHA-256";
 
     @Bean
     public StringDigester integrityDigest() {
-        return new StandardStringDigester();
+        StandardStringDigester standardStringDigester = new StandardStringDigester();
+        standardStringDigester.setAlgorithm(ALGORITHM);
+        standardStringDigester.setSaltSizeBytes(8);
+        standardStringDigester.setIterations(1000);
+        standardStringDigester.setSaltGenerator(new RandomSaltGenerator());
+        return standardStringDigester;
     }
 }

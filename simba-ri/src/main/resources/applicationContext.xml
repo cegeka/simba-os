@@ -29,7 +29,7 @@
     <property name="level" value="ALL" />
   </bean>
   
-  <bean name="archivedAuditLogProvider" class="org.simbasecurity.core.audit.provider.DatabaseAuditLogProvider">
+  <bean name="archivedAuditLogProvider" class="org.simbasecurity.core.audit.provider.DatabaseDigestAuditLogProvider">
     <property name="databaseTable" value="SIMBA_ARCHIVED_AUDIT_LOG" />
     <property name="level" value="INFO" />
   </bean>
@@ -39,6 +39,8 @@
       <bean class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="${simba.smtp.host}"/>
         <property name="port" value="${simba.smtp.port}"/>
+        <property name="username" value="${simba.smtp.username}"/>
+        <property name="password" value="${simba.smtp.password}"/>
         <property name="javaMailProperties">
           <map>
             <entry key="mail.transport.protocol" value="${mail.transport.protocol}"/>

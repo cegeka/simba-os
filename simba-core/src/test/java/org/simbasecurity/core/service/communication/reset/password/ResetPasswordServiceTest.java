@@ -19,11 +19,14 @@ import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.communication.mail.LinkGenerator;
 import org.simbasecurity.core.service.communication.mail.MailService;
 import org.simbasecurity.core.service.communication.mail.template.TemplateService;
+import org.simbasecurity.core.service.communication.mail.template.TemplateWithLinks;
 import org.simbasecurity.core.service.communication.token.UserTokenService;
 import org.simbasecurity.test.LocatorRule;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -74,8 +77,10 @@ public class ResetPasswordServiceTest {
         Token token = Token.generateToken();
         when(tokenManagerMock.generateToken(user, forgotPasswordReason)).thenReturn(token);
         URL link = new URL("http://www.google.com");
-        when(linkGeneratorMock.generateResetPasswordLink(email, token)).thenReturn(link);
-        when(templateServiceMock.createMailBodyWithLink(forgotPasswordReason.getTemplate(), en_US, link)).thenReturn("someBody");
+        List<URL> links = Collections.singletonList(link);
+        when(linkGeneratorMock.generateResetPasswordLinks(email, token)).thenReturn(links);
+
+        when(templateServiceMock.createMailBodyWithLink(new TemplateWithLinks(forgotPasswordReason.getTemplate(), links), en_US)).thenReturn("someBody");
         when(templateServiceMock.createMailSubject(forgotPasswordReason.getSubjectTemplate(), en_US)).thenReturn("Reset password");
 
         resetPasswordService.sendResetPasswordMessageTo(user, forgotPasswordReason);
@@ -106,8 +111,9 @@ public class ResetPasswordServiceTest {
         Token token = Token.generateToken();
         when(tokenManagerMock.generateToken(user, newUserReason)).thenReturn(token);
         URL link = new URL("http://www.google.com");
-        when(linkGeneratorMock.generateResetPasswordLink(email, token)).thenReturn(link);
-        when(templateServiceMock.createMailBodyWithLink(newUserReason.getTemplate(), en_US, link)).thenReturn("someBody");
+        List<URL> links = Collections.singletonList(link);
+        when(linkGeneratorMock.generateResetPasswordLinks(email, token)).thenReturn(links);
+        when(templateServiceMock.createMailBodyWithLink(new TemplateWithLinks(newUserReason.getTemplate(), links), en_US)).thenReturn("someBody");
         when(templateServiceMock.createMailSubject(newUserReason.getSubjectTemplate(), en_US)).thenReturn("New user");
 
         ArgumentCaptor<AuditLogEvent> logCaptor = ArgumentCaptor.forClass(AuditLogEvent.class);
@@ -146,5 +152,7 @@ public class ResetPasswordServiceTest {
 
         verifyZeroInteractions(auditMock);
     }
+
+
 
 }

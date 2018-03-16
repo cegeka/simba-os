@@ -134,6 +134,32 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
     }
 
     @Test
+    public void findUserByMailCaseInsensitive_WillReturnUser_IfPresentInDatabase() throws Exception {
+        EmailAddress email = email("alfred@wayneindustries.com");
+        EmailAddress otherEmail = email("Alfred@WayneIndustries.com");
+
+        User expectedUser = aDefaultUser().withEmail(email).build();
+        persistAndRefresh(expectedUser);
+
+        User user = userDatabaseRepository.findByEmail(otherEmail);
+
+        Assertions.assertThat(user).isEqualTo(expectedUser);
+    }
+
+    @Test
+    public void findUserByMailCaseInsensitive2_WillReturnUser_IfPresentInDatabase() throws Exception {
+        EmailAddress email = email("Alfred@WayneIndustries.com");
+        EmailAddress otherEmail = email("alfred@wayneindustries.com");
+
+        User expectedUser = aDefaultUser().withEmail(email).build();
+        persistAndRefresh(expectedUser);
+
+        User user = userDatabaseRepository.findByEmail(otherEmail);
+
+        Assertions.assertThat(user).isEqualTo(expectedUser);
+    }
+
+    @Test
     public void findUserByMail_WillReturnUser_IfPresentInDatabase_AndActiveOrBlocked() throws Exception {
         EmailAddress email = email("alfred@wayneindustries.com");
 

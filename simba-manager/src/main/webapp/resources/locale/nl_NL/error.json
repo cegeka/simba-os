@@ -17,7 +17,7 @@
   "error.status.empty": "Gelieve een status op te geven.",
   "error.user.already.exists": "De gebruikersnaam is niet meer beschikbaar.",
   "error.user.doesnt.exists": "De gebruikersnaam bestaat niet.",
-  "error.optimistic.lock": "De getoonde gegevens zijn gewijzigd door een andere gebruiker. De toepassing dient opnieuw te worden ingeladen alvorens verder te gaan.",
+  "error.optimistic.lock": "De getoonde gegevens zijn gewijzigd door een andere gebruiker. De toepassing dient opnieuw te worden ingeladen alvorens verder te gaan. (F5)",
   "error.SESSION_EXPIRED": "Uw sessie is vervallen.",
   "error.update.failed": "Er is een fout opgetreden bij het updaten van de data.",
   "error.create.failed": "Er is een fout opgetreden bij het aanmaken van de data.",

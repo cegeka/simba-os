@@ -90,6 +90,10 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
      */
     PASSWORD_RESET_URL(DATABASE, true, StringType.class, "/jsp/reset-password.jsp"),
 
+    /**
+     * Parameter for configuring the URL's to the password reset page. See issue #15
+     */
+    PASSWORD_RESET_TOKEN_URL(DATABASE, false, StringType.class, ""),
 
     PASSWORD_INVALID_TOKEN_URL(DATABASE, true, StringType.class, "/jsp/password-invalid-token.jsp"),
 
@@ -208,11 +212,6 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
      * Keystore password used to access the keystore.
      */
     KEYSTORE_PASSWORD(DATABASE, true, StringType.class, "password"),
-    /**
-     * Enables the audit log integrity mechanism, which will add a digest to
-     * your audit trail record.
-     */
-    AUDIT_LOG_INTEGRITY_ENABLED(DATABASE, true, BooleanType.class, "true"),
     /**
      * Parameter for configuring the maximum elapsed time between opening the login page and the actual login.
      */

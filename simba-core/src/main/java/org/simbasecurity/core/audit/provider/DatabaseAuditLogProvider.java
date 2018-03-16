@@ -16,13 +16,8 @@
  */
 package org.simbasecurity.core.audit.provider;
 
-import org.jasypt.digest.StringDigester;
 import org.simbasecurity.core.audit.AuditLogEvent;
-import org.simbasecurity.core.audit.AuditLogIntegrityMessageFactory;
 import org.simbasecurity.core.audit.AuditLogLevel;
-import org.simbasecurity.core.config.SimbaConfigurationParameter;
-import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Propagation;
@@ -34,8 +29,6 @@ public class DatabaseAuditLogProvider implements AuditLogProvider {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    @Autowired
-    private StringDigester integrityDigest;
 
     private AuditLogLevel level = AuditLogLevel.ALL;
     private String sqlStatement;
@@ -67,27 +60,15 @@ public class DatabaseAuditLogProvider implements AuditLogProvider {
                 remoteIp = NOT_REGISTERED;
             }
 
-            String digest = null;
-            if (isAuditLogIntegrityEnabled()) {
-                digest = integrityDigest.digest(AuditLogIntegrityMessageFactory.createDigest(event, ssoToken));
-            }
-
             jdbcTemplate.update(sqlStatement,
                                event.getTimestamp(), username, ssoToken, remoteIp, event.getMessage(), event.getName(),
                                event.getFirstName(), event.getUserAgent(), event.getHostServerName(),
-                               event.getCategory().name(), digest, event.getRequestURL(), event.getChainId());
+                               event.getCategory().name(), null, event.getRequestURL(), event.getChainId());
         }
-    }
-
-    private boolean isAuditLogIntegrityEnabled() {
-        return GlobalContext.locate(CoreConfigurationService.class).<Boolean>getValue(SimbaConfigurationParameter.AUDIT_LOG_INTEGRITY_ENABLED);
     }
 
     void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    void setIntegrityDigest(StringDigester integrityDigest) {
-        this.integrityDigest = integrityDigest;
-    }
 }

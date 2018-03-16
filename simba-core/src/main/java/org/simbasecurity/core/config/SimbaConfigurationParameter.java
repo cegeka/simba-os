@@ -213,12 +213,6 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
      */
     KEYSTORE_PASSWORD(DATABASE, true, StringType.class, "password"),
     /**
-     * Enables the audit log integrity mechanism, which will add a digest to
-     * your audit trail record.
-     */
-    @Deprecated
-    AUDIT_LOG_INTEGRITY_ENABLED(DATABASE, true, BooleanType.class, "true"),
-    /**
      * Parameter for configuring the maximum elapsed time between opening the login page and the actual login.
      */
     MAX_LOGIN_ELAPSED_TIME(DATABASE, true, TimeType.class, MINUTES, "2"),

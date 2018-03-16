@@ -29,7 +29,7 @@
     <property name="level" value="ALL" />
   </bean>
   
-  <bean name="archivedAuditLogProvider" class="org.simbasecurity.core.audit.provider.DatabaseAuditLogProvider">
+  <bean name="archivedAuditLogProvider" class="org.simbasecurity.core.audit.provider.DatabaseDigestAuditLogProvider">
     <property name="databaseTable" value="SIMBA_ARCHIVED_AUDIT_LOG" />
     <property name="level" value="INFO" />
   </bean>

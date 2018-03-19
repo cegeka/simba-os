@@ -21,7 +21,6 @@ import org.simbasecurity.api.service.thrift.SSOToken;
 import org.simbasecurity.core.domain.SSOTokenMapping;
 import org.simbasecurity.core.domain.SSOTokenMappingEntity;
 import org.simbasecurity.core.domain.repository.SSOTokenMappingDatabaseRepository;
-import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +36,7 @@ import static org.simbasecurity.core.config.SimbaConfigurationParameter.MAX_LOGI
 public class SSOTokenMappingServiceImpl implements SSOTokenMappingService {
 
     @Autowired private SSOTokenMappingDatabaseRepository ssoTokenMappingDatabaseRepository;
+    @Autowired private CoreConfigurationService coreConfigurationService;
 
     @Override
     public SSOTokenMapping createMapping(SSOToken token) {
@@ -83,12 +83,8 @@ public class SSOTokenMappingServiceImpl implements SSOTokenMappingService {
     }
 
     private long getMaxLoginElapsedTime() {
-        Long maxElapsedTime = getConfigurationService().getValue(MAX_LOGIN_ELAPSED_TIME);
+        Long maxElapsedTime = coreConfigurationService.getValue(MAX_LOGIN_ELAPSED_TIME);
         return Duration.of(maxElapsedTime, MAX_LOGIN_ELAPSED_TIME.getChronoUnit()).toMillis();
-    }
-
-    private CoreConfigurationService getConfigurationService() {
-        return GlobalContext.locate(CoreConfigurationService.class);
     }
 
 }

@@ -20,7 +20,6 @@ import org.simbasecurity.core.domain.Language;
 import org.simbasecurity.core.domain.Status;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.exception.SimbaMessageKey;
-import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,15 +32,16 @@ import static org.simbasecurity.core.exception.SimbaMessageKey.*;
 public class UserValidatorImpl implements UserValidator {
 
     private final CoreConfigurationService configurationService;
+    private final UserNameValidator userNameValidator;
 
     @Autowired
-    public UserValidatorImpl(CoreConfigurationService configurationService) {
+    public UserValidatorImpl(CoreConfigurationService configurationService, UserNameValidator userNameValidator) {
         this.configurationService = configurationService;
+        this.userNameValidator = userNameValidator;
     }
 
     @Override
     public void validateUserName(String userName) {
-        UserNameValidator userNameValidator = GlobalContext.locate(UserNameValidator.class);
         userNameValidator.validateUserName(userName);
     }
 

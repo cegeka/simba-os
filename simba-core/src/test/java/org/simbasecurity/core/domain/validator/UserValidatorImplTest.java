@@ -34,6 +34,7 @@ public class UserValidatorImplTest {
 	@Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	@Mock private CoreConfigurationService mockConfigurationService;
+	@Mock private UserNameValidator userNameValidator;
 
     @InjectMocks
 	private UserValidatorImpl validator;

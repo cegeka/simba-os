@@ -16,12 +16,14 @@
  */
 package org.simbasecurity.core.domain;
 
-import java.io.Serializable;
-import javax.persistence.MappedSuperclass;
-
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.simbasecurity.core.spring.AutowireHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.MappedSuperclass;
+import javax.persistence.PostLoad;
+import java.io.Serializable;
 
 @MappedSuperclass
 public abstract class AbstractEntity implements Serializable, Identifiable {
@@ -31,6 +33,10 @@ public abstract class AbstractEntity implements Serializable, Identifiable {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEntity.class);
 
     private transient boolean markedForRemoval = false;
+
+    AbstractEntity() {
+        AutowireHelper.autowireBean(this);
+    }
 
     @Override
     public abstract long getId();
@@ -75,4 +81,10 @@ public abstract class AbstractEntity implements Serializable, Identifiable {
     public boolean isMarkedForRemoval() {
         return markedForRemoval;
     }
+
+    @PostLoad
+    public final void postLoad() {
+        AutowireHelper.autowireBean(this);
+    }
+
 }

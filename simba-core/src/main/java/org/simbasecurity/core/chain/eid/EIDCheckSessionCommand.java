@@ -17,6 +17,7 @@
 
 package org.simbasecurity.core.chain.eid;
 
+import org.simbasecurity.common.constants.AuthenticationConstants;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.session.CheckSessionCommand;
 import org.simbasecurity.core.saml.SAMLService;
@@ -38,6 +39,7 @@ public class EIDCheckSessionCommand extends CheckSessionCommand {
     protected void redirectToLogin(ChainContext context) {
         Map<String, String> parameters = new HashMap<>();
         String authRequestId = context.createLoginMapping().getToken();
+        parameters.put(AuthenticationConstants.LOGIN_TOKEN, authRequestId);
         context.redirectWithParameters(getSAMLAuthRequest(authRequestId), parameters);
     }
 

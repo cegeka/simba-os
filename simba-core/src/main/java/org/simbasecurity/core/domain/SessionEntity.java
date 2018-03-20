@@ -45,7 +45,7 @@ public class SessionEntity implements Session {
 
     @Transient private CoreConfigurationService coreConfigurationService;
 
-    public SessionEntity() {
+    private SessionEntity() {
     }
 
     public SessionEntity(User user, SSOToken ssoToken, String clientIpAddress, String hostServerName) {

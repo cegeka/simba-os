@@ -63,9 +63,19 @@ public class SAMLAuthResponseCommandTest {
     }
 
     @Test
+    public void testExecute_noLoginMappingFound_redirectToAccessDenied() throws Exception {
+        when(samlResponse.getInResponseTo()).thenReturn(LOGIN_TOKEN_1234);
+        when(loginMappingService.getMapping(LOGIN_TOKEN_1234)).thenReturn(null);
+
+        assertEquals(FINISH, samlAuthResponseCommand.execute(chainContext));
+
+        verify(chainContext).redirectToAccessDenied();
+    }
+
+    @Test
     public void testExecute_loginMappingExpired_redirectToAccessDenied() throws Exception {
         when(samlResponse.getInResponseTo()).thenReturn(LOGIN_TOKEN_1234);
-        when(loginMappingService.isExpired(LOGIN_TOKEN_1234)).thenReturn(true);
+        when(loginMapping.isExpired()).thenReturn(true);
         when(loginMappingService.getMapping(LOGIN_TOKEN_1234)).thenReturn(loginMapping);
 
         assertEquals(FINISH, samlAuthResponseCommand.execute(chainContext));
@@ -81,7 +91,7 @@ public class SAMLAuthResponseCommandTest {
         when(samlResponse.getAttribute("surname")).thenReturn("lastname");
         when(samlResponse.getAttribute("mail")).thenReturn("email");
         when(samlResponse.getAttribute("PrefLanguage")).thenReturn("language");
-        when(loginMappingService.isExpired(LOGIN_TOKEN_1234)).thenReturn(false);
+        when(loginMapping.isExpired()).thenReturn(false);
         when(loginMappingService.getMapping(LOGIN_TOKEN_1234)).thenReturn(loginMapping);
 
         assertEquals(CONTINUE, samlAuthResponseCommand.execute(chainContext));

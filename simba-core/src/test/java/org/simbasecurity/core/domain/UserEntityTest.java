@@ -26,6 +26,7 @@ import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.test.AutowirerRule;
 import org.simbasecurity.test.LocatorRule;
 
 import java.util.Calendar;
@@ -47,17 +48,19 @@ public class UserEntityTest {
     private static final String VALID_PASSWORD = "Simba2!";
     private static final String OLD_PASSWORD = "oldPassword";
     private static final String USERNAME = "Lenne";
-    @Rule
-    public LocatorRule locatorRule = LocatorRule.locator();
+
+    @Rule public LocatorRule locatorRule = LocatorRule.locator();
+    @Rule public AutowirerRule autowirerRule = AutowirerRule.autowirer();
 
     private User user;
 
     @Before
     public void setUp() {
-        locatorRule.implantMock(UserValidator.class);
+        autowirerRule.mockBean(UserValidator.class);
+        PasswordValidator mockPasswordValidator = autowirerRule.mockBean(PasswordValidator.class);
+
         CoreConfigurationService coreConfigurationService = locatorRule.getCoreConfigurationService();
         when(coreConfigurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(true);
-        PasswordValidator mockPasswordValidator = locatorRule.implantMock(PasswordValidator.class);
 
         doThrow(new SimbaException(PASSWORD_INVALID_LENGTH)).when(mockPasswordValidator).validatePassword(INVALID_PASSWORD);
 

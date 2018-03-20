@@ -30,9 +30,9 @@ import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
-import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.util.PasswordEncryptorFactory;
 import org.simbasecurity.core.util.SHA1PasswordEncryptorFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.util.*;
@@ -63,6 +63,20 @@ public class UserEntity extends AbstractVersionedEntity implements User {
             ENCRYPTOR_POOL.returnObject(encryptor);
         } catch (Exception ignore) {
         }
+    }
+
+
+    @Transient private UserValidator userValidator;
+    @Transient private PasswordValidator passwordValidator;
+
+    @Autowired
+    public void setUserValidator(UserValidator userValidator) {
+        this.userValidator = userValidator;
+    }
+
+    @Autowired
+    public void setPasswordValidator(PasswordValidator passwordValidator) {
+        this.passwordValidator = passwordValidator;
     }
 
     @Id
@@ -420,11 +434,14 @@ public class UserEntity extends AbstractVersionedEntity implements User {
     }
 
     private UserValidator getUserValidator() {
-        return GlobalContext.locate(UserValidator.class);
+        return userValidator;
+//        return GlobalContext.locate(UserValidator.class);
     }
 
     private PasswordValidator getPasswordValidator() {
-        return GlobalContext.locate(PasswordValidator.class);
+        return passwordValidator;
+
+//        return GlobalContext.locate(PasswordValidator.class);
     }
 
     @Override

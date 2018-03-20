@@ -45,6 +45,7 @@ import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
 import org.simbasecurity.core.service.filter.EntityFilter;
 import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
+import org.simbasecurity.test.AutowirerRule;
 import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.util.ReflectionUtil;
 
@@ -66,6 +67,7 @@ public class UserServiceImplTest {
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
     @Rule public LocatorRule locatorRule = LocatorRule.locator();
+    @Rule public AutowirerRule autowirerRule = AutowirerRule.autowirer();
 
     @Mock private ResetPasswordService resetPasswordService;
     @Mock private ResetPasswordByManager resetReason;
@@ -98,8 +100,9 @@ public class UserServiceImplTest {
 
     @Before
     public void setup() {
-        locatorRule.implantMock(UserValidator.class);
-        locatorRule.implantMock(PasswordValidator.class);
+        autowirerRule.mockBean(UserValidator.class);
+        autowirerRule.mockBean(PasswordValidator.class);
+
         configurationService = locatorRule.getCoreConfigurationService();
         when(configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(true);
         service.setConfigurationService(configurationService);

@@ -14,11 +14,13 @@ import org.simbasecurity.core.domain.generator.PasswordGenerator;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.domain.user.EmailAddress;
+import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.communication.reset.password.NewUser;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.test.AutowirerRule;
 import org.simbasecurity.test.LocatorRule;
 
 import java.util.List;
@@ -37,28 +39,27 @@ import static org.simbasecurity.core.exception.SimbaMessageKey.EMAIL_ADDRESS_REQ
 @RunWith(MockitoJUnitRunner.class)
 public class UserFactoryTest {
 
-    @Rule
-    public LocatorRule locatorRule = LocatorRule.locator();
-    @Mock
-    private RoleRepository roleRepository;
-    @Mock
-    private PasswordGenerator passwordGenerator;
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private ManagementAudit managementAudit;
-    @Mock
-    private ResetPasswordService resetPasswordService;
-    @Mock
-    private NewUser newUserReason;
+    @Rule public LocatorRule locatorRule = LocatorRule.locator();
+    @Rule public AutowirerRule autowirerRule = AutowirerRule.autowirer();
+
+    @Mock private RoleRepository roleRepository;
+    @Mock private PasswordGenerator passwordGenerator;
+    @Mock private UserRepository userRepository;
+    @Mock private ManagementAudit managementAudit;
+    @Mock private ResetPasswordService resetPasswordService;
+    @Mock private NewUser newUserReason;
+
     //@Mock
     private CoreConfigurationService configurationService;
+
     @InjectMocks
     private UserFactory userFactory;
 
     @Before
     public void setUp() {
-        locatorRule.implantMock(UserValidator.class);
+        autowirerRule.mockBean(UserValidator.class);
+        autowirerRule.mockBean(PasswordValidator.class);
+
         configurationService = locatorRule.getCoreConfigurationService();
         userFactory.setConfigurationService(configurationService);
     }

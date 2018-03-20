@@ -43,6 +43,7 @@ public class ResetPasswordServiceTest {
 
     @Rule
     public LocatorRule locatorRule = LocatorRule.locator();
+
     @Mock private MailService mailServiceMock;
     @Mock private LinkGenerator linkGeneratorMock;
     @Mock private UserTokenService tokenManagerMock;

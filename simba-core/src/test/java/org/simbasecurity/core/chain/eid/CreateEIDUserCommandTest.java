@@ -38,6 +38,7 @@ import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.service.UserService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.user.UserFactory;
+import org.simbasecurity.test.AutowirerRule;
 import org.simbasecurity.test.LocatorRule;
 
 import java.util.Collections;
@@ -53,6 +54,7 @@ public class CreateEIDUserCommandTest {
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
     @Rule public LocatorRule locatorRule = LocatorRule.locator();
+    @Rule public AutowirerRule autowirerRule = AutowirerRule.autowirer();
 
     private static final String INSZ = "insz";
     private static final String FIRSTNAME = "johnny";
@@ -79,8 +81,8 @@ public class CreateEIDUserCommandTest {
 
     @Before
     public void setUp() {
-        locatorRule.implantMock(UserValidator.class);
-        locatorRule.implantMock(PasswordValidator.class);
+        autowirerRule.mockBean(UserValidator.class);
+        autowirerRule.mockBean(PasswordValidator.class);
 
         configurationServiceMock = locatorRule.getCoreConfigurationService();
         when(configurationServiceMock.getValue(SimbaConfigurationParameter.DEFAULT_USER_ROLE)).thenReturn(Collections.singletonList("guest"));

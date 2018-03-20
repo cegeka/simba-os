@@ -47,9 +47,8 @@ public class CreateEIDUserCommand implements Command {
     @Autowired private UserFactory userFactory;
     @Autowired private Audit audit;
     @Autowired private AuditLogEventFactory auditLogFactory;
-    private CoreConfigurationService configurationService;
+    @Autowired private CoreConfigurationService configurationService;
 
-    @Autowired
     public void setConfigurationService(CoreConfigurationService configurationService) {
         this.configurationService = configurationService;
     }

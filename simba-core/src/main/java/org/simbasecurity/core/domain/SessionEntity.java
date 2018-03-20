@@ -19,11 +19,13 @@ package org.simbasecurity.core.domain;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.simbasecurity.api.service.thrift.SSOToken;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.core.spring.AutowireHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.time.Duration;
 
 @Entity
 @Table(name = "SIMBA_SESSION")
@@ -41,16 +43,25 @@ public class SessionEntity implements Session {
     private String clientIpAddress;
     private String hostServerName;
 
+    @Transient private CoreConfigurationService coreConfigurationService;
+
     public SessionEntity() {
     }
 
     public SessionEntity(User user, SSOToken ssoToken, String clientIpAddress, String hostServerName) {
+        AutowireHelper.autowireBean(this);
         this.creationTime = System.currentTimeMillis();
         this.lastAccessTime = creationTime;
         this.ssoToken = ssoToken.getToken();
         this.user = user;
         this.clientIpAddress = clientIpAddress;
         this.hostServerName = hostServerName;
+    }
+
+
+    @Autowired
+    public void setCoreConfigurationService(CoreConfigurationService coreConfigurationService) {
+        this.coreConfigurationService = coreConfigurationService;
     }
 
     @Override
@@ -84,6 +95,16 @@ public class SessionEntity implements Session {
     }
 
     @Override
+    public boolean isExpired() {
+        return lastAccessTime + getSessionTimeOutInMillis() < System.currentTimeMillis();
+    }
+
+    private long getSessionTimeOutInMillis() {
+        Long sessionTimeOut = coreConfigurationService.getValue(SimbaConfigurationParameter.SESSION_TIME_OUT);
+        return Duration.of(sessionTimeOut, SimbaConfigurationParameter.SESSION_TIME_OUT.getChronoUnit()).toMillis();
+    }
+
+    @Override
     public String getHostServerName() {
         return hostServerName;
     }
@@ -98,6 +119,11 @@ public class SessionEntity implements Session {
         builder.append("created", creationTime);
         builder.append("last accessed", lastAccessTime);
         return builder.toString();
+    }
+
+    @PostLoad
+    public final void postLoad() {
+        AutowireHelper.autowireBean(this);
     }
 
 }

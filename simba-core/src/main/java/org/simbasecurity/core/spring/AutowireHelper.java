@@ -1,6 +1,5 @@
 package org.simbasecurity.core.spring;
 
-import org.simbasecurity.core.domain.AbstractEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.stereotype.Component;
@@ -15,7 +14,7 @@ public class AutowireHelper {
         AutowireHelper.autowirer = autowirer;
     }
 
-    public static void autowireBean(AbstractEntity abstractEntity) {
-        if (autowirer != null) autowirer.autowireBean(abstractEntity);
+    public static void autowireBean(Object object) {
+        if (autowirer != null) autowirer.autowireBean(object);
     }
 }

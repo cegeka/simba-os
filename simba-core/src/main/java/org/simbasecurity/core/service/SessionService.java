@@ -27,8 +27,6 @@ public interface SessionService {
 
 	Session getSession(SSOToken token);
 
-	boolean isExpired(Session session);
-
 	void purgeExpiredSessions();
 
 	void purgeSessionsOlderThanAbsoluteSessionTimeOut();

@@ -36,7 +36,4 @@ public interface SSOTokenMappingService {
     void destroyMapping(String ssoTokenKey);
 
     void purgeExpiredMappings();
-
-    boolean isExpired(String ssoTokenKey);
-
 }

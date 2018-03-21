@@ -18,11 +18,15 @@
 package org.simbasecurity.core.domain;
 
 import org.simbasecurity.api.service.thrift.SSOToken;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.simbasecurity.core.spring.AutowireHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.time.Duration;
 import java.util.UUID;
+
+import static org.simbasecurity.core.config.SimbaConfigurationParameter.MAX_LOGIN_ELAPSED_TIME;
 
 @Entity
 @Table(name = "SIMBA_SSO_TOKEN_MAPPING")
@@ -34,13 +38,22 @@ public class SSOTokenMappingEntity implements SSOTokenMapping {
     private String ssoToken;
     private long creationTime;
 
-    public SSOTokenMappingEntity() {
+    @Transient private CoreConfigurationService coreConfigurationService;
+
+    private SSOTokenMappingEntity() {
     }
 
     public SSOTokenMappingEntity(SSOToken ssoToken) {
+        AutowireHelper.autowireBean(this);
+
         this.token = UUID.randomUUID().toString();
         this.ssoToken = ssoToken.getToken();
         this.creationTime = System.currentTimeMillis();
+    }
+
+    @Autowired
+    public void setCoreConfigurationService(CoreConfigurationService coreConfigurationService) {
+        this.coreConfigurationService = coreConfigurationService;
     }
 
     @Override
@@ -56,6 +69,21 @@ public class SSOTokenMappingEntity implements SSOTokenMapping {
     @Override
     public long getCreationTime() {
         return creationTime;
+    }
+
+    @Override
+    public boolean isExpired() {
+        return creationTime + getMaxLoginElapsedTime() < System.currentTimeMillis();
+    }
+
+    private long getMaxLoginElapsedTime() {
+        Long maxElapsedTime = coreConfigurationService.getValue(MAX_LOGIN_ELAPSED_TIME);
+        return Duration.of(maxElapsedTime, MAX_LOGIN_ELAPSED_TIME.getChronoUnit()).toMillis();
+    }
+
+    @PostLoad
+    public final void postLoad() {
+        AutowireHelper.autowireBean(this);
     }
 
 }

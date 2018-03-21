@@ -19,16 +19,14 @@ package org.simbasecurity.core.service.http;
 import org.simbasecurity.api.service.thrift.ActionDescriptor;
 import org.simbasecurity.api.service.thrift.AuthenticationFilterService;
 import org.simbasecurity.api.service.thrift.RequestData;
-import org.simbasecurity.common.config.SystemConfiguration;
 import org.simbasecurity.common.filter.action.RequestActionFactory;
 import org.simbasecurity.common.request.RequestConstants;
 import org.simbasecurity.common.request.RequestUtil;
-import org.simbasecurity.core.locator.GlobalContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,14 +34,14 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/simba-login")
 public class LoginController implements Controller {
 
+    @Autowired private AuthenticationFilterService.Iface authenticationFilterService;
+
     private SimbaWebUrlResolver simbaWebUrlResolver = new SimbaWebUrlResolver();
 
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestData requestData = RequestUtil.createRequestData(request, simbaWebUrlResolver.resolveSimbaWebURL(request));
 
-
-        AuthenticationFilterService.Iface authenticationFilterService = GlobalContext.locate(AuthenticationFilterService.Iface.class, "authenticationFilterService");
         ActionDescriptor actionDescriptor = authenticationFilterService.processRequest(requestData, "credentialChain");
 
         if (actionDescriptor.getSsoToken() != null) {

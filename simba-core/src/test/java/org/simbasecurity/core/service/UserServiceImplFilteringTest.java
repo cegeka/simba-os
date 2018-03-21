@@ -32,13 +32,10 @@ import org.simbasecurity.core.domain.*;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
-import org.simbasecurity.core.domain.validator.PasswordValidator;
-import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
 import org.simbasecurity.core.service.filter.EntityFilter;
 import org.simbasecurity.core.service.filter.EntityFilterService;
 import org.simbasecurity.core.service.thrift.ThriftAssembler;
-import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.util.ReflectionUtil;
 
 import java.util.ArrayList;
@@ -58,7 +55,6 @@ import static org.simbasecurity.core.service.errors.ForwardingThriftHandlerForTe
 public class UserServiceImplFilteringTest {
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
-    @Rule public LocatorRule locatorRule = LocatorRule.locator();
 
     @Mock private PolicyRepository policyRepository;
     @Mock private RoleRepository roleRepository;
@@ -87,10 +83,6 @@ public class UserServiceImplFilteringTest {
 
     @Before
     public void setup() {
-        locatorRule.implantMock(UserValidator.class);
-        locatorRule.implantMock(PasswordValidator.class);
-        locatorRule.getCoreConfigurationService();
-
         User userEntity1 = UserTestBuilder.aDefaultUser().withUserName("user-1").build();
         User userEntity2 = UserTestBuilder.aDefaultUser().withUserName("user-2").build();
         User userEntity3 = UserTestBuilder.aDefaultUser().withUserName("user-3").build();

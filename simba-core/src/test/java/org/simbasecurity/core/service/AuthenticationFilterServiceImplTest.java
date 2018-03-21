@@ -31,19 +31,17 @@ import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.ChainImpl;
 import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
-import org.simbasecurity.test.LocatorRule;
+import org.springframework.context.ApplicationContext;
 
 import java.util.Collections;
 import java.util.UUID;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.simbasecurity.core.service.errors.ForwardingThriftHandlerForTests.forwardingThriftHandlerForTests;
 
 public class AuthenticationFilterServiceImplTest {
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
-    @Rule public LocatorRule locatorRule = LocatorRule.locator();
 
     @Mock private SessionService sessionServiceMock;
     @Mock private LoginMappingService loginMappingService;
@@ -51,6 +49,7 @@ public class AuthenticationFilterServiceImplTest {
 
     @Spy private AuditLogEventFactory auditLogEventFactory;
     @Spy private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller = new SimbaExceptionHandlingCaller(forwardingThriftHandlerForTests());
+    @Mock private ApplicationContext applicationContext;
 
     @InjectMocks private AuthenticationFilterServiceImpl serviceImpl;
 
@@ -59,7 +58,8 @@ public class AuthenticationFilterServiceImplTest {
         Session sessionMock = mock(Session.class);
         when(sessionServiceMock.getSession(any(SSOToken.class))).thenReturn(sessionMock);
 
-        ChainImpl authenticationChainMock = locatorRule.implantMockLocatingByNameOnly(ChainImpl.class, "authenticationChain");
+        ChainImpl authenticationChainMock = mock(ChainImpl.class);
+        when(applicationContext.getBean("authenticationChain")).thenReturn(authenticationChainMock);
 
         serviceImpl.processRequest(new RequestData(null, null, null, null, null, null, false, false, false, false, false, null, null, "loginToken", null), "authenticationChain");
         verify(authenticationChainMock).execute(any(ChainContext.class));

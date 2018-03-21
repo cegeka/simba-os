@@ -40,13 +40,13 @@ import org.simbasecurity.core.service.UserService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.user.UserFactory;
 import org.simbasecurity.test.AutowirerRule;
-import org.simbasecurity.test.LocatorRule;
 
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
@@ -54,7 +54,6 @@ import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 public class CreateEIDUserCommandTest {
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule().silent();
-    @Rule public LocatorRule locatorRule = LocatorRule.locator();
     @Rule public AutowirerRule autowirerRule = AutowirerRule.autowirer();
 
     private static final String INSZ = "insz";
@@ -86,7 +85,7 @@ public class CreateEIDUserCommandTest {
         autowirerRule.mockBean(PasswordValidator.class);
         autowirerRule.registerBean(StubEmailFactory.emailRequired());
 
-        configurationServiceMock = locatorRule.getCoreConfigurationService();
+        configurationServiceMock = mock(CoreConfigurationService.class);
         when(configurationServiceMock.getValue(SimbaConfigurationParameter.DEFAULT_USER_ROLE)).thenReturn(Collections.singletonList("guest"));
 
         createEIDUserCommand.setConfigurationService(configurationServiceMock);

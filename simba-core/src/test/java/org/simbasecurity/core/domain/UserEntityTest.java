@@ -21,14 +21,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.user.EmailFactory;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
-import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.test.AutowirerRule;
-import org.simbasecurity.test.LocatorRule;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -37,7 +34,6 @@ import static org.apache.commons.lang.time.DateUtils.truncate;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 import static org.simbasecurity.core.domain.UserTestBuilder.aUser;
 import static org.simbasecurity.core.exception.SimbaMessageKey.PASSWORD_INVALID_LENGTH;
@@ -50,7 +46,6 @@ public class UserEntityTest {
     private static final String OLD_PASSWORD = "oldPassword";
     private static final String USERNAME = "Lenne";
 
-    @Rule public LocatorRule locatorRule = LocatorRule.locator();
     @Rule public AutowirerRule autowirerRule = AutowirerRule.autowirer();
 
     private User user;
@@ -63,9 +58,6 @@ public class UserEntityTest {
         autowirerRule.registerBean(emailFactory);
 
         PasswordValidator mockPasswordValidator = autowirerRule.mockBean(PasswordValidator.class);
-
-        CoreConfigurationService coreConfigurationService = locatorRule.getCoreConfigurationService();
-        when(coreConfigurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(true);
 
         doThrow(new SimbaException(PASSWORD_INVALID_LENGTH)).when(mockPasswordValidator).validatePassword(INVALID_PASSWORD);
 

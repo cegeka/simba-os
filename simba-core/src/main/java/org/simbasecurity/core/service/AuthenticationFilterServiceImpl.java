@@ -28,11 +28,11 @@ import org.simbasecurity.core.domain.Session;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.simbasecurity.common.request.RequestConstants.SIMBA_SSO_TOKEN;
-import static org.simbasecurity.core.locator.GlobalContext.locate;
 
 @Service("authenticationFilterService")
 public class AuthenticationFilterServiceImpl implements AuthenticationFilterService.Iface {
@@ -42,6 +42,8 @@ public class AuthenticationFilterServiceImpl implements AuthenticationFilterServ
     @Autowired private LoginMappingService loginMapping;
     @Autowired private SSOTokenMappingService ssoTokenMappingService;
     @Autowired private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller;
+
+    @Autowired private ApplicationContext context;
 
     @Transactional
     public ActionDescriptor processRequest(RequestData requestData, String chainCommand) throws TException {
@@ -65,7 +67,7 @@ public class AuthenticationFilterServiceImpl implements AuthenticationFilterServ
     }
 
     private Command locateCommandChain(String chainCommand) {
-        Object command = locate(chainCommand);
+        Object command = context.getBean(chainCommand);
         if (!(command instanceof Command)) {
             throw new IllegalArgumentException("The specified bean ('" + chainCommand + "') isn't a " + Command.class.getSimpleName());
         }

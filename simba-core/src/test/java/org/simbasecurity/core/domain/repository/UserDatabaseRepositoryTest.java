@@ -18,17 +18,13 @@ package org.simbasecurity.core.domain.repository;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.*;
 import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.domain.user.EmailFactory;
-import org.simbasecurity.core.domain.validator.PasswordValidator;
-import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
-import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.PersistenceTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,13 +35,12 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 
 public class UserDatabaseRepositoryTest extends PersistenceTestCase {
 
     private static final String DUMMY_USER_NAME = "dummy";
-    @Rule
-    public LocatorRule locatorRule = LocatorRule.locator();
     protected CoreConfigurationService configurationServiceMock;
     private User user;
 
@@ -56,16 +51,10 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
 
     @Before
     public void setUp() {
+        configurationServiceMock = mock(CoreConfigurationService.class);
+
         user = UserTestBuilder.aUser().withUserName(DUMMY_USER_NAME).withFirstName("").withName("").withPassword("moo").withDateOfLastPasswordChange(new Date()).build();
         persistAndRefresh(user);
-        setUpCommonLocatables();
-    }
-
-    public void setUpCommonLocatables() {
-        locatorRule.implantMock(UserValidator.class);
-        locatorRule.implantMock(PasswordValidator.class);
-
-        configurationServiceMock = locatorRule.getCoreConfigurationService();
     }
 
     @Test

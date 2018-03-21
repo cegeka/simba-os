@@ -2,7 +2,6 @@ package org.simbasecurity.core.service.communication.token;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.communication.token.ResetPasswordUserToken;
@@ -10,12 +9,9 @@ import org.simbasecurity.core.domain.communication.token.Token;
 import org.simbasecurity.core.domain.communication.token.UserToken;
 import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.domain.repository.communication.token.UserTokenRepository;
-import org.simbasecurity.core.domain.validator.PasswordValidator;
-import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordReason;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.util.dates.DateUtils;
-import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.PersistenceTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,6 +21,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 import static org.simbasecurity.core.domain.communication.token.UserTokenTestBuilder.userToken;
@@ -32,8 +29,6 @@ import static org.simbasecurity.core.util.dates.DateUtils.now;
 
 public class UserTokenServiceTest extends PersistenceTestCase {
 
-    @Rule
-    public LocatorRule locatorRule = LocatorRule.locator();
     protected CoreConfigurationService configurationServiceMock;
     @Autowired
     private UserTokenRepository userTokenRepository;
@@ -47,15 +42,7 @@ public class UserTokenServiceTest extends PersistenceTestCase {
     @Before
     public void setUp() {
         tokenManager = new UserTokenService(userTokenRepository, userRepository);
-        resetPasswordReason = locatorRule.implantMock(ResetPasswordReason.class);
-        setUpCommonLocatables();
-    }
-
-    public void setUpCommonLocatables() {
-        locatorRule.implantMock(UserValidator.class);
-        locatorRule.implantMock(PasswordValidator.class);
-
-        configurationServiceMock = locatorRule.getCoreConfigurationService();
+        resetPasswordReason = mock(ResetPasswordReason.class);
     }
 
     @Test

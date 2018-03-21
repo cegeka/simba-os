@@ -16,17 +16,20 @@
  */
 package org.simbasecurity.core.jaas.loginmodule.htpasswd;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.simbasecurity.core.jaas.loginmodule.HtPasswdLoginModule;
 
-@RunWith(MockitoJUnitRunner.class)
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 public class MD5CryptTest  {
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     private static final String SAMPLE_HASH = "$apr1$q5fpwm63$5qK4aaNGxPKt7qGl/GzWB/";
     private static final String SAMPLE_PASSWORD = "123P6ssw0rd!";

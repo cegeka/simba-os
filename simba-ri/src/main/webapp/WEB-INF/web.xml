@@ -21,7 +21,7 @@
     <display-name>simba</display-name>
 
     <listener>
-        <listener-class>org.simbasecurity.core.spring.SimbaContextLoaderListener</listener-class>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     <listener>
         <listener-class>org.simbasecurity.core.jaas.JaasConfigListener</listener-class>

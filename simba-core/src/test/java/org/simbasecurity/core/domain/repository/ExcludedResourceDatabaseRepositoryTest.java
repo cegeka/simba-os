@@ -16,15 +16,10 @@
  */
 package org.simbasecurity.core.domain.repository;
 
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.simbasecurity.core.domain.ExcludedResource;
 import org.simbasecurity.core.domain.ExcludedResourceEntity;
-import org.simbasecurity.core.domain.validator.PasswordValidator;
-import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
-import org.simbasecurity.test.LocatorRule;
 import org.simbasecurity.test.PersistenceTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -35,20 +30,10 @@ import static org.junit.Assert.assertTrue;
 public class ExcludedResourceDatabaseRepositoryTest extends PersistenceTestCase {
 
     private static final String EXCLUSION_PATTERN = "*/excluded/*";
-    @Rule
-    public LocatorRule locatorRule = LocatorRule.locator();
     protected CoreConfigurationService configurationServiceMock;
 
     @Autowired
     private ExcludedResourceDatabaseRepository excludedResourceDatabaseRepository;
-
-    @Before
-    public void setUpCommonLocatables() {
-        locatorRule.implantMock(UserValidator.class);
-        locatorRule.implantMock(PasswordValidator.class);
-
-        configurationServiceMock = locatorRule.getCoreConfigurationService();
-    }
 
     @Test
     public void isResourceExcluded_resourceExcluded() throws Exception {

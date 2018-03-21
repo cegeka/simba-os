@@ -35,7 +35,6 @@ import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.domain.user.EmailFactory;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
-import org.simbasecurity.test.EmailRequiredRule;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -55,9 +54,6 @@ public class CredentialServiceImplTest {
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
-
-    @Rule
-    public EmailRequiredRule emailRequired = EmailRequiredRule.emailRequired();
 
     private static final String DEFAULT_PASSWORD = "Simba3D";
 

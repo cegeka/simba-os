@@ -16,16 +16,17 @@
  */
 package org.simbasecurity.core.jaas.loginmodule;
 
-import java.security.Principal;
-import java.util.Map;
+import com.sun.security.auth.UserPrincipal;
+import org.simbasecurity.core.spring.AutowireHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
-
-import com.sun.security.auth.UserPrincipal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.security.Principal;
+import java.util.Map;
 
 public abstract class SimbaLoginModule implements LoginModule {
 
@@ -45,6 +46,10 @@ public abstract class SimbaLoginModule implements LoginModule {
     private CallbackHandler callbackHandler;
 
     private boolean debug;
+
+    SimbaLoginModule() {
+        AutowireHelper.autowireBean(this);
+    }
 
     @Override
     public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState,

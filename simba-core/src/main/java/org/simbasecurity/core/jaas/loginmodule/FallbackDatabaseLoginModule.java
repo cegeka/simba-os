@@ -16,11 +16,10 @@
  */
 package org.simbasecurity.core.jaas.loginmodule;
 
-import javax.security.auth.login.FailedLoginException;
-
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
-import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.service.CredentialService;
+
+import javax.security.auth.login.FailedLoginException;
 
 /**
  * Legacy support
@@ -29,12 +28,9 @@ public class FallbackDatabaseLoginModule extends DatabaseLoginModule {
 
     @Override
     protected boolean verifyLoginData() throws FailedLoginException {
-
-        CredentialService credentialService = GlobalContext.locate(CredentialService.class);
-
         debug("Verifying credentials for user: " + getUsername());
 
-        boolean validCredentials = false;
+        boolean validCredentials;
         try {
             validCredentials = credentialService.checkCredentials(getUsername(), getPassword());
         } catch (EncryptionOperationNotPossibleException legacyPasswordException) {

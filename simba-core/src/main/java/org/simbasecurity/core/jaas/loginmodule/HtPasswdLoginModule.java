@@ -19,6 +19,7 @@ package org.simbasecurity.core.jaas.loginmodule;
 import org.simbasecurity.common.constants.AuthenticationConstants;
 import org.simbasecurity.core.jaas.loginmodule.htpasswd.*;
 import org.simbasecurity.core.service.CredentialService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.*;
@@ -32,8 +33,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.simbasecurity.core.locator.GlobalContext.locate;
 
 /**
  * This {@link javax.security.auth.spi.LoginModule LoginModule} performs htpasswd based authentication.
@@ -113,11 +112,18 @@ public class HtPasswdLoginModule extends SimbaLoginModule {
     private Map<String, String> htpasswdStorage;
     private boolean move = true;
 
+    private CredentialService credentialService;
+
     public HtPasswdLoginModule() {
         super();
         callbacks = new Callback[2];
         callbacks[NAME_CALLBACK] = new NameCallback(AuthenticationConstants.USERNAME);
         callbacks[PASSWORD_CALLBACK] = new PasswordCallback(AuthenticationConstants.PASSWORD, false);
+    }
+
+    @Autowired
+    public void setCredentialService(CredentialService credentialService) {
+        this.credentialService = credentialService;
     }
 
     @Override
@@ -186,7 +192,7 @@ public class HtPasswdLoginModule extends SimbaLoginModule {
         if (mode == Mode.FILE) {
             storedHash = htpasswdStorage.get(getUsername());
         } else {
-            storedHash = locate(CredentialService.class).getPasswordHash(getUsername());
+            storedHash = credentialService.getPasswordHash(getUsername());
         }
 
         if (storedHash != null) {
@@ -199,7 +205,7 @@ public class HtPasswdLoginModule extends SimbaLoginModule {
         if (validCredentials) {
             debug("Authentication succeeded");
             if (move) {
-                locate(CredentialService.class).changePassword(getUsername(), getPassword(), getPassword());
+                credentialService.changePassword(getUsername(), getPassword(), getPassword());
             }
             return true;
         }

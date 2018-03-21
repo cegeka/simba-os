@@ -22,7 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.simbasecurity.core.jaas.callbackhandler.ChainContextCallbackHandler;
 import org.simbasecurity.core.service.CredentialService;
-import org.simbasecurity.test.LocatorRule;
+import org.simbasecurity.test.AutowirerRule;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -39,16 +39,18 @@ import static org.mockito.Mockito.*;
 public class DatabaseLoginModuleTest {
 
     private static final String ADMIN = "admin";
-    @Rule
-    public LocatorRule locatorRule = LocatorRule.locator();
+
+    @Rule public AutowirerRule autowirer = AutowirerRule.autowirer();
+
     private DatabaseLoginModule module;
-    private Subject subject;
     private CredentialService mockCredentialService;
     private PasswordCallback mockPasswordCallback;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
+        mockCredentialService = autowirer.mockBean(CredentialService.class);
+
         module = new DatabaseLoginModule();
 
         Callback[] callbacks = new Callback[2];
@@ -65,9 +67,8 @@ public class DatabaseLoginModuleTest {
         ChainContextCallbackHandler mockCallbackHandler = mock(ChainContextCallbackHandler.class);
         mockCallbackHandler.handle(any(Callback[].class));
 
-        mockCredentialService = locatorRule.implantMock(CredentialService.class);
 
-        subject = new Subject();
+        Subject subject = new Subject();
 
         module.initialize(subject, mockCallbackHandler, Collections.EMPTY_MAP, Collections.EMPTY_MAP);
     }

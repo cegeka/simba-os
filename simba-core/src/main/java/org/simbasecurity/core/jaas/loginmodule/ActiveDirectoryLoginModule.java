@@ -24,8 +24,8 @@ import org.simbasecurity.core.domain.Group;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.repository.GroupRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
-import org.simbasecurity.core.locator.GlobalContext;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -120,11 +120,30 @@ public class ActiveDirectoryLoginModule extends SimbaLoginModule {
     private String securityLevel;
     private int searchScope;
 
+    private GroupRepository groupRepository;
+    private UserRepository userRepository;
+    private CoreConfigurationService configurationService;
+
     public ActiveDirectoryLoginModule() {
         super();
         callbacks = new Callback[2];
         callbacks[NAME_CALLBACK] = new NameCallback(AuthenticationConstants.USERNAME);
         callbacks[PASSWORD_CALLBACK] = new PasswordCallback(AuthenticationConstants.PASSWORD, false);
+    }
+
+    @Autowired
+    public void setGroupRepository(GroupRepository groupRepository) {
+        this.groupRepository = groupRepository;
+    }
+
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Autowired
+    public void setConfigurationService(CoreConfigurationService configurationService) {
+        this.configurationService = configurationService;
     }
 
     @Override
@@ -170,13 +189,12 @@ public class ActiveDirectoryLoginModule extends SimbaLoginModule {
     }
 
     private void updateUserGroups(LdapContext ldapContext, String userCN) {
-        UserRepository userRepository = GlobalContext.locate(UserRepository.class);
         User user = userRepository.findByName(getUsername());
-        if(user != null) {
+        if (user != null) {
             user.clearGroups();
             try {
                 addADGroupsToUser(ldapContext, user, userCN);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -184,17 +202,16 @@ public class ActiveDirectoryLoginModule extends SimbaLoginModule {
 
     protected void addADGroupsToUser(LdapContext ldapContext, User user, String userCN) throws NamingException {
         SearchControls searchControls = new SearchControls();
-        searchControls.setReturningAttributes(new String[] { "dn"});
+        searchControls.setReturningAttributes(new String[]{"dn"});
         searchControls.setSearchScope(searchScope);
 
-        GroupRepository groupRepository = GlobalContext.locate(GroupRepository.class);
-        String filterGroups = "(&(member="+userCN+","+searchBase+")(objectcategory=group))";
+        String filterGroups = "(&(member=" + userCN + "," + searchBase + ")(objectcategory=group))";
 
         NamingEnumeration results = ldapContext.search(searchBase, filterGroups, searchControls);
         while (hasMoreResults(results)) {
             String groupCN = ((SearchResult) results.next()).getName();
             Group group = groupRepository.findByCN(groupCN);
-            if(group!=null) {
+            if (group != null) {
                 user.addGroup(group);
             }
         }
@@ -240,7 +257,7 @@ public class ActiveDirectoryLoginModule extends SimbaLoginModule {
                     }
                 }
                 debug("Authentication succeeded");
-                if(Boolean.TRUE.equals(GlobalContext.locate(CoreConfigurationService.class).getValue(SimbaConfigurationParameter.ENABLE_AD_GROUPS))
+                if (Boolean.TRUE.equals(configurationService.getValue(SimbaConfigurationParameter.ENABLE_AD_GROUPS))
                         && userCN != null) {
                     updateUserGroups(ldapContext, userCN);
                 }

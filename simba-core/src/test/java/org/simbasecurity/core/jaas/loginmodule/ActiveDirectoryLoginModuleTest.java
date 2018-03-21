@@ -25,8 +25,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
+import org.simbasecurity.core.domain.repository.GroupRepository;
+import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
-import org.simbasecurity.test.LocatorRule;
+import org.simbasecurity.test.AutowirerRule;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.Attributes;
@@ -46,13 +48,15 @@ import static org.mockito.Mockito.*;
 
 public class ActiveDirectoryLoginModuleTest {
     @Rule public MockitoRule rule = MockitoJUnit.rule();
-    @Rule public LocatorRule locatorRule = LocatorRule.locator();
+    @Rule public AutowirerRule autowirer = AutowirerRule.autowirer();
 
     @Mock private CoreConfigurationService configurationService;
 
     @Before
     public void setUp() {
-        configurationService = locatorRule.getCoreConfigurationService();
+        autowirer.registerBean(configurationService);
+        autowirer.mockBean(UserRepository.class);
+        autowirer.mockBean(GroupRepository.class);
     }
 
     @Test

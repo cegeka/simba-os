@@ -16,6 +16,11 @@
  */
 package org.simbasecurity.core.jaas.loginmodule;
 
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
+import org.simbasecurity.common.constants.AuthenticationConstants;
+import org.simbasecurity.core.service.CredentialService;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
@@ -23,17 +28,14 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 
-import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
-import org.simbasecurity.core.locator.GlobalContext;
-import org.simbasecurity.core.service.CredentialService;
-import org.simbasecurity.common.constants.AuthenticationConstants;
-
 public class DatabaseLoginModule extends SimbaLoginModule {
 
     private static final int NAME_CALLBACK = 0;
     private static final int PASSWORD_CALLBACK = 1;
 
     private Callback[] callbacks;
+
+    protected CredentialService credentialService;
 
     /**
      * Default constructor which will initialize the userData with users.
@@ -45,11 +47,13 @@ public class DatabaseLoginModule extends SimbaLoginModule {
         callbacks[PASSWORD_CALLBACK] = new PasswordCallback(AuthenticationConstants.PASSWORD, false);
     }
 
+    @Autowired
+    public void setCredentialService(CredentialService credentialService) {
+        this.credentialService = credentialService;
+    }
+
     @Override
     protected boolean verifyLoginData() throws FailedLoginException {
-
-        CredentialService credentialService = GlobalContext.locate(CredentialService.class);
-
         debug("Verifying credentials for user: " + getUsername());
 
         boolean validCredentials = false;

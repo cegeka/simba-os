@@ -5,16 +5,15 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.simbasecurity.api.service.thrift.TUser;
+import org.simbasecurity.core.domain.StubEmailFactory;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.test.AutowirerRule;
-import org.simbasecurity.test.LocatorRule;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -24,10 +23,10 @@ import static org.simbasecurity.core.config.SimbaConfigurationParameter.EMAIL_AD
 @RunWith(MockitoJUnitRunner.class)
 public class ThriftAssemblerTest {
 
-    @Rule public LocatorRule locatorRule = LocatorRule.locator();
     @Rule public AutowirerRule autowirerRule = AutowirerRule.autowirer();
 
-    @Mock private CoreConfigurationService config;
+    private StubEmailFactory emailFactory = StubEmailFactory.emailNotRequired();
+    private CoreConfigurationService config = emailFactory.configurationService();
 
     private ThriftAssembler assembler;
 
@@ -35,9 +34,9 @@ public class ThriftAssemblerTest {
     public void setUp() throws Exception {
         autowirerRule.mockBean(UserValidator.class);
         autowirerRule.mockBean(PasswordValidator.class);
+        autowirerRule.registerBean(emailFactory);
 
-        config = locatorRule.getCoreConfigurationService();
-        assembler = new ThriftAssembler(locatorRule.getCoreConfigurationService());
+        assembler = new ThriftAssembler(config, emailFactory);
     }
 
     @Test

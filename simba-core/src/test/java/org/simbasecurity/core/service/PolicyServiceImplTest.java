@@ -58,7 +58,7 @@ public class PolicyServiceImplTest {
     @Mock private RoleRepository roleRepository;
 
     @Spy private EntityFilterService entityFilterService = new EntityFilterService(Optional.empty());
-    @Spy private ThriftAssembler thriftAssembler = new ThriftAssembler(null);
+    @Spy private ThriftAssembler thriftAssembler = new ThriftAssembler(null, null);
     @Spy private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller = new SimbaExceptionHandlingCaller(forwardingThriftHandlerForTests());
     @InjectMocks private PolicyServiceImpl policyManagerService;
 

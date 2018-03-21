@@ -4,6 +4,7 @@ import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.communication.token.Token;
+import org.simbasecurity.core.domain.user.EmailFactory;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.exception.SimbaMessageKey;
 import org.simbasecurity.core.service.communication.mail.LinkGenerator;
@@ -20,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.net.URL;
 import java.util.List;
 
-import static org.simbasecurity.core.domain.user.EmailAddress.email;
 import static org.simbasecurity.core.service.communication.mail.Mail.mail;
 
 @Transactional
@@ -33,6 +33,7 @@ public class ResetPasswordService {
     @Autowired private TemplateService templateService;
     @Autowired private Audit audit;
     @Autowired private AuditLogEventFactory auditLogEventFactory;
+    @Autowired private EmailFactory emailFactory;
 
     @Value("${simba.smtp.mail.from}")
     private String resetPasswordFromAddress;
@@ -52,7 +53,7 @@ public class ResetPasswordService {
 
     private Mail createMail(User user, String body, String subject) {
         return mail()
-                .from(email(resetPasswordFromAddress))
+                .from(emailFactory.email(resetPasswordFromAddress))
                 .to(user.getEmail())
                 .subject(subject)
                 .body(body);

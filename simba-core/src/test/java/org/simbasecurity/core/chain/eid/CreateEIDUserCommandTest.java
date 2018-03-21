@@ -32,6 +32,7 @@ import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command.State;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.Language;
+import org.simbasecurity.core.domain.StubEmailFactory;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
@@ -83,6 +84,7 @@ public class CreateEIDUserCommandTest {
     public void setUp() {
         autowirerRule.mockBean(UserValidator.class);
         autowirerRule.mockBean(PasswordValidator.class);
+        autowirerRule.registerBean(StubEmailFactory.emailRequired());
 
         configurationServiceMock = locatorRule.getCoreConfigurationService();
         when(configurationServiceMock.getValue(SimbaConfigurationParameter.DEFAULT_USER_ROLE)).thenReturn(Collections.singletonList("guest"));

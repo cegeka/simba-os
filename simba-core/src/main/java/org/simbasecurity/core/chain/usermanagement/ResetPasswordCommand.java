@@ -6,6 +6,7 @@ import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.user.EmailAddress;
+import org.simbasecurity.core.domain.user.EmailFactory;
 import org.simbasecurity.core.service.CredentialService;
 import org.simbasecurity.core.service.communication.reset.password.ForgotPassword;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
@@ -28,11 +29,12 @@ public class ResetPasswordCommand implements Command {
     @Autowired private ForgotPassword forgotPassword;
     @Autowired private Audit audit;
     @Autowired private AuditLogEventFactory auditLogEventFactory;
+    @Autowired private EmailFactory emailFactory;
 
     @Override
     public State execute(ChainContext context) throws Exception {
         context.getEmail()
-                .map(EmailAddress::email)
+                .map(s -> emailFactory.email(s))
                 .flatMap((EmailAddress email) -> {
                     Optional<User> userByMail = credentialService.findUserByMail(email);
                     if (userByMail.isPresent()) {

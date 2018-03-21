@@ -10,7 +10,7 @@ import org.simbasecurity.core.domain.UserEntity;
 import org.simbasecurity.core.domain.generator.PasswordGenerator;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
-import org.simbasecurity.core.domain.user.EmailAddress;
+import org.simbasecurity.core.domain.user.EmailFactory;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.exception.SimbaMessageKey;
 import org.simbasecurity.core.service.communication.reset.password.NewUser;
@@ -32,18 +32,13 @@ import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXIS
 @Transactional
 public class UserFactory {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private ManagementAudit managementAudit;
-    @Autowired
-    private PasswordGenerator passwordGenerator;
-    @Autowired
-    private ResetPasswordService resetPasswordService;
-    @Autowired
-    private NewUser resetPasswordForNewUser;
+    @Autowired private UserRepository userRepository;
+    @Autowired private RoleRepository roleRepository;
+    @Autowired private ManagementAudit managementAudit;
+    @Autowired private PasswordGenerator passwordGenerator;
+    @Autowired private ResetPasswordService resetPasswordService;
+    @Autowired private NewUser resetPasswordForNewUser;
+    @Autowired private EmailFactory emailFactory;
 
     private CoreConfigurationService configurationService;
 
@@ -72,7 +67,7 @@ public class UserFactory {
                 Status.ACTIVE,
                 false,
                 false,
-                EmailAddress.email(email));
+                emailFactory.email(email));
 
         List<String> roles = configurationService.getListValue(SimbaConfigurationParameter.DEFAULT_USER_ROLE.name());
         return createWithRoles(user, roles);

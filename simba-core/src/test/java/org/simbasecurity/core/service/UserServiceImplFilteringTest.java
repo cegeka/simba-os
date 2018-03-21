@@ -65,7 +65,7 @@ public class UserServiceImplFilteringTest {
     @Mock private UserRepository userRepository;
 
     @Spy private EntityFilterService entityFilterService = new EntityFilterService(Optional.empty());
-    @Spy private ThriftAssembler assember = new ThriftAssembler(null);
+    @Spy private ThriftAssembler assember = new ThriftAssembler(null, null);
 
     @Spy private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller = new SimbaExceptionHandlingCaller(forwardingThriftHandlerForTests());
 

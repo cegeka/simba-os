@@ -7,7 +7,7 @@ import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.communication.token.Token;
-import org.simbasecurity.core.domain.user.EmailAddress;
+import org.simbasecurity.core.domain.user.EmailFactory;
 import org.simbasecurity.core.service.CredentialService;
 import org.simbasecurity.core.service.communication.token.UserTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +21,12 @@ import static org.simbasecurity.core.chain.Command.State.FINISH;
 @Component
 public class CheckTokenCommand implements Command {
 
-    @Autowired
-    private UserTokenService userTokenService;
-    @Autowired
-    private CredentialService credentialService;
+    @Autowired private UserTokenService userTokenService;
+    @Autowired private CredentialService credentialService;
+    @Autowired private EmailFactory emailFactory;
 
-    @Autowired
-    private Audit audit;
-    @Autowired
-    private AuditLogEventFactory auditLogEventFactory;
+    @Autowired private Audit audit;
+    @Autowired private AuditLogEventFactory auditLogEventFactory;
 
     @Override
     public State execute(ChainContext context) throws Exception {
@@ -37,7 +34,7 @@ public class CheckTokenCommand implements Command {
                 .map(Token::fromString)
                 .flatMap(token -> userTokenService.getUserForToken(token));
         Optional<User> userFromEmail = context.getEmail()
-                .map(EmailAddress::email)
+                .map(s -> emailFactory.email(s))
                 .flatMap(email -> credentialService.findUserByMail(email));
 
         if (noExistingUserForEmail(context, userFromEmail)) return FINISH;

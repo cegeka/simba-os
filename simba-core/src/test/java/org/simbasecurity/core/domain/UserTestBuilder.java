@@ -1,6 +1,11 @@
 package org.simbasecurity.core.domain;
 
+import org.simbasecurity.core.config.ConfigurationParameter;
+import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.user.EmailAddress;
+import org.simbasecurity.core.domain.user.EmailFactory;
+import org.simbasecurity.core.service.config.ConfigurationServiceImpl;
+import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.test.util.ReflectionUtil;
 
 import java.util.Date;
@@ -35,11 +40,31 @@ public class UserTestBuilder {
     private Set<Group> groups = new HashSet<>();
     private EmailAddress email;
 
+    private EmailFactory emailFactory;
+
+
     private UserTestBuilder() {
+        CoreConfigurationService coreConfigurationService = new ConfigurationServiceImpl() {
+            @Override
+            public <T> T getValue(ConfigurationParameter parameter) {
+                if (parameter == SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED) return (T) Boolean.FALSE;
+                return null;
+            }
+        };
+
+        emailFactory = new EmailFactory(coreConfigurationService);
+    }
+
+    private UserTestBuilder(EmailFactory emailFactory) {
+        this.emailFactory = emailFactory;
     }
 
     public static UserTestBuilder aUser() {
         return new UserTestBuilder();
+    }
+
+    public static UserTestBuilder aUser(EmailFactory emailFactory) {
+        return new UserTestBuilder(emailFactory);
     }
 
     public static UserTestBuilder aDefaultUser() {
@@ -52,8 +77,20 @@ public class UserTestBuilder {
                 .withStatus(Status.ACTIVE)
                 .withPasswordChangeRequired(true)
                 .withChangePasswordOnNextLogon(true)
-                .withLanguage(LANGUAGE)
-                ;
+                .withLanguage(LANGUAGE);
+    }
+
+    public static UserTestBuilder aDefaultUser(EmailFactory emailFactory) {
+        return aUser(emailFactory)
+                .withName(NAME)
+                .withFirstName(FIRST_NAME)
+                .withEmail(EMAIL)
+                .withPassword(PASSWORD)
+                .withDateOfLastPasswordChange(new Date())
+                .withStatus(Status.ACTIVE)
+                .withPasswordChangeRequired(true)
+                .withChangePasswordOnNextLogon(true)
+                .withLanguage(LANGUAGE);
     }
 
     /**
@@ -84,6 +121,8 @@ public class UserTestBuilder {
         ReflectionUtil.setField(user, "roles", roles);
         ReflectionUtil.setField(user, "sessions", sessions);
         ReflectionUtil.setField(user, "groups", groups);
+
+        user.setEmailFactory(emailFactory);
 
         return user;
     }
@@ -179,7 +218,7 @@ public class UserTestBuilder {
     }
 
     public UserTestBuilder withEmail(String email) {
-        this.email = EmailAddress.email(email);
+        this.email = emailFactory.email(email);
         return this;
     }
 

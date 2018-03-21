@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
+import org.simbasecurity.core.domain.user.EmailFactory;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
@@ -54,9 +55,13 @@ public class UserEntityTest {
 
     private User user;
 
+    private EmailFactory emailFactory = StubEmailFactory.emailRequired();
+
     @Before
     public void setUp() {
         autowirerRule.mockBean(UserValidator.class);
+        autowirerRule.registerBean(emailFactory);
+
         PasswordValidator mockPasswordValidator = autowirerRule.mockBean(PasswordValidator.class);
 
         CoreConfigurationService coreConfigurationService = locatorRule.getCoreConfigurationService();

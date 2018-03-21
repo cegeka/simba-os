@@ -1,6 +1,5 @@
 package org.simbasecurity.core.chain.usermanagement;
 
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
@@ -10,12 +9,12 @@ import org.simbasecurity.core.audit.AuditLogEvent;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.chain.ChainContext;
 import org.simbasecurity.core.chain.Command;
+import org.simbasecurity.core.domain.StubEmailFactory;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.communication.token.Token;
-import org.simbasecurity.core.domain.user.EmailAddress;
+import org.simbasecurity.core.domain.user.EmailFactory;
 import org.simbasecurity.core.service.CredentialService;
 import org.simbasecurity.core.service.communication.token.UserTokenService;
-import org.simbasecurity.test.EmailRequiredRule;
 
 import java.util.Optional;
 
@@ -29,19 +28,12 @@ import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 @RunWith(MockitoJUnitRunner.class)
 public class CheckTokenCommandTest {
 
-    @Rule
-    public EmailRequiredRule emailRequired = EmailRequiredRule.emailRequired();
-
-    @Mock
-    private ChainContext chainContextMock;
-    @Mock
-    private UserTokenService userTokenServiceMock;
-    @Mock
-    private CredentialService credentialServiceMock;
-    @Mock
-    private Audit auditMock;
-    @Spy
-    private AuditLogEventFactory auditLogEventFactoryMock;
+    @Mock private ChainContext chainContextMock;
+    @Mock private UserTokenService userTokenServiceMock;
+    @Mock private CredentialService credentialServiceMock;
+    @Mock private Audit auditMock;
+    @Spy private AuditLogEventFactory auditLogEventFactoryMock;
+    @Spy private EmailFactory emailFactory = StubEmailFactory.emailRequired();
 
     @InjectMocks
     private CheckTokenCommand checkTokenCommand;
@@ -75,11 +67,11 @@ public class CheckTokenCommandTest {
 
     @Test
     public void execute_withUnknownEmailAddress_statusError_AndProperAuditLogging() throws Exception {
-        User user = aDefaultUser().withEmail("bruce@wayneindustries.com").build();
+        User user = aDefaultUser(emailFactory).withEmail("bruce@wayneindustries.com").build();
         setupContextWith("bruce@wayneindustries.com", "sleutel!");
 
         when(userTokenServiceMock.getUserForToken(Token.fromString("sleutel!"))).thenReturn(Optional.of(user));
-        when(credentialServiceMock.findUserByMail(EmailAddress.email("bruce@wayneindustries.com"))).thenReturn(Optional.empty());
+        when(credentialServiceMock.findUserByMail(emailFactory.email("bruce@wayneindustries.com"))).thenReturn(Optional.empty());
 
         Command.State state = checkTokenCommand.execute(chainContextMock);
 
@@ -95,11 +87,11 @@ public class CheckTokenCommandTest {
 
     @Test
     public void execute_withKnownEmailAddress_ButUnknownToken_statusError_AndProperAuditLogging() throws Exception {
-        User user = aDefaultUser().withUserName("batman").withEmail("bruce@wayneindustries.com").build();
+        User user = aDefaultUser(emailFactory).withUserName("batman").withEmail("bruce@wayneindustries.com").build();
         setupContextWith("bruce@wayneindustries.com", "sleutel!");
 
         when(userTokenServiceMock.getUserForToken(Token.fromString("sleutel!"))).thenReturn(Optional.empty());
-        when(credentialServiceMock.findUserByMail(EmailAddress.email("bruce@wayneindustries.com"))).thenReturn(Optional.of(user));
+        when(credentialServiceMock.findUserByMail(emailFactory.email("bruce@wayneindustries.com"))).thenReturn(Optional.of(user));
 
         Command.State state = checkTokenCommand.execute(chainContextMock);
 
@@ -116,12 +108,12 @@ public class CheckTokenCommandTest {
 
     @Test
     public void execute_withTokenInContextAndDatabase_butEmailAddressUserIsDifferentFromTokenUser_statusError_AndProperAuditLogging() throws Exception {
-        User user = aDefaultUser().withId(185L).withUserName("batman").withEmail("bruce@wayneindustries.com").build();
-        User snarf = aDefaultUser().withId(665L).withUserName("snarf").withEmail("snarf@lioncats.com").build();
+        User user = aDefaultUser(emailFactory).withId(185L).withUserName("batman").withEmail("bruce@wayneindustries.com").build();
+        User snarf = aDefaultUser(emailFactory).withId(665L).withUserName("snarf").withEmail("snarf@lioncats.com").build();
         setupContextWith("snarf@lioncats.com", "sleutel!");
 
         when(userTokenServiceMock.getUserForToken(Token.fromString("sleutel!"))).thenReturn(Optional.of(user));
-        when(credentialServiceMock.findUserByMail(EmailAddress.email("snarf@lioncats.com"))).thenReturn(Optional.of(snarf));
+        when(credentialServiceMock.findUserByMail(emailFactory.email("snarf@lioncats.com"))).thenReturn(Optional.of(snarf));
 
         Command.State state = checkTokenCommand.execute(chainContextMock);
 
@@ -139,11 +131,11 @@ public class CheckTokenCommandTest {
 
     @Test
     public void execute_withTokenInContextAndDatabase_EmailAddressUserIsSameAsTokenUser_statusContinue() throws Exception {
-        User user = aDefaultUser().withUserName("batman").withEmail("bruce@wayneindustries.com").build();
+        User user = aDefaultUser(emailFactory).withUserName("batman").withEmail("bruce@wayneindustries.com").build();
         setupContextWith("bruce@wayneindustries.com", "sleutel!");
 
         when(userTokenServiceMock.getUserForToken(Token.fromString("sleutel!"))).thenReturn(Optional.of(user));
-        when(credentialServiceMock.findUserByMail(EmailAddress.email("bruce@wayneindustries.com"))).thenReturn(Optional.of(user));
+        when(credentialServiceMock.findUserByMail(emailFactory.email("bruce@wayneindustries.com"))).thenReturn(Optional.of(user));
 
         Command.State state = checkTokenCommand.execute(chainContextMock);
 

@@ -24,6 +24,7 @@ import org.mockito.Mockito;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.*;
 import org.simbasecurity.core.domain.user.EmailAddress;
+import org.simbasecurity.core.domain.user.EmailFactory;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
@@ -39,7 +40,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
-import static org.simbasecurity.core.domain.user.EmailAddress.email;
 
 public class UserDatabaseRepositoryTest extends PersistenceTestCase {
 
@@ -51,6 +51,8 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
 
     @Autowired
     private UserDatabaseRepository userDatabaseRepository;
+
+    private EmailFactory emailFactory = StubEmailFactory.emailRequired();
 
     @Before
     public void setUp() {
@@ -123,7 +125,7 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
 
     @Test
     public void findUserByMail_WillReturnUser_IfPresentInDatabase() throws Exception {
-        EmailAddress email = email("alfred@wayneindustries.com");
+        EmailAddress email = emailFactory.email("alfred@wayneindustries.com");
 
         User expectedUser = aDefaultUser().withEmail(email).build();
         persistAndRefresh(expectedUser);
@@ -135,8 +137,8 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
 
     @Test
     public void findUserByMailCaseInsensitive_WillReturnUser_IfPresentInDatabase() throws Exception {
-        EmailAddress email = email("alfred@wayneindustries.com");
-        EmailAddress otherEmail = email("Alfred@WayneIndustries.com");
+        EmailAddress email = emailFactory.email("alfred@wayneindustries.com");
+        EmailAddress otherEmail = emailFactory.email("Alfred@WayneIndustries.com");
 
         User expectedUser = aDefaultUser().withEmail(email).build();
         persistAndRefresh(expectedUser);
@@ -148,8 +150,8 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
 
     @Test
     public void findUserByMailCaseInsensitive2_WillReturnUser_IfPresentInDatabase() throws Exception {
-        EmailAddress email = email("Alfred@WayneIndustries.com");
-        EmailAddress otherEmail = email("alfred@wayneindustries.com");
+        EmailAddress email = emailFactory.email("Alfred@WayneIndustries.com");
+        EmailAddress otherEmail = emailFactory.email("alfred@wayneindustries.com");
 
         User expectedUser = aDefaultUser().withEmail(email).build();
         persistAndRefresh(expectedUser);
@@ -161,7 +163,7 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
 
     @Test
     public void findUserByMail_WillReturnUser_IfPresentInDatabase_AndActiveOrBlocked() throws Exception {
-        EmailAddress email = email("alfred@wayneindustries.com");
+        EmailAddress email = emailFactory.email("alfred@wayneindustries.com");
 
         User expectedUser = aDefaultUser().withEmail(email).withStatus(Status.ACTIVE).build();
         persistAndRefresh(expectedUser);
@@ -173,7 +175,7 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
 
     @Test
     public void findUserByMail_WillNOTReturnUser_IfPresentInDatabase_AndInactive() throws Exception {
-        EmailAddress email = email("morganfreeman@wayneindustries.com");
+        EmailAddress email = emailFactory.email("morganfreeman@wayneindustries.com");
 
 
         User inactiveUser = aDefaultUser().withUserName("fmorgan").withEmail(email).withStatus(Status.INACTIVE).build();

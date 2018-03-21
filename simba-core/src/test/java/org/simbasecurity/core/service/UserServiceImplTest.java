@@ -29,18 +29,15 @@ import org.simbasecurity.api.service.thrift.TPolicy;
 import org.simbasecurity.api.service.thrift.TRole;
 import org.simbasecurity.api.service.thrift.TUser;
 import org.simbasecurity.core.audit.ManagementAudit;
-import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.*;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
-import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordByManager;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
-import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
 import org.simbasecurity.core.service.filter.EntityFilter;
 import org.simbasecurity.core.service.filter.EntityFilterService;
@@ -78,11 +75,12 @@ public class UserServiceImplTest {
     @Mock private UserRepository userRepository;
 
     @Spy private EntityFilterService entityFilterService = new EntityFilterService(Optional.empty());
-    @Spy private ThriftAssembler assembler = new ThriftAssembler(null);
+    @Spy private ThriftAssembler assembler = new ThriftAssembler(null, null);
     @Spy private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller = new SimbaExceptionHandlingCaller(forwardingThriftHandlerForTests());
+    @Spy private StubEmailFactory emailFactory = StubEmailFactory.emailRequired();
+
     @InjectMocks private UserServiceImpl service;
 
-    private CoreConfigurationService configurationService;
 
     private TRole tRole01 = new TRole(1, 1, "role-1");
     private TRole tRole02 = new TRole(2, 1, "role-2");
@@ -102,14 +100,13 @@ public class UserServiceImplTest {
     public void setup() {
         autowirerRule.mockBean(UserValidator.class);
         autowirerRule.mockBean(PasswordValidator.class);
+        autowirerRule.registerBean(emailFactory);
 
-        configurationService = locatorRule.getCoreConfigurationService();
-        when(configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(true);
-        service.setConfigurationService(configurationService);
+        service.setConfigurationService(emailFactory.configurationService());
 
-        User userEntity1 = aDefaultUser().withUserName("user-1").build();
-        User userEntity2 = aDefaultUser().withUserName("user-2").build();
-        User userEntity3 = aDefaultUser().withUserName("user-3").build();
+        User userEntity1 = aDefaultUser(emailFactory).withUserName("user-1").build();
+        User userEntity2 = aDefaultUser(emailFactory).withUserName("user-2").build();
+        User userEntity3 = aDefaultUser(emailFactory).withUserName("user-3").build();
 
         ReflectionUtil.setField(entityFilterService, "filters", filterServices);
 
@@ -196,10 +193,10 @@ public class UserServiceImplTest {
 
     @Test
     public void resetPassword() throws Exception {
-        User user = aDefaultUser().withUserName("user-1").build();
+        User user = aDefaultUser(emailFactory).withUserName("user-1").build();
         when(userRepository.findByName(tUser01.getUserName())).thenReturn(user);
         TUser expectedUser = new TUser();
-        when(assembler.assemble(user)).thenReturn(expectedUser);
+        doReturn(expectedUser).when(assembler).assemble(user);
 
         TUser tUser = service.resetPassword(tUser01);
 
@@ -210,7 +207,7 @@ public class UserServiceImplTest {
 
     @Test
     public void update_LogsOnlyWhenDifferent() throws Exception {
-        User userFromDB = aDefaultUser()
+        User userFromDB = aDefaultUser(emailFactory)
                 .withUserName("user-1")
                 .withEmail("bruce@richorphan.com")
                 .build();
@@ -231,7 +228,7 @@ public class UserServiceImplTest {
 
     @Test
     public void update_DoesNotLogWhenSameEmail() throws Exception {
-        User userFromDB = aDefaultUser()
+        User userFromDB = aDefaultUser(emailFactory)
                 .withUserName("user-1")
                 .withEmail("bruce@wayneindustries.com")
                 .build();
@@ -251,7 +248,7 @@ public class UserServiceImplTest {
 
     @Test
     public void update_DoesNotLogWhenEmailRemainsNull_AndDoesNotThrowException() throws Exception {
-        User userFromDB = aDefaultUser()
+        User userFromDB = aDefaultUser(emailFactory)
                 .withUserName("user-1")
                 .withoutEmail()
                 .build();
@@ -264,7 +261,7 @@ public class UserServiceImplTest {
         tUser01.setLanguage("en_US");
         tUser01.setMustChangePassword(true);
 
-        when(configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(false);
+        emailFactory.setEmailRequired(false);
 
         service.update(tUser01);
 
@@ -273,7 +270,7 @@ public class UserServiceImplTest {
 
     @Test
     public void update_WhenEmailWasBlankedOut_EmailNotRequiredAccordingToParameter_ThenNoMailIsSent_AndGetsLogged() throws Exception {
-        User userFromDB = aDefaultUser()
+        User userFromDB = aDefaultUser(emailFactory)
                 .withUserName("user-1")
                 .withEmail("bruce@wayneindustries.com")
                 .build();
@@ -286,19 +283,20 @@ public class UserServiceImplTest {
         tUser01.setLanguage("en_US");
         tUser01.setMustChangePassword(true);
 
-        when(configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(false);
+        emailFactory.setEmailRequired(false);
+//        when(configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(false);
 
         TUser actual = service.update(tUser01);
 
         verify(managementAudit).log("User ''{0}'' {3} has changed from ''{1}'' to ''{2}''", userFromDB.getUserName(), "bruce@wayneindustries.com", "", "e-mail");
         verifyZeroInteractions(resetPasswordService);
 
-        assertThat(actual.getEmail()).isEqualTo(EmailAddress.emptyEmail().asString());
+        assertThat(actual.getEmail()).isEqualTo(emailFactory.emptyEmail().asString());
     }
 
     @Test
     public void update_WhenEmailChanged_EmailNotRequiredAccordingToParameter_sendResetPasswordEmail() throws Exception {
-        User userFromDB = aDefaultUser()
+        User userFromDB = aDefaultUser(emailFactory)
                 .withUserName("user-1")
                 .withEmail("bruce@richorphan.com").build();
 
@@ -310,7 +308,7 @@ public class UserServiceImplTest {
         tUser01.setLanguage("en_US");
         tUser01.setMustChangePassword(true);
 
-        when(configurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED)).thenReturn(false);
+        emailFactory.setEmailRequired(false);
 
         TUser actual = service.update(tUser01);
 
@@ -323,7 +321,7 @@ public class UserServiceImplTest {
 
     @Test
     public void update_WhenEmailChanged_sendResetPasswordEmail() throws Exception {
-        User userFromDB = aDefaultUser()
+        User userFromDB = aDefaultUser(emailFactory)
                 .withUserName("user-1")
                 .withEmail("bruce@richorphan.com").build();
 
@@ -339,12 +337,12 @@ public class UserServiceImplTest {
 
         verify(managementAudit).log("Password for user ''{0}'' has been reset", userFromDB.getUserName());
 
-        assertThat(actual.getEmail()).isEqualTo(EmailAddress.email("bruce@wayneindustries.com").asString());
+        assertThat(actual.getEmail()).isEqualTo(emailFactory.email("bruce@wayneindustries.com").asString());
     }
 
     @Test
     public void update_WhenEmailRemainsNull_EmailRequiredAccordingToParameter_ThenSimbaExceptionIsThrown() throws Exception {
-        User userFromDB = aDefaultUser()
+        User userFromDB = aDefaultUser(emailFactory)
                 .withUserName("user-1")
                 .withoutEmail()
                 .build();
@@ -364,7 +362,7 @@ public class UserServiceImplTest {
 
     @Test
     public void update_WhenEmailWasBlankedOut_EmailRequiredAccordingToParameter_ThenSimbaExceptionIsThrown() throws Exception {
-        User userFromDB = aDefaultUser()
+        User userFromDB = aDefaultUser(emailFactory)
                 .withUserName("user-1")
                 .withEmail("bruce@wayneindustries.com")
                 .build();

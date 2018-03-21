@@ -23,27 +23,28 @@ import org.simbasecurity.core.config.SimbaConfigurationParameter;
 import org.simbasecurity.core.domain.*;
 import org.simbasecurity.core.domain.condition.TimeCondition;
 import org.simbasecurity.core.domain.user.EmailAddress;
+import org.simbasecurity.core.domain.user.EmailFactory;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import static org.simbasecurity.core.domain.user.EmailAddress.email;
 
 @Service
 @SuppressWarnings("unchecked")
 public class ThriftAssembler {
 
     private CoreConfigurationService coreConfigurationService;
+    private EmailFactory emailFactory;
 
-    @Inject
-    public ThriftAssembler(@Named("configurationService") CoreConfigurationService coreConfigurationService) {
+    @Autowired
+    public ThriftAssembler(CoreConfigurationService coreConfigurationService, EmailFactory emailFactory) {
         this.coreConfigurationService = coreConfigurationService;
+        this.emailFactory = emailFactory;
     }
 
     private Map<Class<?>, Function<?, ?>> classMappers = new HashMap<>();
@@ -127,7 +128,7 @@ public class ThriftAssembler {
         boolean required = coreConfigurationService.getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED);
 
         if(required || !StringUtil.isEmpty(email)) {
-            return email(email);
+            return emailFactory.email(email);
         }
         return null;
     }

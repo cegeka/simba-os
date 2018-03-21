@@ -28,7 +28,7 @@ import org.simbasecurity.core.domain.repository.GroupRepository;
 import org.simbasecurity.core.domain.repository.PolicyRepository;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
-import org.simbasecurity.core.domain.user.EmailAddress;
+import org.simbasecurity.core.domain.user.EmailFactory;
 import org.simbasecurity.core.exception.SimbaException;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordByManager;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
@@ -48,7 +48,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.simbasecurity.common.util.StringUtil.join;
-import static org.simbasecurity.core.domain.user.EmailAddress.email;
 import static org.simbasecurity.core.domain.user.EmailAddress.nullSafeAsString;
 import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXISTS_WITH_EMAIL;
 
@@ -56,30 +55,20 @@ import static org.simbasecurity.core.exception.SimbaMessageKey.USER_ALREADY_EXIS
 @Service("userService")
 public class UserServiceImpl implements UserService, org.simbasecurity.api.service.thrift.UserService.Iface {
 
-    @Autowired
-    private ManagementAudit managementAudit;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private PolicyRepository policyRepository;
-    @Autowired
-    private GroupRepository groupRepository;
+    @Autowired private ManagementAudit managementAudit;
+    @Autowired private UserRepository userRepository;
+    @Autowired private RoleRepository roleRepository;
+    @Autowired private PolicyRepository policyRepository;
+    @Autowired private GroupRepository groupRepository;
 
-    @Autowired
-    private EntityFilterService filterService;
-    @Autowired
-    private UserFactory userFactory;
+    @Autowired private EntityFilterService filterService;
+    @Autowired private UserFactory userFactory;
+    @Autowired private EmailFactory emailFactory;
 
-    @Autowired
-    private ThriftAssembler assembler;
-    @Autowired
-    private ResetPasswordService resetPasswordService;
-    @Autowired
-    private ResetPasswordByManager resetPasswordByManager;
-    @Autowired
-    private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller;
+    @Autowired private ThriftAssembler assembler;
+    @Autowired private ResetPasswordService resetPasswordService;
+    @Autowired private ResetPasswordByManager resetPasswordByManager;
+    @Autowired private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller;
 
     private CoreConfigurationService configurationService;
 
@@ -236,11 +225,11 @@ public class UserServiceImpl implements UserService, org.simbasecurity.api.servi
             attachedUser.setSuccessURL(user.getSuccessURL());
 
             logEmailChange(user, attachedUser);
-            if (!Objects.equals(attachedUser.getEmail(), EmailAddress.email(user.getEmail()))) {
-                if (userRepository.findByEmail(EmailAddress.email(user.getEmail())) != null) {
+            if (!Objects.equals(attachedUser.getEmail(), emailFactory.email(user.getEmail()))) {
+                if (userRepository.findByEmail(emailFactory.email(user.getEmail())) != null) {
                     throw new SimbaException(USER_ALREADY_EXISTS_WITH_EMAIL, String.format("User already exists with email: %s", user.getEmail()));
                 } else {
-                    attachedUser.setEmail(email(user.getEmail()));
+                    attachedUser.setEmail(emailFactory.email(user.getEmail()));
                     if (configurationService.<Boolean>getValue(SimbaConfigurationParameter.EMAIL_ADDRESS_REQUIRED) || !attachedUser.getEmail().isEmpty()) {
                         resetPassword(attachedUser);
                     }

@@ -70,7 +70,7 @@ public class RoleServiceImplTest {
     @Spy
     private EntityFilterService entityFilterService = new EntityFilterService(Optional.empty());
     @Spy
-    private ThriftAssembler assembler = new ThriftAssembler(null);
+    private ThriftAssembler assembler = new ThriftAssembler(null, null);
     @Spy
     private SimbaExceptionHandlingCaller simbaExceptionHandlingCaller = new SimbaExceptionHandlingCaller(forwardingThriftHandlerForTests());
     @InjectMocks

@@ -56,13 +56,13 @@ public class CheckClientIPCommandTest {
 
     @Before
     public void setUp() {
-        when(sessionMock.getUser()).thenReturn(userMock);
         when(chainContextMock.getCurrentSession()).thenReturn(sessionMock);
         when(chainContextMock.getClientIpAddress()).thenReturn(IP_ADDRESS);
     }
 
     @Test
     public void redirectIfClientIpDifferentFromIpStoredInSession() throws Exception {
+        when(sessionMock.getUser()).thenReturn(userMock);
         when(sessionMock.getClientIpAddress()).thenReturn(OTHER_IP_ADDRESS);
 
         Command.State state = command.execute(chainContextMock);

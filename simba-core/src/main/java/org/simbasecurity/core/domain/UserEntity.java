@@ -27,6 +27,7 @@ import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.password.ConfigurablePasswordEncryptor;
 import org.jasypt.util.password.PasswordEncryptor;
 import org.simbasecurity.core.domain.user.EmailAddress;
+import org.simbasecurity.core.domain.user.EmailFactory;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
@@ -68,6 +69,7 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 
     @Transient private UserValidator userValidator;
     @Transient private PasswordValidator passwordValidator;
+    @Transient private EmailFactory emailFactory;
 
     @Autowired
     public void setUserValidator(UserValidator userValidator) {
@@ -77,6 +79,11 @@ public class UserEntity extends AbstractVersionedEntity implements User {
     @Autowired
     public void setPasswordValidator(PasswordValidator passwordValidator) {
         this.passwordValidator = passwordValidator;
+    }
+
+    @Autowired
+    public void setEmailFactory(EmailFactory emailFactory) {
+        this.emailFactory = emailFactory;
     }
 
     @Id
@@ -469,6 +476,6 @@ public class UserEntity extends AbstractVersionedEntity implements User {
 
     @Override
     public EmailAddress getEmail() {
-        return EmailAddress.orEmpty(email);
+        return emailFactory.orEmpty(email);
     }
 }

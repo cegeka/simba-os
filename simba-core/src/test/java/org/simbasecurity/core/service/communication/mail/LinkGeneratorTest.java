@@ -1,15 +1,15 @@
 package org.simbasecurity.core.service.communication.mail;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.simbasecurity.core.domain.StubEmailFactory;
 import org.simbasecurity.core.domain.communication.token.Token;
 import org.simbasecurity.core.domain.user.EmailAddress;
+import org.simbasecurity.core.domain.user.EmailFactory;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
-import org.simbasecurity.test.EmailRequiredRule;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -24,13 +24,11 @@ import static org.simbasecurity.core.domain.communication.token.Token.generateTo
 @RunWith(MockitoJUnitRunner.class)
 public class LinkGeneratorTest {
 
-    @Rule
-    public EmailRequiredRule emailRequired = EmailRequiredRule.emailRequired();
-
-    @Mock
-    private CoreConfigurationService configurationServiceMock;
+    @Mock private CoreConfigurationService configurationServiceMock;
 
     private LinkGenerator linkGenerator;
+
+    private EmailFactory emailFactory = StubEmailFactory.emailRequired();
 
     @Before
     public void setUp() throws Exception {
@@ -41,7 +39,7 @@ public class LinkGeneratorTest {
     public void generateResetPasswordUrl_WillGenerateLinksToResetPassword_BasedOnSimbaProperty_WithTokenAndUsername() throws Exception {
         List<String> links = Arrays.asList("https://www.simba.be:1000/simba", "https://www.dag.no:8080/FYFAEN");
         when(configurationServiceMock.getValue(PASSWORD_RESET_TOKEN_URL)).thenReturn(links);
-        EmailAddress email = EmailAddress.email("myEmail@myProvider.com");
+        EmailAddress email = emailFactory.email("myEmail@myProvider.com");
         String urlEscapedEmail = "myEmail%40myProvider.com";
         Token token = generateToken();
 

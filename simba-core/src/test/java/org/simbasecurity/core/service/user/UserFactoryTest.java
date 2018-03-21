@@ -9,11 +9,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.simbasecurity.core.audit.ManagementAudit;
 import org.simbasecurity.core.config.SimbaConfigurationParameter;
+import org.simbasecurity.core.domain.StubEmailFactory;
 import org.simbasecurity.core.domain.User;
 import org.simbasecurity.core.domain.generator.PasswordGenerator;
 import org.simbasecurity.core.domain.repository.RoleRepository;
 import org.simbasecurity.core.domain.repository.UserRepository;
-import org.simbasecurity.core.domain.user.EmailAddress;
 import org.simbasecurity.core.domain.validator.PasswordValidator;
 import org.simbasecurity.core.domain.validator.UserValidator;
 import org.simbasecurity.core.exception.SimbaException;
@@ -21,7 +21,6 @@ import org.simbasecurity.core.service.communication.reset.password.NewUser;
 import org.simbasecurity.core.service.communication.reset.password.ResetPasswordService;
 import org.simbasecurity.core.service.config.CoreConfigurationService;
 import org.simbasecurity.test.AutowirerRule;
-import org.simbasecurity.test.LocatorRule;
 
 import java.util.List;
 
@@ -33,13 +32,11 @@ import static org.mockito.Mockito.*;
 import static org.simbasecurity.core.domain.RoleTestBuilder.role;
 import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 import static org.simbasecurity.core.domain.UserTestBuilder.aUser;
-import static org.simbasecurity.core.domain.user.EmailAddress.email;
 import static org.simbasecurity.core.exception.SimbaMessageKey.EMAIL_ADDRESS_REQUIRED;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserFactoryTest {
 
-    @Rule public LocatorRule locatorRule = LocatorRule.locator();
     @Rule public AutowirerRule autowirerRule = AutowirerRule.autowirer();
 
     @Mock private RoleRepository roleRepository;
@@ -49,18 +46,19 @@ public class UserFactoryTest {
     @Mock private ResetPasswordService resetPasswordService;
     @Mock private NewUser newUserReason;
 
-    //@Mock
-    private CoreConfigurationService configurationService;
 
     @InjectMocks
     private UserFactory userFactory;
+
+    private StubEmailFactory emailFactory = StubEmailFactory.emailRequired();
+    private CoreConfigurationService configurationService = emailFactory.configurationService();
 
     @Before
     public void setUp() {
         autowirerRule.mockBean(UserValidator.class);
         autowirerRule.mockBean(PasswordValidator.class);
+        autowirerRule.registerBean(emailFactory);
 
-        configurationService = locatorRule.getCoreConfigurationService();
         userFactory.setConfigurationService(configurationService);
     }
 
@@ -124,7 +122,7 @@ public class UserFactoryTest {
         User savedUser = userFactory.cloneUser(userBeingCreated, "userToBeCloned");
 
         assertThat(savedUser.hasRole("manager")).isTrue();
-        assertThat(savedUser.getEmail()).isEqualTo(EmailAddress.email("johnnytampony@gmail.com"));
+        assertThat(savedUser.getEmail()).isEqualTo(emailFactory.email("johnnytampony@gmail.com"));
 
         verify(userRepository).persist(savedUser);
         verify(managementAudit).log("User ''{0}'' created as clone of ''{1}''", "johnnyTampony", "userToBeCloned");
@@ -221,7 +219,7 @@ public class UserFactoryTest {
     public void createUser_WithExistingEmail_ThrowsError() {
         User user = aUser().withEmail("someEmail@email.com").build();
         User aDefaultUser= aDefaultUser().build();
-        when(userRepository.findByEmail(email("someEmail@email.com"))).thenReturn(aDefaultUser);
+        when(userRepository.findByEmail(emailFactory.email("someEmail@email.com"))).thenReturn(aDefaultUser);
 
         assertThatThrownBy(() -> userFactory.create(user))
                 .isInstanceOf(SimbaException.class)
@@ -243,7 +241,7 @@ public class UserFactoryTest {
     public void cloneUser_WithExistingEmail_ThrowsError() {
         User user = aDefaultUser().withUserName("stormTrooper").withEmail("theOneAndOnlyStormTrooper@empire.com").build();
         User aDefaultUser= aDefaultUser().build();
-        when(userRepository.findByEmail(email("theOneAndOnlyStormTrooper@empire.com"))).thenReturn(aDefaultUser);
+        when(userRepository.findByEmail(emailFactory.email("theOneAndOnlyStormTrooper@empire.com"))).thenReturn(aDefaultUser);
 
         assertThatThrownBy(() -> userFactory.cloneUser(user, "Finn"))
                 .isInstanceOf(SimbaException.class)

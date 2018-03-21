@@ -34,7 +34,7 @@ public abstract class AbstractEntity implements Serializable, Identifiable {
 
     private transient boolean markedForRemoval = false;
 
-    AbstractEntity() {
+    protected AbstractEntity() {
         AutowireHelper.autowireBean(this);
     }
 

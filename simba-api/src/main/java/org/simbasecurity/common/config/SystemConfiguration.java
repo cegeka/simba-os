@@ -101,6 +101,20 @@ public final class SystemConfiguration {
     }
 
     /**
+     * Get the configuration value for the Simba Service URL, using the
+     * specified {@link SpringBootConfigurationProperties} as default.
+     *
+     * @param properties the SpringBootConfigurationProperties from which to get default configuration in
+     *                       the init parameters.
+     * @return the configuration value for the Simba Service URL. When there is
+     * no configuration, {@code null} is returned.
+     * @see #SYS_PROP_SIMBA_INTERNAL_SERVICE_URL
+     */
+    public static String getSimbaServiceURL(final SpringBootConfigurationProperties properties) {
+        return getSimbaServiceURL(getDefaultsMap(properties));
+    }
+
+    /**
      * Get the configuration value for the Simba Service URL without using any
      * defaults.
      *
@@ -145,6 +159,22 @@ public final class SystemConfiguration {
     }
 
     /**
+     * Get the configuration value for the Simba Web URL, using the specified
+     * {@link SpringBootConfigurationProperties} as default. If this property is not configured,
+     * the Simba Service URL is returned instead.
+     *
+     * @param properties the ServletContext from which to get default configuration in
+     *                       the init parameters.
+     * @return the configuration value for the Simba Web URL. When there is no
+     * configuration, {@code null} is returned.
+     * @see #SYS_PROP_SIMBA_WEB_URL
+     * @see #getSimbaServiceURL()
+     */
+    public static String getSimbaWebURL(final SpringBootConfigurationProperties properties) {
+        return getSimbaWebURL(getDefaultsMap(properties));
+    }
+
+    /**
      * Get the configuration value for the Simba Web URL without using any
      * defaults.
      *
@@ -162,6 +192,10 @@ public final class SystemConfiguration {
 
     public static String getAuthenticationChainName(final ServletContext servletContext) {
         return getAuthenticationChainName(getDefaultsMap(servletContext));
+    }
+
+    public static String getAuthenticationChainName(final SpringBootConfigurationProperties properties) {
+        return getAuthenticationChainName(getDefaultsMap(properties));
     }
 
     private static String getSimbaServiceURL(final Map<String, String> defaults) {
@@ -269,6 +303,19 @@ public final class SystemConfiguration {
         while (names.hasMoreElements()) {
             final String name = names.nextElement();
             defaults.put(name, context.getInitParameter(name));
+        }
+        return defaults;
+    }
+
+    private static Map<String, String> getDefaultsMap(final SpringBootConfigurationProperties context) {
+        if (context == null) {
+            return Collections.emptyMap();
+        }
+
+        final Map<String, String> defaults = new HashMap<>();
+
+        for (Map.Entry<String, String> entry : context.getProperties().entrySet()) {
+            defaults.put(entry.getKey(), entry.getValue());
         }
         return defaults;
     }

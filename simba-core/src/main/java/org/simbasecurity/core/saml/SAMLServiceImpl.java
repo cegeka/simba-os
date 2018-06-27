@@ -35,6 +35,8 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
@@ -174,17 +176,25 @@ public class SAMLServiceImpl implements SAMLService {
 
     @Override
     public SAMLResponseHandler getSAMLResponseHandler(String response, String currentURL) throws Exception {
-        return new SAMLResponseHandlerImpl(loadCertificate(), response, currentURL);
+        return new SAMLResponseHandlerImpl(loadCertificates(), response, currentURL);
     }
 
     private String generateSamlRedirectBindingUrl(String authRequest, String idpTargetUrl) throws XMLStreamException, IOException {
         return idpTargetUrl + "?SAMLRequest=" + URLEncoder.encode(authRequest, "UTF-8");
     }
 
-    private Certificate loadCertificate() throws CertificateException {
-        String certificate = configurationService.getValue(SimbaConfigurationParameter.SAML_IDP_CERTIFICATE);
-        CertificateFactory fty = CertificateFactory.getInstance("X.509");
-        ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decodeBase64(certificate.getBytes()));
-        return fty.generateCertificate(bais);
+    private List<Certificate> loadCertificates() {
+        List<String> certificates = configurationService.getValue(SimbaConfigurationParameter.SAML_IDP_CERTIFICATE);
+
+        return certificates.stream()
+                .map(certificate -> {
+                    try {
+                        CertificateFactory fty = CertificateFactory.getInstance("X.509");
+                        ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decodeBase64(certificate.getBytes()));
+                        return fty.generateCertificate(bais);
+                    } catch (CertificateException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).collect(Collectors.toList());
     }
 }

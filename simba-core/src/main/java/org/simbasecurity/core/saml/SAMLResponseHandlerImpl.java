@@ -33,7 +33,7 @@ public class SAMLResponseHandlerImpl implements SAMLResponseHandler {
 
     private static final Logger log = LoggerFactory.getLogger(SAMLResponseHandlerImpl.class);
     private final String currentUrl;
-    private final Certificate certificate;
+    private final List<Certificate> certificates;
 
     private Document document;
 
@@ -45,12 +45,12 @@ public class SAMLResponseHandlerImpl implements SAMLResponseHandler {
     /**
      * Constructor to have a Response object full builded and ready to validate the saml response
      *
-     * @param certificate The IDP certificate to use
+     * @param certificates The IDP certificates to use
      * @param response    SAML Response on string format
      * @param currentURL  URL of the current host + current view
      */
-    public SAMLResponseHandlerImpl(Certificate certificate, String response, String currentURL) throws Exception {
-        this.certificate = certificate;
+    public SAMLResponseHandlerImpl(List<Certificate> certificates, String response, String currentURL) throws Exception {
+        this.certificates = certificates;
         loadXmlFromBase64(response);
         this.currentUrl = currentURL;
         this.error = new StringBuilder();
@@ -82,10 +82,6 @@ public class SAMLResponseHandlerImpl implements SAMLResponseHandler {
     public boolean isValid(String... requestId) {
         try {
             Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-
-            if (this.document == null) {
-                throw new Exception("SAML Response is not loaded");
-            }
 
             if (this.currentUrl == null || this.currentUrl.isEmpty()) {
                 throw new Exception("The URL of the current host was not established");
@@ -226,9 +222,16 @@ public class SAMLResponseHandlerImpl implements SAMLResponseHandler {
             if (signedElements.isEmpty()) {
                 throw new Exception("No Signature found. SAML Response rejected");
             } else {
-                if (!Utils.validateSign(signNodes.item(0), certificate)) {
-                    throw new Exception("Signature validation failed. SAML Response rejected");
-                }
+                certificates.stream()
+                        .filter(certificate -> {
+                            try {
+                                return Utils.validateSign(signNodes.item(0), certificate);
+                            } catch (Exception e) {
+                                return false;
+                            }
+                        })
+                        .findFirst()
+                        .orElseThrow(() -> new Exception("Signature validation failed. SAML Response rejected"));
             }
             return true;
         } catch (Error e) {

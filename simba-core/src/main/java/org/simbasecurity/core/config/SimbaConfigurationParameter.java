@@ -238,7 +238,7 @@ public enum SimbaConfigurationParameter implements ConfigurationParameter {
     SAML_IDP_SLO_TARGET_URL(StoreType.DATABASE, true, StringType.class, ""),
     SAML_ASSERTION_CONSUMER_SERVICE_URL(StoreType.DATABASE, true, StringType.class, ""),
     SAML_ISSUER(StoreType.DATABASE, true, StringType.class, ""),
-    SAML_IDP_CERTIFICATE(DATABASE, true, StringType.class, ""),
+    SAML_IDP_CERTIFICATE(DATABASE, false, StringType.class, ""),
     ;
 
     private final ConfigurationHelper helper;

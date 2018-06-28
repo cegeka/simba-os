@@ -183,8 +183,8 @@ public class SAMLServiceImpl implements SAMLService {
         return idpTargetUrl + "?SAMLRequest=" + URLEncoder.encode(authRequest, "UTF-8");
     }
 
-    private List<Certificate> loadCertificates() {
-        List<String> certificates = configurationService.getValue(SimbaConfigurationParameter.SAML_IDP_CERTIFICATE);
+    private List<Certificate> loadCertificates() throws Exception {
+        List<String> certificates = configurationService.getListValue(SimbaConfigurationParameter.SAML_IDP_CERTIFICATE.name());
 
         return certificates.stream()
                 .map(certificate -> {

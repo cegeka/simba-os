@@ -26,6 +26,7 @@ import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.api.service.thrift.AuthenticationFilterService;
 import org.simbasecurity.api.service.thrift.RequestData;
 import org.simbasecurity.client.configuration.SimbaConfiguration;
+import org.simbasecurity.client.principal.SimbaPrincipal;
 import org.simbasecurity.common.config.SystemConfiguration;
 import org.simbasecurity.common.constants.AuthenticationConstants;
 import org.simbasecurity.common.request.RequestUtil;
@@ -61,9 +62,7 @@ public class JerseyBasicAuthenticationFilter implements ContainerRequestFilter {
                                                   containerRequest.getAbsolutePath().toString(), simbaWebURL, null /* SSO Token */, null /* Client IP */,
                                                   false, false, false, false, false, containerRequest.getMethod(), RequestUtil.HOST_SERVER_NAME, null, null);
 
-        THttpClient tHttpClient = null;
-        try {
-            tHttpClient = new THttpClient(SimbaConfiguration.getSimbaAuthenticationURL());
+        try (THttpClient tHttpClient = new THttpClient(SimbaConfiguration.getSimbaAuthenticationURL())) {
             TProtocol tProtocol = new TJSONProtocol(tHttpClient);
 
             AuthenticationFilterService.Client authenticationClient = new AuthenticationFilterService.Client(tProtocol);
@@ -72,13 +71,10 @@ public class JerseyBasicAuthenticationFilter implements ContainerRequestFilter {
             if (!actionDescriptor.getActionTypes().contains(ActionType.DO_FILTER_AND_SET_PRINCIPAL)) {
                 throw new WebApplicationException(Response.Status.UNAUTHORIZED);
             }
+            containerRequest.setSecurityContext(new SecurityContextWithPrincipal(containerRequest.getSecurityContext(), new SimbaPrincipal(credentials[0])));
         } catch (Exception e) {
             e.printStackTrace();
             throw new WebApplicationException(e, Response.Status.UNAUTHORIZED);
-        } finally {
-            if (tHttpClient != null) {
-                tHttpClient.close();
-            }
         }
     }
 

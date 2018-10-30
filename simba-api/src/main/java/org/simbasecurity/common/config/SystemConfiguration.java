@@ -72,6 +72,10 @@ public final class SystemConfiguration {
     private SystemConfiguration() {
     }
 
+    public static void loadSpringBootProperties(SpringBootConfigurationProperties properties){
+        simbaProperties.putAll(properties.getProperties());
+    }
+
     /**
      * Get the configuration value for the Simba Service URL, using the
      * specified {@link FilterConfig} as default.

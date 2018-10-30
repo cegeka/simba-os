@@ -25,6 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static org.simbasecurity.common.config.SystemConfiguration.loadSpringBootProperties;
+
 /**
  * To use this filter in your spring boot application, you will need to configure this class as a bean:
  * <pre>
@@ -77,6 +79,7 @@ public final class SpringBootSecurityAuthenticationFilter implements Filter, Ord
      */
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        loadSpringBootProperties(simbaConfigurationProperties);
         simbaURL = SystemConfiguration.getSimbaServiceURL(simbaConfigurationProperties);
         if (simbaURL == null) {
             throw new ServletException("Simba URL has not been set. Check org.simbasecurity.client.filter params or system property [" + SystemConfiguration.SYS_PROP_SIMBA_INTERNAL_SERVICE_URL + "]");

@@ -21,67 +21,6 @@ After that you can add a profile for you OS in the parent pom.xml providing the 
 2. You need to add C:\<simba_dir>\simba-api\target\generated-sources\thrift\java to your classpath
 
 3. Add following lines to your maven settings file:
-```xml
-  <servers>
-    <server>
-      <id>nexus</id>
-      <username>simba</username>
-      <password>simba</password>
-    </server>
-    <server>
-      <id>simba-snapshots</id>
-      <username>simba</username>
-      <password>simba</password>
-    </server>
-    <server>
-      <id>simba-releases</id>
-      <username>simba</username>
-      <password>simba</password>
-    </server>
-  </servers>
-
-  <mirrors>
-    <mirror>
-      <id>nexus</id>
-      <mirrorOf>*</mirrorOf>
-      <url>http://nexus.cegeka.be/nexus/content/groups/public</url>
-    </mirror>
-  </mirrors>
-  
-  <profiles>
-    <profile>
-      <id>nexus</id>
-      <repositories>
-        <repository>
-          <id>nexus</id>
-          <url>http://nexus</url>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-        </repository>
-      </repositories>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>nexus</id>
-          <url>http://nexus</url>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-        </pluginRepository>
-      </pluginRepositories>
-    </profile>
-  </profiles>
-
-  <activeProfiles>
-    <activeProfile>nexus</activeProfile>
-  </activeProfiles>
-```
 
 ## Components
 

@@ -453,6 +453,152 @@ AuthorizationService_isUserInRole_result.prototype.write = function(output) {
   return;
 };
 
+AuthorizationService_getRoles_args = function(args) {
+  this.username = null;
+  if (args) {
+    if (args.username !== undefined && args.username !== null) {
+      this.username = args.username;
+    }
+  }
+};
+AuthorizationService_getRoles_args.prototype = {};
+AuthorizationService_getRoles_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.username = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+AuthorizationService_getRoles_args.prototype.write = function(output) {
+  output.writeStructBegin('AuthorizationService_getRoles_args');
+  if (this.username !== null && this.username !== undefined) {
+    output.writeFieldBegin('username', Thrift.Type.STRING, 1);
+    output.writeString(this.username);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+AuthorizationService_getRoles_result = function(args) {
+  this.success = null;
+  this.simbaError = null;
+  if (args instanceof TSimbaError) {
+    this.simbaError = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = Thrift.copyList(args.success, [null]);
+    }
+    if (args.simbaError !== undefined && args.simbaError !== null) {
+      this.simbaError = args.simbaError;
+    }
+  }
+};
+AuthorizationService_getRoles_result.prototype = {};
+AuthorizationService_getRoles_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.LIST) {
+        var _size38 = 0;
+        var _rtmp342;
+        this.success = [];
+        var _etype41 = 0;
+        _rtmp342 = input.readListBegin();
+        _etype41 = _rtmp342.etype;
+        _size38 = _rtmp342.size;
+        for (var _i43 = 0; _i43 < _size38; ++_i43)
+        {
+          var elem44 = null;
+          elem44 = input.readString().value;
+          this.success.push(elem44);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.simbaError = new TSimbaError();
+        this.simbaError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+AuthorizationService_getRoles_result.prototype.write = function(output) {
+  output.writeStructBegin('AuthorizationService_getRoles_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+    output.writeListBegin(Thrift.Type.STRING, this.success.length);
+    for (var iter45 in this.success)
+    {
+      if (this.success.hasOwnProperty(iter45))
+      {
+        iter45 = this.success[iter45];
+        output.writeString(iter45);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.simbaError !== null && this.simbaError !== undefined) {
+    output.writeFieldBegin('simbaError', Thrift.Type.STRUCT, 1);
+    this.simbaError.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 AuthorizationServiceClient = function(input, output) {
     this.input = input;
     this.output = (!output) ? input : output;
@@ -619,4 +765,56 @@ AuthorizationServiceClient.prototype.recv_isUserInRole = function() {
     return result.success;
   }
   throw 'isUserInRole failed: unknown result';
+};
+AuthorizationServiceClient.prototype.getRoles = function(username, callback) {
+  this.send_getRoles(username, callback); 
+  if (!callback) {
+    return this.recv_getRoles();
+  }
+};
+
+AuthorizationServiceClient.prototype.send_getRoles = function(username, callback) {
+  this.output.writeMessageBegin('getRoles', Thrift.MessageType.CALL, this.seqid);
+  var args = new AuthorizationService_getRoles_args();
+  args.username = username;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_getRoles();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+AuthorizationServiceClient.prototype.recv_getRoles = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new AuthorizationService_getRoles_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.simbaError) {
+    throw result.simbaError;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'getRoles failed: unknown result';
 };

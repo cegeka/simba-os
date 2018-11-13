@@ -67,19 +67,19 @@ SessionService_findAllActive_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size78 = 0;
-        var _rtmp382;
+        var _size86 = 0;
+        var _rtmp390;
         this.success = [];
-        var _etype81 = 0;
-        _rtmp382 = input.readListBegin();
-        _etype81 = _rtmp382.etype;
-        _size78 = _rtmp382.size;
-        for (var _i83 = 0; _i83 < _size78; ++_i83)
+        var _etype89 = 0;
+        _rtmp390 = input.readListBegin();
+        _etype89 = _rtmp390.etype;
+        _size86 = _rtmp390.size;
+        for (var _i91 = 0; _i91 < _size86; ++_i91)
         {
-          var elem84 = null;
-          elem84 = new TSession();
-          elem84.read(input);
-          this.success.push(elem84);
+          var elem92 = null;
+          elem92 = new TSession();
+          elem92.read(input);
+          this.success.push(elem92);
         }
         input.readListEnd();
       } else {
@@ -108,12 +108,12 @@ SessionService_findAllActive_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter85 in this.success)
+    for (var iter93 in this.success)
     {
-      if (this.success.hasOwnProperty(iter85))
+      if (this.success.hasOwnProperty(iter93))
       {
-        iter85 = this.success[iter85];
-        iter85.write(output);
+        iter93 = this.success[iter93];
+        iter93.write(output);
       }
     }
     output.writeListEnd();

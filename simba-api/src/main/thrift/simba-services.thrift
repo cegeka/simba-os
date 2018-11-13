@@ -240,6 +240,13 @@ service AuthorizationService {
      * @return a PolicyDecision containing the result of the request.
      */
     PolicyDecision isUserInRole(1: string username, 2: string roleName) throws (1: TSimbaError simbaError)
+
+    /**
+    * Obtain the roles assigned to the user
+    * @param username the name of the user
+    * @return a list of rolenames
+    */
+    list<string> getRoles(1: string username) throws (1: TSimbaError simbaError)
 }
 
 /**

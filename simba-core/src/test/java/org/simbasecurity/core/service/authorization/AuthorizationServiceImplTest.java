@@ -34,9 +34,11 @@ import org.simbasecurity.core.domain.repository.UserRepository;
 import org.simbasecurity.core.service.AuthorizationRequestContext;
 import org.simbasecurity.core.service.errors.SimbaExceptionHandlingCaller;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
+import static java.util.Arrays.asList;
+import static org.hibernate.validator.internal.util.CollectionHelper.asSet;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -176,7 +178,7 @@ public class AuthorizationServiceImplTest {
 
     @Test
     public void policyAppliesAnd2ndRuleAllowedReturnsDecisionTrue_1stPolicyDoesNotApply() throws TException {
-        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(Arrays.asList(mockResourceRule, mock2ndResourceRule));
+        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(asList(mockResourceRule, mock2ndResourceRule));
         when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(false);
         when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
         when(mock2ndResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(true);
@@ -189,7 +191,7 @@ public class AuthorizationServiceImplTest {
 
     @Test
     public void policyAppliesAnd2ndRuleDisallowedReturnsDecisionFalse_1stPolicyDoesNotApply() throws TException {
-        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(Arrays.asList(mockResourceRule, mock2ndResourceRule));
+        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(asList(mockResourceRule, mock2ndResourceRule));
         when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(false);
 
         when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
@@ -203,7 +205,7 @@ public class AuthorizationServiceImplTest {
 
     @Test
     public void policyDoesNotApplyAnd2ndRuleAllowedReturnsDecisionFalseWithSmallestExpirationStamp_1stPolicyDoesNotApply() throws TException {
-        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(Arrays.asList(mockResourceRule, mock2ndResourceRule));
+        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(asList(mockResourceRule, mock2ndResourceRule));
         when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(false);
         when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(false);
 
@@ -215,7 +217,7 @@ public class AuthorizationServiceImplTest {
 
     @Test
     public void policyAppliesAnd2ndRuleAllowedReturnsDecisionTrue_1stRuleDisallowed() throws TException {
-        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(Arrays.asList(mockResourceRule, mock2ndResourceRule));
+        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(asList(mockResourceRule, mock2ndResourceRule));
         when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
         when(mockResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(false);
         when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
@@ -229,7 +231,7 @@ public class AuthorizationServiceImplTest {
 
     @Test
     public void policyAppliesAnd2ndRuleDisallowedReturnsDecisionFalseWithSmallestExpirationStamp_1stRuleDisallowed() throws TException {
-        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(Arrays.asList(mockResourceRule, mock2ndResourceRule));
+        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(asList(mockResourceRule, mock2ndResourceRule));
         when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
         when(mockResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(false);
         when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
@@ -243,7 +245,7 @@ public class AuthorizationServiceImplTest {
 
     @Test
     public void policyDoesNotApplyAnd2ndRuleAllowedReturnsDecisionFalse_1stRuleDisallowed() throws TException {
-        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(Arrays.asList(mockResourceRule, mock2ndResourceRule));
+        when(mockRuleRepository.findResourceRules(USERNAME, RESOURCE_NAME)).thenReturn(asList(mockResourceRule, mock2ndResourceRule));
         when(mockPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(true);
         when(mockResourceRule.isAllowed(ResourceOperationType.resolve(RESOURCE_OPERATION))).thenReturn(false);
         when(mock2ndPolicy.applies(any(AuthorizationRequestContext.class))).thenReturn(false);
@@ -275,4 +277,14 @@ public class AuthorizationServiceImplTest {
         when(mockUserRepository.findByName("testuser")).thenReturn(userEntity);
     }
 
+    @Test
+    public void getRoles_returnsRoles() throws TException {
+        UserEntity userEntity = mock(UserEntity.class);
+        when(userEntity.getRoles()).thenReturn(asSet(new RoleEntity("testrole")));
+        when(mockUserRepository.findByName("testuser")).thenReturn(userEntity);
+
+        List<String> result = authorizationServiceImpl.getRoles("testuser");
+
+        assertEquals(asList("testrole"), result);
+    }
 }

@@ -23,9 +23,11 @@ import org.apache.thrift.transport.THttpClient;
 import org.apache.thrift.transport.TTransportException;
 import org.simbasecurity.api.service.thrift.AuthorizationService;
 import org.simbasecurity.api.service.thrift.PolicyDecision;
+import org.simbasecurity.api.service.thrift.TSimbaError;
 import org.simbasecurity.client.configuration.SimbaConfiguration;
 import org.simbasecurity.client.util.PolicyDecisionHelper;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -79,6 +81,11 @@ public class AuthorizationServiceClient implements AuthorizationService.Iface {
     @Override
     public PolicyDecision isUserInRole(String username, String roleName) throws TException {
         return getAuthorizationServiceClient().isUserInRole(username, roleName);
+    }
+
+    @Override
+    public List<String> getRoles(String username) throws TSimbaError, TException {
+        return getAuthorizationServiceClient().getRoles(username);
     }
 
     private void removeData(String userName, Map<AuthorizationKey, PolicyDecision> map) {

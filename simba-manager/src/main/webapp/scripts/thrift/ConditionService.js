@@ -67,19 +67,19 @@ ConditionService_findAll_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size198 = 0;
-        var _rtmp3202;
+        var _size206 = 0;
+        var _rtmp3210;
         this.success = [];
-        var _etype201 = 0;
-        _rtmp3202 = input.readListBegin();
-        _etype201 = _rtmp3202.etype;
-        _size198 = _rtmp3202.size;
-        for (var _i203 = 0; _i203 < _size198; ++_i203)
+        var _etype209 = 0;
+        _rtmp3210 = input.readListBegin();
+        _etype209 = _rtmp3210.etype;
+        _size206 = _rtmp3210.size;
+        for (var _i211 = 0; _i211 < _size206; ++_i211)
         {
-          var elem204 = null;
-          elem204 = new TCondition();
-          elem204.read(input);
-          this.success.push(elem204);
+          var elem212 = null;
+          elem212 = new TCondition();
+          elem212.read(input);
+          this.success.push(elem212);
         }
         input.readListEnd();
       } else {
@@ -108,12 +108,12 @@ ConditionService_findAll_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter205 in this.success)
+    for (var iter213 in this.success)
     {
-      if (this.success.hasOwnProperty(iter205))
+      if (this.success.hasOwnProperty(iter213))
       {
-        iter205 = this.success[iter205];
-        iter205.write(output);
+        iter213 = this.success[iter213];
+        iter213.write(output);
       }
     }
     output.writeListEnd();
@@ -215,19 +215,19 @@ ConditionService_findPolicies_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size206 = 0;
-        var _rtmp3210;
+        var _size214 = 0;
+        var _rtmp3218;
         this.success = [];
-        var _etype209 = 0;
-        _rtmp3210 = input.readListBegin();
-        _etype209 = _rtmp3210.etype;
-        _size206 = _rtmp3210.size;
-        for (var _i211 = 0; _i211 < _size206; ++_i211)
+        var _etype217 = 0;
+        _rtmp3218 = input.readListBegin();
+        _etype217 = _rtmp3218.etype;
+        _size214 = _rtmp3218.size;
+        for (var _i219 = 0; _i219 < _size214; ++_i219)
         {
-          var elem212 = null;
-          elem212 = new TPolicy();
-          elem212.read(input);
-          this.success.push(elem212);
+          var elem220 = null;
+          elem220 = new TPolicy();
+          elem220.read(input);
+          this.success.push(elem220);
         }
         input.readListEnd();
       } else {
@@ -256,12 +256,12 @@ ConditionService_findPolicies_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter213 in this.success)
+    for (var iter221 in this.success)
     {
-      if (this.success.hasOwnProperty(iter213))
+      if (this.success.hasOwnProperty(iter221))
       {
-        iter213 = this.success[iter213];
-        iter213.write(output);
+        iter221 = this.success[iter221];
+        iter221.write(output);
       }
     }
     output.writeListEnd();
@@ -363,19 +363,19 @@ ConditionService_findExemptedUsers_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size214 = 0;
-        var _rtmp3218;
+        var _size222 = 0;
+        var _rtmp3226;
         this.success = [];
-        var _etype217 = 0;
-        _rtmp3218 = input.readListBegin();
-        _etype217 = _rtmp3218.etype;
-        _size214 = _rtmp3218.size;
-        for (var _i219 = 0; _i219 < _size214; ++_i219)
+        var _etype225 = 0;
+        _rtmp3226 = input.readListBegin();
+        _etype225 = _rtmp3226.etype;
+        _size222 = _rtmp3226.size;
+        for (var _i227 = 0; _i227 < _size222; ++_i227)
         {
-          var elem220 = null;
-          elem220 = new TUser();
-          elem220.read(input);
-          this.success.push(elem220);
+          var elem228 = null;
+          elem228 = new TUser();
+          elem228.read(input);
+          this.success.push(elem228);
         }
         input.readListEnd();
       } else {
@@ -404,12 +404,12 @@ ConditionService_findExemptedUsers_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter221 in this.success)
+    for (var iter229 in this.success)
     {
-      if (this.success.hasOwnProperty(iter221))
+      if (this.success.hasOwnProperty(iter229))
       {
-        iter221 = this.success[iter221];
-        iter221.write(output);
+        iter229 = this.success[iter229];
+        iter229.write(output);
       }
     }
     output.writeListEnd();
@@ -591,19 +591,19 @@ ConditionService_addOrUpdate_args.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
-        var _size222 = 0;
-        var _rtmp3226;
+        var _size230 = 0;
+        var _rtmp3234;
         this.policies = [];
-        var _etype225 = 0;
-        _rtmp3226 = input.readListBegin();
-        _etype225 = _rtmp3226.etype;
-        _size222 = _rtmp3226.size;
-        for (var _i227 = 0; _i227 < _size222; ++_i227)
+        var _etype233 = 0;
+        _rtmp3234 = input.readListBegin();
+        _etype233 = _rtmp3234.etype;
+        _size230 = _rtmp3234.size;
+        for (var _i235 = 0; _i235 < _size230; ++_i235)
         {
-          var elem228 = null;
-          elem228 = new TPolicy();
-          elem228.read(input);
-          this.policies.push(elem228);
+          var elem236 = null;
+          elem236 = new TPolicy();
+          elem236.read(input);
+          this.policies.push(elem236);
         }
         input.readListEnd();
       } else {
@@ -612,19 +612,19 @@ ConditionService_addOrUpdate_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
-        var _size229 = 0;
-        var _rtmp3233;
+        var _size237 = 0;
+        var _rtmp3241;
         this.excludedUsers = [];
-        var _etype232 = 0;
-        _rtmp3233 = input.readListBegin();
-        _etype232 = _rtmp3233.etype;
-        _size229 = _rtmp3233.size;
-        for (var _i234 = 0; _i234 < _size229; ++_i234)
+        var _etype240 = 0;
+        _rtmp3241 = input.readListBegin();
+        _etype240 = _rtmp3241.etype;
+        _size237 = _rtmp3241.size;
+        for (var _i242 = 0; _i242 < _size237; ++_i242)
         {
-          var elem235 = null;
-          elem235 = new TUser();
-          elem235.read(input);
-          this.excludedUsers.push(elem235);
+          var elem243 = null;
+          elem243 = new TUser();
+          elem243.read(input);
+          this.excludedUsers.push(elem243);
         }
         input.readListEnd();
       } else {
@@ -650,12 +650,12 @@ ConditionService_addOrUpdate_args.prototype.write = function(output) {
   if (this.policies !== null && this.policies !== undefined) {
     output.writeFieldBegin('policies', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRUCT, this.policies.length);
-    for (var iter236 in this.policies)
+    for (var iter244 in this.policies)
     {
-      if (this.policies.hasOwnProperty(iter236))
+      if (this.policies.hasOwnProperty(iter244))
       {
-        iter236 = this.policies[iter236];
-        iter236.write(output);
+        iter244 = this.policies[iter244];
+        iter244.write(output);
       }
     }
     output.writeListEnd();
@@ -664,12 +664,12 @@ ConditionService_addOrUpdate_args.prototype.write = function(output) {
   if (this.excludedUsers !== null && this.excludedUsers !== undefined) {
     output.writeFieldBegin('excludedUsers', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.excludedUsers.length);
-    for (var iter237 in this.excludedUsers)
+    for (var iter245 in this.excludedUsers)
     {
-      if (this.excludedUsers.hasOwnProperty(iter237))
+      if (this.excludedUsers.hasOwnProperty(iter245))
       {
-        iter237 = this.excludedUsers[iter237];
-        iter237.write(output);
+        iter245 = this.excludedUsers[iter245];
+        iter245.write(output);
       }
     }
     output.writeListEnd();

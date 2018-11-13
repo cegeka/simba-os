@@ -20,6 +20,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.thrift.TException;
 import org.simbasecurity.api.service.thrift.AuthorizationService;
 import org.simbasecurity.api.service.thrift.PolicyDecision;
+import org.simbasecurity.api.service.thrift.TSimbaError;
 import org.simbasecurity.core.audit.Audit;
 import org.simbasecurity.core.audit.AuditLogEventFactory;
 import org.simbasecurity.core.domain.*;
@@ -32,6 +33,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.simbasecurity.core.audit.AuditMessages.*;
 
@@ -120,6 +123,16 @@ public class AuthorizationServiceImpl implements AuthorizationService.Iface {
 
             logAuthorizationDecision(username, USER_ALLOWED_IN_ROLE_LABEL + roleName + LOG_DELIM + NEVER_ALLOWED);
             return NEVER_ALLOWED;
+        });
+    }
+
+    @Override
+    public List<String> getRoles(String username) throws TException {
+        return simbaExceptionHandlingCaller.call(() -> {
+            User user = userRepository.findByName(username);
+            return user.getRoles().stream()
+                    .map(Role::getName)
+                    .collect(Collectors.toList());
         });
     }
 

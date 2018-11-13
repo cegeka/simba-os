@@ -1,0 +1,40 @@
+node('commit-stage') {
+    def simba_git_url = "git@github.com:cegeka/simba-os.git"
+    def simba_checkout_dir = "simba"
+
+    try {
+        stage('Checkout') {
+
+            checkout(
+                    changelog: true,
+                    poll: true,
+                    scm: [$class                           : 'GitSCM',
+                          branches                         : [[name: '*/master']],
+                          doGenerateSubmoduleConfigurations: false,
+                          extensions                       : [[
+                                                                      $class           : 'RelativeTargetDirectory',
+                                                                      relativeTargetDir: simba_checkout_dir]],
+                          submoduleCfg                     : [],
+                          userRemoteConfigs                : [[
+                                                                      credentialsId: 'ventouristeam_github_jenkins_key',
+                                                                      url          : simba_git_url
+                                                              ]]
+                    ]
+            )
+        }
+
+        stage('Build') {
+            dir(simba_checkout_dir) {
+                try {
+                    sh "mvn release:prepare"
+                } finally {
+                    step([$class: "JUnitResultArchiver", testResults: "**/build/**/TEST-*.xml"])
+                }
+            }
+        }
+    } catch (err) {
+        println err.getMessage()
+        currentBuild.result = 'FAILURE'
+        step([$class: 'ClaimPublisher'])
+    }
+}

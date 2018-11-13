@@ -67,19 +67,19 @@ GroupService_findAll_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size158 = 0;
-        var _rtmp3162;
+        var _size166 = 0;
+        var _rtmp3170;
         this.success = [];
-        var _etype161 = 0;
-        _rtmp3162 = input.readListBegin();
-        _etype161 = _rtmp3162.etype;
-        _size158 = _rtmp3162.size;
-        for (var _i163 = 0; _i163 < _size158; ++_i163)
+        var _etype169 = 0;
+        _rtmp3170 = input.readListBegin();
+        _etype169 = _rtmp3170.etype;
+        _size166 = _rtmp3170.size;
+        for (var _i171 = 0; _i171 < _size166; ++_i171)
         {
-          var elem164 = null;
-          elem164 = new TGroup();
-          elem164.read(input);
-          this.success.push(elem164);
+          var elem172 = null;
+          elem172 = new TGroup();
+          elem172.read(input);
+          this.success.push(elem172);
         }
         input.readListEnd();
       } else {
@@ -108,12 +108,12 @@ GroupService_findAll_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter165 in this.success)
+    for (var iter173 in this.success)
     {
-      if (this.success.hasOwnProperty(iter165))
+      if (this.success.hasOwnProperty(iter173))
       {
-        iter165 = this.success[iter165];
-        iter165.write(output);
+        iter173 = this.success[iter173];
+        iter173.write(output);
       }
     }
     output.writeListEnd();
@@ -215,19 +215,19 @@ GroupService_findRoles_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size166 = 0;
-        var _rtmp3170;
+        var _size174 = 0;
+        var _rtmp3178;
         this.success = [];
-        var _etype169 = 0;
-        _rtmp3170 = input.readListBegin();
-        _etype169 = _rtmp3170.etype;
-        _size166 = _rtmp3170.size;
-        for (var _i171 = 0; _i171 < _size166; ++_i171)
+        var _etype177 = 0;
+        _rtmp3178 = input.readListBegin();
+        _etype177 = _rtmp3178.etype;
+        _size174 = _rtmp3178.size;
+        for (var _i179 = 0; _i179 < _size174; ++_i179)
         {
-          var elem172 = null;
-          elem172 = new TRole();
-          elem172.read(input);
-          this.success.push(elem172);
+          var elem180 = null;
+          elem180 = new TRole();
+          elem180.read(input);
+          this.success.push(elem180);
         }
         input.readListEnd();
       } else {
@@ -256,12 +256,12 @@ GroupService_findRoles_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter173 in this.success)
+    for (var iter181 in this.success)
     {
-      if (this.success.hasOwnProperty(iter173))
+      if (this.success.hasOwnProperty(iter181))
       {
-        iter173 = this.success[iter173];
-        iter173.write(output);
+        iter181 = this.success[iter181];
+        iter181.write(output);
       }
     }
     output.writeListEnd();
@@ -363,19 +363,19 @@ GroupService_findRolesNotLinked_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size174 = 0;
-        var _rtmp3178;
+        var _size182 = 0;
+        var _rtmp3186;
         this.success = [];
-        var _etype177 = 0;
-        _rtmp3178 = input.readListBegin();
-        _etype177 = _rtmp3178.etype;
-        _size174 = _rtmp3178.size;
-        for (var _i179 = 0; _i179 < _size174; ++_i179)
+        var _etype185 = 0;
+        _rtmp3186 = input.readListBegin();
+        _etype185 = _rtmp3186.etype;
+        _size182 = _rtmp3186.size;
+        for (var _i187 = 0; _i187 < _size182; ++_i187)
         {
-          var elem180 = null;
-          elem180 = new TRole();
-          elem180.read(input);
-          this.success.push(elem180);
+          var elem188 = null;
+          elem188 = new TRole();
+          elem188.read(input);
+          this.success.push(elem188);
         }
         input.readListEnd();
       } else {
@@ -404,12 +404,12 @@ GroupService_findRolesNotLinked_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter181 in this.success)
+    for (var iter189 in this.success)
     {
-      if (this.success.hasOwnProperty(iter181))
+      if (this.success.hasOwnProperty(iter189))
       {
-        iter181 = this.success[iter181];
-        iter181.write(output);
+        iter189 = this.success[iter189];
+        iter189.write(output);
       }
     }
     output.writeListEnd();
@@ -511,19 +511,19 @@ GroupService_findUsers_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size182 = 0;
-        var _rtmp3186;
+        var _size190 = 0;
+        var _rtmp3194;
         this.success = [];
-        var _etype185 = 0;
-        _rtmp3186 = input.readListBegin();
-        _etype185 = _rtmp3186.etype;
-        _size182 = _rtmp3186.size;
-        for (var _i187 = 0; _i187 < _size182; ++_i187)
+        var _etype193 = 0;
+        _rtmp3194 = input.readListBegin();
+        _etype193 = _rtmp3194.etype;
+        _size190 = _rtmp3194.size;
+        for (var _i195 = 0; _i195 < _size190; ++_i195)
         {
-          var elem188 = null;
-          elem188 = new TUser();
-          elem188.read(input);
-          this.success.push(elem188);
+          var elem196 = null;
+          elem196 = new TUser();
+          elem196.read(input);
+          this.success.push(elem196);
         }
         input.readListEnd();
       } else {
@@ -552,12 +552,12 @@ GroupService_findUsers_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter189 in this.success)
+    for (var iter197 in this.success)
     {
-      if (this.success.hasOwnProperty(iter189))
+      if (this.success.hasOwnProperty(iter197))
       {
-        iter189 = this.success[iter189];
-        iter189.write(output);
+        iter197 = this.success[iter197];
+        iter197.write(output);
       }
     }
     output.writeListEnd();
@@ -735,19 +735,19 @@ GroupService_addRoles_args.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
-        var _size190 = 0;
-        var _rtmp3194;
+        var _size198 = 0;
+        var _rtmp3202;
         this.roles = [];
-        var _etype193 = 0;
-        _rtmp3194 = input.readListBegin();
-        _etype193 = _rtmp3194.etype;
-        _size190 = _rtmp3194.size;
-        for (var _i195 = 0; _i195 < _size190; ++_i195)
+        var _etype201 = 0;
+        _rtmp3202 = input.readListBegin();
+        _etype201 = _rtmp3202.etype;
+        _size198 = _rtmp3202.size;
+        for (var _i203 = 0; _i203 < _size198; ++_i203)
         {
-          var elem196 = null;
-          elem196 = new TRole();
-          elem196.read(input);
-          this.roles.push(elem196);
+          var elem204 = null;
+          elem204 = new TRole();
+          elem204.read(input);
+          this.roles.push(elem204);
         }
         input.readListEnd();
       } else {
@@ -773,12 +773,12 @@ GroupService_addRoles_args.prototype.write = function(output) {
   if (this.roles !== null && this.roles !== undefined) {
     output.writeFieldBegin('roles', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRUCT, this.roles.length);
-    for (var iter197 in this.roles)
+    for (var iter205 in this.roles)
     {
-      if (this.roles.hasOwnProperty(iter197))
+      if (this.roles.hasOwnProperty(iter205))
       {
-        iter197 = this.roles[iter197];
-        iter197.write(output);
+        iter205 = this.roles[iter205];
+        iter205.write(output);
       }
     }
     output.writeListEnd();

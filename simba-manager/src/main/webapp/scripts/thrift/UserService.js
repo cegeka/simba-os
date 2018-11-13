@@ -43,19 +43,19 @@ UserService_addRoles_args.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.SET) {
-        var _size86 = 0;
-        var _rtmp390;
+        var _size94 = 0;
+        var _rtmp398;
         this.roles = [];
-        var _etype89 = 0;
-        _rtmp390 = input.readSetBegin();
-        _etype89 = _rtmp390.etype;
-        _size86 = _rtmp390.size;
-        for (var _i91 = 0; _i91 < _size86; ++_i91)
+        var _etype97 = 0;
+        _rtmp398 = input.readSetBegin();
+        _etype97 = _rtmp398.etype;
+        _size94 = _rtmp398.size;
+        for (var _i99 = 0; _i99 < _size94; ++_i99)
         {
-          var elem92 = null;
-          elem92 = new TRole();
-          elem92.read(input);
-          this.roles.push(elem92);
+          var elem100 = null;
+          elem100 = new TRole();
+          elem100.read(input);
+          this.roles.push(elem100);
         }
         input.readSetEnd();
       } else {
@@ -81,12 +81,12 @@ UserService_addRoles_args.prototype.write = function(output) {
   if (this.roles !== null && this.roles !== undefined) {
     output.writeFieldBegin('roles', Thrift.Type.SET, 2);
     output.writeSetBegin(Thrift.Type.STRUCT, this.roles.length);
-    for (var iter93 in this.roles)
+    for (var iter101 in this.roles)
     {
-      if (this.roles.hasOwnProperty(iter93))
+      if (this.roles.hasOwnProperty(iter101))
       {
-        iter93 = this.roles[iter93];
-        iter93.write(output);
+        iter101 = this.roles[iter101];
+        iter101.write(output);
       }
     }
     output.writeSetEnd();
@@ -317,18 +317,18 @@ UserService_createWithRoles_args.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
-        var _size94 = 0;
-        var _rtmp398;
+        var _size102 = 0;
+        var _rtmp3106;
         this.roleNames = [];
-        var _etype97 = 0;
-        _rtmp398 = input.readListBegin();
-        _etype97 = _rtmp398.etype;
-        _size94 = _rtmp398.size;
-        for (var _i99 = 0; _i99 < _size94; ++_i99)
+        var _etype105 = 0;
+        _rtmp3106 = input.readListBegin();
+        _etype105 = _rtmp3106.etype;
+        _size102 = _rtmp3106.size;
+        for (var _i107 = 0; _i107 < _size102; ++_i107)
         {
-          var elem100 = null;
-          elem100 = input.readString().value;
-          this.roleNames.push(elem100);
+          var elem108 = null;
+          elem108 = input.readString().value;
+          this.roleNames.push(elem108);
         }
         input.readListEnd();
       } else {
@@ -354,12 +354,12 @@ UserService_createWithRoles_args.prototype.write = function(output) {
   if (this.roleNames !== null && this.roleNames !== undefined) {
     output.writeFieldBegin('roleNames', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRING, this.roleNames.length);
-    for (var iter101 in this.roleNames)
+    for (var iter109 in this.roleNames)
     {
-      if (this.roleNames.hasOwnProperty(iter101))
+      if (this.roleNames.hasOwnProperty(iter109))
       {
-        iter101 = this.roleNames[iter101];
-        output.writeString(iter101);
+        iter109 = this.roleNames[iter109];
+        output.writeString(iter109);
       }
     }
     output.writeListEnd();
@@ -791,19 +791,19 @@ UserService_findByRole_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size102 = 0;
-        var _rtmp3106;
+        var _size110 = 0;
+        var _rtmp3114;
         this.success = [];
-        var _etype105 = 0;
-        _rtmp3106 = input.readListBegin();
-        _etype105 = _rtmp3106.etype;
-        _size102 = _rtmp3106.size;
-        for (var _i107 = 0; _i107 < _size102; ++_i107)
+        var _etype113 = 0;
+        _rtmp3114 = input.readListBegin();
+        _etype113 = _rtmp3114.etype;
+        _size110 = _rtmp3114.size;
+        for (var _i115 = 0; _i115 < _size110; ++_i115)
         {
-          var elem108 = null;
-          elem108 = new TUser();
-          elem108.read(input);
-          this.success.push(elem108);
+          var elem116 = null;
+          elem116 = new TUser();
+          elem116.read(input);
+          this.success.push(elem116);
         }
         input.readListEnd();
       } else {
@@ -832,12 +832,12 @@ UserService_findByRole_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter109 in this.success)
+    for (var iter117 in this.success)
     {
-      if (this.success.hasOwnProperty(iter109))
+      if (this.success.hasOwnProperty(iter117))
       {
-        iter109 = this.success[iter109];
-        iter109.write(output);
+        iter117 = this.success[iter117];
+        iter117.write(output);
       }
     }
     output.writeListEnd();
@@ -913,19 +913,19 @@ UserService_findAll_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size110 = 0;
-        var _rtmp3114;
+        var _size118 = 0;
+        var _rtmp3122;
         this.success = [];
-        var _etype113 = 0;
-        _rtmp3114 = input.readListBegin();
-        _etype113 = _rtmp3114.etype;
-        _size110 = _rtmp3114.size;
-        for (var _i115 = 0; _i115 < _size110; ++_i115)
+        var _etype121 = 0;
+        _rtmp3122 = input.readListBegin();
+        _etype121 = _rtmp3122.etype;
+        _size118 = _rtmp3122.size;
+        for (var _i123 = 0; _i123 < _size118; ++_i123)
         {
-          var elem116 = null;
-          elem116 = new TUser();
-          elem116.read(input);
-          this.success.push(elem116);
+          var elem124 = null;
+          elem124 = new TUser();
+          elem124.read(input);
+          this.success.push(elem124);
         }
         input.readListEnd();
       } else {
@@ -954,12 +954,12 @@ UserService_findAll_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter117 in this.success)
+    for (var iter125 in this.success)
     {
-      if (this.success.hasOwnProperty(iter117))
+      if (this.success.hasOwnProperty(iter125))
       {
-        iter117 = this.success[iter117];
-        iter117.write(output);
+        iter125 = this.success[iter125];
+        iter125.write(output);
       }
     }
     output.writeListEnd();
@@ -1061,19 +1061,19 @@ UserService_findGroups_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size118 = 0;
-        var _rtmp3122;
+        var _size126 = 0;
+        var _rtmp3130;
         this.success = [];
-        var _etype121 = 0;
-        _rtmp3122 = input.readListBegin();
-        _etype121 = _rtmp3122.etype;
-        _size118 = _rtmp3122.size;
-        for (var _i123 = 0; _i123 < _size118; ++_i123)
+        var _etype129 = 0;
+        _rtmp3130 = input.readListBegin();
+        _etype129 = _rtmp3130.etype;
+        _size126 = _rtmp3130.size;
+        for (var _i131 = 0; _i131 < _size126; ++_i131)
         {
-          var elem124 = null;
-          elem124 = new TGroup();
-          elem124.read(input);
-          this.success.push(elem124);
+          var elem132 = null;
+          elem132 = new TGroup();
+          elem132.read(input);
+          this.success.push(elem132);
         }
         input.readListEnd();
       } else {
@@ -1102,12 +1102,12 @@ UserService_findGroups_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter125 in this.success)
+    for (var iter133 in this.success)
     {
-      if (this.success.hasOwnProperty(iter125))
+      if (this.success.hasOwnProperty(iter133))
       {
-        iter125 = this.success[iter125];
-        iter125.write(output);
+        iter133 = this.success[iter133];
+        iter133.write(output);
       }
     }
     output.writeListEnd();
@@ -1209,19 +1209,19 @@ UserService_findPolicies_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size126 = 0;
-        var _rtmp3130;
+        var _size134 = 0;
+        var _rtmp3138;
         this.success = [];
-        var _etype129 = 0;
-        _rtmp3130 = input.readListBegin();
-        _etype129 = _rtmp3130.etype;
-        _size126 = _rtmp3130.size;
-        for (var _i131 = 0; _i131 < _size126; ++_i131)
+        var _etype137 = 0;
+        _rtmp3138 = input.readListBegin();
+        _etype137 = _rtmp3138.etype;
+        _size134 = _rtmp3138.size;
+        for (var _i139 = 0; _i139 < _size134; ++_i139)
         {
-          var elem132 = null;
-          elem132 = new TPolicy();
-          elem132.read(input);
-          this.success.push(elem132);
+          var elem140 = null;
+          elem140 = new TPolicy();
+          elem140.read(input);
+          this.success.push(elem140);
         }
         input.readListEnd();
       } else {
@@ -1250,12 +1250,12 @@ UserService_findPolicies_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter133 in this.success)
+    for (var iter141 in this.success)
     {
-      if (this.success.hasOwnProperty(iter133))
+      if (this.success.hasOwnProperty(iter141))
       {
-        iter133 = this.success[iter133];
-        iter133.write(output);
+        iter141 = this.success[iter141];
+        iter141.write(output);
       }
     }
     output.writeListEnd();
@@ -1357,19 +1357,19 @@ UserService_findRoles_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size134 = 0;
-        var _rtmp3138;
+        var _size142 = 0;
+        var _rtmp3146;
         this.success = [];
-        var _etype137 = 0;
-        _rtmp3138 = input.readListBegin();
-        _etype137 = _rtmp3138.etype;
-        _size134 = _rtmp3138.size;
-        for (var _i139 = 0; _i139 < _size134; ++_i139)
+        var _etype145 = 0;
+        _rtmp3146 = input.readListBegin();
+        _etype145 = _rtmp3146.etype;
+        _size142 = _rtmp3146.size;
+        for (var _i147 = 0; _i147 < _size142; ++_i147)
         {
-          var elem140 = null;
-          elem140 = new TRole();
-          elem140.read(input);
-          this.success.push(elem140);
+          var elem148 = null;
+          elem148 = new TRole();
+          elem148.read(input);
+          this.success.push(elem148);
         }
         input.readListEnd();
       } else {
@@ -1398,12 +1398,12 @@ UserService_findRoles_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter141 in this.success)
+    for (var iter149 in this.success)
     {
-      if (this.success.hasOwnProperty(iter141))
+      if (this.success.hasOwnProperty(iter149))
       {
-        iter141 = this.success[iter141];
-        iter141.write(output);
+        iter149 = this.success[iter149];
+        iter149.write(output);
       }
     }
     output.writeListEnd();
@@ -1505,19 +1505,19 @@ UserService_findRolesNotLinked_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size142 = 0;
-        var _rtmp3146;
+        var _size150 = 0;
+        var _rtmp3154;
         this.success = [];
-        var _etype145 = 0;
-        _rtmp3146 = input.readListBegin();
-        _etype145 = _rtmp3146.etype;
-        _size142 = _rtmp3146.size;
-        for (var _i147 = 0; _i147 < _size142; ++_i147)
+        var _etype153 = 0;
+        _rtmp3154 = input.readListBegin();
+        _etype153 = _rtmp3154.etype;
+        _size150 = _rtmp3154.size;
+        for (var _i155 = 0; _i155 < _size150; ++_i155)
         {
-          var elem148 = null;
-          elem148 = new TRole();
-          elem148.read(input);
-          this.success.push(elem148);
+          var elem156 = null;
+          elem156 = new TRole();
+          elem156.read(input);
+          this.success.push(elem156);
         }
         input.readListEnd();
       } else {
@@ -1546,12 +1546,12 @@ UserService_findRolesNotLinked_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter149 in this.success)
+    for (var iter157 in this.success)
     {
-      if (this.success.hasOwnProperty(iter149))
+      if (this.success.hasOwnProperty(iter157))
       {
-        iter149 = this.success[iter149];
-        iter149.write(output);
+        iter157 = this.success[iter157];
+        iter157.write(output);
       }
     }
     output.writeListEnd();
@@ -2030,19 +2030,19 @@ UserService_search_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size150 = 0;
-        var _rtmp3154;
+        var _size158 = 0;
+        var _rtmp3162;
         this.success = [];
-        var _etype153 = 0;
-        _rtmp3154 = input.readListBegin();
-        _etype153 = _rtmp3154.etype;
-        _size150 = _rtmp3154.size;
-        for (var _i155 = 0; _i155 < _size150; ++_i155)
+        var _etype161 = 0;
+        _rtmp3162 = input.readListBegin();
+        _etype161 = _rtmp3162.etype;
+        _size158 = _rtmp3162.size;
+        for (var _i163 = 0; _i163 < _size158; ++_i163)
         {
-          var elem156 = null;
-          elem156 = new TUser();
-          elem156.read(input);
-          this.success.push(elem156);
+          var elem164 = null;
+          elem164 = new TUser();
+          elem164.read(input);
+          this.success.push(elem164);
         }
         input.readListEnd();
       } else {
@@ -2071,12 +2071,12 @@ UserService_search_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter157 in this.success)
+    for (var iter165 in this.success)
     {
-      if (this.success.hasOwnProperty(iter157))
+      if (this.success.hasOwnProperty(iter165))
       {
-        iter157 = this.success[iter157];
-        iter157.write(output);
+        iter165 = this.success[iter165];
+        iter165.write(output);
       }
     }
     output.writeListEnd();

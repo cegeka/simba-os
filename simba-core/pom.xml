@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.simbasecurity</groupId>
     <artifactId>simba</artifactId>
-    <version>3.2.16</version>
+    <version>3.2.17-SNAPSHOT</version>
   </parent>
 
   <name>Simba Core</name>
@@ -31,7 +31,7 @@
     <dependency>
       <groupId>org.simbasecurity</groupId>
       <artifactId>simba-api</artifactId>
-      <version>3.2.16</version>
+      <version>3.2.17-SNAPSHOT</version>
     </dependency>
 
     <dependency>

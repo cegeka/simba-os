@@ -25,11 +25,14 @@ node('commit-stage') {
 
         stage('Build') {
             dir(simba_checkout_dir) {
-                try {
-                    sh "mvn release:prepare"
-                } finally {
-                    step([$class: "JUnitResultArchiver", testResults: "**/build/**/TEST-*.xml"])
-                }
+                sh "mvn --batch-mode release:prepare -Dtag=simba-${version} -DreleaseVersion=${version} -DdevelopmentVersion=${newVersion}"
+                sh "git push"
+            }
+        }
+
+        stage('Upload artifacts') {
+            dir(simba_checkout_dir) {
+                sh "mvn release:perform -DuseReleaseProfile=false"
             }
         }
     } catch (err) {

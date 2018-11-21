@@ -84,7 +84,7 @@ public class AuthorizationServiceClient implements AuthorizationService.Iface {
     }
 
     @Override
-    public List<String> getRoles(String username) throws TSimbaError, TException {
+    public List<String> getRoles(String username) throws TException {
         return getAuthorizationServiceClient().getRoles(username);
     }
 

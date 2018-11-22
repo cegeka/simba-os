@@ -16,7 +16,7 @@ node('commit-stage') {
                                                                       relativeTargetDir: simba_checkout_dir]],
                           submoduleCfg                     : [],
                           userRemoteConfigs                : [[
-                                                                      credentialsId: 'ventouristeam_github_jenkins_key',
+                                                                      credentialsId: 'github_https',
                                                                       url          : simba_git_url
                                                               ]]
                     ]

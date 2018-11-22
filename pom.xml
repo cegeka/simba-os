@@ -210,6 +210,17 @@
                 <thrift.executable>${project.parent.basedir}/thrift/thrift-${thrift.version}.exe</thrift.executable>
             </properties>
         </profile>
+        <profile>
+            <id>unix</id>
+            <activation>
+                <os>
+                    <family>Unix</family>
+                </os>
+            </activation>
+            <properties>
+                <thrift.executable>${project.parent.basedir}/thrift/thrift-${thrift.version}.tar.gz</thrift.executable>
+            </properties>
+        </profile>
         <!-- Add os specific profiles to locate thrift compiler for your system -->
 		<!-- WebDriver tests -->
 		<profile>

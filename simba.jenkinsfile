@@ -1,5 +1,5 @@
 node('commit-stage') {
-    def simba_git_url = "git@github.com:cegeka/simba-os.git"
+    def simba_git_url = "https://github.com/cegeka/simba-os.git"
     def simba_checkout_dir = "simba"
 
     try {

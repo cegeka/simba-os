@@ -136,9 +136,11 @@ public final class RequestUtil {
         String header = request.getHeader(RequestConstants.HEADER_X_ORIGINAL_SCHEME);
 
         String requestURL = request.getRequestURL().toString();
-        String targetURL = request.getParameter(TARGET_URL);
-        if(targetURL != null){
-            requestURL = targetURL;
+        if (request.getMethod().toLowerCase().equals("get")) {
+            String targetURL = request.getParameter(TARGET_URL);
+            if(targetURL != null){
+                requestURL = targetURL;
+            }
         }
 
         return isNotBlank(header) && header.equals(HTTPS) ? convertToHTTPS(requestURL) : requestURL;
@@ -154,27 +156,27 @@ public final class RequestUtil {
     }
 
     private static String getLoginToken(HttpServletRequest request) {
-        return request.getParameter(LOGIN_TOKEN);
+        return request.getMethod().toLowerCase().equals("get") ? request.getParameter(LOGIN_TOKEN) : null;
     }
 
     private static boolean isLoginRequest(final HttpServletRequest request) {
-        return SIMBA_LOGIN_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER)) || SIMBA_LOGIN_PATH.equals(request.getPathInfo());
+        return (request.getMethod().toLowerCase().equals("get") && SIMBA_LOGIN_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER))) || SIMBA_LOGIN_PATH.equals(request.getPathInfo());
     }
 
     private static boolean isLogoutRequest(final HttpServletRequest request) {
-        return SIMBA_LOGOUT_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER));
+        return (request.getMethod().toLowerCase().equals("get") && SIMBA_LOGOUT_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER)));
     }
 
     private static boolean isChangePasswordRequest(final HttpServletRequest request) {
-        return SIMBA_CHANGE_PASSWORD_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER));
+        return (request.getMethod().toLowerCase().equals("get") && SIMBA_CHANGE_PASSWORD_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER)));
     }
 
     private static boolean isShowChangePasswordRequest(final HttpServletRequest request) {
-        return SIMBA_SHOW_CHANGE_PASSWORD_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER));
+        return (request.getMethod().toLowerCase().equals("get") && SIMBA_SHOW_CHANGE_PASSWORD_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER)));
     }
 
     private static boolean isSSOTokenMappingKeyProvided(final HttpServletRequest request) {
-        return isNotBlank(getSSOTokenMappingKey(request));
+        return (request.getMethod().toLowerCase().equals("get") && isNotBlank(getSSOTokenMappingKey(request)));
     }
 
     private static String getSSOTokenMappingKey(final HttpServletRequest request) {
@@ -202,12 +204,15 @@ public final class RequestUtil {
     private static Map<String, String> retrieveRequestParameters(final HttpServletRequest request) {
         final Map<String, String> parameters = new HashMap<>();
 
-        final Enumeration<String> names = request.getParameterNames();
+        if (request.getContentType() == null || !request.getContentType().startsWith("multipart/")) {
+            final Enumeration<String> names = request.getParameterNames();
 
-        while (names.hasMoreElements()) {
-            final String name = names.nextElement();
-            parameters.put(name, request.getParameter(name));
+            while (names.hasMoreElements()) {
+                final String name = names.nextElement();
+                parameters.put(name, request.getParameter(name));
+            }
         }
+
         return parameters;
     }
 

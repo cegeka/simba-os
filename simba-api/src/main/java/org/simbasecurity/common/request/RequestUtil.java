@@ -156,27 +156,31 @@ public final class RequestUtil {
     }
 
     private static String getLoginToken(HttpServletRequest request) {
-        return request.getMethod().toLowerCase().equals("get") ? request.getParameter(LOGIN_TOKEN) : null;
+        return isHttpGet(request)  || SIMBA_LOGIN_PATH.equals(request.getPathInfo()) ? request.getParameter(LOGIN_TOKEN) : null;
     }
 
     private static boolean isLoginRequest(final HttpServletRequest request) {
-        return (request.getMethod().toLowerCase().equals("get") && SIMBA_LOGIN_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER))) || SIMBA_LOGIN_PATH.equals(request.getPathInfo());
+        return (isHttpGet(request) && SIMBA_LOGIN_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER))) || SIMBA_LOGIN_PATH.equals(request.getPathInfo());
     }
 
     private static boolean isLogoutRequest(final HttpServletRequest request) {
-        return (request.getMethod().toLowerCase().equals("get") && SIMBA_LOGOUT_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER)));
+        return (isHttpGet(request) && SIMBA_LOGOUT_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER))) || SIMBA_LOGIN_PATH.equals(request.getPathInfo());
     }
 
     private static boolean isChangePasswordRequest(final HttpServletRequest request) {
-        return (request.getMethod().toLowerCase().equals("get") && SIMBA_CHANGE_PASSWORD_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER)));
+        return (isHttpGet(request) && SIMBA_CHANGE_PASSWORD_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER))) || SIMBA_LOGIN_PATH.equals(request.getPathInfo());
     }
 
     private static boolean isShowChangePasswordRequest(final HttpServletRequest request) {
-        return (request.getMethod().toLowerCase().equals("get") && SIMBA_SHOW_CHANGE_PASSWORD_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER)));
+        return (isHttpGet(request) && SIMBA_SHOW_CHANGE_PASSWORD_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER))) || SIMBA_LOGIN_PATH.equals(request.getPathInfo());
     }
 
     private static boolean isSSOTokenMappingKeyProvided(final HttpServletRequest request) {
-        return (request.getMethod().toLowerCase().equals("get") && isNotBlank(getSSOTokenMappingKey(request)));
+        return (isHttpGet(request) && isNotBlank(getSSOTokenMappingKey(request)))  || SIMBA_LOGIN_PATH.equals(request.getPathInfo());
+    }
+
+    private static boolean isHttpGet(HttpServletRequest request) {
+        return request.getMethod().toLowerCase().equals("get");
     }
 
     private static String getSSOTokenMappingKey(final HttpServletRequest request) {

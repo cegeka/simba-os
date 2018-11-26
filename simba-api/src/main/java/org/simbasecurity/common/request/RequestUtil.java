@@ -164,15 +164,15 @@ public final class RequestUtil {
     }
 
     private static boolean isLogoutRequest(final HttpServletRequest request) {
-        return (isHttpGet(request) && SIMBA_LOGOUT_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER))) || SIMBA_LOGIN_PATH.equals(request.getPathInfo());
+        return (isHttpGet(request) && SIMBA_LOGOUT_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER)));
     }
 
     private static boolean isChangePasswordRequest(final HttpServletRequest request) {
-        return (isHttpGet(request) && SIMBA_CHANGE_PASSWORD_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER))) || SIMBA_LOGIN_PATH.equals(request.getPathInfo());
+        return (isHttpGet(request) && SIMBA_CHANGE_PASSWORD_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER)));
     }
 
     private static boolean isShowChangePasswordRequest(final HttpServletRequest request) {
-        return (isHttpGet(request) && SIMBA_SHOW_CHANGE_PASSWORD_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER))) || SIMBA_LOGIN_PATH.equals(request.getPathInfo());
+        return (isHttpGet(request) && SIMBA_SHOW_CHANGE_PASSWORD_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER)));
     }
 
     private static boolean isSSOTokenMappingKeyProvided(final HttpServletRequest request) {

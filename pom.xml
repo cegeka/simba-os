@@ -21,13 +21,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.simbasecurity</groupId>
     <artifactId>simba</artifactId>
-    <version>3.2.21</version>
+    <version>3.2.22-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>http://www.simbasecurity.org</url>
 
     <scm>
         <connection>scm:git:git@github.com:cegeka/simba-os.git</connection>
-        <tag>simba-3.2.21</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>

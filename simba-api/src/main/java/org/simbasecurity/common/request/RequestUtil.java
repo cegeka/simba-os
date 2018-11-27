@@ -156,11 +156,11 @@ public final class RequestUtil {
     }
 
     private static String getLoginToken(HttpServletRequest request) {
-        return isHttpGet(request)  || SIMBA_LOGIN_PATH.equals(request.getPathInfo()) ? request.getParameter(LOGIN_TOKEN) : null;
+        return isHttpGet(request)  || SIMBA_LOGIN_PATH.equals(request.getPathInfo()) || SIMBA_FINALITEIT_PATH.equals(request.getPathInfo()) ? request.getParameter(LOGIN_TOKEN) : null;
     }
 
     private static boolean isLoginRequest(final HttpServletRequest request) {
-        return (isHttpGet(request) && SIMBA_LOGIN_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER))) || SIMBA_LOGIN_PATH.equals(request.getPathInfo());
+        return (isHttpGet(request) && SIMBA_LOGIN_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER))) || SIMBA_LOGIN_PATH.equals(request.getPathInfo()) || SIMBA_FINALITEIT_PATH.equals(request.getPathInfo());
     }
 
     private static boolean isLogoutRequest(final HttpServletRequest request) {
@@ -176,7 +176,7 @@ public final class RequestUtil {
     }
 
     private static boolean isSSOTokenMappingKeyProvided(final HttpServletRequest request) {
-        return (isHttpGet(request) && isNotBlank(getSSOTokenMappingKey(request)))  || SIMBA_LOGIN_PATH.equals(request.getPathInfo());
+        return (isHttpGet(request) && isNotBlank(getSSOTokenMappingKey(request)))  || SIMBA_LOGIN_PATH.equals(request.getPathInfo()) || SIMBA_FINALITEIT_PATH.equals(request.getPathInfo());
     }
 
     private static boolean isHttpGet(HttpServletRequest request) {

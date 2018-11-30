@@ -117,7 +117,7 @@ public class SpringSecurityAuthenticationFilter implements Filter {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            servletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            servletResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         } finally {
             if (tHttpClient != null) {
                 tHttpClient.close();

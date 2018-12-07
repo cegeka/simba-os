@@ -115,8 +115,8 @@ public final class RequestUtil {
 
     public static RequestData createRequestData(HttpServletRequest request, String simbaWebURL, String simbeEidSuccessUrl) {
         return new RequestData(retrieveRequestParameters(request), retrieveRequestHeaders(request), resolveProtocol(request), simbaWebURL, getSsoToken(request), retrieveClientIpAddress(request),
-                               isLogoutRequest(request), isLoginRequest(request), isSSOTokenMappingKeyProvided(request), isChangePasswordRequest(request), isShowChangePasswordRequest(request),
-                               request.getMethod(), HOST_SERVER_NAME, getLoginToken(request), simbeEidSuccessUrl);
+                isLogoutRequest(request), isLoginRequest(request), isSSOTokenMappingKeyProvided(request), isChangePasswordRequest(request), isShowChangePasswordRequest(request),
+                request.getMethod(), HOST_SERVER_NAME, getLoginToken(request), simbeEidSuccessUrl);
     }
 
     public static RequestData createWSSERequestData(final HttpServletRequest request, final Element wsseHeader, final String simbaWebURL) {
@@ -129,7 +129,7 @@ public final class RequestUtil {
         }
 
         return new RequestData(requestParameters, retrieveRequestHeaders(request), resolveProtocol(request), simbaWebURL, null, retrieveClientIpAddress(request), false, true, false, false, false,
-                               request.getMethod(), HOST_SERVER_NAME, getLoginToken(request), null);
+                request.getMethod(), HOST_SERVER_NAME, getLoginToken(request), null);
     }
 
     private static String resolveProtocol(HttpServletRequest request) {
@@ -138,7 +138,7 @@ public final class RequestUtil {
         String requestURL = request.getRequestURL().toString();
         if (request.getMethod().toLowerCase().equals("get")) {
             String targetURL = request.getParameter(TARGET_URL);
-            if(targetURL != null){
+            if (targetURL != null) {
                 requestURL = targetURL;
             }
         }
@@ -156,7 +156,7 @@ public final class RequestUtil {
     }
 
     private static String getLoginToken(HttpServletRequest request) {
-        return isHttpGet(request)  || SIMBA_LOGIN_PATH.equals(request.getPathInfo()) || SIMBA_FINALITEIT_PATH.equals(request.getPathInfo()) ? request.getParameter(LOGIN_TOKEN) : null;
+        return isHttpGet(request) || SIMBA_LOGIN_PATH.equals(request.getPathInfo()) || SIMBA_FINALITEIT_PATH.equals(request.getPathInfo()) ? request.getParameter(LOGIN_TOKEN) : null;
     }
 
     private static boolean isLoginRequest(final HttpServletRequest request) {
@@ -168,7 +168,7 @@ public final class RequestUtil {
     }
 
     private static boolean isChangePasswordRequest(final HttpServletRequest request) {
-        return (isHttpGet(request) && SIMBA_CHANGE_PASSWORD_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER)));
+        return (isHttpPost(request) && SIMBA_CHANGE_PASSWORD_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER)));
     }
 
     private static boolean isShowChangePasswordRequest(final HttpServletRequest request) {
@@ -176,11 +176,15 @@ public final class RequestUtil {
     }
 
     private static boolean isSSOTokenMappingKeyProvided(final HttpServletRequest request) {
-        return (isHttpGet(request) && isNotBlank(getSSOTokenMappingKey(request)))  || SIMBA_LOGIN_PATH.equals(request.getPathInfo()) || SIMBA_FINALITEIT_PATH.equals(request.getPathInfo());
+        return (isHttpGet(request) && isNotBlank(getSSOTokenMappingKey(request))) || SIMBA_LOGIN_PATH.equals(request.getPathInfo()) || SIMBA_FINALITEIT_PATH.equals(request.getPathInfo());
     }
 
     private static boolean isHttpGet(HttpServletRequest request) {
         return request.getMethod().toLowerCase().equals("get");
+    }
+
+    private static boolean isHttpPost(HttpServletRequest request) {
+        return request.getMethod().toLowerCase().equals("post");
     }
 
     private static String getSSOTokenMappingKey(final HttpServletRequest request) {

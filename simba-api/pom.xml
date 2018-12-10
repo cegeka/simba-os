@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.simbasecurity</groupId>
         <artifactId>simba</artifactId>
-        <version>3.2.23</version>
+        <version>3.2.24-SNAPSHOT</version>
     </parent>
 
     <name>Simba API</name>

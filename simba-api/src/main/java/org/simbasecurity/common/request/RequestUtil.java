@@ -168,7 +168,7 @@ public final class RequestUtil {
     }
 
     private static boolean isChangePasswordRequest(final HttpServletRequest request) {
-        return (isHttpPost(request) && SIMBA_CHANGE_PASSWORD_ACTION.equals(request.getParameter(SIMBA_ACTION_PARAMETER)));
+        return (isHttpPost(request) && (SIMBA_CHANGE_PASSWORD_PATH.equals(request.getPathInfo()) || SIMBA_NEW_PASSWORD_PATH.equals(request.getPathInfo())));
     }
 
     private static boolean isShowChangePasswordRequest(final HttpServletRequest request) {

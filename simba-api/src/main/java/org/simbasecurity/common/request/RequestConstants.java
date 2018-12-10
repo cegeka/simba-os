@@ -70,6 +70,17 @@ public interface RequestConstants {
      * The path info used for direct login on simba.
      */
     String SIMBA_FINALITEIT_PATH = "/simba-finaliteit";
+
+    /**
+     * The path info used for changing password on simba.
+     */
+    String SIMBA_CHANGE_PASSWORD_PATH = "/simba-change-pwd";
+
+    /**
+     * The path info used for a new password on simba.
+     */
+    String SIMBA_NEW_PASSWORD_PATH = "/simba-new-pwd";
+
     /**
      * The SAML response when using redirect binding
      */

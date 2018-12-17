@@ -22,24 +22,25 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.THttpClient;
 import org.glassfish.jersey.server.ContainerRequest;
 import org.simbasecurity.api.service.thrift.ActionDescriptor;
-import org.simbasecurity.api.service.thrift.ActionType;
 import org.simbasecurity.api.service.thrift.AuthenticationFilterService;
 import org.simbasecurity.api.service.thrift.RequestData;
 import org.simbasecurity.client.configuration.SimbaConfiguration;
 import org.simbasecurity.client.principal.SimbaPrincipal;
+import org.simbasecurity.client.rest.UserNamePassword;
 import org.simbasecurity.common.config.SystemConfiguration;
 import org.simbasecurity.common.constants.AuthenticationConstants;
-import org.simbasecurity.common.request.RequestUtil;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.core.Response;
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+import static org.simbasecurity.api.service.thrift.ActionType.DO_FILTER_AND_SET_PRINCIPAL;
+import static org.simbasecurity.common.request.RequestUtil.HOST_SERVER_NAME;
 
 public class JerseyBasicAuthenticationFilter implements ContainerRequestFilter {
 
@@ -48,33 +49,51 @@ public class JerseyBasicAuthenticationFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext containerRequestContext) throws IOException {
         ContainerRequest containerRequest = (ContainerRequest) containerRequestContext.getRequest();
-
         Map<String, String> requestParameters = toMap(containerRequestContext.getUriInfo().getQueryParameters());
+        Map<String, String> requestHeaders = toMap(containerRequest.getRequestHeaders());
+
         List<String> auth = containerRequest.getRequestHeader("authorization");
         if (auth == null || auth.isEmpty()) {
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+            throw new WebApplicationException(UNAUTHORIZED);
         }
-        String[] credentials = decode(auth.get(0));
-        requestParameters.put(AuthenticationConstants.USERNAME, credentials[0]);
-        requestParameters.put(AuthenticationConstants.PASSWORD, credentials[1]);
+        UserNamePassword userNamePassword = UserNamePassword.fromBasicHeader(auth.get(0));
+        requestParameters.put(AuthenticationConstants.USERNAME, userNamePassword.getUserName());
+        requestParameters.put(AuthenticationConstants.PASSWORD, userNamePassword.getPassword());
 
-        RequestData requestData = new RequestData(requestParameters, toMap(containerRequest.getRequestHeaders()),
-                                                  containerRequest.getAbsolutePath().toString(), simbaWebURL, null /* SSO Token */, null /* Client IP */,
-                                                  false, false, false, false, false, containerRequest.getMethod(), RequestUtil.HOST_SERVER_NAME, null, null);
+        RequestData requestData = new RequestData(
+                requestParameters,
+                requestHeaders,
+                containerRequest.getAbsolutePath().toString(),
+                simbaWebURL,
+                null,
+                null,
+                false,
+                false,
+                false,
+                false,
+                false,
+                containerRequest.getMethod(),
+                HOST_SERVER_NAME,
+                null,
+                null);
 
+        sendRequest(containerRequest, userNamePassword, requestData);
+    }
+
+    private void sendRequest(ContainerRequest containerRequest, UserNamePassword userNamePassword, RequestData requestData) {
         try (THttpClient tHttpClient = new THttpClient(SimbaConfiguration.getSimbaAuthenticationURL())) {
             TProtocol tProtocol = new TJSONProtocol(tHttpClient);
 
             AuthenticationFilterService.Client authenticationClient = new AuthenticationFilterService.Client(tProtocol);
 
             ActionDescriptor actionDescriptor = authenticationClient.processRequest(requestData, "wsLoginChain");
-            if (!actionDescriptor.getActionTypes().contains(ActionType.DO_FILTER_AND_SET_PRINCIPAL)) {
-                throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+            if (!actionDescriptor.getActionTypes().contains(DO_FILTER_AND_SET_PRINCIPAL)) {
+                throw new WebApplicationException(UNAUTHORIZED);
             }
-            containerRequest.setSecurityContext(new SecurityContextWithPrincipal(containerRequest.getSecurityContext(), new SimbaPrincipal(credentials[0])));
+            containerRequest.setSecurityContext(new SecurityContextWithPrincipal(containerRequest.getSecurityContext(), new SimbaPrincipal(userNamePassword.getUserName())));
         } catch (Exception e) {
             e.printStackTrace();
-            throw new WebApplicationException(e, Response.Status.UNAUTHORIZED);
+            throw new WebApplicationException(e, UNAUTHORIZED);
         }
     }
 
@@ -89,21 +108,4 @@ public class JerseyBasicAuthenticationFilter implements ContainerRequestFilter {
         return result;
     }
 
-    private String[] decode(String auth) {
-        if (auth.toLowerCase().startsWith("basic ")) {
-            return decodeBasic(auth);
-        }
-        throw new UnsupportedOperationException("Only Basic Authentication supported so far");
-    }
-
-    private String[] decodeBasic(String auth) {
-        String digest = auth.substring(6);
-
-        byte[] decodedBytes = DatatypeConverter.parseBase64Binary(digest);
-        if (decodedBytes == null || decodedBytes.length == 0) {
-            return null;
-        }
-
-        return new String(decodedBytes).split(":", 2);
-    }
 }

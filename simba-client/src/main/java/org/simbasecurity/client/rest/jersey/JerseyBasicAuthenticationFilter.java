@@ -56,7 +56,7 @@ public class JerseyBasicAuthenticationFilter implements ContainerRequestFilter {
         if (auth == null || auth.isEmpty()) {
             throw new WebApplicationException(UNAUTHORIZED);
         }
-        UserNamePassword userNamePassword = UserNamePassword.fromBasicHeader(auth.get(0));
+        UserNamePassword userNamePassword = UserNamePassword.fromBasicAuthenticationHeader(auth.get(0));
         requestParameters.put(AuthenticationConstants.USERNAME, userNamePassword.getUserName());
         requestParameters.put(AuthenticationConstants.PASSWORD, userNamePassword.getPassword());
 

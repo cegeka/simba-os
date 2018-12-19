@@ -14,6 +14,8 @@ import org.simbasecurity.client.interceptor.SimbaWSAuthenticationException;
 import org.simbasecurity.common.config.SystemConfiguration;
 import org.simbasecurity.common.filter.action.MakeCookieAction;
 import org.simbasecurity.common.request.RequestUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +30,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.Status.*;
 
 public class BasicAuthenticationFilter implements Filter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BasicAuthenticationFilter.class);
+
     private String simbaWebURL;
     private String simbaEidSuccessUrl;
     private String authenticationChainName;
@@ -53,9 +57,10 @@ public class BasicAuthenticationFilter implements Filter {
             ((HttpServletResponse) response).setStatus(UNAUTHORIZED.getStatusCode());
             response.setContentType(APPLICATION_JSON);
             response.getWriter().write(format("{\"errorMessage\":\"%s\"}", exception.getMessage()));
-        } catch (Exception e) {
+        } catch (Exception exception) {
+            LOGGER.error(exception.getMessage(), exception);
             ((HttpServletResponse) response).setStatus(INTERNAL_SERVER_ERROR.getStatusCode());
-            response.getWriter().write(format("{\"errorMessage\":\"%s\"}", e.getMessage()));
+            response.getWriter().write(format("{\"errorMessage\":\"%s\"}", exception.getMessage()));
             response.setContentType(APPLICATION_JSON);
         }
     }
@@ -65,7 +70,7 @@ public class BasicAuthenticationFilter implements Filter {
         Map<String, String> headers = createHeaderMap(servletRequest);
         FilterActionFactory actionFactory = new FilterActionFactory(servletRequest, servletResponse, chain);
 
-        UserNamePassword userNamePassword = UserNamePassword.fromBasicHeader(headers.get("Authorization"));
+        UserNamePassword userNamePassword = UserNamePassword.fromBasicAuthenticationHeader(headers.get("Authorization"));
         parameterMap.put("username", userNamePassword.getUserName());
         parameterMap.put("password", userNamePassword.getPassword());
 

@@ -24,7 +24,7 @@
 
     <context-param>
         <param-name>simba.url</param-name>
-        <param-value>http://localhost:8080/simba</param-value>
+        <param-value>http://localhost:9090/simba</param-value>
     </context-param>
 
 	<filter>

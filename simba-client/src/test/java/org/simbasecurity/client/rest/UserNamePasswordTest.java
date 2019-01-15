@@ -9,14 +9,37 @@ public class UserNamePasswordTest {
 
     @Test
     public void happyPath() {
-        UserNamePassword userNamePassword = UserNamePassword.fromBasicAuthenticationHeader("Basic dGVzdDp0ZXN0Cg==");
+        UserNamePassword userNamePassword = UserNamePassword.fromBasicAuthenticationHeader("Basic dGVzdDp0ZXN0");
 
         assertThat(userNamePassword.getUserName()).isEqualTo("test");
         assertThat(userNamePassword.getPassword()).isEqualTo("test");
     }
 
     @Test
+    public void aPasswordCanHaveAColon() {
+        UserNamePassword userNamePassword = UserNamePassword.fromBasicAuthenticationHeader("Basic dGVzdDp0ZXN0OnRlc3Q=");
+
+        assertThat(userNamePassword.getUserName()).isEqualTo("test");
+        assertThat(userNamePassword.getPassword()).isEqualTo("test:test");
+    }
+
+    @Test
+    public void aPasswordCanStartAndEndWithASpace() {
+        UserNamePassword userNamePassword = UserNamePassword.fromBasicAuthenticationHeader("Basic dGVzdDogdGVzdCA=");
+
+        assertThat(userNamePassword.getPassword()).isEqualTo(" test ");
+    }
+
+    @Test
+    public void aUsernameCanStartAndEndWithASpace() {
+        UserNamePassword userNamePassword = UserNamePassword.fromBasicAuthenticationHeader("Basic IHRlc3QgOnRlc3Q=");
+
+        assertThat(userNamePassword.getUserName()).isEqualTo(" test ");
+    }
+
+    @Test
     public void noAuthorizationHeader() {
+        //noinspection ConstantConditions
         assertThatThrownBy(() -> UserNamePassword.fromBasicAuthenticationHeader(null))
                 .isInstanceOf(UnsupportedOperationException.class)
                 .hasMessage("An authorization header is required");
@@ -34,12 +57,5 @@ public class UserNamePasswordTest {
         assertThatThrownBy(() -> UserNamePassword.fromBasicAuthenticationHeader("Basic dGVzdDp0ZXN0Cg="))
                 .isInstanceOf(UnsupportedOperationException.class)
                 .hasMessage("'dGVzdDp0ZXN0Cg=' is not a valid base64 encoded string");
-    }
-
-    @Test
-    public void incorrectFormat() {
-        assertThatThrownBy(() -> UserNamePassword.fromBasicAuthenticationHeader("Basic dGVzdDp0ZXN0OnRlc3QK"))
-                .isInstanceOf(UnsupportedOperationException.class)
-                .hasMessage("The provided authorization needs to be in the form 'username:password'");
     }
 }

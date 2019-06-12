@@ -16,6 +16,7 @@
  */
 package org.simbasecurity.core.domain.repository;
 
+import org.apache.commons.lang.StringUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,8 +42,9 @@ import static org.simbasecurity.core.domain.UserTestBuilder.aDefaultUser;
 public class UserDatabaseRepositoryTest extends PersistenceTestCase {
 
     private static final String DUMMY_USER_NAME = "dummy";
+    private static final String DUMMY2_USER_NAME = "DUMMY2";
     protected CoreConfigurationService configurationServiceMock;
-    private User user;
+    private User user, user2;
 
     @Autowired
     private UserDatabaseRepository userDatabaseRepository;
@@ -54,12 +56,28 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
         configurationServiceMock = mock(CoreConfigurationService.class);
 
         user = UserTestBuilder.aUser().withUserName(DUMMY_USER_NAME).withFirstName("").withName("").withPassword("moo").withDateOfLastPasswordChange(new Date()).build();
+        user2 = UserTestBuilder.aUser().withUserName(DUMMY2_USER_NAME).withFirstName("").withName("").withPassword("moo").withDateOfLastPasswordChange(new Date()).build();
         persistAndRefresh(user);
+        persistAndRefresh(user2);
     }
 
     @Test
-    public void test_findByName_success() {
+    public void findByNameSuccess() {
         User result = userDatabaseRepository.findByName(DUMMY_USER_NAME);
+        assertNotNull(result);
+        assertEquals(DUMMY_USER_NAME, result.getUserName());
+    }
+
+    @Test
+    public void findByNameWithUsernameCapsSuccess() {
+        User result = userDatabaseRepository.findByName(DUMMY2_USER_NAME.toLowerCase());
+        assertNotNull(result);
+        assertEquals(DUMMY2_USER_NAME, result.getUserName());
+    }
+
+    @Test
+    public void findByNameWithInputCapsSuccess() {
+        User result = userDatabaseRepository.findByName(StringUtils.capitalize(DUMMY_USER_NAME));
         assertNotNull(result);
         assertEquals(DUMMY_USER_NAME, result.getUserName());
     }
@@ -84,7 +102,7 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
 
         Collection<User> result = userDatabaseRepository.findAllOrderedByName();
 
-        assertThat(result).containsExactly(userA, userB, userC, user);
+        assertThat(result).containsExactly(user2, userA, userB, userC, user);
     }
 
     @Test
@@ -96,7 +114,7 @@ public class UserDatabaseRepositoryTest extends PersistenceTestCase {
 
         assertThat(userDatabaseRepository.searchUsersOrderedByName("a")).containsExactly(userA, userB);
         assertThat(userDatabaseRepository.searchUsersOrderedByName("z")).isEmpty();
-        assertThat(userDatabaseRepository.searchUsersOrderedByName("")).containsExactly(userA, userB, userC, user);
+        assertThat(userDatabaseRepository.searchUsersOrderedByName("")).containsExactly(user2, userA, userB, userC, user);
         assertThat(userDatabaseRepository.searchUsersOrderedByName("aa")).containsExactly(userB);
         assertThat(userDatabaseRepository.searchUsersOrderedByName("v")).containsExactly(userA);
         assertThat(userDatabaseRepository.searchUsersOrderedByName("s")).containsExactly(userB);

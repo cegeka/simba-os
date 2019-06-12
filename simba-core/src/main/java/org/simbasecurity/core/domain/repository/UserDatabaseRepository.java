@@ -34,7 +34,7 @@ public class UserDatabaseRepository extends AbstractVersionedDatabaseRepository<
 
     @Override
     public User findByName(String userName) {
-        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM UserEntity u WHERE u.userName = :userName", User.class)
+        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM UserEntity u WHERE LOWER(u.userName) = LOWER(:userName)", User.class)
                 .setParameter("userName", userName);
 
         List<User> resultList = query.getResultList();
